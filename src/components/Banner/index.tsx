@@ -11,7 +11,7 @@ export default function Banner() {
             </span>
             <span className="mt-1 block text-4xl font-extrabold tracking-tight sm:text-5xl xl:text-6xl">
               <span className="block text-gray-900">UnBase</span>
-              <span className="block text-2xl font-semibold text-indigo-500">
+              <span className="block text-2xl font-semibold text-blue-500">
                 a sua plataforma definitiva conteúdo 🤓
               </span>
             </span>
@@ -26,7 +26,7 @@ export default function Banner() {
           <div className="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
             <button
               type="button"
-              className="relative block w-full overflow-hidden rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="relative block w-full overflow-hidden rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <img
                 className="w-full"
