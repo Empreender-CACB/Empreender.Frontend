@@ -23,38 +23,16 @@ const navigation = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800">
-      <div className="mx-auto max-w-7xl overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
-        <nav
-          className="-mx-5 -my-2 flex flex-wrap justify-center"
-          aria-label="Footer"
-        >
-          {navigation.main.map((item) => (
-            <div key={item.name} className="px-5 py-2">
-              <a
-                href={item.href}
-                className="text-base text-gray-500 hover:text-gray-300"
-              >
-                {item.name}
-              </a>
-            </div>
-          ))}
-        </nav>
-        <div className="mt-8 flex justify-center space-x-6">
-          {navigation.social.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-gray-400 hover:text-gray-500"
-            >
-              <span className="sr-only">{item.name}</span>
-              <item.icon className="h-6 w-6" aria-hidden="true" />
-            </a>
-          ))}
+    <footer className="mx-auto max-w-7xl bg-white px-4 pb-10 sm:px-6">
+      <div className="border-t border-gray-100 py-10 sm:flex sm:items-center sm:justify-between">
+        <div className="flex items-center justify-center text-sm text-gray-500">
+          <p>
+            Desenvolvido com certo 💖 por alunos da Universidade de Brasília
+          </p>
+          <p className="ml-3 border-l border-gray-200 pl-3">GP 04</p>
         </div>
-        <p className="mt-8 text-center text-base text-gray-400">
-          &copy; 2023 UnBase. Desenvolvido com 💖 pelos alunos da Universidade
-          de Brasília
+        <p className="mt-6 text-center text-sm text-gray-500 sm:mt-0">
+          &copy; 2023 UnBase
         </p>
       </div>
     </footer>
