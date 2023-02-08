@@ -1,16 +1,16 @@
 {
-  "name": "reactjs-vite-tailwindcss-boilerplate",
-  "description": "This is a boilerplate build with React 18, TypeScript, Jest, Testing Library, TailwindCSS 3, Vite, Eslint and Prettier.",
+  "name": "unbase.api",
+  "description": "pipipipopopo",
   "version": "0.1.0",
   "private": true,
   "author": {
-    "name": "João Paulo Moraes",
-    "email": "joaopaulomoraes@outlook.com",
+    "name": "Pipipi popopo",
+    "email": "123@teste.com",
     "url": "https://github.com/joaopaulomoraes"
   },
   "bugs": {
-    "url": "https://github.com/joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate/issues",
-    "email": "joaopaulomoraes@outlook.com"
+    "url": "https://github.com/nunnally/unbase.frontend/issues",
+    "email": "123@teste.com"
   },
   "scripts": {
     "dev": "vite",
