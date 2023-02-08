@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
 
 const navigation = [
   { name: 'Página Inicial', href: '#' },
@@ -45,24 +46,24 @@ export default function Header() {
               </div>
               <div className="hidden md:ml-10 md:block md:space-x-10">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className="font-medium text-gray-500 hover:text-gray-900"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
             <div className="hidden text-right md:block">
               <span className="inline-flex rounded-md shadow-md ring-1 ring-black ring-opacity-5">
-                <a
-                  href="#"
+                <Link
                   className="inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-base font-medium text-blue-600 hover:bg-gray-50"
+                  to={`login`}
                 >
                   login
-                </a>
+                </Link>
               </span>
             </div>
           </nav>
