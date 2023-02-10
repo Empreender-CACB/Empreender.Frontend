@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import useAuth from 'hooks/useAuth'
+import { XCircleIcon } from '@heroicons/react/solid'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 import axios from 'api/axios'
@@ -42,13 +43,13 @@ export default function Login() {
       navigate(from, { replace: true })
     } catch (err) {
       if (!err?.response) {
-        setErrMsg('No Server Response')
+        setErrMsg('Sem resposta do servidor')
       } else if (err.response?.status === 400) {
-        setErrMsg('Missing Username or Password')
+        setErrMsg('Digite o usuário e senha')
       } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized')
+        setErrMsg('Falha ao logar')
       } else {
-        setErrMsg('Login Failed')
+        setErrMsg('Falha ao logar')
       }
       errRef.current.focus()
     }
@@ -78,13 +79,28 @@ export default function Login() {
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
               Acessar UnBase
             </h2>
-            <p
-              ref={errRef}
-              className={errMsg ? 'errmsg' : 'offscreen'}
-              aria-live="assertive"
+
+            <div
+              className={errMsg ? 'mt-5 rounded-md bg-red-50 p-4' : 'invisible'}
             >
-              {errMsg}
-            </p>
+              <div className="flex">
+                <div className="shrink-0">
+                  <XCircleIcon
+                    className="h-5 w-5 text-red-400"
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="ml-3">
+                  <p
+                    ref={errRef}
+                    aria-live="assertive"
+                    className="text-sm font-medium text-red-800"
+                  >
+                    {errMsg}
+                  </p>
+                </div>
+              </div>
+            </div>
             <p className="mt-2 text-sm text-gray-600">
               Ou{' caso não tenha conta, '}
               <a
