@@ -81,7 +81,7 @@ export default function Login() {
             </h2>
 
             <div
-              className={errMsg ? 'mt-5 rounded-md bg-red-50 p-4' : 'invisible'}
+              className={errMsg ? 'mt-5 rounded-md bg-red-50 p-4' : 'hidden'}
             >
               <div className="flex">
                 <div className="shrink-0">
