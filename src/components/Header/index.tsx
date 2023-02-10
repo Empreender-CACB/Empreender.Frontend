@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom'
 
 const navigation = [
   { name: 'Página Inicial', href: '#' },
-  { name: 'Sobre o Projeto', href: '#' },
-  { name: 'Contato', href: '#' }
+  { name: 'Sobre o Projeto', href: 'about' }
 ]
 
 export default function Header() {

@@ -6,6 +6,7 @@ import Login from 'components/Login'
 import Main from 'pages/Main'
 import NotFound from 'pages/404'
 import { AuthProvider } from 'context/AuthProvider'
+import RequireAuth from 'components/RequireAuth'
 import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
 
 function App() {
@@ -16,7 +17,9 @@ function App() {
         <Route path="" element={<Banner />} />
         <Route path="about" element={<Banner />} />
       </Route>
-      <Route path="/settings" element={<Login />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/settings" element={<Login />} />
+      </Route>
       {/* catch all */}
       <Route path="*" element={<NotFound />} />
     </Routes>
