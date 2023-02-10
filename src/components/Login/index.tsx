@@ -3,7 +3,7 @@ import useAuth from 'hooks/useAuth'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 import axios from 'api/axios'
-const LOGIN_URL = '/auth'
+const LOGIN_URL = '/auth/login'
 
 export default function Login() {
   const { setAuth } = useAuth()
@@ -15,8 +15,8 @@ export default function Login() {
   const userRef = useRef()
   const errRef = useRef()
 
-  const [user, setUser] = useState('')
-  const [pwd, setPwd] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setpassword] = useState('')
   const [errMsg, setErrMsg] = useState('')
 
   useEffect(() => {
@@ -26,21 +26,19 @@ export default function Login() {
     e.preventDefault()
 
     try {
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ user, pwd }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      )
+      const data = JSON.stringify({ email, password })
+      const options = {
+        headers: { 'content-type': 'application/json' }
+      }
+      const response = await axios.post(LOGIN_URL, data, options)
+
       console.log(JSON.stringify(response?.data))
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken
       const roles = response?.data?.roles
-      setAuth({ user, pwd, roles, accessToken })
-      setUser('')
-      setPwd('')
+      setAuth({ email, password, roles, accessToken })
+      setEmail('')
+      setpassword('')
       navigate(from, { replace: true })
     } catch (err) {
       if (!err?.response) {
@@ -112,8 +110,8 @@ export default function Login() {
                     <input
                       id="email"
                       ref={userRef}
-                      onChange={(e) => setUser(e.target.value)}
-                      value={user}
+                      onChange={(e) => setEmail(e.target.value)}
+                      value={email}
                       name="email"
                       type="email"
                       autoComplete="email"
@@ -134,8 +132,8 @@ export default function Login() {
                     <input
                       type="password"
                       id="password"
-                      onChange={(e) => setPwd(e.target.value)}
-                      value={pwd}
+                      onChange={(e) => setpassword(e.target.value)}
+                      value={password}
                       required
                       className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                     />

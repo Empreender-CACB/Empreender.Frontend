@@ -18,7 +18,7 @@ function App() {
         <Route path="about" element={<Banner />} />
       </Route>
       <Route element={<RequireAuth />}>
-        <Route path="/settings" element={<Login />} />
+        <Route path="/settings" element={<Banner />} />
       </Route>
       {/* catch all */}
       <Route path="*" element={<NotFound />} />
