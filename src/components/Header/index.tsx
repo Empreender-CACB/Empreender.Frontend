@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
+import useAuth from 'hooks/useAuth'
 
 const navigation = [
   { name: 'Página Inicial', href: '/' },
@@ -10,6 +11,7 @@ const navigation = [
 ]
 
 export default function Header() {
+  const { auth } = useAuth()
   return (
     <div className="relative overflow-hidden bg-white">
       <div className="relative pt-6 pb-5 sm:pb-24">
@@ -56,16 +58,20 @@ export default function Header() {
                 ))}
               </div>
             </div>
-            <div className="hidden text-right md:block">
-              <span className="inline-flex rounded-md shadow-md ring-1 ring-black ring-opacity-5">
-                <Link
-                  className="inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-base font-medium text-blue-600 hover:bg-gray-50"
-                  to={`login`}
-                >
-                  login
-                </Link>
-              </span>
-            </div>
+            {!auth.email ? (
+              <div className="hidden text-right md:block">
+                <span className="inline-flex rounded-md shadow-md ring-1 ring-black ring-opacity-5">
+                  <Link
+                    className="inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-base font-medium text-blue-600 hover:bg-gray-50"
+                    to={`login`}
+                  >
+                    login
+                  </Link>
+                </span>
+              </div>
+            ) : (
+              ''
+            )}
           </nav>
 
           <Transition
@@ -84,11 +90,21 @@ export default function Header() {
               <div className="overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black ring-opacity-5">
                 <div className="flex items-center justify-between px-5 pt-4">
                   <div>
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark-blue-600.svg"
-                      alt=""
-                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 22 22"
+                      strokeWidth={2}
+                      stroke="black"
+                      className="h-6 w-6"
+                    >
+                      {' '}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                      />{' '}
+                    </svg>
                   </div>
                   <div className="-mr-2">
                     <Popover.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
