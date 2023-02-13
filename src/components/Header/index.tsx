@@ -4,8 +4,9 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 
 const navigation = [
-  { name: 'Página Inicial', href: '#' },
-  { name: 'Sobre o Projeto', href: 'about' }
+  { name: 'Página Inicial', href: '/' },
+  { name: 'Sobre o Projeto', href: 'about' },
+  { name: 'Matérias', href: 'courses' }
 ]
 
 export default function Header() {

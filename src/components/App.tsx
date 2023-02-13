@@ -1,6 +1,4 @@
-import Avatar from 'components/Avatar'
-import Footer from 'components/Footer'
-import Header from 'components/Header'
+import Class from './Class'
 import Banner from 'components/Banner'
 import Login from 'components/Login'
 import Main from 'pages/Main'
@@ -17,6 +15,7 @@ function App() {
       <Route path="/" element={<Main />}>
         <Route path="" element={<Banner />} />
         <Route path="about" element={<Banner />} />
+        <Route path="courses" element={<Class />} />
         <Route path="course/:courseId" element={<Course />} />
       </Route>
       <Route element={<RequireAuth />}>

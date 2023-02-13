@@ -1,5 +1,3 @@
-import Class from 'components/Class'
-
 export default function Banner() {
   return (
     <main className="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
@@ -37,8 +35,6 @@ export default function Banner() {
           </div>
         </div>
       </div>
-
-      <Class />
     </main>
   )
 }
