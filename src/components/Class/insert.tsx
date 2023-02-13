@@ -1,85 +1,234 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useRef, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { CheckIcon } from '@heroicons/react/outline'
+import axios from 'api/axios'
+import useAuth from 'hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
+const questions = {
+  q1: {
+    question: 'Which one is correct team name in NBA?',
+    options: [
+      'New York Bulls',
+      'Los Angeles Kings',
+      'Golden State Warriros',
+      'Huston Rocket'
+    ],
+    answer: 'Huston Rocket'
+  },
+  q2: {
+    question: "'Namaste' is a traditional greeting in which Asian language?",
+    options: ['Hindi', 'Mandarin', 'Nepalese', 'Thai'],
+    answer: 'Hindi'
+  },
+  q3: {
+    question:
+      'The Spree river flows through which major European capital city?',
+    options: ['Berlin', 'Paris', 'Rome', 'London'],
+    answer: 'Berlin'
+  }
+}
 export default function InsertCourse() {
-  const [open, setOpen] = useState(true)
+  const navigate = useNavigate()
+  const [selectedAnswers, setSelectedAnswers] = useState({})
+  const [showScore, setShowScore] = useState(false)
+  const [score, setScore] = useState(0)
 
-  const cancelButtonRef = useRef(null)
+  //Insert Course
+  const [course, setCourse] = useState({
+    name: '',
+    slug: '',
+    teacher_id: '2'
+  })
+
+  const handleInputChange = (event) => {
+    setCourse({
+      ...course,
+      [event.target.name]: event.target.value
+    })
+  }
+
+  const handleOptionSelect = (question, option) => {
+    setSelectedAnswers({ ...selectedAnswers, [question]: option })
+  }
+
+  const handleSubmit = () => {
+    let newScore = 0
+    Object.keys(questions).forEach((question) => {
+      if (selectedAnswers[question] === questions[question].answer) {
+        newScore++
+      }
+    })
+    setScore(newScore)
+    setShowScore(true)
+  }
+  const submitCourse = async (event) => {
+    event.preventDefault()
+    console.log(course)
+
+    axios({
+      method: 'post',
+      data: JSON.stringify(course),
+      url: '/courses',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + auth.accessToken
+      }
+    })
+      .then((res) => {
+        // Update state
+        console.log(res.data)
+        navigate('/courses')
+      })
+      .catch((error) => {
+        // handle any rejected Promises or errors, etc...
+      })
+  }
+
+  const [teachers, setTeachers] = useState('')
+  const { auth } = useAuth()
+
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: '/users?role=TEACHER',
+      headers: { Authorization: 'Bearer ' + auth.accessToken }
+    })
+      .then((res) => {
+        // Update state
+        setTeachers(res.data)
+        console.log(res.data)
+      })
+      .catch((error) => {
+        // handle any rejected Promises or errors, etc...
+      })
+  }, [auth])
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={setOpen}
+    <main className="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
+      <form
+        onSubmit={submitCourse}
+        className="space-y-8 divide-y divide-gray-200"
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
-
-          {/* This element is to trick the browser into centering the modal contents. */}
-          <span
-            className="hidden sm:inline-block sm:h-screen sm:align-middle"
-            aria-hidden="true"
-          >
-            &#8203;
-          </span>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enterTo="opacity-100 translate-y-0 sm:scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          >
-            <div className="inline-block overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6 sm:align-middle">
-              <div>
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                  <CheckIcon
-                    className="h-6 w-6 text-green-600"
-                    aria-hidden="true"
+        <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+          <div className="space-y-6 pt-8 sm:space-y-5 sm:pt-10">
+            <div>
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                Adicionar Curso
+              </h3>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                Insira as informações do curso que deseja adicionar
+              </p>
+            </div>
+            <div className="space-y-6 sm:space-y-5">
+              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label
+                  htmlFor="first-name"
+                  className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                >
+                  Nome do Curso
+                </label>
+                <div className="mt-1 sm:col-span-2 sm:mt-0">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={course.name}
+                    onChange={handleInputChange}
+                    className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                   />
                 </div>
-                <div className="mt-3 text-center sm:mt-5">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Payment successful
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Consequatur amet labore.
-                    </p>
-                  </div>
+              </div>
+
+              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label
+                  htmlFor="last-name"
+                  className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
+                >
+                  Sigla
+                </label>
+                <div className="mt-1 sm:col-span-2 sm:mt-0">
+                  <input
+                    type="text"
+                    name="slug"
+                    id="slug"
+                    value={course.slug}
+                    onChange={handleInputChange}
+                    autoComplete="family-name"
+                    className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                  />
                 </div>
               </div>
-              <div className="mt-5 sm:mt-6">
-                <button
-                  type="button"
-                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                  onClick={() => setOpen(false)}
+
+              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                 >
-                  Go back to dashboard
-                </button>
+                  Professor Responsável
+                </label>
+                <div className="mt-1 sm:col-span-2 sm:mt-0">
+                  <select
+                    id="teacher_id"
+                    name="teacher_id"
+                    value={course.teacher_id}
+                    onSelect={handleInputChange}
+                    className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                  >
+                    {teachers.data &&
+                      teachers.data.map((teacher) => (
+                        <option key={teacher.id} value={teacher.id}>
+                          {teacher.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
             </div>
-          </Transition.Child>
+          </div>
         </div>
-      </Dialog>
-    </Transition.Root>
+        <div className="pt-5">
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </form>
+      <div className="container mx-auto px-4">
+        {Object.keys(questions).map((question) => (
+          <div className="mb-6" key={question}>
+            <p className="text-lg font-medium">
+              {questions[question].question}
+            </p>
+            <ul className="list-disc pl-5">
+              {questions[question].options.map((option, i) => (
+                <li key={i} className="text-base">
+                  <input
+                    type="radio"
+                    name={question}
+                    id={`${question}-${i}`}
+                    value={option}
+                    checked={selectedAnswers[question] === option}
+                    onChange={() => handleOptionSelect(question, option)}
+                  />
+                  <label htmlFor={`${question}-${i}`}>{option}</label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <button onClick={handleSubmit}>Submit</button>
+        {showScore && (
+          <p className="text-lg font-medium">
+            Your score is: {score} / {Object.keys(questions).length}
+          </p>
+        )}
+      </div>
+    </main>
   )
 }
