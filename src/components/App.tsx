@@ -4,6 +4,7 @@ import Header from 'components/Header'
 import Banner from 'components/Banner'
 import Login from 'components/Login'
 import Main from 'pages/Main'
+import Course from 'pages/Main/Course'
 import NotFound from 'pages/404'
 import { AuthProvider } from 'context/AuthProvider'
 import RequireAuth from 'components/RequireAuth'
@@ -16,6 +17,7 @@ function App() {
       <Route path="/" element={<Main />}>
         <Route path="" element={<Banner />} />
         <Route path="about" element={<Banner />} />
+        <Route path="course/:courseId" element={<Course />} />
       </Route>
       <Route element={<RequireAuth />}>
         <Route path="/settings" element={<Banner />} />
