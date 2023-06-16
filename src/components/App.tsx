@@ -1,27 +1,30 @@
-import Class from './Class'
-import Banner from 'components/Banner'
 import Login from 'components/Login'
 import Main from 'pages/Main'
-import Course from 'pages/Main/Course'
-import InsertCourse from './Class/insert'
+import Dashboard from 'pages/Dashboard'
 import NotFound from 'pages/404'
 import { AuthProvider } from 'context/AuthProvider'
 import RequireAuth from 'components/RequireAuth'
-import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
+import {
+  Routes,
+  Route,
+  useNavigate,
+  BrowserRouter as Router
+} from 'react-router-dom'
+import Empresas from 'pages/Empresas/lista'
+import DetalhesEmpresa from 'pages/Empresas/detalhes'
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Main />}>
-        <Route path="" element={<Banner />} />
-        <Route path="about" element={<Banner />} />
-      </Route>
+      switc
+      <Route path="/" element={<Dashboard />}>
+        <Route path="empresas/:empresaId" element={<DetalhesEmpresa />} />
+        <Route path="empresas" element={<Empresas />} />
+      </Route>{' '}
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Main />}>
-          <Route path="courses" element={<Class />} />
-          <Route path="courses/insert" element={<InsertCourse />} />
-          <Route path="course/:courseId" element={<Course />} />
+          <Route path="auth" element={<Empresas />} />
         </Route>{' '}
       </Route>
       {/* catch all */}

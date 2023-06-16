@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { NewspaperIcon } from '@heroicons/react/solid'
+import { NewspaperIcon } from '@heroicons/react/20/solid'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import Loading from 'components/Loading'

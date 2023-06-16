@@ -1,15 +1,15 @@
 
-### Install
+### Instalação
 
 
 
-Install dependencies.
+Instalação das dependências.
 
 ```bash
 pnpm install
 ```
 
-Serve with hot reload at <http://localhost:5173>.
+Server com hotreload (use para desenvolver).
 
 ```bash
 pnpm run dev
@@ -33,7 +33,7 @@ pnpm run typecheck
 pnpm run build
 ```
 
-### Test
+### Testes
 
 ```bash
 pnpm run test
