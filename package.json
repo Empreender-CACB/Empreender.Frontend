@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "vite",
-	"build": "vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "jest",
     "lint": "eslint src --max-warnings=0",
@@ -31,7 +31,9 @@
     "randomcolor": "^0.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.0"
+    "react-router-dom": "^6.8.0",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

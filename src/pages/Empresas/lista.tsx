@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+//import 'semantic-ui-css/semantic.min.css'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/20/solid'
 import {
