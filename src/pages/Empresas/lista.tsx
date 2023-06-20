@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-//import 'semantic-ui-css/semantic.min.css'
+import 'semantic-ui-css/semantic.min.css'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/20/solid'
 import {
@@ -148,7 +148,7 @@ export default function Empresas() {
         .
       </div>
 
-      <PageSection title="Lista de Empresas">
+      <PageSection title="Empresas">
         <>
           <button
             type="button"

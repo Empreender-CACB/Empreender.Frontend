@@ -46,20 +46,6 @@ export default function PageSection({
                 />
                 <a
                   href="#"
-                  className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-                >
-                  Em Desenvolvimento
-                </a>
-              </div>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <ChevronRightIcon
-                  className="h-5 w-5 shrink-0 text-gray-400"
-                  aria-hidden="true"
-                />
-                <a
-                  href="#"
                   aria-current="page"
                   className="ml-4 rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-700"
                 >
