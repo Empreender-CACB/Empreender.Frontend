@@ -12,10 +12,10 @@ const DetalhesEmpresa = () => {
   const [empresa, setEmpresa] = useState({})
   const { empresaId } = useParams()
 
-  const menuItems = [
+  /*   const menuItems = [
     { title: 'Editar', icon: 'null', url: '#' },
     { title: 'Gerir Gestores', icon: 'null', url: '#' }
-  ]
+  ] */
 
   useEffect(() => {
     axios
@@ -30,12 +30,6 @@ const DetalhesEmpresa = () => {
       })
   }, [empresaId])
 
-  const menuStyle = {
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)', // Sombra
-    backgroundColor: 'blue', // Cor de fundo azul
-    color: 'white' // Cor do texto branco
-  }
-
   const tabs = [
     { name: 'Detalhes', href: '#', current: true },
     { name: 'Núcleos Vinculados', href: '#', current: false },
@@ -45,6 +39,10 @@ const DetalhesEmpresa = () => {
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
+  }
+
+  if (loading) {
+    return <Loading />
   }
 
   return (
@@ -99,7 +97,7 @@ const DetalhesEmpresa = () => {
           >
             <Dropdown.Menu>
               <Dropdown.Item icon="pencil" text="Editar" />
-              <Dropdown.Item icon="user" text="Gerenciar Gestores" />
+              <Dropdown.Item icon="plus" text="Gerenciar Gestores" />
             </Dropdown.Menu>
           </Dropdown>
           {/*           <DropDownSection menuItems={menuItems} title="Opções" />
@@ -154,37 +152,39 @@ const DetalhesEmpresa = () => {
       <div className=" mt-10 overflow-hidden border-t-4 border-blue-500 bg-white shadow sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900">
-            Applicant Information
+            Detalhes
           </h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Personal details and application.
-          </p>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Subtítulo</p>
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
           <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500">Full name</dt>
-              <dd className="mt-1 text-sm text-gray-900">Margot Foster</dd>
-            </div>
-            <div className="sm:col-span-1">
               <dt className="text-sm font-medium text-gray-500">
-                Application for
-              </dt>
-              <dd className="mt-1 text-sm text-gray-900">Backend Developer</dd>
-            </div>
-            <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500">
-                Email address
+                Razão Social
               </dt>
               <dd className="mt-1 text-sm text-gray-900">
-                margotfoster@example.com
+                {empresa.nurazaosocial}
               </dd>
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-medium text-gray-500">
-                Salary expectation
+                Nome Fantasia
               </dt>
-              <dd className="mt-1 text-sm text-gray-900">$120,000</dd>
+              <dd className="mt-1 text-sm text-gray-900">
+                {empresa.nmfantasia}
+              </dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">Email</dt>
+              <dd className="mt-1 text-sm text-gray-900">{empresa.dsemail}</dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">
+                Ramo de Atividade
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900">
+                {empresa.ramoAtividade.nmramoativ}
+              </dd>
             </div>
             <div className="sm:col-span-2">
               <dt className="text-sm font-medium text-gray-500">About</dt>
