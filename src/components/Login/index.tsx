@@ -57,15 +57,12 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen bg-white">
-      <div className="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
-
-
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
               Portal Empreender
             </h2>
-
             <div
               className={errMsg ? 'mt-5 rounded-md bg-red-50 p-4' : 'hidden'}
             >
@@ -87,8 +84,9 @@ export default function Login() {
                 </div>
               </div>
             </div>
-{/*             <img className="center" src="https://www.empreender.org.br/css/sistema/login/images/cacb-novo.png" alt="" />
- */}            <p className="mt-2 text-sm text-gray-600">
+            {/*             <img className="center" src="https://www.empreender.org.br/css/sistema/login/images/cacb-novo.png" alt="" />
+             */}{' '}
+            <p className="mt-2 text-sm text-gray-600">
               Ou{' caso não tenha conta, '}
               <a
                 href="#"
@@ -172,7 +170,7 @@ export default function Login() {
                 <div>
                   <button
                     type="submit"
-                    className="flex w-full justify-center rounded-md border border-transparent bg-blue-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="flex w-full justify-center rounded-md border border-transparent bg-blue-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
                     Entrar
                   </button>

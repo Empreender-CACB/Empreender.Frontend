@@ -168,7 +168,7 @@ export default function Empresas() {
         <main className="py-10">
           <div className="pb-16">
             {' '}
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-full ">
               <ReactDataGrid
                 i18n={i18n}
                 handle={setGridRef}

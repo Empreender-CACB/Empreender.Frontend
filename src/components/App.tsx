@@ -17,7 +17,6 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      switc
       <Route path="/" element={<Dashboard />}>
         <Route path="empresas/:empresaId" element={<DetalhesEmpresa />} />
         <Route path="empresas" element={<Empresas />} />
