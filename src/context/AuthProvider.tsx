@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     console.log(token)
 
     async function fetchUser() {
-      axios.defaults.headers.common['Authorization'] = token
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
       axios({
         method: 'get',
