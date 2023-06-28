@@ -1,34 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'api/axios'
 import { useParams, useNavigate } from 'react-router-dom'
 import Loading from 'components/Loading'
-import DropDownSection from 'components/Buttons/Dropdown/Section'
 import { PaperClipIcon } from '@heroicons/react/20/solid'
 import { Label, Button, Dropdown } from 'semantic-ui-react'
+import { useAPI } from 'hooks/useApi'
 
 const DetalhesEmpresa = () => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const [empresa, setEmpresa] = useState({})
   const { empresaId } = useParams()
 
-  /*   const menuItems = [
-    { title: 'Editar', icon: 'null', url: '#' },
-    { title: 'Gerir Gestores', icon: 'null', url: '#' }
-  ] */
-
-  useEffect(() => {
-    axios
-      .get(`/empresas/${empresaId}`)
-      .then((res) => {
-        // Update state
-        setEmpresa(res.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        // handle any rejected Promises or errors, etc...
-      })
-  }, [empresaId])
+  const { data: empresa } = useAPI({
+    url: `/empresas/${empresaId}`
+  })
 
   const tabs = [
     { name: 'Detalhes', href: '#', current: true },
@@ -41,7 +23,7 @@ const DetalhesEmpresa = () => {
     return classes.filter(Boolean).join(' ')
   }
 
-  if (loading) {
+  if (!empresa) {
     return <Loading />
   }
 

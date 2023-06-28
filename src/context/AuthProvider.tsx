@@ -1,47 +1,38 @@
-import axios from 'api/axios'
+import { parseCookies } from 'nookies'
 import { createContext, useEffect, useState } from 'react'
-import { setCookie, parseCookies, destroyCookie } from 'nookies'
+import { api } from 'services/api'
 
-const AuthContext = createContext({})
+type User = {
+  nucpf: string
+  nmusuario: string
+  nmlogin: string
+  dsemail: string
+  dtultimaalteracao: Date
+}
+
+export const AuthContext = createContext<{ user: User | undefined }>({
+  user: undefined as User | undefined
+})
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-
-  const isAuthenticated = !!user
+  const [user, setUser] = useState<User | undefined>()
 
   useEffect(() => {
-    const { '@empreender:token': cookie } = parseCookies()
-
-    const searchParams = new URLSearchParams(window.location.search)
-
-    const token = searchParams.get('token')
-    console.log(token)
+    const { '@empreender:token': token } = parseCookies()
 
     async function fetchUser() {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      const { data } = await api.get('/auth/me')
 
-      axios({
-        method: 'get',
-        url: '/auth/me'
-      })
-        .then((res) => {
-          console.log(res)
-        })
-        .catch((error) => {
-          // handle any rejected Promises or errors, etc...
-        })
-
-      // setUser(data)
+      setUser(data)
     }
 
-    fetchUser()
+    if (token) {
+      console.log('entrou aqui, fetchUser')
+      fetchUser()
+    }
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   )
 }
-
-export default AuthContext

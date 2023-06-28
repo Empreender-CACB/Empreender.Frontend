@@ -1,27 +1,20 @@
-import { Fragment } from 'react'
 import 'semantic-ui-css/semantic.min.css'
-import { Menu, Popover, Transition } from '@headlessui/react'
-import { ArrowLeftIcon, HomeIcon } from '@heroicons/react/20/solid'
-import {
-  ViewColumnsIcon,
-  BellIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import axios from 'api/axios'
 import PageSection from 'components/PageSection'
-import Loading from 'components/Loading'
-//import Moment from 'react-momentsss'
 import moment from 'moment'
+import { useAPI } from 'hooks/useApi'
+import Loading from 'components/Loading'
+import { userInfo } from 'os'
+import { api } from 'services/api'
+
 window.moment = moment
 
 const columns = [
   { name: 'idempresa', header: 'ID', maxWidth: 60, type: 'number' },
-
   {
     name: 'nmfantasia',
     header: 'Nome Fantasia',
@@ -108,31 +101,26 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 const gridStyle = { minHeight: 750 }
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default function Empresas() {
-  const [faqList, setFaqList] = useState([])
-  const [loading, setLoading] = useState([])
-  const [gridRef, setGridRef] = useState(null)
   const [filterValue, setFilterValue] = useState(defaultFilterValue)
 
+  // const { data } = useAPI({
+  //   url: '/empresas'
+  // })
+
+  const [empresas, setEmpresas] = useState([])
+
   useEffect(() => {
-    axios({
-      method: 'get',
-      url: '/empresas'
-    })
-      .then((res) => {
-        setFaqList(res.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        // handle any rejected Promises or errors, etc...
-      })
+    async function fetchEmpresas() {
+      const { data } = await api.get('/empresas')
+
+      setEmpresas(data)
+    }
+
+    fetchEmpresas()
   }, [])
 
-  if (loading) {
+  if (!empresas) {
     return <Loading />
   }
 
@@ -147,7 +135,6 @@ export default function Empresas() {
         )}
         .
       </div>
-
       <PageSection title="Empresas">
         <>
           <button
@@ -171,7 +158,6 @@ export default function Empresas() {
             <div className="mx-auto max-w-full ">
               <ReactDataGrid
                 i18n={i18n}
-                handle={setGridRef}
                 enableFiltering={true}
                 defaultFilterValue={defaultFilterValue}
                 idProperty="idempresa"
@@ -180,7 +166,7 @@ export default function Empresas() {
                 pagination="local"
                 defaultLimit={30}
                 onFilterValueChange={setFilterValue}
-                dataSource={faqList}
+                dataSource={empresas}
                 style={gridStyle}
               />
             </div>

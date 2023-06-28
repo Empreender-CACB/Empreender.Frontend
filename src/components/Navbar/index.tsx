@@ -3,24 +3,13 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import SearchBar from 'components/SearchBar'
+import useAuth from 'hooks/useAuth'
 
-const user = {
-  name: '{Usuario.nome}',
-  email: '{Usuario.email}',
-  imageUrl:
-    'https://digimedia.web.ua.pt/wp-content/uploads/2017/05/default-user-image.png'
-}
 const navigation = [
   { name: 'Início', href: '#', current: true },
   { name: 'Empresas', href: '/empresas', current: false },
   { name: 'Usuários', href: '#', current: false },
   { name: 'FAQ', href: '#', current: false }
-]
-const userNavigation = [
-  { name: 'Seu Perfil', href: '#' },
-  { name: 'Configurações', href: '#' },
-  { name: 'Utilizar versão legado', href: '#' },
-  { name: 'Sair', href: '#' }
 ]
 
 function classNames(...classes) {
@@ -29,6 +18,18 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false)
+
+  const { user } = useAuth()
+
+  console.log('user ', user)
+
+  const userNavigation = [
+    { name: user?.nmusuario, href: '#' },
+    { name: 'Seu Perfil', href: '#' },
+    { name: 'Configurações', href: '#' },
+    { name: 'Utilizar versão legado', href: '#' },
+    { name: 'Sair', href: '#' }
+  ]
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen)
@@ -103,7 +104,9 @@ export default function Navbar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src={user.imageUrl}
+                        src={
+                          'https://digimedia.web.ua.pt/wp-content/uploads/2017/05/default-user-image.png'
+                        }
                         alt=""
                       />
                     </Menu.Button>
@@ -184,16 +187,18 @@ export default function Navbar() {
                 <div className="shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user.imageUrl}
+                    src={
+                      'https://digimedia.web.ua.pt/wp-content/uploads/2017/05/default-user-image.png'
+                    }
                     alt=""
                   />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    {user.name}
+                    {user?.nmusuario}
                   </div>
                   <div className="text-sm font-medium text-gray-500">
-                    {user.email}
+                    {user?.dsemail}
                   </div>
                 </div>
                 <button

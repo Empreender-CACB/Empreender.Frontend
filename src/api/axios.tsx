@@ -1,6 +1,8 @@
 import axios from 'axios'
 import useLoadingStore from 'stores/loading'
+
 useLoadingStore.getState().setLoading(true)
+
 axios.interceptors.request.use(
   (config) => {
     useLoadingStore.getState().setLoading(true)
@@ -24,5 +26,5 @@ axios.interceptors.response.use(
 )
 
 export default axios.create({
-  baseURL: 'https://cacbempreenderapp.org.br/api'
+  baseURL: 'http://localhost:3333/api'
 })
