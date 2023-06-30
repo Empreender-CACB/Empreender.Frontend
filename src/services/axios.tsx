@@ -9,7 +9,7 @@ export function getAPIClient() {
   const { '@empreender:token': token } = parseCookies()
 
   const api = axios.create({
-    baseURL: 'http://localhost:3333/api'
+    baseURL: 'https://cacbempreenderapp.org.br/api'
   })
 
   axios.interceptors.request.use(
@@ -26,7 +26,7 @@ export function getAPIClient() {
   if (token) {
     api.defaults.headers[
       'Authorization'
-    ] = `Bearer MQ.JVcu_6LErwtzU3rXGmvtIB8AU6ujFL3EOzwZ_tXlKlmA9oFADCiB5utK6oxD`
+    ] = `Bearer MTY3.2-Kw9dJ_juTqYSQLK5W-_aQN3DmI7dykcx-2qKnOVSbEPMSAcx-m8d0jfdcO`
   } else {
     setCookie(
       undefined,
