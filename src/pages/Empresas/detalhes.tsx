@@ -29,7 +29,7 @@ const DetalhesEmpresa = () => {
 
   return (
     <div>
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:max-w-7xl lg:px-8">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
         <div className="flex items-start space-x-5">
           <div className="shrink-0">
             <div className="relative">
@@ -149,12 +149,22 @@ const DetalhesEmpresa = () => {
               </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500">
-                Nome Fantasia
-              </dt>
+              <dt className="text-sm font-medium text-gray-500">Email</dt>
+              <dd className="mt-1 text-sm text-gray-900">{empresa.dsemail}</dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">Telefone</dt>
+              <dd className="mt-1 text-sm text-gray-900">{empresa.nufone}</dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">Endereço</dt>
               <dd className="mt-1 text-sm text-gray-900">
-                {empresa.nmfantasia}
+                {empresa.dsendereco}
               </dd>
+            </div>
+            <div className="sm:col-span-1">
+              <dt className="text-sm font-medium text-gray-500">Bairro</dt>
+              <dd className="mt-1 text-sm text-gray-900">{empresa.dsbairro}</dd>
             </div>
             <div className="sm:col-span-1">
               <dt className="text-sm font-medium text-gray-500">Email</dt>
