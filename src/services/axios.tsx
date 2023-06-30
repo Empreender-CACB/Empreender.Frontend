@@ -4,7 +4,7 @@ import { parseCookies, destroyCookie, setCookie } from 'nookies'
 
 export function getAPIClient() {
   const searchParams = new URLSearchParams(window.location.search)
-  const urlToken = searchParams.get('token')
+  const urlToken = searchParams.get('token') as string
 
   const { '@empreender:token': token } = parseCookies()
 
@@ -26,18 +26,11 @@ export function getAPIClient() {
   if (token) {
     api.defaults.headers['Authorization'] = `Bearer ${urlToken}`
   } else {
-    setCookie(
-      undefined,
-      '@empreender:token',
-      'MQ.JVcu_6LErwtzU3rXGmvtIB8AU6ujFL3EOzwZ_tXlKlmA9oFADCiB5utK6oxD',
-      {
-        maxAge: 10 * 24 * 60 * 60 // 10 days
-      }
-    )
+    setCookie(undefined, '@empreender:token', urlToken, {
+      maxAge: 10 * 24 * 60 * 60 // 10 days
+    })
 
-    api.defaults.headers[
-      'Authorization'
-    ] = `Bearer MQ.JVcu_6LErwtzU3rXGmvtIB8AU6ujFL3EOzwZ_tXlKlmA9oFADCiB5utK6oxD`
+    api.defaults.headers['Authorization'] = `Bearer ${urlToken}`
   }
 
   api.interceptors.response.use(
