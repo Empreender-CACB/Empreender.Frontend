@@ -126,15 +126,6 @@ export default function Empresas() {
 
   return (
     <>
-      <div style={{ height: 80 }}>
-        Current filterValue:{' '}
-        {filterValue ? (
-          <code>{JSON.stringify(filterValue, null, 2)}</code>
-        ) : (
-          'none'
-        )}
-        .
-      </div>
       <PageSection title="Empresas">
         <>
           <button

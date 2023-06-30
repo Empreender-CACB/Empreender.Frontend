@@ -4,13 +4,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import SearchBar from 'components/SearchBar'
 import useAuth from 'hooks/useAuth'
-
-const navigation = [
-  { name: 'Início', href: '#', current: true },
-  { name: 'Empresas', href: '/empresas', current: false },
-  { name: 'Usuários', href: '#', current: false },
-  { name: 'FAQ', href: '#', current: false }
-]
+import NavigationOptions from './NavigationOptions'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -141,29 +135,10 @@ export default function Navbar() {
                 </Menu>
               </div>
             </div>
-            <nav
-              className="hidden lg:flex lg:space-x-8 lg:py-2"
-              aria-label="Global"
-            >
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-900 hover:bg-gray-50 hover:text-gray-900',
-                    'rounded-md py-2 px-3 inline-flex items-center text-sm font-medium'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
+            <NavigationOptions />
           </div>
 
-          <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
+          {/* <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
                 <Disclosure.Button
@@ -222,7 +197,7 @@ export default function Navbar() {
                 ))}
               </div>
             </div>
-          </Disclosure.Panel>
+          </Disclosure.Panel> */}
         </>
       )}
     </Disclosure>

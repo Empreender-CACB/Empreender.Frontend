@@ -5,6 +5,7 @@ import { api } from 'services/api'
 type User = {
   nucpf: string
   nmusuario: string
+  recursos: string[]
   nmlogin: string
   dsemail: string
   dtultimaalteracao: Date
