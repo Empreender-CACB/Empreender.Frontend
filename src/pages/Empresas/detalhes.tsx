@@ -29,7 +29,7 @@ const DetalhesEmpresa = () => {
 
   return (
     <div>
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
+      <div className="mx-auto max-w-8xl px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8">
         <div className="flex items-start space-x-5">
           <div className="shrink-0">
             <div className="relative">
