@@ -24,9 +24,7 @@ export function getAPIClient() {
   )
 
   if (token) {
-    api.defaults.headers[
-      'Authorization'
-    ] = `Bearer MTY3.2-Kw9dJ_juTqYSQLK5W-_aQN3DmI7dykcx-2qKnOVSbEPMSAcx-m8d0jfdcO`
+    api.defaults.headers['Authorization'] = `Bearer ${urlToken}`
   } else {
     setCookie(
       undefined,
