@@ -12,8 +12,22 @@ export const navigation = [
     dropdown: [
       {
         name: 'Adicionar Entidade',
-        href: 'https://teste.cacbempreenderapp.org.br/sistema/associacao/adicionar/',
+        href: '#',
         current: false,
+        dropdown: [
+          {
+            name: 'Listar Entidades 2',
+            href: 'https://teste.cacbempreenderapp.org.br/sistema/associacao/',
+            current: false,
+            resources: ['ace_consu']
+          },
+          {
+            name: 'Listar Entidades 3',
+            href: 'https://teste.cacbempreenderapp.org.br/sistema/associacao/',
+            current: false,
+            resources: ['ace_consu']
+          }
+        ],
         resources: ['ace_adici']
       },
       {

@@ -49,8 +49,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SearchBar() {
-  const [open, setOpen] = useState(true)
+export default function SearchBar({ searchOpen, setSearchOpen }) {
   const [rawQuery, setRawQuery] = useState('')
 
   const query = rawQuery.toLowerCase().replace(/^[#>]/, '')
@@ -71,12 +70,12 @@ export default function SearchBar() {
 
   return (
     <Transition.Root
-      show={open}
+      show={searchOpen}
       as={Fragment}
       afterLeave={() => setRawQuery('')}
       appear
     >
-      <Dialog as="div" className="relative z-10" onClose={setOpen}>
+      <Dialog as="div" className="relative z-10" onClose={setSearchOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
