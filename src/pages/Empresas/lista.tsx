@@ -35,6 +35,7 @@ const columns = [
   {
     name: 'nmfantasia',
     header: 'Nome Fantasia',
+    defaultFlex: 2,
     type: 'Nome',
     render: ({ value, data }) => (
       <div>
@@ -42,19 +43,11 @@ const columns = [
       </div>
     )
   },
-  { name: 'nucnpjcpf', header: 'CNPJ' },
-  {
-    name: 'ramoAtividade',
-    header: 'Ramo',
-    render: ({ data }) => (
-      <div style={{ whiteSpace: 'pre-wrap' }}>
-        {data.ramoAtividade?.nmramoativ}
-      </div>
-    )
-  },
+  { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1 },
   {
     name: 'dtinicioatividade',
     header: 'Inicio da Atividade',
+    defaultFlex: 1,
     // need to specify dateFormat
     dateFormat: 'YYYY-MM-DD',
     filterEditor: DateFilter,
@@ -69,6 +62,16 @@ const columns = [
       moment(value).format(dateFormat) === 'Invalid date'
         ? '-'
         : moment(value).format(dateFormat)
+  },
+  {
+    name: 'ramoAtividade',
+    header: 'Ramo',
+    defaultFlex: 1,
+    render: ({ data }) => (
+      <div style={{ whiteSpace: 'pre-wrap' }}>
+        {data.ramoAtividade?.nmramoativ}
+      </div>
+    )
   }
 ]
 const defaultFilterValue = [
@@ -84,15 +87,14 @@ const defaultFilterValue = [
     type: 'string',
     value: ''
   },
+  { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
+  { name: 'dtinicioatividade', operator: 'after', type: 'date', value: '' },
   {
     name: 'ramoAtividade',
     operator: 'contains',
     type: 'string',
     value: ''
   },
-  { name: 'dtinicioatividade', operator: 'after', type: 'date', value: '' },
-  { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
-
   { name: 'valor_antigo', operator: 'contains', type: 'string', value: '' }
 ]
 
@@ -146,7 +148,7 @@ const gridStyle = { minHeight: 750 }
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
   return fetch(
-    'https://cacbempreenderapp.org.br/api/empresas/' +
+    'http://localhost:3333/api/empresas/' +
       '?skip=' +
       skip +
       '&limit=' +
@@ -238,7 +240,6 @@ export default function Empresas() {
                 dataSource={dataSource}
                 onSortInfoChange={setSortInfo}
                 onFilterValueChange={setFilterValue}
-                enableColumnAutosize={true}
                 style={gridStyle}
               />
             </div>
