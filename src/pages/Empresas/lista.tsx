@@ -35,7 +35,6 @@ const columns = [
   {
     name: 'nmfantasia',
     header: 'Nome Fantasia',
-    defaultFlex: 2,
     type: 'Nome',
     render: ({ value, data }) => (
       <div>
@@ -47,7 +46,6 @@ const columns = [
   {
     name: 'ramoAtividade',
     header: 'Ramo',
-    defaultFlex: 1,
     render: ({ data }) => (
       <div style={{ whiteSpace: 'pre-wrap' }}>
         {data.ramoAtividade?.nmramoativ}
@@ -57,7 +55,6 @@ const columns = [
   {
     name: 'dtinicioatividade',
     header: 'Inicio da Atividade',
-    defaultFlex: 1,
     // need to specify dateFormat
     dateFormat: 'YYYY-MM-DD',
     filterEditor: DateFilter,
