@@ -26,5 +26,5 @@ axios.interceptors.response.use(
 )
 
 export default axios.create({
-  baseURL: 'https://cacbempreenderapp.org.br/api'
+  baseURL: 'http://localhost:5173/api'
 })

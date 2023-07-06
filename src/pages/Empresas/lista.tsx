@@ -148,7 +148,7 @@ const gridStyle = { minHeight: 750 }
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
   return fetch(
-    'https://cacbempreenderapp.org.br/api/empresas' +
+    'https://cacbempreenderapp.org.br/api/empresas/' +
       '?skip=' +
       skip +
       '&limit=' +
@@ -235,6 +235,7 @@ export default function Empresas() {
                 idProperty="idempresa"
                 columns={columns}
                 paginante
+                emptyText={'Não há registros para serem exibidos'}
                 pagination
                 dataSource={dataSource}
                 onSortInfoChange={setSortInfo}
