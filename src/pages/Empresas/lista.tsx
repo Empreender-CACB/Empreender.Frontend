@@ -42,7 +42,7 @@ const columns = [
       </div>
     )
   },
-  { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1 },
+  { name: 'nucnpjcpf', header: 'CNPJ' },
   {
     name: 'ramoAtividade',
     header: 'Ramo',
@@ -84,15 +84,16 @@ const defaultFilterValue = [
     type: 'string',
     value: ''
   },
-  { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
   {
     name: 'ramoAtividade',
     operator: 'contains',
     type: 'string',
     value: ''
   },
-  { name: 'valor_antigo', operator: 'contains', type: 'string', value: '' },
-  { name: 'dtinicioatividade', operator: 'after', type: 'date', value: '' }
+  { name: 'dtinicioatividade', operator: 'after', type: 'date', value: '' },
+  { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
+
+  { name: 'valor_antigo', operator: 'contains', type: 'string', value: '' }
 ]
 
 const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
