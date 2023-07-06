@@ -237,6 +237,7 @@ export default function Empresas() {
                 dataSource={dataSource}
                 onSortInfoChange={setSortInfo}
                 onFilterValueChange={setFilterValue}
+                enableColumnAutosize={true}
                 style={gridStyle}
               />
             </div>
