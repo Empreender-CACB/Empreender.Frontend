@@ -20,3 +20,8 @@ jobs:
         
       - name: Deploy
         run: echo "Deploying to server..."
+
+        - name: Deploy
+        run: |
+          echo "Deploying to server..."
+          ssh -i ~/.ssh/id_rsa root@167.99.157.110 "mkdir teste"
