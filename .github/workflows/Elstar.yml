@@ -17,11 +17,8 @@ jobs:
 
       - name: Build
         run: npm run build
-        
-      - name: Deploy
-        run: echo "Deploying to server..."
 
-        - name: Deploy
+      - name: Deploy
         run: |
           echo "Deploying to server..."
           ssh -i ~/.ssh/id_rsa root@167.99.157.110 "mkdir teste"
