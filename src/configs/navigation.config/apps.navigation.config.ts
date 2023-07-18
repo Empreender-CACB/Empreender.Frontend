@@ -8,7 +8,7 @@ import type { NavigationTree } from '@/@types/navigation'
 
 const appsNavigationConfig: NavigationTree[] = [
     {
-        key: 'apps.inicio',
+        key: 'apps.home',
         path: `${APP_PREFIX_PATH}/inicio`,
         title: 'Início',
         icon: 'home',
@@ -17,10 +17,10 @@ const appsNavigationConfig: NavigationTree[] = [
         subMenu: [],
     },
     {
-        key: 'apps.project',
+        key: 'apps.entities',
         path: '',
         title: 'Entidades',
-        icon: 'project',
+        icon: 'entities',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -93,10 +93,10 @@ const appsNavigationConfig: NavigationTree[] = [
         ],
     },
     {
-        key: 'apps.crm',
+        key: 'apps.nucleos',
         path: '',
         title: 'Núcleos',
-        icon: 'crm',
+        icon: 'nucleos',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -160,7 +160,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.empresas',
         path: '',
         title: 'Empresas',
-        icon: '',
+        icon: 'companies',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -197,7 +197,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.usuarios',
         path: '',
         title: 'Usuários',
-        icon: '',
+        icon: 'users',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -225,7 +225,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.relatorios',
         path: '',
         title: 'Relatórios',
-        icon: '',
+        icon: 'reports',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -253,7 +253,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.projetos',
         path: '',
         title: 'Projetos',
-        icon: '',
+        icon: 'project',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -466,7 +466,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.arquivos',
         path: '',
         title: 'Arquivos',
-        icon: '',
+        icon: 'files',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: ['USER'],
         subMenu: [
@@ -485,7 +485,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.curriculos',
         path: '',
         title: 'Currículos',
-        icon: '',
+        icon: 'curriculos',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
@@ -513,7 +513,7 @@ const appsNavigationConfig: NavigationTree[] = [
         key: 'apps.adm',
         path: '',
         title: 'ADM',
-        icon: '',
+        icon: 'adm',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [USER],
         subMenu: [
