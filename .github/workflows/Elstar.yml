@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - Elstar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        
+      - name: Deploy
+        run: echo "Deploying to server..."
