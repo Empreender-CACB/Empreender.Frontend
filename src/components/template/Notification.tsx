@@ -132,13 +132,14 @@ const _Notification = ({ className }: { className?: string }) => {
     const direction = useAppSelector((state) => state.theme.direction)
 
     const getNotificationCount = useCallback(async () => {
-        const resp = await apiGetNotificationCount()
-        if (resp.data.count > 0) {
-            setNoResult(false)
-            setUnreadNotification(true)
-        } else {
-            setNoResult(true)
-        }
+        // const resp = await apiGetNotificationCount()
+        // if (resp.data.count > 0) {
+        //     setNoResult(false)
+        //     setUnreadNotification(true)
+        // } else {
+        //     setNoResult(true)
+        // }
+        setNoResult(true)
     }, [setUnreadNotification])
 
     useEffect(() => {
