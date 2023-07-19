@@ -11,14 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Deploy
-        run: |
-          echo "Deploying to server..."
-          ssh -i ~/.ssh/id_rsa root@167.99.157.110 "mkdir teste"
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: ssh -t root@167.99.157.110 "mkdir foi"  
