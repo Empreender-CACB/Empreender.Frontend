@@ -1,18 +1,29 @@
-name: CI
+name: Deploy to Server
 
-on:
-  push:
-    branches:
-      - Elstar
-      - main
+on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: webfactory/ssh-agent@v0.7.0
-        with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - run: ssh -t root@167.99.157.110 "mkdir foi"  
+    - uses: actions/checkout@v3
+    - name: Installing node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+    - name: Install npm dependencies
+      run: npm install
+    - name: Run build task
+      run: npm run build --if-present
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: "167.99.157.110"
+          REMOTE_USER: "root"
+          TARGET: "/usr/share/nginx/html/Empreender.Frontend"
+          EXCLUDE: "/dist/, /node_modules/"
