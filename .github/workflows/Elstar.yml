@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - Elstar
+      - main
 
 jobs:
   build:
