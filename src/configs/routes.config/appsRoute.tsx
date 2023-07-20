@@ -1,20 +1,20 @@
 import { lazy } from 'react'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
-import { USER } from '@/constants/roles.constant'
+import { ADMIN, USER } from '@/constants/roles.constant'
 import type { Routes } from '@/@types/routes'
 
 const appsRoute: Routes = [
     {
-        key: 'apps.inicio',
+        key: 'sistema.inicio',
         path: `${APP_PREFIX_PATH}/inicio`,
-        component: lazy(() => import('@/views/home')),
-        authority: [USER],
+        component: lazy(() => import('@/views/sistema/inicio')),
+        authority: [ADMIN, USER],
     },
     {
-        key: 'appsEmpresas.listar',
+        key: 'sistemaEmpresas.empresas',
         path: `${APP_PREFIX_PATH}/empresas`,
-        component: lazy(() => import('@/views/empresas')),
-        authority: [USER],
+        component: lazy(() => import('@/views/sistema/empresas')),
+        authority: [ADMIN, USER],
     },
 ]
 

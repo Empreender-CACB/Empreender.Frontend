@@ -11,47 +11,47 @@ import {
     LAYOUT_TYPE_STACKED_SIDE,
     LAYOUT_TYPE_SIMPLE,
     LAYOUT_TYPE_DECKED,
-    LAYOUT_TYPE_BLANK
+    LAYOUT_TYPE_BLANK,
 } from '@/constants/theme.constant'
 import type { LayoutType } from '@/@types/theme'
 
 const layouts = [
     {
         value: LAYOUT_TYPE_CLASSIC,
-        label: 'Classico',
+        label: 'Classic',
         src: '/img/thumbs/layouts/classic.jpg',
-        srcDark: '/img/thumbs/layouts/classic-dark.jpg'
+        srcDark: '/img/thumbs/layouts/classic-dark.jpg',
     },
     {
         value: LAYOUT_TYPE_MODERN,
-        label: 'Moderno',
+        label: 'Mordern',
         src: '/img/thumbs/layouts/modern.jpg',
-        srcDark: '/img/thumbs/layouts/modern-dark.jpg'
+        srcDark: '/img/thumbs/layouts/modern-dark.jpg',
     },
     {
         value: LAYOUT_TYPE_STACKED_SIDE,
-        label: 'Lateral',
+        label: 'Stacked Side',
         src: '/img/thumbs/layouts/stackedSide.jpg',
-        srcDark: '/img/thumbs/layouts/stackedSide-dark.jpg'
+        srcDark: '/img/thumbs/layouts/stackedSide-dark.jpg',
     },
     {
         value: LAYOUT_TYPE_SIMPLE,
-        label: 'Simples',
+        label: 'Simple',
         src: '/img/thumbs/layouts/simple.jpg',
-        srcDark: '/img/thumbs/layouts/simple-dark.jpg'
+        srcDark: '/img/thumbs/layouts/simple-dark.jpg',
     },
     {
         value: LAYOUT_TYPE_DECKED,
-        label: 'Horizontal',
+        label: 'Decked',
         src: '/img/thumbs/layouts/decked.jpg',
-        srcDark: '/img/thumbs/layouts/decked-dark.jpg'
+        srcDark: '/img/thumbs/layouts/decked-dark.jpg',
     },
     {
         value: LAYOUT_TYPE_BLANK,
-        label: 'Vazio   ',
+        label: 'Blank',
         src: '/img/thumbs/layouts/blank.jpg',
-        srcDark: '/img/thumbs/layouts/blank-dark.jpg'
-    }
+        srcDark: '/img/thumbs/layouts/blank-dark.jpg',
+    },
 ]
 
 const LayoutSwitcher = () => {

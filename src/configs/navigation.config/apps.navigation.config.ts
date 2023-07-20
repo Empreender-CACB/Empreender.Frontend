@@ -175,7 +175,7 @@ const appsNavigationConfig: NavigationTree[] = [
             },
             {
                 key: 'appsEmpresas.listar',
-                path: '/app/empresas',
+                path: `${APP_PREFIX_PATH}/empresas`,
                 title: 'Listar Empresas',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,

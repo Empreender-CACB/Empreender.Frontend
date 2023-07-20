@@ -5,22 +5,22 @@ import { NAV_MODE_THEMED } from '@/constants/theme.constant'
 type NavModeParam = 'default' | 'themed'
 
 const NavModeSwitcher = () => {
-  const navMode = useAppSelector((state) => state.theme.navMode)
-  const dispatch = useAppDispatch()
+    const navMode = useAppSelector((state) => state.theme.navMode)
+    const dispatch = useAppDispatch()
 
-  const onSetNavMode = (val: NavModeParam) => {
-    dispatch(setNavMode(val))
-  }
+    const onSetNavMode = (val: NavModeParam) => {
+        dispatch(setNavMode(val))
+    }
 
-  return (
-    <Radio.Group
-      value={navMode === NAV_MODE_THEMED ? NAV_MODE_THEMED : 'default'}
-      onChange={onSetNavMode}
-    >
-      <Radio value="default">Padrão</Radio>
-      <Radio value={NAV_MODE_THEMED}>Tematizado</Radio>
-    </Radio.Group>
-  )
+    return (
+        <Radio.Group
+            value={navMode === NAV_MODE_THEMED ? NAV_MODE_THEMED : 'default'}
+            onChange={onSetNavMode}
+        >
+            <Radio value="default">Default</Radio>
+            <Radio value={NAV_MODE_THEMED}>Themed</Radio>
+        </Radio.Group>
+    )
 }
 
 export default NavModeSwitcher

@@ -13,8 +13,10 @@ import { HiCheck } from 'react-icons/hi'
 import type { CommonProps } from '@/@types/common'
 
 const languageList = [
-    { label: 'Português (BR)', value: 'br', flag: 'pt-br' },
     { label: 'English', value: 'en', flag: 'us' },
+    { label: 'Chinese', value: 'zh-cn', flag: 'cn' },
+    { label: 'Espanol', value: 'es', flag: 'sp' },
+    { label: 'Arabic', value: 'ar', flag: 'ar' },
 ]
 
 const _LanguageSelector = ({ className }: CommonProps) => {

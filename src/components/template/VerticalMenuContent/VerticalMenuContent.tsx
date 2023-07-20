@@ -89,7 +89,7 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
                         userAuthority={userAuthority}
                         authority={nav.authority}
                     >
-                        <MenuGroup label={ nav.translateKey ? (t(nav.translateKey) || nav.title) : nav.title}>
+                        <MenuGroup label={t(nav.translateKey) || nav.title}>
                             {nav.subMenu.map((subNav) =>
                                 subNav.subMenu.length > 0 ? (
                                     <VerticalCollapsedMenuItem
@@ -115,7 +115,7 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
                     </AuthorityCheck>
                 )
             } else {
-                <MenuGroup label={nav.title} />
+                ;<MenuGroup label={nav.title} />
             }
         }
     }

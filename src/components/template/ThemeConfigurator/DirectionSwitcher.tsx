@@ -5,8 +5,8 @@ import { THEME_ENUM } from '@/constants/theme.constant'
 import type { Direction } from '@/@types/theme'
 
 const dirList = [
-    { value: THEME_ENUM.DIR_LTR, label: 'Esquerda' },
-    { value: THEME_ENUM.DIR_RTL, label: 'Direita' },
+    { value: THEME_ENUM.DIR_LTR, label: 'LTR' },
+    { value: THEME_ENUM.DIR_RTL, label: 'RTL' },
 ]
 
 const DirectionSwitcher = ({

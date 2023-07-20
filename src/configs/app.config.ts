@@ -8,11 +8,11 @@ export type AppConfig = {
 }
 
 const appConfig: AppConfig = {
-    apiPrefix: 'https://cacbempreenderapp.org.br/api',
-    authenticatedEntryPath: '/app/inicio',
+    apiPrefix: '/api',
+    authenticatedEntryPath: '/sistema/inicio',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/app/account/kyc-form',
-    locale: '',
+    locale: 'en',
     enableMock: true,
 }
 
