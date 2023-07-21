@@ -7,8 +7,9 @@ import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 
-import { HiArrowDown } from 'react-icons/hi'
+import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
+import { AdaptableCard } from '@/components/shared'
 
 const SEPARATOR = ','
 
@@ -132,9 +133,11 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-    return fetch('https://api.cacbempreenderapp.org.br/empresas/').then((response) => {
-        return response.json()
-    })
+    return fetch('https://api.cacbempreenderapp.org.br/empresas/').then(
+        (response) => {
+            return response.json()
+        }
+    )
 }
 
 const Empresas = () => {
@@ -147,31 +150,69 @@ const Empresas = () => {
     const gridStyle = { minHeight: 750, width: '100%' }
 
     return (
-        <div className="">
-            <div className="lg:flex items-center justify-between mb-4 gap-3">
-                <div className="mb-4 lg:mb-0">
-                    <h3>Empresas</h3>
-                </div>
-                <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-                    <Button
-                        size="sm"
-                        icon={<HiArrowDown />}
-                        onClick={exportCSV}
+        <AdaptableCard className="h-full" bodyClass="h-full">
+            <div className="lg:flex items-center justify-between mb-4">
+                <h3 className="mb-4 lg:mb-0">Empresas</h3>
+                <div className="flex flex-col lg:flex-row lg:items-center">
+                    <Link
+                        download
+                        className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
+                        to="/data/product-list.csv"
+                        target="_blank"
                     >
-                        Exportar Tabela
-                    </Button>
+                        <Button block size="sm" icon={<HiDownload />}>
+                            Exportar
+                        </Button>
+                    </Link>
+                    <Link
+                        className="block lg:inline-block md:mb-0 mb-4"
+                        to="/app/sales/product-new"
+                    >
+                        <Button
+                            block
+                            variant="solid"
+                            size="sm"
+                            icon={<HiPlusCircle />}
+                        >
+                            Adicionar empresa
+                        </Button>
+                    </Link>
                 </div>
             </div>
-            <div>
-                <ReactDataGrid
-                    i18n={i18n}
-                    defaultFilterValue={defaultFilterValue}
-                    columns={columns}
-                    dataSource={dataSource}
-                    style={gridStyle}
-                />
-            </div>
-        </div>
+            <ReactDataGrid
+                i18n={i18n}
+                defaultFilterValue={defaultFilterValue}
+                columns={columns}
+                dataSource={dataSource}
+                style={gridStyle}
+            />
+        </AdaptableCard>
+
+        // <div className="">
+        //     <div className="lg:flex items-center justify-between mb-4 gap-3">
+        //         <div className="mb-4 lg:mb-0">
+        //             <h3>Empresas</h3>
+        //         </div>
+        //         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+        //             <Button
+        //                 size="sm"
+        //                 icon={<HiArrowDown />}
+        //                 onClick={exportCSV}
+        //             >
+        //                 Exportar Tabela
+        //             </Button>
+        //         </div>
+        //     </div>
+        //     <div>
+        //         <ReactDataGrid
+        //             i18n={i18n}
+        //             defaultFilterValue={defaultFilterValue}
+        //             columns={columns}
+        //             dataSource={dataSource}
+        //             style={gridStyle}
+        //         />
+        //     </div>
+        // </div>
     )
 }
 

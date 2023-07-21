@@ -66,28 +66,29 @@ const _LanguageSelector = ({ className }: CommonProps) => {
     }
 
     return (
-        <Dropdown renderTitle={selectedLanguage} placement="bottom-end">
-            {languageList.map((lang) => (
-                <Dropdown.Item
-                    key={lang.label}
-                    className="mb-1 justify-between"
-                    eventKey={lang.label}
-                    onClick={() => onLanguageSelect(lang.value)}
-                >
-                    <span className="flex items-center">
-                        <Avatar
-                            size={18}
-                            shape="circle"
-                            src={`/img/countries/${lang.flag}.png`}
-                        />
-                        <span className="ltr:ml-2 rtl:mr-2">{lang.label}</span>
-                    </span>
-                    {locale === lang.value && (
-                        <HiCheck className="text-emerald-500 text-lg" />
-                    )}
-                </Dropdown.Item>
-            ))}
-        </Dropdown>
+        // <Dropdown renderTitle={selectedLanguage} placement="bottom-end">
+        //     {languageList.map((lang) => (
+        //         <Dropdown.Item
+        //             key={lang.label}
+        //             className="mb-1 justify-between"
+        //             eventKey={lang.label}
+        //             onClick={() => onLanguageSelect(lang.value)}
+        //         >
+        //             <span className="flex items-center">
+        //                 <Avatar
+        //                     size={18}
+        //                     shape="circle"
+        //                     src={`/img/countries/${lang.flag}.png`}
+        //                 />
+        //                 <span className="ltr:ml-2 rtl:mr-2">{lang.label}</span>
+        //             </span>
+        //             {locale === lang.value && (
+        //                 <HiCheck className="text-emerald-500 text-lg" />
+        //             )}
+        //         </Dropdown.Item>
+        //     ))}
+        // </Dropdown>
+        <></>
     )
 }
 

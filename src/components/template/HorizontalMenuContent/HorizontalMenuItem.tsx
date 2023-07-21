@@ -8,7 +8,7 @@ export type HorizontalMenuItemProps = {
     nav: {
         key: string
         title: string
-        translateKey: string
+        translateKey?: string
         icon: string
         path: string
     }
@@ -25,7 +25,7 @@ const HorizontalMenuItem = ({
 
     const { t } = useTranslation()
 
-    const itemTitle = t(translateKey, title)
+    const itemTitle = translateKey ? t(translateKey, title) : title;
 
     const renderIcon = icon && <span className="text-2xl">{navigationIcon[icon]}</span>
 

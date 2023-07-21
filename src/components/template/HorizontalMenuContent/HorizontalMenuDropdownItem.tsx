@@ -7,7 +7,7 @@ export type HorizontalMenuItemProps = {
     nav: {
         key: string
         title: string
-        translateKey: string
+        translateKey?: string
         icon: string
         path: string
     }
@@ -18,7 +18,7 @@ const HorizontalMenuDropdownItem = ({ nav }: HorizontalMenuItemProps) => {
 
     const { t } = useTranslation()
 
-    const itemTitle = t(translateKey, title)
+    const itemTitle = translateKey ? t(translateKey, title) : title;
 
     return (
         <Dropdown.Item 
