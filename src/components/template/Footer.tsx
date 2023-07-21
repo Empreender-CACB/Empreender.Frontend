@@ -15,7 +15,7 @@ const FooterContent = () => {
             <span>
                 
             <span className="font-semibold">{`${APP_NAME}`}</span> 1999 - {`${new Date().getFullYear()}`}{' '}
-                Mantido pela equipe Empreender
+               . Mantido pela equipe Empreender
             </span>
             {/* <div className="">
                 <a
