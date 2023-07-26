@@ -25,7 +25,7 @@ const columns = [
     { name: 'idempresa', header: 'ID', type: 'string' },
     {
         name: 'nmfantasia',
-        header: 'Nome Fantasia',
+        header: 'Nome',
         defaultFlex: 2,
         type: 'Nome',
         render: ({ value, data }) => (
