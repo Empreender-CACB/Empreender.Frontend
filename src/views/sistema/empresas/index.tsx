@@ -5,6 +5,11 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
+import '@inovua/reactdatagrid-community/theme/default-dark.css'
+import '@inovua/reactdatagrid-community/theme/green-light.css'
+import '@inovua/reactdatagrid-community/theme/blue-light.css'
+
+
 
 import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
@@ -155,8 +160,13 @@ const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
 
 const Empresas = () => {
     const [filterValue, setFilterValue] = useState(defaultFilterValue)
+    const [selected, setSelected] = useState({ 2: true, 5: true });
     const [sortInfo, setSortInfo] = useState([])
     const dataSource = useCallback(loadData, [])
+
+    const onSelectionChange = useCallback(({ selected }) => {
+        setSelected(selected)
+      }, []);
 
     const exportCSV = () => {
         return 1
@@ -197,17 +207,23 @@ const Empresas = () => {
             </div>
             <ReactDataGrid
                 i18n={i18n}
+                idProperty="idempresa"
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
+                theme='blue-light'
                 emptyText={'Não há registros para serem exibidos'}
                 dataSource={dataSource}
                 enableFiltering={true}
+                checkboxColumn
+                onSelectionChange={onSelectionChange}
                 onSortInfoChange={setSortInfo}
                 onFilterValueChange={setFilterValue}
                 style={gridStyle}
                 paginante
                 pagination
             />
+                <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code>: 'none'}.</div>
+
         </AdaptableCard>
 
         // <div className="">
