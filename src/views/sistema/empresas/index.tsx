@@ -133,14 +133,26 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-    return fetch('https://api.cacbempreenderapp.org.br/empresas/').then(
-        (response) => {
-            return response.json()
-        }
-    )
+    return fetch('https://api.cacbempreenderapp.org.br/empresas'+
+    '?skip=' +
+    skip +
+    '&limit=' +
+    limit +
+    (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
+    '&sortInfo=' +
+    JSON.stringify(sortInfo) +
+    '&filterBy=' +
+    JSON.stringify(filterValue)).then((response) => {
+        const totalCount = response.headers.get('X-Total-Count')
+        return response.json().then((data) => {
+          return { data: data.data, count: data.meta.total }
+        })
+      })
 }
 
 const Empresas = () => {
+    const [filterValue, setFilterValue] = useState(defaultFilterValue)
+    const [sortInfo, setSortInfo] = useState([])
     const dataSource = useCallback(loadData, [])
 
     const exportCSV = () => {
@@ -153,6 +165,7 @@ const Empresas = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Empresas</h3>
+                {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         download
@@ -183,8 +196,14 @@ const Empresas = () => {
                 i18n={i18n}
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
+                emptyText={'Não há registros para serem exibidos'}
                 dataSource={dataSource}
+                enableFiltering={true}
+                onSortInfoChange={setSortInfo}
+                onFilterValueChange={setFilterValue}
                 style={gridStyle}
+                paginante
+                pagination
             />
         </AdaptableCard>
 
