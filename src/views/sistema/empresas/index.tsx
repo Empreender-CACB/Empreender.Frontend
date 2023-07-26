@@ -8,7 +8,7 @@ import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
-
+import Radio from '@/components/ui/Radio'
 
 
 import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
@@ -141,21 +141,21 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-    return fetch('https://api.cacbempreenderapp.org.br/empresas'+
-    '?skip=' +
-    skip +
-    '&limit=' +
-    limit +
-    (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-    '&sortInfo=' +
-    JSON.stringify(sortInfo) +
-    '&filterBy=' +
-    JSON.stringify(filterValue)).then((response) => {
-        const totalCount = response.headers.get('X-Total-Count')
-        return response.json().then((data) => {
-          return { data: data.data, count: data.meta.total }
+    return fetch('https://api.cacbempreenderapp.org.br/empresas' +
+        '?skip=' +
+        skip +
+        '&limit=' +
+        limit +
+        (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
+        '&sortInfo=' +
+        JSON.stringify(sortInfo) +
+        '&filterBy=' +
+        JSON.stringify(filterValue)).then((response) => {
+            const totalCount = response.headers.get('X-Total-Count')
+            return response.json().then((data) => {
+                return { data: data.data, count: data.meta.total }
+            })
         })
-      })
 }
 
 const Empresas = () => {
@@ -163,10 +163,15 @@ const Empresas = () => {
     const [selected, setSelected] = useState({ 2: true, 5: true });
     const [sortInfo, setSortInfo] = useState([])
     const dataSource = useCallback(loadData, [])
+    const [value, setValue] = useState('nmfantasia')
+
+    const onChange = (val: string) => {
+        setValue(val)
+    }
 
     const onSelectionChange = useCallback(({ selected }) => {
         setSelected(selected)
-      }, []);
+    }, []);
 
     const exportCSV = () => {
         return 1
@@ -205,6 +210,11 @@ const Empresas = () => {
                     </Link>
                 </div>
             </div>
+            <Radio.Group className="pb-4 lg:mb-0"  value={value} onChange={onChange}>
+                <span className='pr-2'>Nome: </span>
+                <Radio value={'nmfantasia'}>Fantasia</Radio>
+                <Radio value={'nurazaosocial'}>Razão Social </Radio>
+            </Radio.Group>
             <ReactDataGrid
                 i18n={i18n}
                 idProperty="idempresa"
@@ -222,7 +232,7 @@ const Empresas = () => {
                 paginante
                 pagination
             />
-                <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code>: 'none'}.</div>
+            <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code> : 'none'}.</div>
 
         </AdaptableCard>
 
