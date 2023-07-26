@@ -2,7 +2,6 @@ import '@inovua/reactdatagrid-community/index.css'
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
@@ -10,6 +9,10 @@ import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
+
+import 'moment/locale/pt-br';
+
+moment.locale('pt-br');
 
 const SEPARATOR = ','
 
@@ -33,7 +36,7 @@ const columns = [
         name: 'dtinicioatividade',
         header: 'Inicio da Atividade',
         defaultFlex: 1,
-        dateFormat: 'YYYY-MM-DD',
+        dateFormat: 'MM-DD-YYYY',
         filterEditor: DateFilter,
         filterEditorProps: (props, { index }) => {
             return {
