@@ -57,16 +57,18 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-    {
-        name: 'ramoAtividade',
-        header: 'Ramo',
-        defaultFlex: 2,
-        render: ({ data }) => (
-            <div style={{ whiteSpace: 'pre-wrap' }}>
-                {data.ramoAtividade?.nmramoativ}
-            </div>
-        ),
-    },
+    { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
+    
+    // {
+    //     name: 'ramoAtividade',
+    //     header: 'Ramo',
+    //     defaultFlex: 2,
+    //     render: ({ data }) => (
+    //         <div style={{ whiteSpace: 'pre-wrap' }}>
+    //             {data.ramoAtividade?.nmramoativ}
+    //         </div>
+    //     ),
+    // },
 ]
 
 const defaultFilterValue = [
@@ -85,7 +87,7 @@ const defaultFilterValue = [
     { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
     { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
     {
-        name: 'ramoAtividade',
+        name: 'nmramoativ',
         operator: 'contains',
         type: 'string',
         value: '',
@@ -133,7 +135,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     gte: 'Maior ou igual a',
     'calendar.todayButtonText': 'Hoje',
     calendar: {
-        todayButtonText: 'Hoje',
+        todayButtonText: 'Hoje1',
         clearButtonText: 'Limpar',
         okButtonText: 'OK',
         cancelButtonText: 'Cancelar',
