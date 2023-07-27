@@ -26,7 +26,7 @@ const columns = [
     {
         name: 'nmfantasia',
         header: 'Nome',
-        defaultFlex: 2,
+        defaultFlex: 1.5,
         type: 'Nome',
         render: ({ value, data }) => (
             <div>
@@ -60,7 +60,7 @@ const columns = [
     {
         name: 'ramoAtividade',
         header: 'Ramo',
-        defaultFlex: 1,
+        defaultFlex: 2,
         render: ({ data }) => (
             <div style={{ whiteSpace: 'pre-wrap' }}>
                 {data.ramoAtividade?.nmramoativ}
