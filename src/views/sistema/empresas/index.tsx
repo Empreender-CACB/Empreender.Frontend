@@ -38,8 +38,8 @@ const columns = [
     },
     { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1 },
     {
-        name: 'dtinicioatividade',
-        header: 'Inicio da Atividade',
+        name: 'dtultimaalteracao',
+        header: 'Última Alteração',
         defaultFlex: 1,
         dateFormat: 'MM-DD-YYYY',
         filterEditor: DateFilter,
@@ -83,7 +83,7 @@ const defaultFilterValue = [
         value: '',
     },
     { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
-    { name: 'dtinicioatividade', operator: 'after', type: 'date', value: '' },
+    { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
     {
         name: 'ramoAtividade',
         operator: 'contains',
