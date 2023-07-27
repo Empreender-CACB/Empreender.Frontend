@@ -133,7 +133,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     gte: 'Maior ou igual a',
     'calendar.todayButtonText': 'Hoje',
     calendar: {
-        todayButtonText: 'Hoje1',
+        todayButtonText: 'Hoje',
         clearButtonText: 'Limpar',
         okButtonText: 'OK',
         cancelButtonText: 'Cancelar',
