@@ -93,7 +93,7 @@ type Props = {
 const ContatosEmpresa = ({idEmpresa}: Props) => {
 
     const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-        return fetch('http://localhost:3333/empresas-contatos/' + `?idempresa=${idEmpresa}`  +
+        return fetch('https://api.cacbempreenderapp.org.br/empresas-contatos/' + `?idempresa=${idEmpresa}`  +
             '&skip=' +
             skip +
             '&limit=' +

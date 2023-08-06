@@ -23,7 +23,7 @@ const NucleoReunioes = () => {
     useEffect(() => {
         async function fetchNucleo() {
             const response = await fetch(
-                `http://localhost:3333/nucleos/${idnucleo}`
+                `https://api.cacbempreenderapp.org.br/nucleos/${idnucleo}`
             )
 
             if (response.ok) {

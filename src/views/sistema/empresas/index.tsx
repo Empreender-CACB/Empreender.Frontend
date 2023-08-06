@@ -148,7 +148,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
     return fetch(
-        'http://localhost:3333/empresas' +
+        'https://api.cacbempreenderapp.org.br/empresas' +
             '?skip=' +
             skip +
             '&limit=' +

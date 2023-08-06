@@ -32,7 +32,7 @@ const EmpresaDetalhes = () => {
     useEffect(() => {
         async function fetchEmpresa() {
             const response = await fetch(
-                `http://localhost:3333/empresas/${idempresa}`
+                `https://api.cacbempreenderapp.org.br/empresas/${idempresa}`
             )
 
             if (response.ok) {
