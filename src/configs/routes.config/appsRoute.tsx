@@ -41,6 +41,16 @@ const appsRoute: Routes = [
             footer: false
         },
     },
+    {
+        key: 'sistemaNucleos.reunioes',
+        path: `${APP_PREFIX_PATH}/nucleos/reunioes/:idnucleo`,
+        component: lazy(() => import('@/views/sistema/nucleos/reunioes')),
+        authority: [ADMIN, USER],
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false
+        },
+    },
 ]
 
 export default appsRoute

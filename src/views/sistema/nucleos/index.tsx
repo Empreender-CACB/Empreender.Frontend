@@ -9,7 +9,7 @@ import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 
-import { HiDownload, HiPlusCircle } from 'react-icons/hi'
+import { HiDownload, HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 
@@ -171,6 +171,16 @@ const Nucleos = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Núcleos</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
+
+                    <Button size="sm" icon={<HiOutlineReply />}>
+                        <Link
+                            className="menu-item-link"
+                            to={`https://teste.cacbempreenderapp.org.br/sistema/nucleo`}
+                        >
+                            Visualizar versão antiga
+                        </Link>
+                    </Button>
+
                     <Link
                         download
                         className="block lg:inline-block md:mx-2 md:mb-0 mb-4"

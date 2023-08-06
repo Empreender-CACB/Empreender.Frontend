@@ -10,14 +10,18 @@ import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import Radio from '@/components/ui/Radio'
 
-
-import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
+import {
+    HiArrowDown,
+    HiDownload,
+    HiOutlineReply,
+    HiPlusCircle,
+} from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 
-import 'moment/locale/pt-br';
+import 'moment/locale/pt-br'
 
-moment.locale('pt-br');
+moment.locale('pt-br')
 
 const SEPARATOR = ','
 
@@ -58,7 +62,7 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
-    
+
     // {
     //     name: 'ramoAtividade',
     //     header: 'Ramo',
@@ -143,29 +147,31 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-    return fetch('http://localhost:3333/empresas' +
-        '?skip=' +
-        skip +
-        '&limit=' +
-        limit +
-        (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-        '&sortInfo=' +
-        JSON.stringify(sortInfo) +
-        '&filterBy=' +
-        JSON.stringify(filterValue)).then((response) => {
-            const totalCount = response.headers.get('X-Total-Count')
-            return response.json().then((data) => {
-                return { data: data.data, count: data.meta.total }
-            })
+    return fetch(
+        'http://localhost:3333/empresas' +
+            '?skip=' +
+            skip +
+            '&limit=' +
+            limit +
+            (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
+            '&sortInfo=' +
+            JSON.stringify(sortInfo) +
+            '&filterBy=' +
+            JSON.stringify(filterValue)
+    ).then((response) => {
+        const totalCount = response.headers.get('X-Total-Count')
+        return response.json().then((data) => {
+            return { data: data.data, count: data.meta.total }
         })
+    })
 }
 
 const Empresas = () => {
     const [filterValue, setFilterValue] = useState(defaultFilterValue)
-    const [selected, setSelected] = useState({ 2: true, 5: true });
+    const [selected, setSelected] = useState({ 2: true, 5: true })
     const [sortInfo, setSortInfo] = useState([])
     const dataSource = useCallback(loadData, [])
-    
+
     const [value, setValue] = useState('nmfantasia')
 
     const onChange = (val: string) => {
@@ -174,7 +180,7 @@ const Empresas = () => {
 
     const onSelectionChange = useCallback(({ selected }) => {
         setSelected(selected)
-    }, []);
+    }, [])
 
     const exportCSV = () => {
         return 1
@@ -188,6 +194,14 @@ const Empresas = () => {
                 <h3 className="mb-4 lg:mb-0">Empresas</h3>
                 {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
+                    <Button size="sm" icon={<HiOutlineReply />}>
+                        <Link
+                            className="menu-item-link"
+                            to={`https://teste.cacbempreenderapp.org.br/sistema/empresa/`}
+                        >
+                            Visualizar versão antiga
+                        </Link>
+                    </Button>
                     <Link
                         download
                         className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
@@ -213,8 +227,12 @@ const Empresas = () => {
                     </Link>
                 </div>
             </div>
-            <Radio.Group className="pb-4 lg:mb-0"  value={value} onChange={onChange}>
-                <span className='pr-2'>Nome: </span>
+            <Radio.Group
+                className="pb-4 lg:mb-0"
+                value={value}
+                onChange={onChange}
+            >
+                <span className="pr-2">Nome: </span>
                 <Radio value={'nmfantasia'}>Fantasia</Radio>
                 <Radio value={'nurazaosocial'}>Razão Social </Radio>
             </Radio.Group>
@@ -223,7 +241,7 @@ const Empresas = () => {
                 idProperty="idempresa"
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
-                theme='blue-light'
+                theme="blue-light"
                 emptyText={'Não há registros para serem exibidos'}
                 dataSource={dataSource}
                 enableFiltering={true}
@@ -235,8 +253,16 @@ const Empresas = () => {
                 paginante
                 pagination
             />
-            <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code> : 'none'}.</div>
-
+            <div style={{ height: 80 }}>
+                {' '}
+                selecteds:{' '}
+                {selected ? (
+                    <code>{JSON.stringify(selected, null, 2)}</code>
+                ) : (
+                    'none'
+                )}
+                .
+            </div>
         </AdaptableCard>
 
         // <div className="">

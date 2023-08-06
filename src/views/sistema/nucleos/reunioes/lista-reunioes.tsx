@@ -12,32 +12,30 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui'
 import { HiDownload } from 'react-icons/hi'
 
-moment.locale('pt-br');
+moment.locale('pt-br')
 
 const columns = [
-    { name: 'idcontato', header: 'ID', type: 'number' },
-    { name: 'nmcontato', header: 'Nome do Contato', type: 'string', defaultFlex: 1 },
-    { name: 'nufone', header: 'Telefone', type: 'string', defaultFlex: 1 },
-    { name: 'nucel', header: 'Celular', type: 'string', defaultFlex: 1 },
-    { name: 'dsemail', header: 'Email', type: 'string', defaultFlex: 1 },
-    { 
-        name: 'data_alteracao', 
-        header: 'Última Alteração', 
-        type: 'date', 
+    { name: 'idreuniao', header: 'ID da Reunião', type: 'number' },
+    { name: 'dsmotivo', header: 'Motivo', type: 'string', defaultFlex: 1 },
+    {
+        name: 'dtreuniao',
+        header: 'Data da Reunião',
+        type: 'date',
         defaultFlex: 1,
-        render: ({ value }) => value ? moment(value).format('DD-MM-YYYY') : '-' 
+        render: ({ value }) =>
+            value ? moment(value).format('DD-MM-YYYY') : '-',
     },
+    { name: 'iduf', header: 'UF', type: 'string', defaultFlex: 1 },
+    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 },
 ]
 
 const defaultFilterValue = [
-    { name: 'idcontato', operator: 'contains', type: 'number', value: '' },
-    { name: 'nmcontato', operator: 'contains', type: 'string', value: '' },
-    { name: 'nufone', operator: 'contains', type: 'string', value: '' },
-    { name: 'nucel', operator: 'contains', type: 'string', value: '' },
-    { name: 'dsemail', operator: 'contains', type: 'string', value: '' },
-    { name: 'data_alteracao', operator: 'after', type: 'date', value: '' },
+    { name: 'idreuniao', operator: 'contains', type: 'number', value: '' },
+    { name: 'dsmotivo', operator: 'contains', type: 'string', value: '' },
+    { name: 'dtreuniao', operator: 'after', type: 'date', value: '' },
+    { name: 'iduf', operator: 'contains', type: 'string', value: '' },
+    { name: 'nmcidade', operator: 'contains', type: 'string', value: '' },
 ]
-
 
 const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     pageText: 'Página ',
@@ -87,43 +85,45 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 type Props = {
-    idEmpresa: number;
+    idnucleo: number
 }
 
-const ContatosEmpresa = ({idEmpresa}: Props) => {
-
+const ListaReunioes = ({ idnucleo }: Props) => {
     const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-        return fetch('http://localhost:3333/empresas-contatos/' + `?idempresa=${idEmpresa}`  +
-            '&skip=' +
-            skip +
-            '&limit=' +
-            limit +
-            (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-            '&sortInfo=' +
-            JSON.stringify(sortInfo) +
-            '&filterBy=' +
-            JSON.stringify(filterValue)).then((response) => {
-                return response.json().then((data) => {
-                    return { data: data.data, count: data.meta.total }
-                })
+        return fetch(
+            'http://localhost:3333/lista-reunioes/' +
+                `?idnucleo=${idnucleo}` +
+                '&skip=' +
+                skip +
+                '&limit=' +
+                limit +
+                (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
+                '&sortInfo=' +
+                JSON.stringify(sortInfo) +
+                '&filterBy=' +
+                JSON.stringify(filterValue)
+        ).then((response) => {
+            return response.json().then((data) => {
+                return { data: data.data, count: data.meta.total }
             })
+        })
     }
 
-    const [selected, setSelected] = useState({ 2: true, 5: true });
+    const [selected, setSelected] = useState({ 2: true, 5: true })
     const dataSource = useCallback(loadData, [])
 
-    console.log(dataSource);
+    console.log(dataSource)
 
     const onSelectionChange = useCallback(({ selected }) => {
         setSelected(selected)
-    }, []);
+    }, [])
 
     const gridStyle = { minHeight: 750, width: '100%' }
 
     return (
-        <div className='mt-4'>
+        <div className="mt-4">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Empresas</h3>
+                <h3 className="mb-4 lg:mb-0">Reuniões</h3>
                 {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
@@ -143,7 +143,7 @@ const ContatosEmpresa = ({idEmpresa}: Props) => {
                 idProperty="idcontato"
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
-                theme='blue-light'
+                theme="blue-light"
                 emptyText={'Não há registros para serem exibidos'}
                 dataSource={dataSource}
                 enableFiltering={true}
@@ -153,11 +153,18 @@ const ContatosEmpresa = ({idEmpresa}: Props) => {
                 paginante
                 pagination
             />
-            <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code> : 'none'}.</div>
-
+            <div style={{ height: 80 }}>
+                {' '}
+                selecteds:{' '}
+                {selected ? (
+                    <code>{JSON.stringify(selected, null, 2)}</code>
+                ) : (
+                    'none'
+                )}
+                .
+            </div>
         </div>
-
     )
 }
 
-export default ContatosEmpresa
+export default ListaReunioes

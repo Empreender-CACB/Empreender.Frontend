@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
-import Tabs from '@/components/ui/Tabs'
 import Loading from '@/components/shared/Loading'
 import Button from '@/components/ui/Button'
 import Dropdown from '@/components/ui/Dropdown'
@@ -9,22 +8,13 @@ import { Link, useParams } from 'react-router-dom'
 import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple'
 
 import isEmpty from 'lodash/isEmpty'
-import {
-    HiOutlinePencil,
-    HiOutlineReply,
-    HiOutlineViewList,
-} from 'react-icons/hi'
+import { HiOutlinePencil, HiOutlineReply, HiOutlineViewList } from 'react-icons/hi'
 import LayoutWithMenus from '@/components/layouts/LayoutWithMenus'
 import { Nucleo } from '@/@types/generalTypes'
-import { noEmpty } from '@/utils/noEmpty'
-import Detalhes from './detalhes'
-import ListaReunioes from '../reunioes/lista-reunioes'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
-import NucleosEmpresas from './empresas-vinculadas'
+import ListaReunioes from './lista-reunioes'
 
-const { TabNav, TabList, TabContent } = Tabs
-
-const NucleoDetalhes = () => {
+const NucleoReunioes = () => {
     const { idnucleo } = useParams()
 
     const [nucleo, setNucleo] = useState<Nucleo | null>(null)
@@ -119,11 +109,12 @@ const NucleoDetalhes = () => {
                                 <Button size="xs" icon={<HiOutlineReply />}>
                                     <Link
                                         className="menu-item-link"
-                                        to={`https://teste.cacbempreenderapp.org.br/sistema/nucleo/detalhe/nid/${btoa(String(nucleo.idnucleo))}`}
+                                        to={`https://teste.cacbempreenderapp.org.br/sistema/nucleo/nucleo-lista-reuniao/nid/${btoa(String(nucleo.idnucleo))}`}
                                     >
                                         Visualizar versão antiga
                                     </Link>
                                 </Button>
+
                                 <Dropdown renderTitle={OptionsButton}>
                                     <Dropdown.Item eventKey="a">
                                         Alterar dados
@@ -162,45 +153,7 @@ const NucleoDetalhes = () => {
                             </div>
                         }
                     >
-                        {/* Aqui o conteúdo específico de cada página, pode ser qualquer coisa */}
-                        <Tabs defaultValue="tab1">
-                            <TabList>
-                                <TabNav value="tab1">Detalhes</TabNav>
-                                <TabNav value="tab2">
-                                    Empresas Vinculadas
-                                </TabNav>
-                                <TabNav value="tab4">
-                                    Projetos Vinculados
-                                </TabNav>
-                            </TabList>
-                            <div className="p-4">
-                                <TabContent value="tab1">
-                                    <div className="px-4 py-5 sm:px-6">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                                            {nucleo.nmnucleo}
-                                        </h3>
-                                        <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                                            {noEmpty(
-                                                nucleo.associacao.cidade
-                                                    .nmcidade
-                                            ) +
-                                                ' - ' +
-                                                noEmpty(
-                                                    nucleo.associacao.cidade
-                                                        .iduf
-                                                )}
-                                        </p>
-                                    </div>
-                                    <Detalhes nucleo={nucleo} />
-                                </TabContent>
-                                <TabContent value="tab2">
-                                    <NucleosEmpresas
-                                        idnucleo={nucleo.idnucleo}
-                                    />
-                                </TabContent>
-                                <TabContent value="tab3"></TabContent>
-                            </div>
-                        </Tabs>
+                        <ListaReunioes idnucleo={nucleo.idnucleo} />
                     </LayoutDetailSimple>
                 </LayoutWithMenus>
             )}
@@ -208,4 +161,4 @@ const NucleoDetalhes = () => {
     )
 }
 
-export default NucleoDetalhes
+export default NucleoReunioes

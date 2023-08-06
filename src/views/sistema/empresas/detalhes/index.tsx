@@ -4,13 +4,14 @@ import Tabs from '@/components/ui/Tabs'
 import Loading from '@/components/shared/Loading'
 import Button from '@/components/ui/Button'
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple'
 import isEmpty from 'lodash/isEmpty'
 import {
     HiOutlineDocumentAdd,
     HiOutlineInformationCircle,
     HiOutlinePencil,
+    HiOutlineReply,
     HiOutlineUserAdd,
     HiOutlineViewList,
 } from 'react-icons/hi'
@@ -18,6 +19,7 @@ import dayjs from 'dayjs'
 import { noEmpty } from '@/utils/noEmpty'
 import ContatosEmpresa from './contatos'
 import { Empresa } from '@/@types/generalTypes'
+import { APP_PREFIX_PATH } from '@/constants/route.constant'
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -68,6 +70,15 @@ const EmpresaDetalhes = () => {
                     }}
                     actions={
                         <div className="flex-wrap inline-flex xl:flex items-center gap-2">
+                            <Button size="xs" icon={<HiOutlineReply />}>
+                                <Link
+                                    className="menu-item-link"
+                                    to={`https://teste.cacbempreenderapp.org.br/sistema/empresa/detalhe/eid/${btoa(String(empresa.idempresa))}`}
+                                >
+                                    Visualizar versão antiga
+                                </Link>
+                            </Button>
+
                             <Button
                                 size="xs"
                                 variant="solid"
@@ -84,24 +95,15 @@ const EmpresaDetalhes = () => {
                             </Button>
                             <Button
                                 size="xs"
-                                variant="solid"
-                                icon={<HiOutlineDocumentAdd />}
-                            >
-                                <span>Anexar Arquivo</span>
-                            </Button>
-                            <Button
-                                size="xs"
-                                variant="solid"
-                                icon={<HiOutlineInformationCircle />}
-                            >
-                                <span>Informações para o AL Invest</span>
-                            </Button>
-                            <Button
-                                size="xs"
                                 variant="plain"
                                 icon={<HiOutlineViewList />}
                             >
-                                <span>Lista de Empresas</span>
+                                <Link
+                                    className="menu-item-link"
+                                    to={`${APP_PREFIX_PATH}/empresas`}
+                                >
+                                    Lista de empresas
+                                </Link>
                             </Button>
                         </div>
                     }
