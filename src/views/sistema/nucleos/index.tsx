@@ -1,6 +1,6 @@
 import '@inovua/reactdatagrid-community/index.css'
 
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
@@ -8,35 +8,41 @@ import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
-import Radio from '@/components/ui/Radio'
 
-
-import { HiArrowDown, HiDownload, HiPlusCircle } from 'react-icons/hi'
+import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 
-import 'moment/locale/pt-br';
+import 'moment/locale/pt-br'
 
-moment.locale('pt-br');
-
-const SEPARATOR = ','
-
+moment.locale('pt-br')
 const columns = [
-    { name: 'idempresa', header: 'ID', type: 'string' },
+    { name: 'idnucleo', header: 'ID', type: 'string' },
     {
-        name: 'nmfantasia',
+        name: 'nmnucleo',
         header: 'Nome',
         defaultFlex: 1.5,
-        type: 'Nome',
+        type: 'string',
         render: ({ value, data }) => (
             <div>
-                <Link to={`/sistema/empresas/${data.idempresa}`}>
-                    {data.nmfantasia}
+                <Link to={`/sistema/nucleos/${data.idnucleo}`}>
+                    {data.nmnucleo}
                 </Link>
             </div>
         ),
     },
-    { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1 },
+    {
+        name: 'idassociacao',
+        header: 'ID Associação',
+        defaultFlex: 1,
+        type: 'number',
+    },
+    {
+        name: 'idsegmento',
+        header: 'ID Segmento',
+        defaultFlex: 1,
+        type: 'number',
+    },
     {
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
@@ -57,42 +63,31 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-    { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
-    
-    // {
-    //     name: 'ramoAtividade',
-    //     header: 'Ramo',
-    //     defaultFlex: 2,
-    //     render: ({ data }) => (
-    //         <div style={{ whiteSpace: 'pre-wrap' }}>
-    //             {data.ramoAtividade?.nmramoativ}
-    //         </div>
-    //     ),
-    // },
+    { name: 'flativo', header: 'Ativo', defaultFlex: 1, type: 'string' },
 ]
 
 const defaultFilterValue = [
     {
-        name: 'idempresa',
+        name: 'idnucleo',
         operator: 'contains',
         type: 'string',
         value: '',
     },
     {
-        name: 'nmfantasia',
+        name: 'nmnucleo',
         operator: 'contains',
         type: 'string',
         value: '',
     },
-    { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
+    { name: 'idassociacao', operator: 'contains', type: 'number', value: '' },
+    { name: 'idsegmento', operator: 'contains', type: 'number', value: '' },
     { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
     {
-        name: 'nmramoativ',
+        name: 'flativo',
         operator: 'contains',
         type: 'string',
         value: '',
     },
-    { name: 'valor_antigo', operator: 'contains', type: 'string', value: '' },
 ]
 
 const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
@@ -143,50 +138,38 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-    return fetch('http://localhost:3333/empresas' +
-        '?skip=' +
-        skip +
-        '&limit=' +
-        limit +
-        (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-        '&sortInfo=' +
-        JSON.stringify(sortInfo) +
-        '&filterBy=' +
-        JSON.stringify(filterValue)).then((response) => {
-            const totalCount = response.headers.get('X-Total-Count')
-            return response.json().then((data) => {
-                return { data: data.data, count: data.meta.total }
-            })
+    return fetch(
+        'http://localhost:3333/nucleos' +
+            '?skip=' +
+            skip +
+            '&limit=' +
+            limit +
+            (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
+            '&sortInfo=' +
+            JSON.stringify(sortInfo) +
+            '&filterBy=' +
+            JSON.stringify(filterValue)
+    ).then((response) => {
+        return response.json().then((data) => {
+            return { data: data.data, count: data.meta.total }
         })
+    })
 }
 
-const Empresas = () => {
-    const [filterValue, setFilterValue] = useState(defaultFilterValue)
-    const [selected, setSelected] = useState({ 2: true, 5: true });
-    const [sortInfo, setSortInfo] = useState([])
+const Nucleos = () => {
+    const [selected, setSelected] = useState({ 2: true, 5: true })
     const dataSource = useCallback(loadData, [])
-    
-    const [value, setValue] = useState('nmfantasia')
-
-    const onChange = (val: string) => {
-        setValue(val)
-    }
 
     const onSelectionChange = useCallback(({ selected }) => {
         setSelected(selected)
-    }, []);
-
-    const exportCSV = () => {
-        return 1
-    }
+    }, [])
 
     const gridStyle = { minHeight: 750, width: '100%' }
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Empresas</h3>
-                {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
+                <h3 className="mb-4 lg:mb-0">Núcleos</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         download
@@ -208,63 +191,38 @@ const Empresas = () => {
                             size="sm"
                             icon={<HiPlusCircle />}
                         >
-                            Adicionar empresa
+                            Adicionar núcleo
                         </Button>
                     </Link>
                 </div>
             </div>
-            <Radio.Group className="pb-4 lg:mb-0"  value={value} onChange={onChange}>
-                <span className='pr-2'>Nome: </span>
-                <Radio value={'nmfantasia'}>Fantasia</Radio>
-                <Radio value={'nurazaosocial'}>Razão Social </Radio>
-            </Radio.Group>
             <ReactDataGrid
                 i18n={i18n}
-                idProperty="idempresa"
+                idProperty="idnucleo"
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
-                theme='blue-light'
+                theme="blue-light"
                 emptyText={'Não há registros para serem exibidos'}
                 dataSource={dataSource}
                 enableFiltering={true}
                 checkboxColumn
                 onSelectionChange={onSelectionChange}
-                onSortInfoChange={setSortInfo}
-                onFilterValueChange={setFilterValue}
                 style={gridStyle}
                 paginante
                 pagination
             />
-            <div style={{ height: 80 }} > selecteds: {selected ? <code>{JSON.stringify(selected, null, 2)}</code> : 'none'}.</div>
-
+            <div style={{ height: 80 }}>
+                {' '}
+                selecteds:{' '}
+                {selected ? (
+                    <code>{JSON.stringify(selected, null, 2)}</code>
+                ) : (
+                    'none'
+                )}
+                .
+            </div>
         </AdaptableCard>
-
-        // <div className="">
-        //     <div className="lg:flex items-center justify-between mb-4 gap-3">
-        //         <div className="mb-4 lg:mb-0">
-        //             <h3>Empresas</h3>
-        //         </div>
-        //         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-        //             <Button
-        //                 size="sm"
-        //                 icon={<HiArrowDown />}
-        //                 onClick={exportCSV}
-        //             >
-        //                 Exportar Tabela
-        //             </Button>
-        //         </div>
-        //     </div>
-        //     <div>
-        //         <ReactDataGrid
-        //             i18n={i18n}
-        //             defaultFilterValue={defaultFilterValue}
-        //             columns={columns}
-        //             dataSource={dataSource}
-        //             style={gridStyle}
-        //         />
-        //     </div>
-        // </div>
     )
 }
 
-export default Empresas
+export default Nucleos

@@ -129,7 +129,7 @@ const appsNavigationConfig: NavigationTree[] = [
             },
             {
                 key: 'appsCrm.customerDetails',
-                path: 'https://teste.cacbempreenderapp.org.br/sistema/nucleo/',
+                path: `${APP_PREFIX_PATH}/nucleos`,
                 title: 'Listar Núcleos',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,
@@ -137,7 +137,7 @@ const appsNavigationConfig: NavigationTree[] = [
                 subMenu: [],
             },
             {
-                key: 'appsCrm.mail',
+                key: 'appsCrm.teste',
                 path: 'https://teste.cacbempreenderapp.org.br/sistema/plano-acao/',
                 title: 'Listar Planos de Ação',
                 icon: '',
@@ -146,7 +146,7 @@ const appsNavigationConfig: NavigationTree[] = [
                 subMenu: [],
             },
             {
-                key: 'appsCrm.mail',
+                key: 'appsCrm.teste2',
                 path: 'https://teste.cacbempreenderapp.org.br/sistema/reuniao/',
                 title: 'Listar Reuniões',
                 icon: '',
