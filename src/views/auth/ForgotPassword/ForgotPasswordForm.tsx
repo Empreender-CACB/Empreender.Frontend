@@ -116,7 +116,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                             </Button>
                             <div className="mt-4 text-center">
                                 <span>Voltar para </span>
-                                <ActionLink to={signInUrl}>Login</ActionLink>
+                                <ActionLink to={signInUrl}>login</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>
