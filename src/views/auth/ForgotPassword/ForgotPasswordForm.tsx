@@ -56,18 +56,17 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             <div className="mb-6">
                 {emailSent ? (
                     <>
-                        <h3 className="mb-1">Check your email</h3>
+                        <h3 className="mb-1">Confira sua caixa de email</h3>
                         <p>
-                            We have sent a password recovery instruction to your
-                            email
+                        Enviamos uma instrução de recuperação de senha para o seu
+                        email
                         </p>
                     </>
                 ) : (
                     <>
-                        <h3 className="mb-1">Forgot Password</h3>
+                        <h3 className="mb-1">Esqueci minha senha</h3>
                         <p>
-                            Please enter your email address to receive a
-                            verification code
+                        Digite seu endereço de email para receber um código de verificação
                         </p>
                     </>
                 )}
@@ -79,7 +78,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    email: 'admin@mail.com',
+                    email: '',
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
@@ -113,11 +112,11 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                                 variant="solid"
                                 type="submit"
                             >
-                                {emailSent ? 'Resend Email' : 'Send Email'}
+                                {emailSent ? 'Enviar novamente' : 'Enviar email'}
                             </Button>
                             <div className="mt-4 text-center">
-                                <span>Back to </span>
-                                <ActionLink to={signInUrl}>Sign in</ActionLink>
+                                <span>Voltar para </span>
+                                <ActionLink to={signInUrl}>Login</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>
