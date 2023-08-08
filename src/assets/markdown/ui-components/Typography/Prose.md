@@ -114,7 +114,7 @@ const Prose = () => {
             </p>
             <figure>
                 <img
-                    src="https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    src="https://images.unsplash.com/photo-1599697777020-57693fa1bffe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
                     alt=""
                 />
                 <figcaption>
