@@ -94,7 +94,7 @@ const SignInForm = (props: SignInFormProps) => {
                                     type="text"
                                     autoComplete="off"
                                     name="userName"
-                                    placeholder="Login"
+                                    placeholder="Insira um usuário, email ou CPF"
                                     component={Input}
                                 />
                             </FormItem>
