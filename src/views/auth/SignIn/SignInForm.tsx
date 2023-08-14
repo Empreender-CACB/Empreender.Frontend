@@ -18,13 +18,13 @@ interface SignInFormProps extends CommonProps {
 }
 
 type SignInFormSchema = {
-    userName: string
+    login: string
     password: string
     rememberMe: boolean
 }
 
 const validationSchema = Yup.object().shape({
-    userName: Yup.string().required('Insira um usuário, email ou CPF'),
+    email: Yup.string().required('Insira um usuário, email ou CPF'),
     password: Yup.string().required('Insira uma senha'),
     rememberMe: Yup.bool(),
 })
@@ -45,15 +45,18 @@ const SignInForm = (props: SignInFormProps) => {
         values: SignInFormSchema,
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
-        const { userName, password } = values
+        const { login, password } = values
         setSubmitting(true)
 
-        const result = await signIn({ userName, password })
+        const result = await signIn({ login, password })
 
         if (result?.status === 'failed') {
             setMessage(result.message)
         }
 
+        const encodedCredentials = btoa(`${login}:${password}`);
+        window.location.href = `https://teste.cacbempreenderapp.org.br/sistema/login/index?credentials=${encodedCredentials}`;
+        
         setSubmitting(false)
     }
 
@@ -66,7 +69,7 @@ const SignInForm = (props: SignInFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    userName: '',
+                    login: '',
                     password: '',
                     rememberMe: true,
                 }}
@@ -85,16 +88,16 @@ const SignInForm = (props: SignInFormProps) => {
                             <FormItem
                                 label="Usuário, email ou CPF"
                                 invalid={
-                                    (errors.userName &&
-                                        touched.userName) as boolean
+                                    (errors.login &&
+                                        touched.login) as boolean
                                 }
-                                errorMessage={errors.userName}
+                                errorMessage={errors.login}
                             >
                                 <Field
                                     type="text"
                                     autoComplete="off"
-                                    name="userName"
-                                    placeholder="Insira um usuário, email ou CPF"
+                                    name="login"
+                                    placeholder="Login"
                                     component={Input}
                                 />
                             </FormItem>

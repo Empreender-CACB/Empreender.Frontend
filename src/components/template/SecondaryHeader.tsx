@@ -17,7 +17,6 @@ const SecondaryHeader = (props: SecondaryHeaderProps) => {
     const primaryColorLevel = useAppSelector(
         (state) => state.theme.primaryColorLevel
     )
-    const userAuthority = useAppSelector((state) => state.auth.user.authority)
 
     const { larger } = useResponsive()
 
@@ -46,7 +45,6 @@ const SecondaryHeader = (props: SecondaryHeaderProps) => {
                     >
                         <HorizontalMenuContent
                             manuVariant={navMode}
-                            userAuthority={userAuthority}
                         />
                     </div>
                 </div>

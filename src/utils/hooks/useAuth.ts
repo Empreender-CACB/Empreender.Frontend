@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { apiSignIn, apiSignOut, apiSignUp } from '@/services/AuthService'
 import {
     setUser,
@@ -27,8 +29,8 @@ function useAuth() {
         values: SignInCredential
     ): Promise<
         | {
-              status: Status
-              message: string
+            status: Status
+            message: string
           }
         | undefined
     > => {
@@ -36,28 +38,33 @@ function useAuth() {
             const resp = await apiSignIn(values)
             if (resp.data) {
                 const { token } = resp.data
-                dispatch(signInSuccess(token))
+                dispatch(signInSuccess(token.token))
+
                 if (resp.data.user) {
-                    dispatch(
-                        setUser(
-                            resp.data.user || {
-                                avatar: '',
-                                userName: 'Anonymous',
-                                authority: ['USER'],
-                                email: '',
-                            }
-                        )
-                    )
+                    const adaptedUser = {
+                        nucpf: resp.data.user.nucpf,
+                        nmusuario: resp.data.user.nmusuario,
+                        dsemail: resp.data.user.dsemail,
+                        perfil: resp.data.user.perfil,
+                        cod_perfil: resp.data.user.cod_perfil,
+                        fotouser: resp.data.user.fotouser,
+                        recursos: resp.data.user.recursos,
+                    }
+
+                    dispatch(setUser(adaptedUser))
                 }
+
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
                 navigate(
                     redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
                 )
+
                 return {
                     status: 'success',
                     message: '',
                 }
             }
+
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {
             return {
@@ -67,53 +74,19 @@ function useAuth() {
         }
     }
 
-    const signUp = async (values: SignUpCredential) => {
-        try {
-            const resp = await apiSignUp(values)
-            if (resp.data) {
-                const { token } = resp.data
-                dispatch(signInSuccess(token))
-                if (resp.data.user) {
-                    dispatch(
-                        setUser(
-                            resp.data.user || {
-                                avatar: '',
-                                userName: 'Anonymous',
-                                authority: ['USER'],
-                                email: '',
-                            }
-                        )
-                    )
-                }
-                const redirectUrl = query.get(REDIRECT_URL_KEY)
-                navigate(
-                    redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
-                )
-                return {
-                    status: 'success',
-                    message: '',
-                }
-            }
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        } catch (errors: any) {
-            return {
-                status: 'failed',
-                message: errors?.response?.data?.message || errors.toString(),
-            }
-        }
-    }
+    const signUp = async (values: SignUpCredential) => {}
 
     const handleSignOut = () => {
-        dispatch(signOutSuccess())
-        dispatch(
-            setUser({
-                avatar: '',
-                userName: '',
-                email: '',
-                authority: [],
-            })
-        )
-        navigate(appConfig.unAuthenticatedEntryPath)
+        // dispatch(signOutSuccess())
+        // dispatch(
+        //     setUser({
+        //         avatar: '',
+        //         userName: '',
+        //         email: '',
+        //         authority: [],
+        //     })
+        // )
+        // navigate(appConfig.unAuthenticatedEntryPath)
     }
 
     const signOut = async () => {

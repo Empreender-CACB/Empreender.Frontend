@@ -1,6 +1,5 @@
 import navigationConfig from '@/configs/navigation.config'
 import Dropdown from '@/components/ui/Dropdown'
-import AuthorityCheck from '@/components/shared/AuthorityCheck'
 import HorizontalMenuItem from './HorizontalMenuItem'
 import HorizontalMenuDropdownItem from './HorizontalMenuDropdownItem'
 import {
@@ -17,38 +16,25 @@ type HorizontalMenuContentProps = {
 }
 
 const HorizontalMenuContent = ({
-    manuVariant,
-    userAuthority = [],
+    manuVariant
 }: HorizontalMenuContentProps) => {
-
     const renderSubMenuItems = (subMenu: NavigationTree[]) => {
-
         return subMenu.map((subNavItem) => {
             if (subNavItem.type === NAV_ITEM_TYPE_ITEM) {
                 return (
-                    <AuthorityCheck
+                    <HorizontalMenuDropdownItem
                         key={subNavItem.key}
-                        authority={subNavItem.authority}
-                        userAuthority={userAuthority}
-                    >
-                        <HorizontalMenuDropdownItem
-                            nav={subNavItem}
-                        />
-                    </AuthorityCheck>
+                        nav={subNavItem}
+                    />
                 )
             } else if (subNavItem.type === NAV_ITEM_TYPE_COLLAPSE) {
                 return (
-                    <AuthorityCheck
+                    <Dropdown.Menu
                         key={subNavItem.key}
-                        authority={subNavItem.authority}
-                        userAuthority={userAuthority}
+                        title={subNavItem.title}
                     >
-                        <Dropdown.Menu
-                            title={subNavItem.title}
-                        >
-                            {renderSubMenuItems(subNavItem.subMenu)}
-                        </Dropdown.Menu>
-                    </AuthorityCheck>
+                        {renderSubMenuItems(subNavItem.subMenu)}
+                    </Dropdown.Menu>
                 )
             }
             return null
@@ -57,39 +43,32 @@ const HorizontalMenuContent = ({
 
     const renderMenuItems = (navItems: NavigationTree[]) => {
         return navItems.map((navItem) => {
-            if (navItem.type === NAV_ITEM_TYPE_TITLE || navItem.type === NAV_ITEM_TYPE_COLLAPSE) {
+            if (
+                navItem.type === NAV_ITEM_TYPE_TITLE ||
+                navItem.type === NAV_ITEM_TYPE_COLLAPSE
+            ) {
                 return (
-                    <AuthorityCheck
+                    <Dropdown
                         key={navItem.key}
-                        authority={navItem.authority}
-                        userAuthority={userAuthority}
+                        trigger="hover"
+                        renderTitle={
+                            <HorizontalMenuItem
+                                manuVariant={manuVariant}
+                                nav={navItem}
+                            />
+                        }
                     >
-                        <Dropdown
-                            trigger="hover"
-                            renderTitle={
-                                <HorizontalMenuItem
-                                    manuVariant={manuVariant}
-                                    nav={navItem}
-                                />
-                            }
-                        >
-                            {renderSubMenuItems(navItem.subMenu)}
-                        </Dropdown>
-                    </AuthorityCheck>
+                        {renderSubMenuItems(navItem.subMenu)}
+                    </Dropdown>
                 )
             } else if (navItem.type === NAV_ITEM_TYPE_ITEM) {
                 return (
-                    <AuthorityCheck
+                    <HorizontalMenuItem
                         key={navItem.key}
-                        authority={navItem.authority}
-                        userAuthority={userAuthority}
-                    >
-                        <HorizontalMenuItem
-                            isLink
-                            nav={navItem}
-                            manuVariant={manuVariant}
-                        />
-                    </AuthorityCheck>
+                        isLink
+                        nav={navItem}
+                        manuVariant={manuVariant}
+                    />
                 )
             }
             return null

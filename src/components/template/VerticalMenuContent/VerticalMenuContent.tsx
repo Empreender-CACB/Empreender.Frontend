@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import Menu from '@/components/ui/Menu'
-import AuthorityCheck from '@/components/shared/AuthorityCheck'
 import VerticalSingleMenuItem from './VerticalSingleMenuItem'
 import VerticalCollapsedMenuItem from './VerticalCollapsedMenuItem'
 import { themeConfig } from '@/configs/theme.config'
@@ -10,7 +9,6 @@ import {
     NAV_ITEM_TYPE_ITEM,
 } from '@/constants/navigation.constant'
 import useMenuActive from '@/utils/hooks/useMenuActive'
-import { useTranslation } from 'react-i18next'
 import { Direction, NavMode } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation'
 
@@ -19,7 +17,6 @@ export interface VerticalMenuContentProps {
     collapsed?: boolean
     routeKey: string
     navigationTree?: NavigationTree[]
-    userAuthority: string[]
     onMenuItemClick?: () => void
     direction?: Direction
 }
@@ -32,12 +29,9 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         collapsed,
         routeKey,
         navigationTree = [],
-        userAuthority = [],
         onMenuItemClick,
         direction = themeConfig.direction,
     } = props
-
-    const { t } = useTranslation()
 
     const [defaulExpandKey, setDefaulExpandKey] = useState<string[]>([])
 
@@ -61,7 +55,6 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
                     key={nav.key}
                     nav={nav}
                     sideCollapsed={collapsed}
-                    userAuthority={userAuthority}
                     direction={direction}
                     onLinkClick={handleLinkClick}
                 />
@@ -74,7 +67,6 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
                     key={nav.key}
                     nav={nav}
                     sideCollapsed={collapsed}
-                    userAuthority={userAuthority}
                     direction={direction}
                     onLinkClick={onMenuItemClick}
                 />
@@ -84,35 +76,27 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         if (nav.type === NAV_ITEM_TYPE_TITLE) {
             if (nav.subMenu.length > 0) {
                 return (
-                    <AuthorityCheck
-                        key={nav.key}
-                        userAuthority={userAuthority}
-                        authority={nav.authority}
-                    >
-                        <MenuGroup label={t(nav.translateKey) || nav.title}>
-                            {nav.subMenu.map((subNav) =>
-                                subNav.subMenu.length > 0 ? (
-                                    <VerticalCollapsedMenuItem
-                                        key={subNav.key}
-                                        nav={subNav}
-                                        sideCollapsed={collapsed}
-                                        userAuthority={userAuthority}
-                                        direction={direction}
-                                        onLinkClick={onMenuItemClick}
-                                    />
-                                ) : (
-                                    <VerticalSingleMenuItem
-                                        key={subNav.key}
-                                        nav={subNav}
-                                        sideCollapsed={collapsed}
-                                        userAuthority={userAuthority}
-                                        direction={direction}
-                                        onLinkClick={onMenuItemClick}
-                                    />
-                                )
-                            )}
-                        </MenuGroup>
-                    </AuthorityCheck>
+                    <MenuGroup key={nav.key} label={nav.title}>
+                        {nav.subMenu.map((subNav) =>
+                            subNav.subMenu.length > 0 ? (
+                                <VerticalCollapsedMenuItem
+                                    key={subNav.key}
+                                    nav={subNav}
+                                    sideCollapsed={collapsed}
+                                    direction={direction}
+                                    onLinkClick={onMenuItemClick}
+                                />
+                            ) : (
+                                <VerticalSingleMenuItem
+                                    key={subNav.key}
+                                    nav={subNav}
+                                    sideCollapsed={collapsed}
+                                    direction={direction}
+                                    onLinkClick={onMenuItemClick}
+                                />
+                            )
+                        )}
+                    </MenuGroup>
                 )
             } else {
                 ;<MenuGroup label={nav.title} />

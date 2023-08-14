@@ -9,7 +9,6 @@ import {
     SIDE_NAV_CONTENT_GUTTER,
 } from '@/constants/theme.constant'
 import { NAV_ITEM_TYPE_ITEM } from '@/constants/navigation.constant'
-import AuthorityCheck from '@/components/shared/AuthorityCheck'
 import navigationConfig from '@/configs/navigation.config'
 import navigationIcon from '@/configs/navigation-icon.config'
 import useMenuActive from '@/utils/hooks/useMenuActive'
@@ -45,7 +44,6 @@ const StackedSideNavMini = (props: StackedSideNavMiniProps) => {
         routeKey,
         activeKeys,
         onSetActiveKey,
-        userAuthority,
         mode,
         direction,
         ...rest
@@ -109,11 +107,7 @@ const StackedSideNavMini = (props: StackedSideNavMiniProps) => {
                     defaultActiveKeys={activeKeys || [includedRouteTree.key]}
                 >
                     {navigationConfig.map((nav) => (
-                        <AuthorityCheck
-                            key={nav.key}
-                            authority={nav.authority}
-                            userAuthority={userAuthority}
-                        >
+                        <>
                             {nav.subMenu && nav.subMenu.length > 0 ? (
                                 <Menu.MenuItem
                                     eventKey={nav.key}
@@ -151,7 +145,7 @@ const StackedSideNavMini = (props: StackedSideNavMiniProps) => {
                                     </Menu.MenuItem>
                                 </Link>
                             )}
-                        </AuthorityCheck>
+                        </>
                     ))}
                 </Menu>
             </ScrollBar>
