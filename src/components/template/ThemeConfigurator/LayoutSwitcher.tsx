@@ -24,7 +24,7 @@ const layouts = [
     },
     {
         value: LAYOUT_TYPE_MODERN,
-        label: 'Mordern',
+        label: 'Modern',
         src: '/img/thumbs/layouts/modern.jpg',
         srcDark: '/img/thumbs/layouts/modern-dark.jpg',
     },
