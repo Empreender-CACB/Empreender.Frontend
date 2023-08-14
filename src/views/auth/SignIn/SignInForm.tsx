@@ -24,7 +24,7 @@ type SignInFormSchema = {
 }
 
 const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Insira um usuário, email ou CPF'),
+    login: Yup.string().required('Insira um usuário, email ou CPF'),
     password: Yup.string().required('Insira uma senha'),
     rememberMe: Yup.bool(),
 })
@@ -52,10 +52,11 @@ const SignInForm = (props: SignInFormProps) => {
 
         if (result?.status === 'failed') {
             setMessage(result.message)
+        } else {
+            const encodedCredentials = btoa(`${login}:${password}`);
+            window.location.href = `https://teste.cacbempreenderapp.org.br/sistema/login/index?credentials=${encodedCredentials}`;
         }
 
-        const encodedCredentials = btoa(`${login}:${password}`);
-        window.location.href = `https://teste.cacbempreenderapp.org.br/sistema/login/index?credentials=${encodedCredentials}`;
         
         setSubmitting(false)
     }
