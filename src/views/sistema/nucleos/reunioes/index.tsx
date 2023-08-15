@@ -109,7 +109,7 @@ const NucleoReunioes = () => {
                                 <Button size="xs" icon={<HiOutlineReply />}>
                                     <Link
                                         className="menu-item-link"
-                                        to={`https://teste.cacbempreenderapp.org.br/sistema/nucleo/nucleo-lista-reuniao/nid/${btoa(String(nucleo.idnucleo))}`}
+                                        to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/nucleo-lista-reuniao/nid/${btoa(String(nucleo.idnucleo))}`}
                                     >
                                         Visualizar versão antiga
                                     </Link>

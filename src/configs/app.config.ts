@@ -1,5 +1,5 @@
 export type AppConfig = {
-    apiPrefix: string
+    apiPrefix?: string
     authenticatedEntryPath: string
     unAuthenticatedEntryPath: string
     tourPath: string
@@ -8,7 +8,7 @@ export type AppConfig = {
 }
 
 const appConfig: AppConfig = {
-    apiPrefix: 'https://api.cacbempreenderapp.org.br',
+    apiPrefix: import.meta.env.VITE_API_URL,
     authenticatedEntryPath: '/sistema/inicio',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/app/account/kyc-form',

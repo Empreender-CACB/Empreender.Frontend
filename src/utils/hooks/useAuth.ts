@@ -64,7 +64,6 @@ function useAuth() {
                     message: '',
                 }
             }
-
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {
             return {
@@ -77,20 +76,27 @@ function useAuth() {
     const signUp = async (values: SignUpCredential) => {}
 
     const handleSignOut = () => {
-        // dispatch(signOutSuccess())
-        // dispatch(
-        //     setUser({
-        //         avatar: '',
-        //         userName: '',
-        //         email: '',
-        //         authority: [],
-        //     })
-        // )
-        // navigate(appConfig.unAuthenticatedEntryPath)
+        console.log('sign out ein')
+        dispatch(signOutSuccess())
+        dispatch(
+            setUser({
+                nucpf: '',
+                nmusuario: '',
+                dsemail: '',
+                perfil: '',
+                cod_perfil: 0,
+                fotouser: '',
+                recursos: [],
+            })
+        )
+
+        window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/adminutils/retornar-sessao-usuario?isExternal=true`;
+
+        navigate(appConfig.unAuthenticatedEntryPath)
     }
 
     const signOut = async () => {
-        await apiSignOut()
+        // await apiSignOut()
         handleSignOut()
     }
 

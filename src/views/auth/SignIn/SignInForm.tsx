@@ -54,7 +54,7 @@ const SignInForm = (props: SignInFormProps) => {
             setMessage(result.message)
         } else {
             const encodedCredentials = btoa(`${login}:${password}`);
-            window.location.href = `https://teste.cacbempreenderapp.org.br/sistema/login/index?credentials=${encodedCredentials}`;
+            window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/login/index?credentials=${encodedCredentials}`;
         }
 
         

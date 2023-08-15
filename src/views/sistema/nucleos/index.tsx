@@ -175,7 +175,7 @@ const Nucleos = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`https://teste.cacbempreenderapp.org.br/sistema/nucleo`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo`}
                         >
                             Visualizar versão antiga
                         </Link>

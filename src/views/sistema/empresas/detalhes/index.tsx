@@ -8,8 +8,6 @@ import { Link, useParams } from 'react-router-dom'
 import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple'
 import isEmpty from 'lodash/isEmpty'
 import {
-    HiOutlineDocumentAdd,
-    HiOutlineInformationCircle,
     HiOutlinePencil,
     HiOutlineReply,
     HiOutlineUserAdd,
@@ -20,6 +18,7 @@ import { noEmpty } from '@/utils/noEmpty'
 import ContatosEmpresa from './contatos'
 import { Empresa } from '@/@types/generalTypes'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
+import axios from 'axios'
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -31,20 +30,16 @@ const EmpresaDetalhes = () => {
 
     useEffect(() => {
         async function fetchEmpresa() {
-            const response = await fetch(
-                `https://api.cacbempreenderapp.org.br/empresas/${idempresa}`
-            )
-
-            if (response.ok) {
-                const data = await response.json()
-                setEmpresa(data)
-                setLoading(false)
-            } else {
-                console.error(
-                    'Erro na requisição:',
-                    response.status,
-                    response.statusText
-                )
+            try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/empresas/${idempresa}`
+                );
+                
+                setEmpresa(response.data);
+                setLoading(false);
+                
+            } catch (error) {
+                console.error('Erro na requisição');
             }
         }
 
@@ -73,7 +68,7 @@ const EmpresaDetalhes = () => {
                             <Button size="xs" icon={<HiOutlineReply />}>
                                 <Link
                                     className="menu-item-link"
-                                    to={`https://teste.cacbempreenderapp.org.br/sistema/empresa/detalhe/eid/${btoa(String(empresa.idempresa))}`}
+                                    to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(empresa.idempresa))}`}
                                 >
                                     Visualizar versão antiga
                                 </Link>
