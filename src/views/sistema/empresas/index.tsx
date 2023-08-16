@@ -42,11 +42,11 @@ const columns = [
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
         defaultFlex: 1,
-        dateFormat: 'MM-DD-YYYY',
+        dateFormat: 'DD-MM-YYYY',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'MM-DD-YYYY',
+                dateFormat: 'DD-MM-YYYY',
                 placeholder:
                     index === 1
                         ? 'A data é anterior à...'
