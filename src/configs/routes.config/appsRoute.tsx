@@ -51,6 +51,12 @@ const appsRoute: Routes = [
             footer: false
         },
     },
+    {
+        key: 'sistemaUsuario.usuarios',
+        path: `${APP_PREFIX_PATH}/usuarios`,
+        component: lazy(() => import('@/views/sistema/usuarios')),
+        authority: [ADMIN, USER],
+    },
 ]
 
 export default appsRoute

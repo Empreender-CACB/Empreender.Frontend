@@ -212,7 +212,7 @@ const appsNavigationConfig: NavigationTree[] = [
             },
             {
                 key: 'appsUsuarios.listar',
-                path: 'https://teste.cacbempreenderapp.org.br/sistema/usuario/',
+                path: `${APP_PREFIX_PATH}/usuarios`,
                 title: 'Listar Usuários',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,
