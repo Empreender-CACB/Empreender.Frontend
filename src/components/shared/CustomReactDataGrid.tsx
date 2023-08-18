@@ -119,6 +119,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 enableFiltering={true}
                 style={gridStyle}
                 enableColumnAutosize ={false}
+                disableGroupByToolbar = {true}
                 pagination
             />
         </div>
