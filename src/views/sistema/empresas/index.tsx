@@ -24,6 +24,9 @@ moment.locale('pt-br')
 
 const columns = [
     { name: 'idempresa', header: 'ID', type: 'string' },
+    { name: 'nmuf', header: 'UF', type: 'string' },
+    { name: 'nmcidade', header: 'Cidade', type: 'string' },
+    { name: 'restrita', header: 'Restrita', type: 'boolean' },
     {
         name: 'nmfantasia',
         header: 'Nome',
