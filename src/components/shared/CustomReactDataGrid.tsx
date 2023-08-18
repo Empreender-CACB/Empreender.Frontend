@@ -56,7 +56,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     eq: 'Igual',
     notEmpty: 'Não vazio',
     before:" Antes",
-    beforeOrOn: 'Antes de',
+    beforeOrOn: 'Antes de ou em',
     afterOrOn: 'A partir de',
     after: 'Após',
     empty: 'Vazio',
