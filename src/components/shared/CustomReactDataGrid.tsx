@@ -55,6 +55,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     neq: 'Diferente',
     eq: 'Igual',
     notEmpty: 'Não vazio',
+    before:" Antes",
     beforeOrOn: 'Antes de',
     afterOrOn: 'A partir de',
     after: 'Após',
@@ -120,7 +121,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 style={gridStyle}
                 enableColumnAutosize ={false}
                 disableGroupByToolbar = {true}
-                pagination
+                lock
             />
         </div>
     )
