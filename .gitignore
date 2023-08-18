@@ -26,3 +26,4 @@ build
 *.sw?
 .vite-cache/
 .env
+.env
