@@ -33,6 +33,8 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     perPageText: 'Resultados por página',
     showingText: 'Mostrando ',
     clearAll: 'Limpar tudo',
+    inList: 'Na lista',
+    notInList:"Fora da lista",
     clear: 'Limpar',
     showFilteringRow: 'Mostrar linha de filtragem',
     hideFilteringRow: 'Esconder linha de filtragem',
@@ -55,7 +57,8 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     neq: 'Diferente',
     eq: 'Igual',
     notEmpty: 'Não vazio',
-    beforeOrOn: 'Antes de',
+    before:" Antes",
+    beforeOrOn: 'Antes de ou em',
     afterOrOn: 'A partir de',
     after: 'Após',
     empty: 'Vazio',
@@ -118,7 +121,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 dataSource={loadData}
                 enableFiltering={true}
                 style={gridStyle}
-                pagination
+                enableColumnAutosize ={false}
+                emptyText = "Não há dados para serem exibidos"
+                disableGroupByToolbar = {true}
+                lock
             />
         </div>
     )
