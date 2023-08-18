@@ -120,6 +120,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 enableFiltering={true}
                 style={gridStyle}
                 enableColumnAutosize ={false}
+                emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
                 lock
             />

@@ -67,7 +67,7 @@ const columns = [
       }
     },
     { name: 'nmcidade', header: 'Cidade', type: 'string' },
-    { name: 'restrita', header: 'Restrita', type: 'boolean' },
+    { name: 'restrita', header: 'Restrita', type: 'select' },
     {
         name: 'nmfantasia',
         header: 'Nome',
@@ -103,6 +103,13 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
+    { name: 'flativo', header: 'Ativa',
+    filterEditor: SelectFilter,
+    filterEditorProps: {
+        dataSource: [{name:"ATIVA",value:"S"},{name:"INATIVA",value:"N"}].map(choice => {
+          return { id: choice.value, label: choice.name}
+        }),
+      } },
 ]
 
 const defaultFilterValue = [
@@ -137,6 +144,11 @@ const defaultFilterValue = [
         operator: 'contains',
         type: 'string',
         value: '',
+    },
+    {
+        name: 'flativo',
+        type: 'select',
+        value:''
     },
 ]
 
