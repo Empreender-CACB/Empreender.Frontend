@@ -33,6 +33,8 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     perPageText: 'Resultados por página',
     showingText: 'Mostrando ',
     clearAll: 'Limpar tudo',
+    inList: 'Na lista',
+    notInList:"Fora da lista",
     clear: 'Limpar',
     showFilteringRow: 'Mostrar linha de filtragem',
     hideFilteringRow: 'Esconder linha de filtragem',
