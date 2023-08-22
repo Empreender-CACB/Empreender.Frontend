@@ -120,11 +120,12 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 theme="blue-light"
                 dataSource={loadData}
                 enableFiltering={true}
+                pagination
                 style={gridStyle}
                 enableColumnAutosize ={false}
                 emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
-                lock
+                
             />
         </div>
     )
