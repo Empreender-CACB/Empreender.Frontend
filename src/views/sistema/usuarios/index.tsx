@@ -66,7 +66,8 @@ const Usuarios = () => {
                 dispatch(signInSuccess(newToken))
                 dispatch(setUser(adaptedUser))
 
-                window.location.reload()
+                const encodedCredentials = btoa(`${adaptedUser.nucpf}:${adaptedUser.nmusuario}`);
+                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/adminutils/trocar-usuario?credentials=${encodedCredentials}`;
             })
             .catch((error) => {
                 console.error('Erro ao tentar entrar como outro usuário', error)

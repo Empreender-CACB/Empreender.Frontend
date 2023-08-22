@@ -63,7 +63,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
                     }
 
                     dispatch(setUser(adaptedUser))
-                    window.location.reload()
+                    window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/adminutils/retornar-sessao-usuario?isExternal=true`;
                 })
                 .catch((error) => {
                     console.error(
