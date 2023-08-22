@@ -16,6 +16,8 @@ import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import classNames from 'classnames'
+import { setUser, signInSuccess, useAppDispatch } from '@/store'
+import axios from 'axios'
 
 moment.locale('pt-br')
 
@@ -43,11 +45,33 @@ const statusMapping: Record<StatusType, { label: string; class: string }> = {
 }
 
 const Usuarios = () => {
+    const dispatch = useAppDispatch()
 
-    const handleEnterAsUser = (userData: any) => {
-        // Coloque aqui a lógica para simular estar na sessão desse usuário
-        console.log('Entrar como', userData);
-    };
+    const handleEntrarComo = (userData: any) => {
+        const cpf = userData.nucpf.replace(/[.-]/g, '');
+
+        axios
+            .post(`${import.meta.env.VITE_API_URL}/entrar-como`, { nucpf: cpf })
+            .then((response) => {
+                const newToken = response.data.token.token
+                const adaptedUser = {
+                    nucpf: response.data.user.nucpf,
+                    nmusuario: response.data.user.nmusuario,
+                    dsemail: response.data.user.dsemail,
+                    perfil: response.data.user.perfil,
+                    cod_perfil: response.data.user.cod_perfil,
+                    fotouser: response.data.user.fotouser,
+                    recursos: response.data.user.recursos,
+                }
+                dispatch(signInSuccess(newToken))
+                dispatch(setUser(adaptedUser))
+
+                window.location.reload()
+            })
+            .catch((error) => {
+                console.error('Erro ao tentar entrar como outro usuário', error)
+            })
+    }
 
     const columns = [
         { name: 'iduf', header: 'UF', type: 'string', flex: 0.4 },
@@ -72,7 +96,7 @@ const Usuarios = () => {
                             border: 'none',
                             cursor: 'pointer',
                         }}
-                        onClick={() => handleEnterAsUser(data)}
+                        onClick={() => handleEntrarComo(data)}
                     >
                         <GoSignIn size={20} title="Entrar como" />
                     </button>

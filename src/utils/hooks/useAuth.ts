@@ -51,6 +51,7 @@ function useAuth() {
                         recursos: resp.data.user.recursos,
                     }
 
+                    localStorage.setItem('originalToken', token.token);
                     dispatch(setUser(adaptedUser))
                 }
 
@@ -76,7 +77,6 @@ function useAuth() {
     const signUp = async (values: SignUpCredential) => {}
 
     const handleSignOut = () => {
-        console.log('sign out ein')
         dispatch(signOutSuccess())
         dispatch(
             setUser({
@@ -89,9 +89,9 @@ function useAuth() {
                 recursos: [],
             })
         )
+        localStorage.removeItem('originalToken');
 
         window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/adminutils/retornar-sessao-usuario?isExternal=true`;
-
         navigate(appConfig.unAuthenticatedEntryPath)
     }
 
