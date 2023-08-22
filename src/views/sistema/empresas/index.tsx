@@ -9,13 +9,15 @@ import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import Radio from '@/components/ui/Radio'
+import { Button, Tag  } from '@/components/ui'
+import classNames from 'classnames'
+import { useState } from 'react'
 
 import {
     HiDownload,
     HiOutlineReply,
     HiPlusCircle,
 } from 'react-icons/hi'
-import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
@@ -23,6 +25,24 @@ import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 moment.locale('pt-br')
 
+type StatusType = 'S' | 'N'
+
+const statusMapping: Record<StatusType, { label: string; class: string }> = {
+    S: {
+        label: 'Ativa',
+        class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
+    },
+    N: {
+        label: 'Inativa',
+        class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
+    },
+}
+
+
+const activeValue=[
+    { name: 'Ativa', value: 'S' },
+    { name: 'Inativa', value: 'N' },
+]
 const estadosBrasileiros=[
     { sigla: 'AC', nome: 'ACRE' },
     { sigla: 'AL', nome: 'ALAGOAS' },
@@ -53,10 +73,8 @@ const estadosBrasileiros=[
     { sigla: 'TO', nome: 'TOCANTINS' }
   ]
   
-
-
 const columns = [
-    { name: 'idempresa', header: 'ID', type: 'string' },
+    { name: 'idempresa', header: 'ID', type: 'string', defaultFlex: 0.6 },
     { name: 'nmuf', header: 'UF', type: 'select',
     filterEditor: SelectFilter,
     filterEditorProps: {
@@ -67,7 +85,6 @@ const columns = [
       }
     },
     { name: 'nmcidade', header: 'Cidade', type: 'string' },
-    { name: 'restrita', header: 'Restrita', type: 'select' },
     {
         name: 'nmfantasia',
         header: 'Nome',
@@ -103,13 +120,26 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
-    { name: 'flativo', header: 'Ativa',
+    { name: 'flativo', header: 'Ativa', type: 'select',
     filterEditor: SelectFilter,
     filterEditorProps: {
-        dataSource: [{name:"ATIVA",value:"S"},{name:"INATIVA",value:"N"}].map(choice => {
-          return { id: choice.value, label: choice.name}
+        multiple: true,
+        dataSource: activeValue.map(option => {
+          return { id: option.value, label: option.name}
         }),
-      } },
+      },
+      render: ({ value }: any) => (
+        <div className="flex items-center justify-center">
+            <Tag
+                className={classNames(
+                    'border-0 rounded-md ltr:ml-2 rtl:mr-2',
+                    statusMapping[value as StatusType]?.class || ''
+                )}
+            >
+                {statusMapping[value as StatusType]?.label || ''}
+            </Tag>
+        </div>
+    ), },
 ]
 
 const defaultFilterValue = [
@@ -147,18 +177,26 @@ const defaultFilterValue = [
     },
     {
         name: 'flativo',
+        operator:"inlist",
         type: 'select',
         value:''
     },
 ]
 
 const Empresas = () => {
+    
+    const [nameValue, setNameValue] = useState('nmfantasia')
+
+    const onChange = (val: string) => {
+        setNameValue(val)
+    }
 
     const radioGroup = (
-        <Radio.Group className="pb-4 lg:mb-0">
+         
+        <Radio.Group className="pb-4 lg:mb-0" value={nameValue} onChange={onChange}>
             <span className="pr-2">Nome: </span>
             <Radio value={'nmfantasia'}>Fantasia</Radio>
-            <Radio value={'nurazaosocial'}>Razão Social </Radio>
+            <Radio value={'nurazaosocial'}>Razão Social</Radio>
         </Radio.Group>
     );
 
@@ -205,7 +243,7 @@ const Empresas = () => {
             <CustomReactDataGrid
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/empresas`}
+                url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}`}
                 options={radioGroup}
             />
             
