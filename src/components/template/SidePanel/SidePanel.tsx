@@ -39,12 +39,13 @@ const _SidePanel = (props: SidePanelProps) => {
                 <HiOutlineCog />
             </div>
             <Drawer
-                title="Theme Config"
+                title="Configuração do tema"
                 isOpen={panelExpand}
                 placement={direction === 'rtl' ? 'left' : 'right'}
                 width={375}
                 onClose={closePanel}
                 onRequestClose={closePanel}
+                overlayClassName="bg-opacity-60"
             >
                 <SidePanelContent callBackClose={closePanel} />
             </Drawer>

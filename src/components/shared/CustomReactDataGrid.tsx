@@ -2,7 +2,7 @@
 import React, { useState, useCallback, FC } from 'react'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-
+import { Button } from '../ui'
 interface CustomReactDataGridProps {
     columns: any[];
     defaultFilterValue: any;
@@ -81,6 +81,7 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
 
+    const [gridRef, setGridRef] = useState(null)
     const loadData = async (params: LoadDataParams) => {
         try {
             const { skip, limit, sortInfo, groupBy, filterValue } = params;
@@ -112,7 +113,15 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     return (
         <div>
             {options}
+            <div style={{ marginBottom: 20 }}>
+        <Button size='sm' onClick={()=> {
+          gridRef.current.clearAllFilters()
+        }}>
+          Limpar filtros
+        </Button>
+      </div>
             <ReactDataGrid
+                onReady={setGridRef}
                 i18n={i18n}
                 idProperty="id"
                 defaultFilterValue={defaultFilterValue}
