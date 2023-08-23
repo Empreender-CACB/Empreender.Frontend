@@ -34,8 +34,8 @@ const PageContainer = (props: PageContainerProps) => {
         extraHeader,
         footer = true,
     } = props
-    const initialValue = document.body.style.zoom;
-    document.body.style.zoom = "95%";
+    
+    //document.body.style.transform = 'scale(0.95)';
 
     return (
         <div className="h-full flex flex-auto flex-col justify-between">

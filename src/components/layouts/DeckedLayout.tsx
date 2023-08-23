@@ -31,6 +31,8 @@ const HeaderActionsEnd = () => {
 }
 
 const DeckedLayout = () => {
+    //document.body.style.zoom = "90%";
+    
     return (
         <div className="app-layout-simple flex flex-auto flex-col min-h-screen">
             <div className="flex flex-auto min-w-0">
