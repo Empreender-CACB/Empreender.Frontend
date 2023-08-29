@@ -115,7 +115,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 const relativeUrl = response.data;
                 const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '');
     
-                const baseUrl = 'http://localhost:3333'; // Remove the trailing slash
+                const baseUrl = 'http://api.cacbempreenderapp.org.br'; // Remove the trailing slash
                 const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
 
                 alert(absoluteUrl)
