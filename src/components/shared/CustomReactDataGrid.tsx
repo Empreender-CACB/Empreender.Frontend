@@ -171,7 +171,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
           Exportar
         </Button>
       </div>
-      <pre>{JSON.stringify(queryParams, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(queryParams, null, 2)}</pre> */}
 
             <ReactDataGrid
                 onReady={setGridRef}
