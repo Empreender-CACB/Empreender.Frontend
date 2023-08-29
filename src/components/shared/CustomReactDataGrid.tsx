@@ -3,6 +3,7 @@ import React, { useState, useCallback, FC } from 'react'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button } from '../ui'
+import { HiDownload } from 'react-icons/hi'
 interface CustomReactDataGridProps {
     columns: any[];
     defaultFilterValue: any;
@@ -25,7 +26,9 @@ type LoadDataParams = {
     sortInfo: SortInfo;
     groupBy?: string;
     filterValue: FilterValue;
+    exportOption?: boolean ;
 };
+
 
 const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     pageText: 'Página ',
@@ -82,10 +85,52 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
 
     const [gridRef, setGridRef] = useState(null)
-    const loadData = async (params: LoadDataParams) => {
+    const [queryParams, setQueryParams] = useState<LoadDataParams>({
+        skip: 0,
+        limit: 10,
+        sortInfo: {
+            field: '', 
+            order: 'ASC'
+          },
+        groupBy: '',
+        filterValue: {},
+      });
+      
+    const loadData = async (params: any, exportExcel=false) => {
         try {
             const { skip, limit, sortInfo, groupBy, filterValue } = params;
     
+            if(exportExcel){
+                const response = await axios.get(url, {
+                    params: {
+                        skip: skip,
+                        limit: limit,
+                        exportExcel:true,
+                        groupBy: groupBy && groupBy.length ? groupBy : undefined,
+                        sortInfo: JSON.stringify(sortInfo),
+                        filterBy: JSON.stringify(filterValue)
+                    }
+                });  
+
+                const relativeUrl = response.data;
+                const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '');
+    
+                const baseUrl = 'http://api.cacbempreenderapp.org.br'; // Remove the trailing slash
+                const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
+
+
+                const blob = new Blob([absoluteUrl], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const urlDownload = URL.createObjectURL(blob);
+                const anchor = document.createElement('a');
+                anchor.href = urlDownload;
+                anchor.download = 'Data.xlsx';
+                anchor.click();
+                URL.revokeObjectURL(urlDownload);
+
+
+                return response.data;
+                }
+
             const response = await axios.get(url, {
                 params: {
                     skip: skip,
@@ -95,6 +140,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                     filterBy: JSON.stringify(filterValue)
                 }
             });
+
+
     
             const totalCount = response.headers['x-total-count'];
             const data = response.data.data;
@@ -110,6 +157,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
     const gridStyle = { minHeight: 750, width: '100%' };
 
+    const handleFilterValueChange = (newFilterValue: any) => {
+        //console.log(newFilterValue)
+        setQueryParams((prevParams) => ({
+          ...prevParams,
+          filterValue: newFilterValue,
+        }));
+      };
+
     return (
         <div>
             {options}
@@ -119,10 +174,18 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         }}>
           Limpar filtros
         </Button>
+        <Button icon={<HiDownload />} className='mx-2' size='sm' onClick={()=> {
+          loadData(queryParams,true)
+        }}>
+          Exportar
+        </Button>
       </div>
+      <pre>{JSON.stringify(queryParams, null, 2)}</pre>
+
             <ReactDataGrid
                 onReady={setGridRef}
                 i18n={i18n}
+                onFilterValueChange={handleFilterValueChange}
                 idProperty="id"
                 defaultFilterValue={defaultFilterValue}
                 columns={columns}
@@ -134,6 +197,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 enableColumnAutosize ={false}
                 emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
+                
                 
             />
         </div>
