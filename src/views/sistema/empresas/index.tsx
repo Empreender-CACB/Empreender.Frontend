@@ -220,9 +220,6 @@ const Empresas = () => {
                         to="/data/product-list.csv"
                         target="_blank"
                     >
-                        <Button block size="sm" icon={<HiDownload />}>
-                            Exportar
-                        </Button>
                     </Link>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
