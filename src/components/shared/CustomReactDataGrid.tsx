@@ -3,7 +3,7 @@ import React, { useState, useCallback, FC } from 'react'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button } from '../ui'
-import { HiDownload } from 'react-icons/hi'
+import { HiDownload, HiFilter } from 'react-icons/hi'
 interface CustomReactDataGridProps {
     columns: any[];
     defaultFilterValue: any;
@@ -160,7 +160,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         <div>
             {options}
             <div style={{ marginBottom: 20 }}>
-        <Button size='sm' onClick={()=> {
+        <Button icon={<HiFilter />}  size='sm' onClick={()=> {
           gridRef.current.clearAllFilters()
         }}>
           Limpar filtros
