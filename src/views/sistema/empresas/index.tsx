@@ -12,6 +12,7 @@ import Radio from '@/components/ui/Radio'
 import { Button, Tag  } from '@/components/ui'
 import classNames from 'classnames'
 import { useState } from 'react'
+import Select from '@/components/ui/Select'
 
 import {
     HiDownload,
@@ -185,19 +186,55 @@ const defaultFilterValue = [
 
 const Empresas = () => {
     
+    const colourOptions = [
+        { value: 'bares e restaurantes', label: 'Bares e Restaurantes', color: '#00B8D9' },
+
+    ]
+
     const [nameValue, setNameValue] = useState('nmfantasia')
+    const [empresaType, setEmpresaType] = useState('todas')
 
     const onChange = (val: string) => {
         setNameValue(val)
     }
 
+    const onChangeEmpresa = (val: string) => {
+        setEmpresaType(val)
+    }
+
     const radioGroup = (
          
-        <Radio.Group className="pb-4 lg:mb-0" value={nameValue} onChange={onChange}>
-            <span className="pr-2">Nome: </span>
+        <div className='pb-4'>
+        <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
+            <span className="pr-2 font-black">Nome: </span>
             <Radio value={'nmfantasia'}>Fantasia</Radio>
             <Radio value={'nurazaosocial'}>Razão Social</Radio>
         </Radio.Group>
+        <Radio.Group className=" pb-4 lg:mb-0" value={empresaType} onChange={onChangeEmpresa}>
+            <span className="pr-2 font-black">Empresa: </span>
+            <Radio value={'todas'}>Todas</Radio>
+            <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
+            <Radio value={'nao_nucleadas'}>Somente não nucleadas</Radio>
+            <Radio value={'projetos'}>Projeto</Radio>
+        </Radio.Group>
+        <div>
+
+            <div className='col-span-1'>
+            <span className="font-black">Segmento: </span>
+
+            <Select
+                isMulti
+                placeholder="Selecione uma opção"
+                defaultValue={[colourOptions[0]]}
+                options={colourOptions}
+            />  
+            </div>
+
+        </div>
+        </div>
+
+
+        
     );
 
     return (
@@ -240,7 +277,7 @@ const Empresas = () => {
             <CustomReactDataGrid
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}`}
+                url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
             />
             
