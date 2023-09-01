@@ -1,4 +1,3 @@
-import navigationConfig from '@/configs/navigation.config'
 import Dropdown from '@/components/ui/Dropdown'
 import HorizontalMenuItem from './HorizontalMenuItem'
 import HorizontalMenuDropdownItem from './HorizontalMenuDropdownItem'
@@ -9,6 +8,7 @@ import {
 } from '@/constants/navigation.constant'
 import type { NavMode } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation' // Import NavigationTree type
+import { useNavigationConfig } from '@/utils/hooks/useNavigation'
 
 type HorizontalMenuContentProps = {
     manuVariant: NavMode
@@ -18,6 +18,11 @@ type HorizontalMenuContentProps = {
 const HorizontalMenuContent = ({
     manuVariant
 }: HorizontalMenuContentProps) => {
+
+    const { navigationConfig } = useNavigationConfig();
+    
+    console.log(navigationConfig);
+
     const renderSubMenuItems = (subMenu: NavigationTree[]) => {
         return subMenu.map((subNavItem) => {
             if (subNavItem.type === NAV_ITEM_TYPE_ITEM) {
@@ -77,7 +82,7 @@ const HorizontalMenuContent = ({
 
     return (
         <span className="flex items-center">
-            {renderMenuItems(navigationConfig)}
+            {navigationConfig && renderMenuItems(navigationConfig)}
         </span>
     )
 }
