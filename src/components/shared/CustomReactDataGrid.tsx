@@ -4,6 +4,7 @@ import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button } from '../ui'
 import { HiDownload, HiFilter } from 'react-icons/hi'
+import { useAppSelector } from '@/store'
 interface CustomReactDataGridProps {
     columns: any[];
     defaultFilterValue: any;
@@ -91,6 +92,12 @@ const footerRows = [
 
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
+
+    const { preferencias } = useAppSelector(
+      (state) => state.auth.user
+  )
+
+    const itemsPerPage = preferencias.lista_geral || 20;
 
     const [gridRef, setGridRef] = useState(null)
     const [queryParams, setQueryParams] = useState<LoadDataParams>({
@@ -190,6 +197,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 columns={columns}
                 theme="blue-light"
                 dataSource={loadData}
+                defaultLimit={itemsPerPage}
                 enableFiltering={true}
                 pagination
                 style={gridStyle}
