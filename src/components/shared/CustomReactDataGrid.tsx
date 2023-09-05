@@ -97,7 +97,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       (state) => state.auth.user
   )
 
-    const itemsPerPage = preferencias.lista_geral || 20;
+  const itemsPerPage = preferencias && preferencias.lista_geral !== undefined ? preferencias.lista_geral : 20;
 
     const [gridRef, setGridRef] = useState(null)
     const [queryParams, setQueryParams] = useState<LoadDataParams>({
@@ -204,9 +204,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 enableColumnAutosize ={false}
                 emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
-                footerRows = {footerRows}
-                
-                
             />
         </div>
     )
