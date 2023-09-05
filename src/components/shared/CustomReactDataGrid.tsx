@@ -81,6 +81,14 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
 })
 
 
+const footerRows = [
+    {
+      render: {
+        name: <b>Nothing to render here</b>
+      }
+    }
+  ]
+
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
 
@@ -188,6 +196,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 enableColumnAutosize ={false}
                 emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
+                footerRows = {footerRows}
                 
                 
             />

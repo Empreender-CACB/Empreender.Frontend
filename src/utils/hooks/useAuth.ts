@@ -49,6 +49,7 @@ function useAuth() {
                         cod_perfil: resp.data.user.cod_perfil,
                         fotouser: resp.data.user.fotouser,
                         recursos: resp.data.user.recursos,
+                        preferencias: resp.data.user.preferencias,
                     }
 
                     localStorage.setItem('originalToken', token.token);
@@ -87,6 +88,7 @@ function useAuth() {
                 cod_perfil: 0,
                 fotouser: '',
                 recursos: [],
+                preferencias: [],
             })
         )
         localStorage.removeItem('originalToken');

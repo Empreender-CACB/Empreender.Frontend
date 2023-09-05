@@ -9,6 +9,7 @@ export type UserState = {
     cod_perfil?: number
     fotouser?: string
     recursos?: string[]
+    preferencias?: string[]
 }
 
 const initialState: UserState = {
@@ -19,6 +20,7 @@ const initialState: UserState = {
     cod_perfil: 0,
     fotouser: '',
     recursos: [],
+    preferencias: [],
 }
 
 const userSlice = createSlice({
@@ -33,6 +35,7 @@ const userSlice = createSlice({
             state.fotouser = action.payload?.fotouser
             state.cod_perfil = action.payload?.cod_perfil
             state.recursos = action.payload?.recursos
+            state.preferencias = action.payload?.preferencias
         },
     },
 })

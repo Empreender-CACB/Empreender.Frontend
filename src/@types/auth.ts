@@ -16,6 +16,7 @@ export type SignInResponse = {
         perfil: string;
         cod_perfil: number;
         recursos: string[];
+        preferencias: string[];
         fotouser?: string;
     };
 }

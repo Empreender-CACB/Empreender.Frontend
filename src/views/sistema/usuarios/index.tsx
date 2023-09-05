@@ -62,6 +62,7 @@ const Usuarios = () => {
                     cod_perfil: response.data.user.cod_perfil,
                     fotouser: response.data.user.fotouser,
                     recursos: response.data.user.recursos,
+                    preferencias: response.data.user.preferencias,
                 }
                 dispatch(signInSuccess(newToken))
                 dispatch(setUser(adaptedUser))
