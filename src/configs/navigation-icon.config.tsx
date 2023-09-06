@@ -12,6 +12,20 @@ import {
     HiOutlineCog,
 } from 'react-icons/hi'
 
+import {
+    FcBusinessman,
+    FcCollaboration,
+    FcDepartment,
+    FcDiploma2,
+    FcDocument,
+    FcFile,
+    FcHome,
+    FcMenu,
+    FcParallelTasks,
+    FcSettings,
+    FcShop,
+} from 'react-icons/fc'
+
 export type NavigationIcons = Record<string, JSX.Element>
 
 const navigationIcon: NavigationIcons = {
@@ -26,6 +40,20 @@ const navigationIcon: NavigationIcons = {
     files: <HiOutlineDocumentDuplicate />,
     curriculos: <HiOutlineClipboardList />,
     adm: <HiOutlineCog />,
+}
+
+export const navigationIconFC: NavigationIcons = {
+    apps: <FcMenu />,
+    project: <FcParallelTasks />,
+    home: <FcHome />,
+    entities: <FcDepartment />,
+    nucleos: <FcCollaboration />,
+    companies: <FcShop />,
+    users: <FcBusinessman />,
+    reports: <FcDocument />,
+    files: <FcFile />,
+    curriculos: <FcDiploma2 />,
+    adm: <FcSettings />,
 }
 
 export default navigationIcon

@@ -1,4 +1,4 @@
-import navigationIcon from '@/configs/navigation-icon.config'
+import { navigationIconFC } from '@/configs/navigation-icon.config'
 import MenuItem from '@/components/ui/MenuItem'
 import HorizontalMenuNavLink from './HorizontalMenuNavLink'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +27,7 @@ const HorizontalMenuItem = ({
 
     const itemTitle = translateKey ? t(translateKey, title) : title;
 
-    const renderIcon = icon && <span className="text-2xl">{navigationIcon[icon]}</span>
+    const renderIcon = icon && <span className="text-2xl">{navigationIconFC[icon]}</span>
 
     return (
         <>
