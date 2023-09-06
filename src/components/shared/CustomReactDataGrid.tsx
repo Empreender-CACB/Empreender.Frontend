@@ -5,6 +5,8 @@ import axios from 'axios'
 import { Button } from '../ui'
 import { HiDownload, HiFilter } from 'react-icons/hi'
 import { useAppSelector } from '@/store'
+import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
+
 interface CustomReactDataGridProps {
     columns: any[];
     defaultFilterValue: any;
@@ -66,6 +68,9 @@ const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
     afterOrOn: 'A partir de',
     after: 'Após',
     empty: 'Vazio',
+    inlist: 'Na lista',
+    notinlist: 'Fora da lista',
+    noRecords: 'Nenhum dado disponível',
     inrange: 'No intervalo',
     notinrange: 'Fora do intervalo',
     lt: 'Menor que',
@@ -91,7 +96,7 @@ const footerRows = [
   ]
 
 
-const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
+const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options   }) => {
 
     const { preferencias } = useAppSelector(
       (state) => state.auth.user
@@ -171,6 +176,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         }));
       };
 
+      console.log("🚀 ~ file: CustomReactDataGrid.tsx:177 ~ defaultFilterValue:", defaultFilterValue)
+
     return (
         <div>
             {options}
@@ -187,6 +194,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         </Button>
       </div>
       {/* <pre>{JSON.stringify(queryParams, null, 2)}</pre> */}
+      {/* <pre>{columns.header}</pre> */}
+      
 
             <ReactDataGrid
                 onReady={setGridRef}
