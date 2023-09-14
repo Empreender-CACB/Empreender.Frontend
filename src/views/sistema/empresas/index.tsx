@@ -237,23 +237,27 @@ const Empresas = () => {
             <Radio value={'nao_nucleadas'}>Somente não nucleadas</Radio>
             <Radio value={'projetos'}>Projeto</Radio>
         </Radio.Group>
+
+      {empresaType === 'somente_nucleadas' && (
         <div>
 
-            <div className='col-span-1'>
-            <span className="font-black">Segmento: </span>
+        <div className='col-span-1'>
+        <span className="font-black">Segmento: </span>
 
-            <Select
-                isMulti
-                placeholder="Selecione uma opção"
-                defaultValue={[colourOptions[0]]}
-                options={options}
-                noOptionsMessage={() => 'Sem dados!'}     
-                loadingMessage={() => 'Carregando'}
-                           //onChange={(selected) => setSelectedOptions(selected)}
-            />  
-            </div>
-
+        <Select
+            isMulti
+            placeholder="Selecione uma opção"
+            defaultValue={[colourOptions[0]]}
+            options={options}
+            noOptionsMessage={() => 'Sem dados!'}     
+            loadingMessage={() => 'Carregando'}
+        />  
         </div>
+
+    </div>
+      )}
+    
+
         </div>
 
 
