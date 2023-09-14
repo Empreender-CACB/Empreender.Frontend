@@ -211,6 +211,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 pagination
                 style={gridStyle}
                 enableColumnAutosize ={false}
+                loadingText = "Carregando ... "
                 emptyText = "Não há dados para serem exibidos"
                 disableGroupByToolbar = {true}
             />

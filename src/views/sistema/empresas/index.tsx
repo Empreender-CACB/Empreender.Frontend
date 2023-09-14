@@ -11,8 +11,9 @@ import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import Radio from '@/components/ui/Radio'
 import { Button, Tag  } from '@/components/ui'
 import classNames from 'classnames'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
+import axios from 'axios'
 
 import {
     HiDownload,
@@ -187,12 +188,31 @@ const defaultFilterValue = [
 const Empresas = () => {
     
     const colourOptions = [
-        { value: 'bares e restaurantes', label: 'Bares e Restaurantes', color: '#00B8D9' },
+        { value: 'bares e restaurantes', label: 'Bares e Restaurantes'},
 
     ]
 
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [empresaType, setEmpresaType] = useState('todas')
+    const [options, setOptions] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+
+    useEffect(() => {
+        // Fazer a solicitação à API
+        axios.get('https://api.cacbempreenderapp.org.br/segmentos')
+          .then((response) => {
+            // Mapear os dados da API para o formato esperado pelo Select
+            const mappedOptions = response.data.map((segmento) => ({
+              value: segmento.idsegmento.toString(),
+              label: segmento.dssegmento,
+            }));
+            // Definir as opções no estado
+            setOptions(mappedOptions);
+          })
+          .catch((error) => {
+            console.error('Erro ao buscar dados da API:', error);
+          });
+      }, []);
 
     const onChange = (val: string) => {
         setNameValue(val)
@@ -226,7 +246,10 @@ const Empresas = () => {
                 isMulti
                 placeholder="Selecione uma opção"
                 defaultValue={[colourOptions[0]]}
-                options={colourOptions}
+                options={options}
+                noOptionsMessage={() => 'Sem dados!'}     
+                loadingMessage={() => 'Carregando'}
+                           //onChange={(selected) => setSelectedOptions(selected)}
             />  
             </div>
 
