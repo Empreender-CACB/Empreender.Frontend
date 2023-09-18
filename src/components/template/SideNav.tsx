@@ -10,10 +10,11 @@ import {
     LOGO_X_GUTTER,
 } from '@/constants/theme.constant'
 import Logo from '@/components/template/Logo'
-import navigationConfig from '@/configs/navigation.config'
+// import navigationConfig from '@/configs/navigation.config'
 import VerticalMenuContent from '@/components/template/VerticalMenuContent'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useAppSelector } from '@/store'
+import { useNavigationConfig } from '@/utils/hooks/useNavigation'
 
 const sideNavStyle = {
     width: SIDE_NAV_WIDTH,
@@ -39,7 +40,6 @@ const SideNav = () => {
     const sideNavCollapse = useAppSelector(
         (state) => state.theme.layout.sideNavCollapse
     )
-    const userAuthority = useAppSelector((state) => state.auth.user.authority)
 
     const { larger } = useResponsive()
 
@@ -62,13 +62,14 @@ const SideNav = () => {
         return navMode
     }
 
+    const { navigationConfig } = useNavigationConfig()
+
     const menuContent = (
         <VerticalMenuContent
             navMode={navMode}
             collapsed={sideNavCollapse}
             navigationTree={navigationConfig}
             routeKey={currentRouteKey}
-            userAuthority={userAuthority as string[]}
             direction={direction}
         />
     )

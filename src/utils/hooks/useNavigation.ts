@@ -1,9 +1,10 @@
 // useNavigationConfig.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { NavigationTree } from '@/@types/navigation';
 
 export const useNavigationConfig = () => {
-  const [navigationConfig, setNavigationConfig] = useState([]);
+  const [navigationConfig, setNavigationConfig] = useState<NavigationTree[]>([]);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {

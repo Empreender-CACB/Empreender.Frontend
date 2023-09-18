@@ -9,7 +9,7 @@ import {
     SIDE_NAV_CONTENT_GUTTER,
 } from '@/constants/theme.constant'
 import { NAV_ITEM_TYPE_ITEM } from '@/constants/navigation.constant'
-import navigationConfig from '@/configs/navigation.config'
+// import navigationConfig from '@/configs/navigation.config'
 import navigationIcon from '@/configs/navigation-icon.config'
 import useMenuActive from '@/utils/hooks/useMenuActive'
 import isEmpty from 'lodash/isEmpty'
@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom'
 import type { NavigationTree } from '@/@types/navigation'
 import type { Direction, NavMode, Mode } from '@/@types/theme'
 import type { CommonProps } from '@/@types/common'
+import { useNavigationConfig } from '@/utils/hooks/useNavigation'
 
 export type SelectedMenuItem = {
     key?: string
@@ -32,7 +33,6 @@ interface StackedSideNavMiniProps extends CommonProps {
     routeKey: string
     activeKeys: string[]
     onSetActiveKey: (activeKey: string[]) => void
-    userAuthority: string[]
     mode: Mode
     direction: Direction
 }
@@ -49,7 +49,11 @@ const StackedSideNavMini = (props: StackedSideNavMiniProps) => {
         ...rest
     } = props
 
+    const { navigationConfig } = useNavigationConfig()
+
     const { includedRouteTree } = useMenuActive(navigationConfig, routeKey)
+
+    console.log(includedRouteTree)
 
     const logoMode = () => {
         if (navMode === NAV_MODE_THEMED) {

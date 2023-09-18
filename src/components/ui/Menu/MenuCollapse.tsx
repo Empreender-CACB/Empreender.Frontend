@@ -27,7 +27,7 @@ const MenuCollapse = (props: MenuCollapseProps) => {
 
     const [isExpanded, setIsExpanded] = useState(expanded)
 
-    const { menuItemHeight, variant, sideCollapsed, defaultExpandedKeys } =
+    const { variant, sideCollapsed, defaultExpandedKeys } =
         useContext(MenuContext)
 
     const { direction } = useConfig()
@@ -50,14 +50,7 @@ const MenuCollapse = (props: MenuCollapseProps) => {
     }
 
     const getChildrenHeight = () => {
-        let height: string | number = 0
-        if (isExpanded && children && (children as ReactNode[]).length) {
-            height = (children as ReactNode[]).length * (menuItemHeight || 0)
-        }
-        if (isExpanded && children && !(children as ReactNode[]).length) {
-            height = menuItemHeight || 0
-        }
-        return height
+        return 'auto'
     }
 
     const menuCollapseItemClass = classNames(

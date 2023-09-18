@@ -8,9 +8,10 @@ import {
 } from '@/constants/theme.constant'
 import withHeaderItem, { WithHeaderItemProps } from '@/utils/hoc/withHeaderItem'
 import NavToggle from '@/components/shared/NavToggle'
-import navigationConfig from '@/configs/navigation.config'
+// import navigationConfig from '@/configs/navigation.config'
 import useResponsive from '@/utils/hooks/useResponsive'
 import { useAppSelector } from '@/store'
+import { useNavigationConfig } from '@/utils/hooks/useNavigation'
 
 const VerticalMenuContent = lazy(
     () => import('@/components/template/VerticalMenuContent')
@@ -26,6 +27,8 @@ const MobileNavToggle = withHeaderItem<
 
 const MobileNav = () => {
     const [isOpen, setIsOpen] = useState(false)
+
+    const { navigationConfig } = useNavigationConfig()
 
     const openDrawer = () => {
         setIsOpen(true)
