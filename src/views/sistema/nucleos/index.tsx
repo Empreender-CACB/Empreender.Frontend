@@ -177,7 +177,7 @@ const Nucleos = () => {
                             className="menu-item-link"
                             to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo`}
                         >
-                            Visualizar versão antiga
+                            Versão antiga
                         </Link>
                     </Button>
 

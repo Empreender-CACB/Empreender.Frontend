@@ -278,7 +278,7 @@ const Empresas = () => {
                             className="menu-item-link"
                             to={`${import.meta.env.VITE_API_URL}/sistema/empresa/`}
                         >
-                            Visualizar versão antiga
+                            Versão antiga
                         </Link>
                     </Button>
                     <Link

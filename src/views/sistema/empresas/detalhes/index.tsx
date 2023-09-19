@@ -70,7 +70,7 @@ const EmpresaDetalhes = () => {
                                     className="menu-item-link"
                                     to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(empresa.idempresa))}`}
                                 >
-                                    Visualizar versão antiga
+                                    Versão antiga
                                 </Link>
                             </Button>
 

@@ -111,7 +111,7 @@ const NucleoReunioes = () => {
                                         className="menu-item-link"
                                         to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/nucleo-lista-reuniao/nid/${btoa(String(nucleo.idnucleo))}`}
                                     >
-                                        Visualizar versão antiga
+                                        Versão antiga
                                     </Link>
                                 </Button>
 
