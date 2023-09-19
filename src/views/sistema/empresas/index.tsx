@@ -46,13 +46,13 @@ const activeValue = [
     { name: 'Inativa', value: 'N' },
 ]
 const estadosBrasileiros = [
-    { sigla: 'AC', nome: 'ACRE' },
-    { sigla: 'AL', nome: 'ALAGOAS' },
+    { sigla: 'AC', nome: 'AC' },
+    { sigla: 'AL', nome: 'AL' },
     { sigla: 'AP', nome: 'AMAPA' },
     { sigla: 'AM', nome: 'AMAZONAS' },
     { sigla: 'BA', nome: 'BAHIA' },
     { sigla: 'CE', nome: 'CEARA' },
-    { sigla: 'DF', nome: 'DISTRITO FEDERAL' },
+    { sigla: 'DF', nome: 'DF' },
     { sigla: 'ES', nome: 'ESPIRITO SANTO' },
     { sigla: 'GO', nome: 'GOIAS' },
     { sigla: 'MA', nome: 'MARANHAO' },
@@ -78,12 +78,14 @@ const estadosBrasileiros = [
 const columns = [
     { name: 'idempresa', header: 'ID', type: 'string', defaultFlex: 0.6 },
     {
-        name: 'nmuf', header: 'UF', type: 'select',
+        name: 'uf.iduf', header: 'UF', type: 'select',
         filterEditor: SelectFilter,
         filterEditorProps: {
             multiple: true,
             dataSource: estadosBrasileiros.map(state => {
-                return { id: state.nome, label: state.sigla }
+                //use isso para retornar  o nome do estado ao inves da sigla, seguindo o map de estados 
+                return { id: state.sigla, label: state.sigla }
+                //return { id: state.sigla, label: state.sigla }
             }),
         }
     },
@@ -154,7 +156,7 @@ const defaultFilterValue = [
         value: '',
     },
     {
-        name: 'nmuf',
+        name: 'uf.iduf',
         operator: "inlist",
         type: 'select',
         value: ''
