@@ -9,7 +9,7 @@ import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import Radio from '@/components/ui/Radio'
-import { Button, Tag  } from '@/components/ui'
+import { Button, Tag } from '@/components/ui'
 import classNames from 'classnames'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
@@ -41,11 +41,11 @@ const statusMapping: Record<StatusType, { label: string; class: string }> = {
 }
 
 
-const activeValue=[
+const activeValue = [
     { name: 'Ativa', value: 'S' },
     { name: 'Inativa', value: 'N' },
 ]
-const estadosBrasileiros=[
+const estadosBrasileiros = [
     { sigla: 'AC', nome: 'ACRE' },
     { sigla: 'AL', nome: 'ALAGOAS' },
     { sigla: 'AP', nome: 'AMAPA' },
@@ -73,18 +73,19 @@ const estadosBrasileiros=[
     { sigla: 'SP', nome: 'SAO PAULO' },
     { sigla: 'SE', nome: 'SERGIPE' },
     { sigla: 'TO', nome: 'TOCANTINS' }
-  ]
-  
+]
+
 const columns = [
     { name: 'idempresa', header: 'ID', type: 'string', defaultFlex: 0.6 },
-    { name: 'nmuf', header: 'UF', type: 'select',
-    filterEditor: SelectFilter,
-    filterEditorProps: {
-        multiple: true,
-        dataSource: estadosBrasileiros.map(state => {
-          return { id: state.nome, label: state.sigla}
-        }),
-      }
+    {
+        name: 'nmuf', header: 'UF', type: 'select',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            multiple: true,
+            dataSource: estadosBrasileiros.map(state => {
+                return { id: state.nome, label: state.sigla }
+            }),
+        }
     },
     { name: 'nmcidade', header: 'Cidade', type: 'string' },
     {
@@ -122,26 +123,28 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
-    { name: 'flativo', header: 'Ativa', type: 'select',
-    filterEditor: SelectFilter,
-    filterEditorProps: {
-        multiple: true,
-        dataSource: activeValue.map(option => {
-          return { id: option.value, label: option.name}
-        }),
-      },
-      render: ({ value }: any) => (
-        <div className="flex items-center justify-center">
-            <Tag
-                className={classNames(
-                    'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                    statusMapping[value as StatusType]?.class || ''
-                )}
-            >
-                {statusMapping[value as StatusType]?.label || ''}
-            </Tag>
-        </div>
-    ), },
+    {
+        name: 'flativo', header: 'Ativa', type: 'select',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            multiple: true,
+            dataSource: activeValue.map(option => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ value }: any) => (
+            <div className="flex items-center justify-center">
+                <Tag
+                    className={classNames(
+                        'border-0 rounded-md ltr:ml-2 rtl:mr-2',
+                        statusMapping[value as StatusType]?.class || ''
+                    )}
+                >
+                    {statusMapping[value as StatusType]?.label || ''}
+                </Tag>
+            </div>
+        ),
+    },
 ]
 
 const defaultFilterValue = [
@@ -153,9 +156,9 @@ const defaultFilterValue = [
     },
     {
         name: 'nmuf',
-        operator:"inlist",
+        operator: "inlist",
         type: 'select',
-        value:''
+        value: ''
     },
     {
         name: 'nmcidade',
@@ -179,16 +182,16 @@ const defaultFilterValue = [
     },
     {
         name: 'flativo',
-        operator:"inlist",
+        operator: "inlist",
         type: 'select',
-        value:''
+        value: ''
     },
 ]
 
 const Empresas = () => {
-    
+
     const colourOptions = [
-        { value: 'bares e restaurantes', label: 'Bares e Restaurantes'},
+        { value: 'bares e restaurantes', label: 'Bares e Restaurantes' },
 
     ]
 
@@ -199,69 +202,75 @@ const Empresas = () => {
 
     useEffect(() => {
         // Fazer a solicitação à API
-        axios.get('https://api.cacbempreenderapp.org.br/segmentos')
-          .then((response) => {
-            // Mapear os dados da API para o formato esperado pelo Select
-            const mappedOptions = response.data.map((segmento) => ({
-              value: segmento.idsegmento.toString(),
-              label: segmento.dssegmento,
-            }));
-            // Definir as opções no estado
-            setOptions(mappedOptions);
-          })
-          .catch((error) => {
-            console.error('Erro ao buscar dados da API:', error);
-          });
-      }, []);
+        axios.get('http://localhost:3333/segmentos')
+            .then((response) => {
+                // Mapear os dados da API para o formato esperado pelo Select
+                const mappedOptions = response.data.map((segmento) => ({
+                    value: segmento.idsegmento.toString(),
+                    label: segmento.dssegmento,
+                }));
+                // Definir as opções no estado
+                setOptions(mappedOptions);
+            })
+            .catch((error) => {
+                console.error('Erro ao buscar dados da API:', error);
+            });
+    }, []);
+
+    const onChangeSegmentos = (e: any) => {
+        console.log(e)
+    }
 
     const onChange = (val: string) => {
         setNameValue(val)
     }
+
 
     const onChangeEmpresa = (val: string) => {
         setEmpresaType(val)
     }
 
     const radioGroup = (
-         
+
         <div className='pb-4'>
-        <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
-            <span className="pr-2 font-black">Nome: </span>
-            <Radio value={'nmfantasia'}>Fantasia</Radio>
-            <Radio value={'nurazaosocial'}>Razão Social</Radio>
-        </Radio.Group>
-        <Radio.Group className=" pb-4 lg:mb-0" value={empresaType} onChange={onChangeEmpresa}>
-            <span className="pr-2 font-black">Empresa: </span>
-            <Radio value={'todas'}>Todas</Radio>
-            <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
-            <Radio value={'nao_nucleadas'}>Somente não nucleadas</Radio>
-            <Radio value={'projetos'}>Projeto</Radio>
-        </Radio.Group>
+            <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
+                <span className="pr-2 font-black">Nome: </span>
+                <Radio value={'nmfantasia'}>Fantasia</Radio>
+                <Radio value={'nurazaosocial'}>Razão Social</Radio>
+            </Radio.Group>
+            <Radio.Group className=" pb-4 lg:mb-0" value={empresaType} onChange={onChangeEmpresa}>
+                <span className="pr-2 font-black">Empresa: </span>
+                <Radio value={'todas'}>Todas</Radio>
+                <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
+                <Radio value={'nao_nucleadas'}>Somente não nucleadas</Radio>
+                <Radio value={'projetos'}>Projeto</Radio>
+            </Radio.Group>
 
-      {empresaType === 'somente_nucleadas' && (
-        <div>
+            {empresaType === 'somente_nucleadas' && (
+                <div>
 
-        <div className='col-span-1'>
-        <span className="font-black">Segmento: </span>
+                    <div className='col-span-1'>
+                        <span className="font-black">Segmento: </span>
 
-        <Select
-            isMulti
-            placeholder="Selecione uma opção"
-            defaultValue={[colourOptions[0]]}
-            options={options}
-            noOptionsMessage={() => 'Sem dados!'}     
-            loadingMessage={() => 'Carregando'}
-        />  
+                        <Select
+                            isMulti
+                            placeholder="Selecione uma opção"
+                            defaultValue={[colourOptions[0]]}
+                            options={options}
+                            noOptionsMessage={() => 'Sem dados!'}
+                            loadingMessage={() => 'Carregando'}
+                            onChange={onChangeSegmentos}
+                        />
+                    </div>
+
+                </div>
+            )}
+
+
         </div>
 
-    </div>
-      )}
-    
-
-        </div>
 
 
-        
     );
 
     return (
@@ -300,14 +309,13 @@ const Empresas = () => {
                     </Link>
                 </div>
             </div>
-
             <CustomReactDataGrid
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
             />
-            
+
         </AdaptableCard>
     )
 }
