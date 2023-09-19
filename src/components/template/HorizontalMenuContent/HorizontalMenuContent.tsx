@@ -20,8 +20,6 @@ const HorizontalMenuContent = ({
 }: HorizontalMenuContentProps) => {
 
     const { navigationConfig } = useNavigationConfig();
-    
-    console.log(navigationConfig);
 
     const renderSubMenuItems = (subMenu: NavigationTree[]) => {
         return subMenu.map((subNavItem) => {

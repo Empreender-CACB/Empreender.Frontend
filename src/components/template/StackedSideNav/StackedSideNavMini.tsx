@@ -53,8 +53,6 @@ const StackedSideNavMini = (props: StackedSideNavMiniProps) => {
 
     const { includedRouteTree } = useMenuActive(navigationConfig, routeKey)
 
-    console.log(includedRouteTree)
-
     const logoMode = () => {
         if (navMode === NAV_MODE_THEMED) {
             return NAV_MODE_DARK

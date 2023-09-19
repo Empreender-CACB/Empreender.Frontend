@@ -36,7 +36,6 @@ const Logo = (props: LogoProps) => {
         logoWidthAux = '180px'
     }
 
-console.log(layoutType);
     return (
         <div
             className={classNames('logo', className)}

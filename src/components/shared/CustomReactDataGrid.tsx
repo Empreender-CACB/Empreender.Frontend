@@ -169,14 +169,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     const gridStyle = { minHeight: 750, width: '100%' };
 
     const handleFilterValueChange = (newFilterValue: any) => {
-        //console.log(newFilterValue)
         setQueryParams((prevParams) => ({
           ...prevParams,
           filterValue: newFilterValue,
         }));
       };
-
-      console.log("🚀 ~ file: CustomReactDataGrid.tsx:177 ~ defaultFilterValue:", defaultFilterValue)
 
     return (
         <div>

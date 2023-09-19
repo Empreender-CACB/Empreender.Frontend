@@ -1,107 +1,101 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Menu from '@/components/ui/Menu'
-import VerticalSingleMenuItem from './VerticalSingleMenuItem'
-import VerticalCollapsedMenuItem from './VerticalCollapsedMenuItem'
 import { themeConfig } from '@/configs/theme.config'
-import {
-    NAV_ITEM_TYPE_TITLE,
-    NAV_ITEM_TYPE_COLLAPSE,
-    NAV_ITEM_TYPE_ITEM,
-} from '@/constants/navigation.constant'
 import useMenuActive from '@/utils/hooks/useMenuActive'
-import { Direction, NavMode } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation'
+import { Link } from 'react-router-dom'
+import VerticalMenuIcon from './VerticalMenuIcon'
+import { NavMode } from '@/@types/theme'
 
-export interface VerticalMenuContentProps {
-    navMode: NavMode
-    collapsed?: boolean
-    routeKey: string
-    navigationTree?: NavigationTree[]
-    onMenuItemClick?: () => void
-    direction?: Direction
+interface MenuItemProps {
+    nav: NavigationTree
+    onLinkClick: () => void
 }
 
-const { MenuGroup } = Menu
+const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick }) => {
+    if (nav.subMenu && nav.subMenu.length > 0) {
+        return (
+            <Menu.MenuCollapse
+                key={nav.key}
+                label={
+                    <>
+                        <VerticalMenuIcon icon={nav.icon} />
+                        <span
+                            style={{
+                                whiteSpace: 'normal',
+                                wordWrap: 'break-word',
+                                maxWidth: '150px',
+                            }}
+                        >
+                            {nav.title}
+                        </span>
+                    </>
+                }
+                eventKey={nav.key}
+                expanded={false}
+                className="mb-2"
+            >
+                {nav.subMenu.map((subNav) => (
+                    <MenuItem
+                        key={subNav.key}
+                        nav={subNav}
+                        onLinkClick={onLinkClick}
+                    />
+                ))}
+            </Menu.MenuCollapse>
+        )
+    } else {
+        return (
+            <Menu.MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
+                <Link
+                    to={nav.path}
+                    className="flex items-center h-full w-full"
+                    onClick={onLinkClick}
+                >
+                    <VerticalMenuIcon icon={nav.icon} />
+                    <span
+                        style={{
+                            whiteSpace: 'normal',
+                            wordWrap: 'break-word',
+                            maxWidth: '150px',
+                        }}
+                    >
+                        {nav.title}
+                    </span>
+                </Link>
+            </Menu.MenuItem>
+        )
+    }
+}
 
-const VerticalMenuContent = (props: VerticalMenuContentProps) => {
-    const {
-        navMode = themeConfig.navMode,
-        collapsed,
-        routeKey,
-        navigationTree = [],
-        onMenuItemClick,
-        direction = themeConfig.direction,
-    } = props
+interface VerticalMenuContentProps {
+    navMode: NavMode
+    collapsed: boolean
+    routeKey: string
+    navigationTree: NavigationTree[]
+    onMenuItemClick: () => void
+    direction: string
+}
 
+const VerticalMenuContent: React.FC<VerticalMenuContentProps> = ({
+    navMode = themeConfig.navMode,
+    collapsed,
+    routeKey,
+    navigationTree = [],
+    onMenuItemClick,
+    // direction = themeConfig.direction,
+}) => {
     const [defaulExpandKey, setDefaulExpandKey] = useState<string[]>([])
-
     const { activedRoute } = useMenuActive(navigationTree, routeKey)
 
     useEffect(() => {
         if (defaulExpandKey.length === 0 && activedRoute?.parentKey) {
             setDefaulExpandKey([activedRoute?.parentKey])
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activedRoute?.parentKey])
+    }, [activedRoute?.parentKey, defaulExpandKey.length])
 
     const handleLinkClick = () => {
-        onMenuItemClick?.()
-    }
-
-    const getNavItem = (nav: NavigationTree) => {
-        if (nav.subMenu.length === 0 && nav.type === NAV_ITEM_TYPE_ITEM) {
-            return (
-                <VerticalSingleMenuItem
-                    key={nav.key}
-                    nav={nav}
-                    sideCollapsed={collapsed}
-                    direction={direction}
-                    onLinkClick={handleLinkClick}
-                />
-            )
-        }
-
-        if (nav.subMenu.length > 0 && nav.type === NAV_ITEM_TYPE_COLLAPSE) {
-            return (
-                <VerticalCollapsedMenuItem
-                    key={nav.key}
-                    nav={nav}
-                    sideCollapsed={collapsed}
-                    direction={direction}
-                    onLinkClick={onMenuItemClick}
-                />
-            )
-        }
-
-        if (nav.type === NAV_ITEM_TYPE_TITLE) {
-            if (nav.subMenu.length > 0) {
-                return (
-                    <MenuGroup key={nav.key} label={nav.title}>
-                        {nav.subMenu.map((subNav) =>
-                            subNav.subMenu.length > 0 ? (
-                                <VerticalCollapsedMenuItem
-                                    key={subNav.key}
-                                    nav={subNav}
-                                    sideCollapsed={collapsed}
-                                    direction={direction}
-                                    onLinkClick={onMenuItemClick}
-                                />
-                            ) : (
-                                <VerticalSingleMenuItem
-                                    key={subNav.key}
-                                    nav={subNav}
-                                    sideCollapsed={collapsed}
-                                    direction={direction}
-                                    onLinkClick={onMenuItemClick}
-                                />
-                            )
-                        )}
-                    </MenuGroup>
-                )
-            } else {
-                ;<MenuGroup label={nav.title} />
-            }
-        }
+        onMenuItemClick()
     }
 
     return (
@@ -112,7 +106,13 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
             defaultActiveKeys={activedRoute?.key ? [activedRoute.key] : []}
             defaultExpandedKeys={defaulExpandKey}
         >
-            {navigationTree.map((nav) => getNavItem(nav))}
+            {navigationTree.map((nav) => (
+                <MenuItem
+                    key={nav.key}
+                    nav={nav}
+                    onLinkClick={handleLinkClick}
+                />
+            ))}
         </Menu>
     )
 }

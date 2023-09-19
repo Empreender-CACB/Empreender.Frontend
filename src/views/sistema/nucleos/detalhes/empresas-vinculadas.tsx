@@ -112,8 +112,6 @@ const NucleosEmpresas = ({ idnucleo }: Props) => {
     const [selected, setSelected] = useState({ 2: true, 5: true })
     const dataSource = useCallback(loadData, [])
 
-    console.log(dataSource)
-
     const onSelectionChange = useCallback(({ selected }) => {
         setSelected(selected)
     }, [])
