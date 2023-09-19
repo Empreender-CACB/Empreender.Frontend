@@ -22,6 +22,7 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>((props, ref) => {
         disabled,
         eventKey,
         isActive,
+        menuItemHeight = 35,
         onSelect,
         style,
         variant = 'light',
@@ -50,7 +51,7 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>((props, ref) => {
         <Component
             ref={ref}
             className={menuItemClass}
-            style={{ ...style }}
+            style={{ minHeight: `${menuItemHeight}px`, ...style }}
             onClick={hanldeOnClick}
             {...rest}
         >
