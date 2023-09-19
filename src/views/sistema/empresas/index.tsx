@@ -124,10 +124,9 @@ const columns = [
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
     {
-        name: 'flativo', header: 'Ativa', type: 'select',
+        name: 'empresa.flativo', header: 'Ativa', type: 'select',
         filterEditor: SelectFilter,
         filterEditorProps: {
-            multiple: true,
             dataSource: activeValue.map(option => {
                 return { id: option.value, label: option.name }
             }),
@@ -181,8 +180,8 @@ const defaultFilterValue = [
         value: '',
     },
     {
-        name: 'flativo',
-        operator: "inlist",
+        name: 'empresa.flativo',
+        operator: "equals",
         type: 'select',
         value: ''
     },
@@ -190,10 +189,6 @@ const defaultFilterValue = [
 
 const Empresas = () => {
 
-    const colourOptions = [
-        { value: 'bares e restaurantes', label: 'Bares e Restaurantes' },
-
-    ]
 
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [empresaType, setEmpresaType] = useState('todas')
@@ -255,7 +250,6 @@ const Empresas = () => {
                         <Select
                             isMulti
                             placeholder="Selecione uma opção"
-                            defaultValue={[colourOptions[0]]}
                             options={options}
                             noOptionsMessage={() => 'Sem dados!'}
                             loadingMessage={() => 'Carregando'}
