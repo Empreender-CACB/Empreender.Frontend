@@ -5,9 +5,6 @@ import { GoSignIn } from 'react-icons/go'
 
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import '@inovua/reactdatagrid-community/theme/default-dark.css'
-import '@inovua/reactdatagrid-community/theme/green-light.css'
-import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import { Button, Tag } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 

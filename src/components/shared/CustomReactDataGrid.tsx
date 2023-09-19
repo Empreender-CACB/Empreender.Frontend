@@ -6,6 +6,11 @@ import { Button } from '../ui'
 import { HiDownload, HiFilter } from 'react-icons/hi'
 import { useAppSelector } from '@/store'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
+import useDarkMode from '@/utils/hooks/useDarkmode'
+import '@inovua/reactdatagrid-community/theme/default-dark.css'
+import '@inovua/reactdatagrid-community/theme/green-light.css'
+import '@inovua/reactdatagrid-community/theme/blue-light.css'
+
 
 interface CustomReactDataGridProps {
   columns: any[];
@@ -116,6 +121,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     filterValue: {},
   });
 
+  const [isDark] = useDarkMode()
+  console.log(isDark)
+  
   const loadData = async (params: any, exportExcel = false) => {
     try {
       const { skip, limit, sortInfo, groupBy, filterValue } = params;
@@ -201,7 +209,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         idProperty="id"
         defaultFilterValue={defaultFilterValue}
         columns={columns}
-        theme="blue-light"
+        theme={isDark ? "default-dark" : "blue-light"}
         dataSource={loadData}
         defaultLimit={itemsPerPage}
         enableFiltering={true}

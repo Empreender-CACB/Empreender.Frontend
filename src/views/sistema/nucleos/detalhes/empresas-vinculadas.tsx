@@ -3,9 +3,7 @@ import '@inovua/reactdatagrid-community/index.css'
 import { useState, useCallback } from 'react'
 import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
-import '@inovua/reactdatagrid-community/theme/default-dark.css'
-import '@inovua/reactdatagrid-community/theme/green-light.css'
-import '@inovua/reactdatagrid-community/theme/blue-light.css'
+
 
 import 'moment/locale/pt-br'
 import { Link } from 'react-router-dom'

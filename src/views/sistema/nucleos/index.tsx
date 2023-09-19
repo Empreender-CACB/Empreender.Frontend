@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
-import '@inovua/reactdatagrid-community/theme/default-dark.css'
-import '@inovua/reactdatagrid-community/theme/green-light.css'
-import '@inovua/reactdatagrid-community/theme/blue-light.css'
+
 
 import { HiDownload, HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
