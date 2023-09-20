@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useCallback, FC } from 'react'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import Spinner from '@/components/ui/Spinner'
+import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button } from '../ui'
@@ -110,6 +114,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   const itemsPerPage = preferencias && preferencias.lista_geral !== undefined ? preferencias.lista_geral : 20;
 
   const [gridRef, setGridRef] = useState(null)
+  const [isDownloading, setIsDownloading] = useState(false)
   const [queryParams, setQueryParams] = useState<LoadDataParams>({
     skip: 0,
     limit: 10,
@@ -122,13 +127,15 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   });
 
   const [isDark] = useDarkMode()
-  console.log(isDark)
+  //console.log(isDark)
   
   const loadData = async (params: any, exportExcel = false) => {
     try {
       const { skip, limit, sortInfo, groupBy, filterValue } = params;
 
       if (exportExcel) {
+        setIsDownloading(true);
+        downloadAndNotify();
         const response = await axios.get(url, {
           params: {
             skip: skip,
@@ -147,6 +154,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
 
         window.open(absoluteUrl, '_blank');
+        setIsDownloading(false);
         return absoluteUrl
 
       }
@@ -183,6 +191,19 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     }));
   };
 
+  const notification = (
+    <Notification
+        title="Exportação iniciada"
+        customIcon={<GrCloudDownload className="text-2xl text-indigo-600" />}
+    >
+        O download começará em instantes.
+    </Notification>
+)
+
+  function downloadAndNotify() {
+    toast.push(notification)
+}
+
   return (
     <div>
       {options}
@@ -192,7 +213,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         }}>
           Limpar filtros
         </Button>
-        <Button icon={<HiDownload />} className='mx-2' size='sm' onClick={() => {
+        <Button  disabled={isDownloading} icon={isDownloading?<Spinner />:<HiDownload />} className='mx-2' size='sm' onClick={() => {
           loadData(queryParams, true)
         }}>
           Exportar
