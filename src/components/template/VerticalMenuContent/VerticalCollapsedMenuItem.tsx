@@ -76,7 +76,7 @@ const DefaultItem = ({ nav, onLinkClick }: DefaultItemProps) => {
     )
 }
 
-const CollapsedItem = ({
+export const CollapsedItem = ({
     nav,
     onLinkClick,
     direction,

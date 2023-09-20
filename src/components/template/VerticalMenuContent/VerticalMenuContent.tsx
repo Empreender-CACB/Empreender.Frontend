@@ -6,67 +6,78 @@ import type { NavigationTree } from '@/@types/navigation'
 import { Link } from 'react-router-dom'
 import VerticalMenuIcon from './VerticalMenuIcon'
 import { NavMode } from '@/@types/theme'
+import { CollapsedItem } from './VerticalCollapsedMenuItem'
 
 interface MenuItemProps {
-    nav: NavigationTree
-    onLinkClick: () => void
+    nav: NavigationTree;
+    onLinkClick: () => void;
+    sideCollapsed: boolean;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick, sideCollapsed }) => {
     if (nav.subMenu && nav.subMenu.length > 0) {
-        return (
-            <Menu.MenuCollapse
-                key={nav.key}
-                label={
-                    <>
-                        <VerticalMenuIcon icon={nav.icon} />
-                        <span
-                            style={{
-                                whiteSpace: 'normal',
-                                wordWrap: 'break-word',
-                                maxWidth: '150px',
-                            }}
-                        >
-                            {nav.title}
-                        </span>
-                    </>
-                }
-                eventKey={nav.key}
-                expanded={false}
-                className="mb-2"
-            >
-                {nav.subMenu.map((subNav) => (
-                    <MenuItem
-                        key={subNav.key}
-                        nav={subNav}
-                        onLinkClick={onLinkClick}
-                    />
-                ))}
-            </Menu.MenuCollapse>
-        )
+      return sideCollapsed ? (
+        <CollapsedItem
+          nav={nav}
+          direction={'ltr'}
+          onLinkClick={onLinkClick}
+        />
+      ) : (
+        <Menu.MenuCollapse
+          key={nav.key}
+          label={
+            <>
+              <VerticalMenuIcon icon={nav.icon} />
+              <span
+                style={{
+                  whiteSpace: 'normal',
+                  wordWrap: 'break-word',
+                  maxWidth: '150px',
+                }}
+              >
+                {nav.title}
+              </span>
+            </>
+          }
+          eventKey={nav.key}
+          expanded={false}
+          className="mb-2"
+        >
+          {nav.subMenu.map((subNav) => (
+            <MenuItem
+              key={subNav.key}
+              nav={subNav}
+              sideCollapsed={sideCollapsed}
+              onLinkClick={onLinkClick}
+            />
+          ))}
+        </Menu.MenuCollapse>
+      );
     } else {
         return (
-            <Menu.MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
-                <Link
-                    to={nav.path}
-                    className="flex items-center h-full w-full"
-                    onClick={onLinkClick}
+          <Menu.MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
+            <Link
+              to={nav.path}
+              className="flex items-center h-full w-full"
+              onClick={onLinkClick}
+            >
+              <VerticalMenuIcon icon={nav.icon} />
+              {(nav.type !== 'item' || !sideCollapsed) && (
+                <span
+                  style={{
+                    whiteSpace: 'normal',
+                    wordWrap: 'break-word',
+                    maxWidth: '150px',
+                  }}
                 >
-                    <VerticalMenuIcon icon={nav.icon} />
-                    <span
-                        style={{
-                            whiteSpace: 'normal',
-                            wordWrap: 'break-word',
-                            maxWidth: '150px',
-                        }}
-                    >
-                        {nav.title}
-                    </span>
-                </Link>
-            </Menu.MenuItem>
-        )
-    }
-}
+                  {nav.title}
+                </span>
+              )}
+            </Link>
+          </Menu.MenuItem>
+        );
+      }
+  };
 
 interface VerticalMenuContentProps {
     navMode: NavMode
@@ -109,6 +120,7 @@ const VerticalMenuContent: React.FC<VerticalMenuContentProps> = ({
             {navigationTree.map((nav) => (
                 <MenuItem
                     key={nav.key}
+                    sideCollapsed={collapsed}
                     nav={nav}
                     onLinkClick={handleLinkClick}
                 />
