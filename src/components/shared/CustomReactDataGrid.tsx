@@ -128,7 +128,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
   const [isDark] = useDarkMode()
   //console.log(isDark)
-  
+
   const loadData = async (params: any, exportExcel = false) => {
     try {
       const { skip, limit, sortInfo, groupBy, filterValue } = params;
@@ -136,7 +136,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       if (exportExcel) {
         setIsDownloading(true);
         downloadAndNotify();
-        const response = await axios.get(url, {
+        await axios.get(url, {
           params: {
             skip: skip,
             limit: limit,
@@ -145,17 +145,17 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
             sortInfo: JSON.stringify(sortInfo),
             filterBy: JSON.stringify(filterValue)
           }
-        });
-
-        const relativeUrl = response.data;
-        const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '');
-
-        const baseUrl = 'https://api.cacbempreenderapp.org.br'; // Remove the trailing slash
-        const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
-
-        window.open(absoluteUrl, '_blank');
-        setIsDownloading(false);
-        return absoluteUrl
+        })
+          .then(response => {
+            const relativeUrl = response.data;
+            const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '');
+            const baseUrl = 'https://api.cacbempreenderapp.org.br'; // Remove the trailing slash
+            const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
+            setIsDownloading(false);
+            window.open(absoluteUrl, '_blank');
+            return absoluteUrl
+          });
+        return false
 
       }
       const response = await axios.get(url, {
@@ -193,16 +193,16 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
   const notification = (
     <Notification
-        title="Exportação iniciada"
-        customIcon={<GrCloudDownload className="text-2xl text-indigo-600" />}
+      title="Exportação iniciada"
+      customIcon={<GrCloudDownload className="text-2xl text-indigo-600" />}
     >
-        O download começará em instantes.
+      O download começará em instantes.
     </Notification>
-)
+  )
 
   function downloadAndNotify() {
     toast.push(notification)
-}
+  }
 
   return (
     <div>
@@ -213,7 +213,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         }}>
           Limpar filtros
         </Button>
-        <Button  disabled={isDownloading} icon={isDownloading?<Spinner />:<HiDownload />} className='mx-2' size='sm' onClick={() => {
+        <Button disabled={isDownloading} icon={isDownloading ? <Spinner /> : <HiDownload />} className='mx-2' size='sm' onClick={() => {
           loadData(queryParams, true)
         }}>
           Exportar
