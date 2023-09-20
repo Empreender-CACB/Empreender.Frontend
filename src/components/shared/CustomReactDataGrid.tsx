@@ -153,7 +153,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         const baseUrl = 'https://api.cacbempreenderapp.org.br'; // Remove the trailing slash
         const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
 
-        window.open(absoluteUrl, '_blank');
+        window.open(absoluteUrl);
         setIsDownloading(false);
         return absoluteUrl
 
