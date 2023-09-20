@@ -273,7 +273,7 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_API_URL}/sistema/empresa/`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>

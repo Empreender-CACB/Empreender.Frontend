@@ -7,6 +7,7 @@ import Layout from '@/components/layouts'
 import mockServer from './mock'
 import appConfig from '@/configs/app.config'
 import './locales'
+import { useEffect } from 'react'
 
 const environment = process.env.NODE_ENV
 
@@ -15,6 +16,7 @@ if (appConfig.enableMock) {
 }
 
 function App() {
+
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
