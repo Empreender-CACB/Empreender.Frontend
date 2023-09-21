@@ -51,6 +51,8 @@ function useAuth() {
                         recursos: resp.data.user.recursos,
                         preferencias: resp.data.user.preferencias,
                     }
+                    localStorage.setItem('lista_geral', resp.data.user.preferencias.lista_geral);
+
 
                     localStorage.setItem('originalToken', token.token);
                     dispatch(setUser(adaptedUser))
@@ -101,7 +103,7 @@ function useAuth() {
         // await apiSignOut()
         handleSignOut()
     }
-
+    
     return {
         authenticated: token && signedIn,
         signIn,

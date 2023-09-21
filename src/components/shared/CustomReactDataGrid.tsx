@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useCallback, FC } from 'react'
+import React, { useState, useCallback, FC, useEffect } from 'react'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
@@ -7,14 +7,15 @@ import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button } from '../ui'
-import { HiDownload, HiFilter } from 'react-icons/hi'
+import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import { useAppSelector } from '@/store'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
+import useAuth from '@/utils/hooks/useAuth'
+
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
-
 
 interface CustomReactDataGridProps {
   columns: any[];
@@ -111,7 +112,17 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     (state) => state.auth.user
   )
 
-  const itemsPerPage = preferencias && preferencias.lista_geral !== undefined ? preferencias.lista_geral : 20;
+  const [listaGeral, setListaGeral] = useState(Number(localStorage.getItem('lista_geral')));
+
+  
+  const updateListaGeral = useCallback((amount) => {
+    return () =>
+      setListaGeral(amount);
+  }, [listaGeral])
+
+  // Exemplo de uso da função para atualizar a propriedade lista_geral
+  
+  //updateListaGeral(10);
 
   const [gridRef, setGridRef] = useState(null)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -126,7 +137,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     filterValue: {},
   });
 
-  const [isDark] = useDarkMode()
+  const [isDark] = useDarkMode()  
   //console.log(isDark)
 
   const loadData = async (params: any, exportExcel = false) => {
@@ -135,7 +146,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
       if (exportExcel) {
         setIsDownloading(true);
-        downloadAndNotify();
+        const toastId = String(await downloadAndNotify());
         await axios.get(url, {
           params: {
             skip: skip,
@@ -152,6 +163,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
             const baseUrl = 'https://api.cacbempreenderapp.org.br'; // Remove the trailing slash
             const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
             setIsDownloading(false);
+            toast.remove(toastId)
+            console.log("🚀 ~ file: CustomReactDataGrid.tsx:167 ~ loadData ~ toastId:", toastId)
             window.open(absoluteUrl, '_blank');
             return absoluteUrl
           });
@@ -194,15 +207,54 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   const notification = (
     <Notification
       title="Exportação iniciada"
+      duration={0}
       customIcon={<GrCloudDownload className="text-2xl text-indigo-600" />}
     >
       O download começará em instantes.
     </Notification>
   )
 
+
+  const renderPaginationToolbar = useCallback((paginationProps) => {
+  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    options={
+      pageText: 'Página ',
+      ofText: ' de ',
+      perPageText: 'Resultados por página',
+      showingText: 'Exibindo '
+    }
+    
+  
+    return (
+      <div style={{ 'padding-top': '40px' }}>
+        <PaginationToolbar {...paginationProps} {... options} bordered={true}>
+          </PaginationToolbar>
+          
+        <a  style={{position:'absolute', right:'10px', bottom:'10px'}} href="#" onClick={updateListaGeral(10)}>
+        <HiOutlineCog size={'20px'} />
+        </a>
+      </div>
+    );
+  }, []);
+
+
+  // const renderPaginationToolbar = useCallback((paginationProps) => {
+  //   return <div style={{ height: 89 }}>
+  //     <div style={{background: '#7986cb', color: '#2e3439', padding: '16px 8px' }}>
+  //       This section is part of the customized pagination toolbar {limit}
+  //       <PaginationToolbar {...paginationProps} bordered={true} />
+
+  //     </div>
+  //     <PaginationToolbar {...paginationProps} bordered={true} />
+
+  //   </div>
+  // }, [])
+
   function downloadAndNotify() {
-    toast.push(notification)
+     return toast.push(notification)
   }
+
 
   return (
     <div>
@@ -225,6 +277,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
       <ReactDataGrid
         onReady={setGridRef}
+        renderPaginationToolbar={renderPaginationToolbar}
         i18n={i18n}
         onFilterValueChange={handleFilterValueChange}
         idProperty="id"
@@ -232,15 +285,16 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         columns={columns}
         theme={isDark ? "default-dark" : "blue-light"}
         dataSource={loadData}
-        defaultLimit={itemsPerPage}
+        defaultLimit={30}
         enableFiltering={true}
         pagination
         style={gridStyle}
         enableColumnAutosize={false}
+        limit={listaGeral}
         loadingText="Carregando ... "
         emptyText="Não há dados para serem exibidos"
         disableGroupByToolbar={true}
-      />
+        />
     </div>
   )
 }
