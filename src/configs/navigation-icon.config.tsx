@@ -28,21 +28,21 @@ import {
 
 export type NavigationIcons = Record<string, JSX.Element>
 
-const navigationIcon: NavigationIcons = {
-    apps: <HiOutlineViewGridAdd />,
-    project: <HiOutlineChartSquareBar />,
-    home: <HiOutlineHome />,
-    entities: <HiOutlineOfficeBuilding />,
-    nucleos: <HiOutlineChip />,
-    companies: <HiOutlineBriefcase />,
-    users: <HiOutlineUserGroup />,
-    reports: <HiOutlineDocumentReport />,
-    files: <HiOutlineDocumentDuplicate />,
-    curriculos: <HiOutlineClipboardList />,
-    adm: <HiOutlineCog />,
-}
+// const navigationIcon: NavigationIcons = {
+//     apps: <HiOutlineViewGridAdd />,
+//     project: <HiOutlineChartSquareBar />,
+//     home: <HiOutlineHome />,
+//     entities: <HiOutlineOfficeBuilding />,
+//     nucleos: <HiOutlineChip />,
+//     companies: <HiOutlineBriefcase />,
+//     users: <HiOutlineUserGroup />,
+//     reports: <HiOutlineDocumentReport />,
+//     files: <HiOutlineDocumentDuplicate />,
+//     curriculos: <HiOutlineClipboardList />,
+//     adm: <HiOutlineCog />,
+// }
 
-export const navigationIconFC: NavigationIcons = {
+export const navigationIcon: NavigationIcons = {
     apps: <FcMenu />,
     project: <FcParallelTasks />,
     home: <FcHome />,
