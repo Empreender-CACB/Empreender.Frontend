@@ -310,6 +310,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         style={gridStyle}
         enableColumnAutosize={false}
         limit={listaGeral}
+        onLimitChange={setListaGeral}
         loadingText="Carregando ... "
         emptyText="Não há dados para serem exibidos"
         disableGroupByToolbar={true}
