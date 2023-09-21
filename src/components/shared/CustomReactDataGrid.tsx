@@ -6,16 +6,20 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button } from '../ui'
+import { Button,Dialog } from '../ui'
 import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import { useAppSelector } from '@/store'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
-import useAuth from '@/utils/hooks/useAuth'
+import Select from 'react-select';
 
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
+
+import type { MouseEvent } from 'react'
+import Input from '@/components/ui/Input'
+
 
 interface CustomReactDataGridProps {
   columns: any[];
@@ -108,17 +112,31 @@ const footerRows = [
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
 
+  const [dialogIsOpen, setIsOpen] = useState(false)
+
+  const openDialog = () => {
+      setIsOpen(true)
+  }
+
+  const onDialogClose = (e: MouseEvent) => {
+      console.log('onDialogClose', e)
+      setIsOpen(false)
+  }
+
+  const onDialogOk = (e: MouseEvent) => {
+      console.log('onDialogOk', e)
+      setIsOpen(false)
+  }
+  
+
+
   const { preferencias } = useAppSelector(
     (state) => state.auth.user
-  )
+  ) 
 
   const [listaGeral, setListaGeral] = useState(Number(localStorage.getItem('lista_geral')));
 
-  
-  const updateListaGeral = useCallback((amount) => {
-    return () =>
-      setListaGeral(amount);
-  }, [listaGeral])
+
 
   // Exemplo de uso da função para atualizar a propriedade lista_geral
   
@@ -231,7 +249,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         <PaginationToolbar {...paginationProps} {... options} bordered={true}>
           </PaginationToolbar>
           
-        <a  style={{position:'absolute', right:'10px', bottom:'10px'}} href="#" onClick={updateListaGeral(10)}>
+        <a  style={{position:'absolute', right:'10px', bottom:'10px'}} href="#" onClick={() => openDialog()}>
         <HiOutlineCog size={'20px'} />
         </a>
       </div>
@@ -256,8 +274,52 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   }
 
 
+  const opcoes = [
+    { value: 5, label: '5' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20' },
+    { value: 25, label: '25' },
+    { value: 40, label: '40' },
+    { value: 50, label: '50' },
+    { value: 100, label: '100' },
+  ];
+
+  const [selecionado, setSelecionado] = useState(null);
+
+  const handleChange = (opcaoSelecionada) => {
+    setListaGeral(opcaoSelecionada.value);
+    localStorage.setItem('lista_geral',String(opcaoSelecionada.value))
+  };
+
   return (
     <div>
+        <Dialog
+                isOpen={dialogIsOpen}
+ 
+            >
+                <h5 className="mb-4">Preferências da CTable</h5>
+                <p>
+                  <b>Quantidade de itens padrão:</b>
+      <Select
+        options={opcoes}
+          onChange={handleChange}
+        placeholder="Selecione um número"
+      />                  </p>
+                <div className="text-right mt-6">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={onDialogClose}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button variant="solid" onClick={onDialogOk}>
+                        Salvar
+                    </Button>
+                </div>
+   </Dialog>
+
       {options}
       <div style={{ marginBottom: 20 }}>
         <Button icon={<HiFilter />} size='sm' onClick={() => {
