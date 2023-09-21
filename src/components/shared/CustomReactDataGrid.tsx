@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useCallback, FC } from 'react'
+import React, { useState, useCallback, FC, useEffect } from 'react'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
@@ -113,6 +113,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     groupBy: '',
     filterValue: {},
   });
+
+  useEffect(() => {
+    localStorage.setItem('lista_geral', listaGeral.toString());
+  }, [listaGeral]);
+
   const [isDark] = useDarkMode()  
 
   const openDialog = () => {
