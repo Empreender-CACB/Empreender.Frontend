@@ -249,9 +249,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         <PaginationToolbar {...paginationProps} {... options} bordered={true}>
           </PaginationToolbar>
           
-        <a  style={{position:'absolute', right:'10px', bottom:'10px'}} href="#" onClick={() => openDialog()}>
-        <HiOutlineCog size={'20px'} />
-        </a>
+        <div  style={{position:'absolute', right:'10px', bottom:'10px'}}>
+        <HiOutlineCog onClick={() => openDialog()} size={'20px'} />
+        </div>
       </div>
     );
   }, []);
