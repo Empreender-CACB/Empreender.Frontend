@@ -6,7 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button,Dialog } from '../ui'
+import { Button,Dialog } from '@/components/ui'
 import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
@@ -15,6 +15,7 @@ import type { MouseEvent } from 'react'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
+import i18n from './i18n'
 
 interface CustomReactDataGridProps {
   columns: any[];
@@ -36,69 +37,17 @@ type LoadDataParams = {
   skip: number;
   limit: number;
   sortInfo: SortInfo;
-  groupBy?: string;
+  groupBy?: string | boolean;
   filterValue: FilterValue;
   exportOption?: boolean;
 };
 
 
-const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
-  pageText: 'Página ',
-  ofText: ' de ',
-  perPageText: 'Resultados por página',
-  showingText: 'Mostrando ',
-  clearAll: 'Limpar tudo',
-  inList: 'Na lista',
-  notInList: "Fora da lista",
-  clear: 'Limpar',
-  showFilteringRow: 'Mostrar linha de filtragem',
-  hideFilteringRow: 'Esconder linha de filtragem',
-  dragHeaderToGroup: 'Arraste o cabeçalho para agrupar',
-  disable: 'Desabilitar',
-  enable: 'Habilitar',
-  sortAsc: 'Ordenar em ordem ascendente',
-  sortDesc: 'Ordenar em ordem descendente',
-  unsort: 'Remover ordenação',
-  group: 'Agrupar',
-  ungroup: 'Desagrupar',
-  lockStart: 'Fixar início',
-  lockEnd: 'Fixar fim',
-  unlock: 'Desafixar',
-  columns: 'Colunas',
-  contains: 'Contém',
-  startsWith: 'Começa com',
-  endsWith: 'Termina com',
-  notContains: 'Não contém',
-  neq: 'Diferente',
-  eq: 'Igual',
-  notEmpty: 'Não vazio',
-  before: " Antes",
-  beforeOrOn: 'Antes de ou em',
-  afterOrOn: 'A partir de',
-  after: 'Após',
-  empty: 'Vazio',
-  inlist: 'Na lista',
-  notinlist: 'Fora da lista',
-  noRecords: 'Nenhum dado disponível',
-  inrange: 'No intervalo',
-  notinrange: 'Fora do intervalo',
-  lt: 'Menor que',
-  lte: 'Menor ou igual a',
-  gt: 'Maior que',
-  gte: 'Maior ou igual a',
-  'calendar.todayButtonText': 'Hoje',
-  calendar: {
-    todayButtonText: 'Hoje',
-    clearButtonText: 'Limpar',
-    okButtonText: 'OK',
-    cancelButtonText: 'Cancelar',
-  },
-})
-
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
 
   const valorLocalStorage = localStorage.getItem('lista_geral');
+  const [isDark] = useDarkMode() 
   const [dialogIsOpen, setIsOpen] = useState(false)
   const [listaGeral, setListaGeral] = useState(valorLocalStorage ? Number(valorLocalStorage) : 25);
   const [gridRef, setGridRef] = useState(null)
@@ -117,9 +66,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   useEffect(() => {
     localStorage.setItem('lista_geral', listaGeral.toString());
   }, [listaGeral]);
-
-  const [isDark] = useDarkMode()  
-
+ 
   const openDialog = () => {
       setIsOpen(true)
   }
@@ -174,7 +121,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
             const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`;
             setIsDownloading(false);
             toast.remove(toastId)
-            console.log("🚀 ~ file: CustomReactDataGrid.tsx:167 ~ loadData ~ toastId:", toastId)
             window.open(absoluteUrl, '_blank');
             return absoluteUrl
           });
@@ -240,7 +186,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     
   
     return (
-      <div style={{ 'padding-top': '40px' }}>
+      <div style={{ paddingTop: '40px' }}>
         <PaginationToolbar {...paginationProps} {... options} bordered={true}>
           </PaginationToolbar>
           
@@ -303,7 +249,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         defaultFilterValue={defaultFilterValue}
         columns={columns}
         theme={isDark ? "default-dark" : "blue-light"}
-        dataSource={loadData}
         defaultLimit={30}
         enableFiltering={true}
         pagination
@@ -314,6 +259,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         loadingText="Carregando ... "
         emptyText="Não há dados para serem exibidos"
         disableGroupByToolbar={true}
+        dataSource={loadData}
         />
     </div>
   )
