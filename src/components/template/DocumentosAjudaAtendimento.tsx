@@ -3,8 +3,22 @@ import axios from 'axios'
 import Dropdown from '@/components/ui/Dropdown'
 import { Link } from 'react-router-dom'
 
+interface Documento {
+    nome: string
+    id: number
+    temNovidade: boolean
+}
+
+interface GrupoDocumento {
+    grupo: string
+    temNovidade: boolean
+    subMenu: Documento[]
+}
+
+type DocumentosData = GrupoDocumento[]
+
 const DocumentosAjudaAtendimento = () => {
-    const [documentosData, setDocumentosData] = useState([])
+    const [documentosData, setDocumentosData] = useState<DocumentosData>([])
 
     useEffect(() => {
         const fetchDocumentos = async () => {
@@ -37,13 +51,26 @@ const DocumentosAjudaAtendimento = () => {
 
     return (
         <Dropdown.Menu title={'Documentos'}>
-            {documentosData.map((grupo) => (
-                <Dropdown.Menu  openLeft key={grupo.grupo} title={grupo.grupo}>
-                    {grupo.subMenu.map((sub) => (
+            {documentosData.map((grupo: GrupoDocumento) => (
+                <Dropdown.Menu
+                    key={grupo.grupo}
+                    openLeft
+                    title={grupo.grupo + (grupo.temNovidade ? ' * ' : '')}
+                    style={grupo.temNovidade ? { color: 'red !important' } : {}}
+                >
+                    {grupo.subMenu.map((sub: Documento) => (
                         <Dropdown.Item key={sub.id} className="mb-1 px-0">
                             <Link className="flex h-full w-full px-2" to={'#'}>
                                 <span className="flex gap-2 items-center w-full">
-                                    <span>{sub.nome}</span>
+                                    <span
+                                        className={
+                                            sub.temNovidade
+                                                ? 'text-red-600'
+                                                : ''
+                                        }
+                                    >
+                                        {sub.nome}
+                                    </span>
                                 </span>
                             </Link>
                         </Dropdown.Item>

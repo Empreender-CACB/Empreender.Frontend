@@ -1,12 +1,10 @@
-import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
-import { HiChatAlt } from 'react-icons/hi' // Adicionei o ícone de ajuda para representar o menu.
+import { HiChatAlt } from 'react-icons/hi' 
 import type { CommonProps } from '@//@types/common'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useAppSelector } from '@/store'
-import HorizontalMenuDropdownItem from './HorizontalMenuContent/HorizontalMenuDropdownItem'
 import DocumentosAjudaAtendimento from './DocumentosAjudaAtendimento'
 
 type DropdownList = {
@@ -84,7 +82,9 @@ const _AjudaAtendimento = ({ className }: CommonProps) => {
                         </Link>
                     </Dropdown.Item>
                 ))}
-                <DocumentosAjudaAtendimento />
+                {recursos.includes('doc_consul') ? (
+                    <DocumentosAjudaAtendimento />
+                ) : null}
             </Dropdown>
         </div>
     )

@@ -8,6 +8,7 @@ import Search from '@/components/template/Search'
 import MobileNav from '@/components/template/MobileNav'
 import HorizontalNav from '@/components/template/HorizontalNav'
 import View from '@/views'
+import AjudaAtendimento from '../template/AjudaAtendimento'
 
 const HeaderActionsStart = () => {
     return (
@@ -21,6 +22,7 @@ const HeaderActionsStart = () => {
 const HeaderActionsEnd = () => {
     return (
         <>
+            <AjudaAtendimento hoverable={false}/>
             <Search />
             <LanguageSelector />
             <Notification />

@@ -7,6 +7,7 @@ import MobileNav from '@/components/template/MobileNav'
 import Search from '@/components/template/Search'
 import StackedSideNav from '@/components/template/StackedSideNav'
 import View from '@/views'
+import AjudaAtendimento from '../template/AjudaAtendimento'
 
 const HeaderActionsStart = () => {
     return (
@@ -20,6 +21,7 @@ const HeaderActionsStart = () => {
 const HeaderActionsEnd = () => {
     return (
         <>
+            <AjudaAtendimento hoverable={false} />
             <LanguageSelector />
             <Notification />
             <SidePanel />
