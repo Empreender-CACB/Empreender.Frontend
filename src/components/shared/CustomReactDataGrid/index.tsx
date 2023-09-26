@@ -20,6 +20,7 @@ import '@inovua/reactdatagrid-community/theme/blue-dark.css'
 import i18n from './i18n'
 
 interface CustomReactDataGridProps {
+  filename: string;
   columns: any[];
   defaultFilterValue: any;
   url: string;
@@ -46,7 +47,7 @@ type LoadDataParams = {
 
 
 
-const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options }) => {
+const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options, filename }) => {
 
   const valorLocalStorage = localStorage.getItem('lista_geral');
   const [isDark] = useDarkMode() 
@@ -106,6 +107,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       const tableConfig = {
         skip: skip,
         limit: limit,
+        filename:filename,
         exportExcel:exportExcel,
         groupBy: groupBy && groupBy.length ? groupBy : undefined,
         sortInfo: JSON.stringify(sortInfo),

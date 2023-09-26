@@ -301,6 +301,7 @@ const Empresas = () => {
                 </div>
             </div>
             <CustomReactDataGrid
+                filename='Empresas'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
