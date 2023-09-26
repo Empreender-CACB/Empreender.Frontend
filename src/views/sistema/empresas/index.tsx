@@ -29,11 +29,11 @@ type StatusType = 'S' | 'N'
 const statusMapping: Record<StatusType, { label: string; class: string }> = {
     S: {
         label: 'Ativa',
-        class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
+        class: 'bg-green-600 text-white',
     },
     N: {
         label: 'Inativa',
-        class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
+        class: 'bg-yellow-300 text-black ',
     },
 }
 
