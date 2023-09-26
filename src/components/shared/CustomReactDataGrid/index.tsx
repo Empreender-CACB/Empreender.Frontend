@@ -15,6 +15,8 @@ import type { MouseEvent } from 'react'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
+import '@inovua/reactdatagrid-community/theme/blue-dark.css'
+//import './theme.css'
 import i18n from './i18n'
 
 interface CustomReactDataGridProps {
@@ -101,17 +103,21 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     try {
       const { skip, limit, sortInfo, groupBy, filterValue } = params;
 
+      const tableConfig = {
+        skip: skip,
+        limit: limit,
+        exportExcel:exportExcel,
+        groupBy: groupBy && groupBy.length ? groupBy : undefined,
+        sortInfo: JSON.stringify(sortInfo),
+        filterBy: JSON.stringify(filterValue)
+      };
+
       if (exportExcel) {
         setIsDownloading(true);
         const toastId = String(await downloadAndNotify());
         await axios.get(url, {
           params: {
-            skip: skip,
-            limit: limit,
-            exportExcel: true,
-            groupBy: groupBy && groupBy.length ? groupBy : undefined,
-            sortInfo: JSON.stringify(sortInfo),
-            filterBy: JSON.stringify(filterValue)
+            tableConfig
           }
         })
           .then(response => {
@@ -129,15 +135,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       }
       const response = await axios.get(url, {
         params: {
-          skip: skip,
-          limit: limit,
-          groupBy: groupBy && groupBy.length ? groupBy : undefined,
-          sortInfo: JSON.stringify(sortInfo),
-          filterBy: JSON.stringify(filterValue)
+          tableConfig
         }
       });
-
-
 
       const totalCount = response.headers['x-total-count'];
       const data = response.data.data;
@@ -248,7 +248,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         idProperty="id"
         defaultFilterValue={defaultFilterValue}
         columns={columns}
-        theme={isDark ? "default-dark" : "blue-light"}
+        theme={isDark ? "blue-dark" : "blue-light"}
         defaultLimit={30}
         enableFiltering={true}
         pagination
