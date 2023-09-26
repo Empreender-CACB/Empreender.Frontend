@@ -8,6 +8,7 @@ import MobileNav from '@/components/template/MobileNav'
 import UserDropdown from '@/components/template/UserDropdown'
 import SideNav from '@/components/template/SideNav'
 import View from '@/views'
+import AjudaAtendimento from '../template/AjudaAtendimento'
 
 const HeaderActionsStart = () => {
     return (
@@ -23,6 +24,7 @@ const HeaderActionsEnd = () => {
     return (
         <>
             <LanguageSelector />
+            <AjudaAtendimento hoverable={false} />
             <Notification />
             <SidePanel />
             <UserDropdown hoverable={false} />

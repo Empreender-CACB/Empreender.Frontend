@@ -66,7 +66,7 @@ const MobileNav = ({ routes }: { routes: DocumentationRoute[] }) => {
                 onClick={openDrawer}
             />
             <Drawer
-                title="Navigation"
+                title="Menu de navegação"
                 isOpen={isOpen}
                 width={300}
                 placement="left"

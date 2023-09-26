@@ -10,11 +10,12 @@ export interface DropdownMenuProps extends DropdownInnerMenuProps {
     eventKey?: string
     title?: string | ReactNode
     id?: string
+    openLeft?: boolean
 }
 
 const DropdownMenu = forwardRef<HTMLElement, DropdownMenuProps>(
     (props, ref) => {
-        const { eventKey, title, className, placement, ...rest } = props
+        const { eventKey, title, className, openLeft, placement, ...rest } = props
 
         const parentMenu = useContext(MenuContext)
 
@@ -29,7 +30,7 @@ const DropdownMenu = forwardRef<HTMLElement, DropdownMenuProps>(
 
         const dropdownSubmenuClass = classNames(
             dropdownMenuDefaultClass,
-            'dropdown-submenu'
+            openLeft ? 'dropdown-submenu-left': 'dropdown-submenu'
         )
 
         const dropdownSubmenu = (

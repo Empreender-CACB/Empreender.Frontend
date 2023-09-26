@@ -10,9 +10,9 @@ export const useNavigationConfig = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const adminData = localStorage.getItem('admin');
-        if (adminData) {
-          const parsedAdminData = JSON.parse(adminData);
+        const userData = localStorage.getItem('admin');
+        if (userData) {
+          const parsedAdminData = JSON.parse(userData);
           const token = JSON.parse(parsedAdminData.auth).session.token;
 
           const response = await axios.get(`${import.meta.env.VITE_API_URL}/navigation`, {

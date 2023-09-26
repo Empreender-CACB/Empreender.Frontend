@@ -8,7 +8,7 @@ export type UserState = {
     perfil?: string
     cod_perfil?: number
     fotouser?: string
-    recursos?: string[]
+    recursos: string[]
     preferencias?: string[]
 }
 

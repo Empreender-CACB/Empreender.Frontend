@@ -59,6 +59,10 @@
   @apply ltr:left-full rtl:right-full top-0 origin-top;
 }
 
+.dropdown-submenu-left {
+  @apply ltr:right-full rtl:right-full top-0 origin-top;
+}
+
 .dropdown-submenu-item {
   @apply justify-between;
 }
