@@ -147,7 +147,7 @@ const defaultFilterValue = [
     {
         name: 'idempresa',
         operator: 'contains',
-        type: 'string',
+        type: 'number',
         value: '',
     },
     {
