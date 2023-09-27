@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
+import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import Radio from '@/components/ui/Radio'
 import { Button, Tag } from '@/components/ui'
 import classNames from 'classnames'
@@ -13,7 +14,6 @@ import Select from '@/components/ui/Select'
 import axios from 'axios'
 
 import {
-    HiDownload,
     HiOutlineReply,
     HiPlusCircle,
 } from 'react-icons/hi'
@@ -73,7 +73,7 @@ const estadosBrasileiros = [
 ]
 
 const columns = [
-    { name: 'empresa.idempresa', header: 'ID', type: 'number', defaultFlex: 0.6 },
+    { name: 'empresa.idempresa', header: 'ID', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter, },
     {
         name: 'nmuf', header: 'UF', type: 'select',
         filterEditor: SelectFilter,
@@ -144,12 +144,9 @@ const columns = [
 ]
 
 const defaultFilterValue = [
-    {
-        name: 'empresa.idempresa',
-        operator: 'contains',
-        type: 'number',
-        value: '',
-    },
+
+    { name: 'empresa.idempresa', type: 'number'} ,
+
     {
         name: 'nmuf',
         operator: "inlist",
