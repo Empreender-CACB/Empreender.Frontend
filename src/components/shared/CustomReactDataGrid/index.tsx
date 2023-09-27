@@ -232,6 +232,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       <div style={{ marginBottom: 20 }}>
         <Button icon={<HiFilter />} size='sm' onClick={() => {
           gridRef.current.clearAllFilters()
+          gridRef.current.setFilterValue(defaultFilterValue)
         }}>
           Limpar filtros
         </Button>
