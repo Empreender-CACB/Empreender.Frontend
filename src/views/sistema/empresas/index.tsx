@@ -73,7 +73,7 @@ const estadosBrasileiros = [
 ]
 
 const columns = [
-    { name: 'empresa.idempresa', header: 'ID', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter, },
+    { name: 'empresa.idempresa', header: 'ID', columnName: 'empresa.idempresa', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter, },
     {
         name: 'nmuf', header: 'UF', type: 'select',
         filterEditor: SelectFilter,
@@ -145,7 +145,7 @@ const columns = [
 
 const defaultFilterValue = [
 
-    { name: 'empresa.idempresa', type: 'number'} ,
+    { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
 
     {
         name: 'nmuf',
