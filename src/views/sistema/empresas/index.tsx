@@ -146,7 +146,6 @@ const columns = [
 const defaultFilterValue = [
 
     { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
-
     {
         name: 'nmuf',
         operator: "inlist",
