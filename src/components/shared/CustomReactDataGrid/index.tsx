@@ -253,6 +253,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         theme={isDark ? "blue-dark" : "blue-light"}
         defaultLimit={30}
         enableFiltering={true}
+        userSelect={true}
         pagination
         style={gridStyle}
         enableColumnAutosize={false}
