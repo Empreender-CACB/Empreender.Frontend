@@ -254,6 +254,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         defaultLimit={30}
         enableFiltering={true}
         userSelect={true}
+        columnUserSelect={true}
         pagination
         style={gridStyle}
         enableColumnAutosize={false}
