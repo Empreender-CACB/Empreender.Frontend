@@ -32,6 +32,8 @@ const i18n = Object.assign({
   beforeOrOn: 'Antes de ou em',
   afterOrOn: 'A partir de',
   after: 'Após',
+  start: 'De',
+  end: 'Até',
   empty: 'Vazio',
   inlist: 'Na lista',
   notinlist: 'Fora da lista',
