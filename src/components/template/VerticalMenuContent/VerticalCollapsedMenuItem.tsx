@@ -7,6 +7,8 @@ import type { CommonProps } from '@/@types/common'
 import type { Direction } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation'
 
+const { MenuItem, MenuCollapse } = Menu
+
 interface DefaultItemProps extends CommonProps {
     nav: NavigationTree
     onLinkClick?: (link: { key: string; title: string; path: string }) => void
@@ -20,7 +22,36 @@ interface VerticalCollapsedMenuItemProps extends CollapsedItemProps {
     sideCollapsed?: boolean
 }
 
-const { MenuItem, MenuCollapse } = Menu
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const RenderItem = ({ subNav, onLinkClick }: { subNav: NavigationTree, onLinkClick?: any }) => {
+    return subNav.path ? (
+        <Link
+            className="h-full w-full flex items-center"
+            to={subNav.path}
+            onClick={() =>
+                onLinkClick?.({
+                    key: subNav.key,
+                    title: subNav.title,
+                    path: subNav.path,
+                })
+            }
+        >
+            <span>
+                <Trans
+                    i18nKey={subNav.translateKey}
+                    defaults={subNav.title}
+                />
+            </span>
+        </Link>
+    ) : (
+        <span>
+            <Trans
+                i18nKey={subNav.translateKey}
+                defaults={subNav.title}
+            />
+        </span>
+    );
+}
 
 const DefaultItem = ({ nav, onLinkClick }: DefaultItemProps) => {
     return (
@@ -42,98 +73,54 @@ const DefaultItem = ({ nav, onLinkClick }: DefaultItemProps) => {
             className="mb-2"
         >
             {nav.subMenu.map((subNav) => (
+                subNav.subMenu && subNav.subMenu.length > 0 ? 
+                <DefaultItem key={subNav.key} nav={subNav} onLinkClick={onLinkClick} />
+                :
                 <MenuItem key={subNav.key} eventKey={subNav.key}>
-                    {subNav.path ? (
-                        <Link
-                            className="h-full w-full flex items-center"
-                            to={subNav.path}
-                            onClick={() =>
-                                onLinkClick?.({
-                                    key: subNav.key,
-                                    title: subNav.title,
-                                    path: subNav.path,
-                                })
-                            }
-                        >
-                            <span>
-                                <Trans
-                                    i18nKey={subNav.translateKey}
-                                    defaults={subNav.title}
-                                />
-                            </span>
-                        </Link>
-                    ) : (
-                        <span>
-                            <Trans
-                                i18nKey={subNav.translateKey}
-                                defaults={subNav.title}
-                            />
-                        </span>
-                    )}
+                    <RenderItem subNav={subNav} onLinkClick={onLinkClick} />
                 </MenuItem>
             ))}
         </MenuCollapse>
     )
 }
 
-export const CollapsedItem = ({
-    nav,
-    onLinkClick,
-    direction,
-}: CollapsedItemProps) => {
+const renderSubMenuItems = (subMenu: NavigationTree[]) => {
+    return subMenu.map((subNavItem) => {
+        if (subNavItem.subMenu && subNavItem.subMenu.length > 0) {
+            return (
+                <Dropdown.Menu key={subNavItem.key} title={subNavItem.title}>
+                    {renderSubMenuItems(subNavItem.subMenu)}
+                </Dropdown.Menu>
+            )
+        } else {
+            return (
+                <Dropdown.Item key={subNavItem.key} eventKey={subNavItem.key}>
+                    <RenderItem subNav={subNavItem} />
+                </Dropdown.Item>
+            );
+        }
+    })
+}
+
+export const CollapsedItem = ({ nav, direction }: CollapsedItemProps) => {
     const menuItem = (
         <MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
-            <VerticalMenuIcon icon={nav.icon} />
+            <VerticalMenuIcon icon={nav.icon} />            
         </MenuItem>
-    )
+    );
 
     return (
         <Dropdown
             trigger="hover"
             renderTitle={menuItem}
-            placement={
-                direction === 'rtl' ? 'middle-end-top' : 'middle-start-top'
-            }
+            placement={direction === 'rtl' ? 'middle-end-top' : 'middle-start-top'}
         >
-            {nav.subMenu.map((subNav) => (
-                <Dropdown.Item key={subNav.key} eventKey={subNav.key}>
-                    {subNav.path ? (
-                        <Link
-                            className="h-full w-full flex items-center"
-                            to={subNav.path}
-                            onClick={() =>
-                                onLinkClick?.({
-                                    key: subNav.key,
-                                    title: subNav.title,
-                                    path: subNav.path,
-                                })
-                            }
-                        >
-                            <span>
-                                <Trans
-                                    i18nKey={subNav.translateKey}
-                                    defaults={subNav.title}
-                                />
-                            </span>
-                        </Link>
-                    ) : (
-                        <span>
-                            <Trans
-                                i18nKey={subNav.translateKey}
-                                defaults={subNav.title}
-                            />
-                        </span>
-                    )}
-                </Dropdown.Item>
-            ))}
+            {renderSubMenuItems(nav.subMenu)}
         </Dropdown>
     )
 }
 
-const VerticalCollapsedMenuItem = ({
-    sideCollapsed,
-    ...rest
-}: VerticalCollapsedMenuItemProps) => {
+const VerticalCollapsedMenuItem = ({ sideCollapsed, ...rest }: VerticalCollapsedMenuItemProps) => {
     return sideCollapsed ? (
         <CollapsedItem {...rest} />
     ) : (
