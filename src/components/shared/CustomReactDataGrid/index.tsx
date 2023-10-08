@@ -153,6 +153,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     }
   }
 
+  const dataSource = useCallback(loadData, [url])
+
   const gridStyle = { minHeight: 750, width: '100%' };
 
   const handleFilterValueChange = (newFilterValue: any) => {
@@ -264,7 +266,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         loadingText="Carregando ... "
         emptyText="Não há dados para serem exibidos"
         disableGroupByToolbar={true}
-        dataSource={loadData}
+        dataSource={dataSource}
         />
     </div>
   )
