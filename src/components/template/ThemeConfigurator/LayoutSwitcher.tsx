@@ -46,12 +46,12 @@ const layouts = [
         src: '/img/thumbs/layouts/decked.jpg',
         srcDark: '/img/thumbs/layouts/decked-dark.jpg',
     },
-    {
-        value: LAYOUT_TYPE_BLANK,
-        label: 'Blank',
-        src: '/img/thumbs/layouts/blank.jpg',
-        srcDark: '/img/thumbs/layouts/blank-dark.jpg',
-    },
+    // {
+    //     value: LAYOUT_TYPE_BLANK,
+    //     label: 'Blank',
+    //     src: '/img/thumbs/layouts/blank.jpg',
+    //     srcDark: '/img/thumbs/layouts/blank-dark.jpg',
+    // },
 ]
 
 const LayoutSwitcher = () => {
