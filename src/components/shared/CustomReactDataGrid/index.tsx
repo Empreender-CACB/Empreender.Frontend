@@ -263,7 +263,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             </Dialog>
 
             {options}
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'end' }}>
                 <Button
                     icon={<HiFilter />}
                     size="sm"
