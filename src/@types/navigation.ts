@@ -8,3 +8,15 @@ export interface NavigationTree {
     authority: string[]
     subMenu: NavigationTree[]
 }
+
+export interface Documento {
+    nome: string
+    id: number
+    temNovidade: boolean
+}
+
+export interface GrupoDocumento {
+    grupo: string
+    temNovidade: boolean
+    subMenu: Documento[]
+}

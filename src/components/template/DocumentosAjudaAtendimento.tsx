@@ -1,48 +1,19 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import Dropdown from '@/components/ui/Dropdown'
 import { Link } from 'react-router-dom'
-
-interface Documento {
-    nome: string
-    id: number
-    temNovidade: boolean
-}
-
-interface GrupoDocumento {
-    grupo: string
-    temNovidade: boolean
-    subMenu: Documento[]
-}
-
-type DocumentosData = GrupoDocumento[]
+import { Documento, GrupoDocumento } from '@/@types/navigation'
+import { apiGetDocumentos } from '@/services/MenuService'
 
 const DocumentosAjudaAtendimento = () => {
-    const [documentosData, setDocumentosData] = useState<DocumentosData>([])
+    const [documentosData, setDocumentosData] = useState<GrupoDocumento[]>([])
 
     useEffect(() => {
         const fetchDocumentos = async () => {
             try {
-                const userData = localStorage.getItem('admin')
-                if (userData) {
-                    const parsedAdminData = JSON.parse(userData)
-                    const token = JSON.parse(parsedAdminData.auth).session.token
-
-                    const response = await axios.get(
-                        `${import.meta.env.VITE_API_URL}/documentos`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-                    setDocumentosData(response.data)
-                }
+                const response = await apiGetDocumentos()
+                setDocumentosData(response.data)
             } catch (error) {
-                console.error(
-                    'Não foi possível carregar a configuração de navegação:',
-                    error
-                )
+                console.error(error)
             }
         }
 
@@ -51,7 +22,7 @@ const DocumentosAjudaAtendimento = () => {
 
     return (
         <Dropdown.Menu title={'Documentos'}>
-            {documentosData.map((grupo: GrupoDocumento) => (
+            {documentosData.map((grupo) => (
                 <Dropdown.Menu
                     key={grupo.grupo}
                     openLeft

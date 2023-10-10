@@ -11,16 +11,13 @@ import { Button, Tag } from '@/components/ui'
 import classNames from 'classnames'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
-import axios from 'axios'
 
-import {
-    HiOutlineReply,
-    HiPlusCircle,
-} from 'react-icons/hi'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
+import { apiGetSegmentos } from '@/services/EmpresasServices'
 
 moment.locale('pt-br')
 
@@ -36,7 +33,6 @@ const statusMapping: Record<StatusType, { label: string; class: string }> = {
         class: 'bg-yellow-300 text-black ',
     },
 }
-
 
 const activeValue = [
     { name: 'Ativa', value: 'S' },
@@ -69,20 +65,29 @@ const estadosBrasileiros = [
     { sigla: 'SC', nome: 'SANTA CATARINA' },
     { sigla: 'SP', nome: 'SAO PAULO' },
     { sigla: 'SE', nome: 'SERGIPE' },
-    { sigla: 'TO', nome: 'TOCANTINS' }
+    { sigla: 'TO', nome: 'TOCANTINS' },
 ]
 
 const columns = [
-    { name: 'empresa.idempresa', header: 'ID', columnName: 'empresa.idempresa', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter, },
     {
-        name: 'nmuf', header: 'UF', type: 'select',
+        name: 'empresa.idempresa',
+        header: 'ID',
+        columnName: 'empresa.idempresa',
+        type: 'number',
+        defaultFlex: 0.6,
+        filterEditor: NumberFilter,
+    },
+    {
+        name: 'nmuf',
+        header: 'UF',
+        type: 'select',
         filterEditor: SelectFilter,
         filterEditorProps: {
             multiple: true,
-            dataSource: estadosBrasileiros.map(state => {
+            dataSource: estadosBrasileiros.map((state) => {
                 return { id: state.nome, label: state.sigla }
             }),
-        }
+        },
     },
     { name: 'nmcidade', header: 'Cidade', type: 'string' },
     {
@@ -121,10 +126,12 @@ const columns = [
     },
     { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
     {
-        name: 'empresa.flativo', header: 'Ativa', type: 'select',
+        name: 'empresa.flativo',
+        header: 'Ativa',
+        type: 'select',
         filterEditor: SelectFilter,
         filterEditorProps: {
-            dataSource: activeValue.map(option => {
+            dataSource: activeValue.map((option) => {
                 return { id: option.value, label: option.name }
             }),
         },
@@ -144,13 +151,16 @@ const columns = [
 ]
 
 const defaultFilterValue = [
-
-    { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
+    {
+        name: 'empresa.idempresa',
+        type: 'number',
+        columnName: 'empresa.idempresa',
+    },
     {
         name: 'nmuf',
-        operator: "inlist",
+        operator: 'inlist',
         type: 'select',
-        value: ''
+        value: '',
     },
     {
         name: 'nmcidade',
@@ -174,36 +184,36 @@ const defaultFilterValue = [
     },
     {
         name: 'empresa.flativo',
-        operator: "equals",
+        operator: 'equals',
         type: 'select',
-        value: ''
+        value: '',
     },
 ]
 
 const Empresas = () => {
-
-
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [options, setOptions] = useState([]);
-    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [options, setOptions] = useState<{ value: string; label: string }[]>(
+        []
+    )
+    // const [selectedOptions, setSelectedOptions] = useState([])
 
     useEffect(() => {
-        // Fazer a solicitação à API
-        axios.get('http://localhost:3333/segmentos')
-            .then((response) => {
-                // Mapear os dados da API para o formato esperado pelo Select
+        const fetchSegmentos = async () => {
+            try {
+                const response = await apiGetSegmentos()
                 const mappedOptions = response.data.map((segmento) => ({
                     value: segmento.idsegmento.toString(),
                     label: segmento.dssegmento,
-                }));
-                // Definir as opções no estado
-                setOptions(mappedOptions);
-            })
-            .catch((error) => {
-                console.error('Erro ao buscar dados da API:', error);
-            });
-    }, []);
+                }))
+                setOptions(mappedOptions)
+            } catch (error) {
+                console.error('Erro ao buscar dados da API:', error)
+            }
+        }
+
+        fetchSegmentos()
+    }, [])
 
     const onChangeSegmentos = (e: any) => {
         console.log(e)
@@ -213,20 +223,26 @@ const Empresas = () => {
         setNameValue(val)
     }
 
-
     const onChangeEmpresa = (val: string) => {
         setEmpresaType(val)
     }
 
     const radioGroup = (
-
-        <div className='pb-4'>
-            <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
+        <div className="pb-4">
+            <Radio.Group
+                className="lg:mb-0"
+                value={nameValue}
+                onChange={onChange}
+            >
                 <span className="pr-2 font-black">Nome: </span>
                 <Radio value={'nmfantasia'}>Fantasia</Radio>
                 <Radio value={'nurazaosocial'}>Razão Social</Radio>
             </Radio.Group>
-            <Radio.Group className=" pb-4 lg:mb-0" value={empresaType} onChange={onChangeEmpresa}>
+            <Radio.Group
+                className=" pb-4 lg:mb-0"
+                value={empresaType}
+                onChange={onChangeEmpresa}
+            >
                 <span className="pr-2 font-black">Empresa: </span>
                 <Radio value={'todas'}>Todas</Radio>
                 <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
@@ -236,8 +252,7 @@ const Empresas = () => {
 
             {empresaType === 'somente_nucleadas' && (
                 <div>
-
-                    <div className='col-span-1'>
+                    <div className="col-span-1">
                         <span className="font-black">Segmento: </span>
 
                         <Select
@@ -249,16 +264,10 @@ const Empresas = () => {
                             onChange={onChangeSegmentos}
                         />
                     </div>
-
                 </div>
             )}
-
-
         </div>
-
-
-
-    );
+    )
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -269,7 +278,9 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/`}
+                            to={`${
+                                import.meta.env.VITE_PHP_URL
+                            }/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>
@@ -279,8 +290,7 @@ const Empresas = () => {
                         className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
                         to="/data/product-list.csv"
                         target="_blank"
-                    >
-                    </Link>
+                    ></Link>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
                         to="/app/sales/product-new"
@@ -297,13 +307,14 @@ const Empresas = () => {
                 </div>
             </div>
             <CustomReactDataGrid
-                filename='Empresas'
+                filename="Empresas"
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={`${
+                    import.meta.env.VITE_API_URL
+                }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
             />
-
         </AdaptableCard>
     )
 }
