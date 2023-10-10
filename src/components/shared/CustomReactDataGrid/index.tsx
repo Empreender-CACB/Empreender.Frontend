@@ -6,19 +6,16 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button, Dialog, Card } from '@/components/ui'
+import { Button, Dialog } from '@/components/ui'
 import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
 import Select from 'react-select'
 import type { MouseEvent } from 'react'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
-import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-dark.css'
-import { Link } from 'react-router-dom'
 import CTableCards from './CTableCards'
-import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 //import './theme.css'
 import i18n from './i18n'
 
@@ -29,6 +26,7 @@ interface CustomReactDataGridProps {
     url: string
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    widthSize?: number
 }
 
 type SortInfo = {
@@ -55,6 +53,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     url,
     options,
     filename,
+    widthSize = 1280,
     CardLayout,
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
@@ -235,7 +234,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         )
     }, [])
 
-    const hideTable = larguraDaTela <= 1280
+    const hideTable = larguraDaTela <= widthSize
     const hideClass = hideTable ? 'hidden' : 'block'
     return (
         <div>
