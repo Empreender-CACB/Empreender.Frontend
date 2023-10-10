@@ -12,11 +12,11 @@ const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText }
   const statusMapping: Record<string, { label: string; class: string }> = {
     Ativo: {
       label: 'Ativa',
-      class: 'bg-green-600 mr-2 text-white text-center',
+      class: 'bg-sky-800 mr-2 text-white text-center',
     },
     Inativo: {
       label: 'Inativa',
-      class: 'bg-yellow-300 mr-2 text-black',
+      class: 'bg-orange-500 mr-2 text-white',
     },
   };
 
@@ -24,7 +24,7 @@ const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText }
 
   return (
     <Tag
-      className={`border-0 rounded-md ltr:ml-2 rtl:mr-2 ${
+      className={`border-0 rounded-md ltr:ml-2 rtl:mr-2 h-6 ${
         statusMapping[status].class || ''
       }`}
     >

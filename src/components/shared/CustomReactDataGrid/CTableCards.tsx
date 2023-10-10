@@ -7,7 +7,7 @@ interface CardData {
 
 interface CTableCardsProps {
   data: CardData[];
-  renderItem: (item: CardData, index: number) => React.ReactNode;
+  renderItem: any;
 }
 
 const CTableCards: React.FC<CTableCardsProps> = ({ data, renderItem }) => {
@@ -22,7 +22,7 @@ const CTableCards: React.FC<CTableCardsProps> = ({ data, renderItem }) => {
           clickable
           className="hover:shadow-lg transition duration-150 ease-in-out h"
         >
-          {renderItem(item, index)}
+          {renderItem({data: item})}
         </Card>
       ))}
     </div>

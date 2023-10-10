@@ -15,6 +15,8 @@ import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import classNames from 'classnames'
 import { setUser, signInSuccess, useAppDispatch } from '@/store'
 import axios from 'axios'
+import { UsuariosCard } from '@/components/shared/TableCards/UsuariosCard'
+import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
 moment.locale('pt-br')
 
@@ -110,14 +112,7 @@ const Usuarios = () => {
             defaultFlex: 0.6,
             render: ({ value }: any) => (
                 <div className="flex items-center justify-center">
-                    <Tag
-                        className={classNames(
-                            'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                            statusMapping[value as StatusType]?.class || ''
-                        )}
-                    >
-                        {statusMapping[value as StatusType]?.label || ''}
-                    </Tag>
+                    <TagActiveInative value={value} activeText="S" />
                 </div>
             ),
         },
@@ -155,9 +150,11 @@ const Usuarios = () => {
             </div>
 
             <CustomReactDataGrid
+                filename='Usuários'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/usuarios`}
+                CardLayout={UsuariosCard}
             />
         </AdaptableCard>
     )

@@ -22,6 +22,7 @@ import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
+import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
 
 moment.locale('pt-br')
 
@@ -282,6 +283,7 @@ const Empresas = () => {
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
+                CardLayout={EmpresasCard}
             />
 
         </AdaptableCard>
