@@ -6,7 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button,Dialog } from '@/components/ui'
+import { Button, Dialog } from '@/components/ui'
 import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
@@ -50,10 +50,12 @@ type LoadDataParams = {
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options, filename }) => {
 
   const valorLocalStorage = localStorage.getItem('lista_geral');
-  const [isDark] = useDarkMode() 
+  const [isDark] = useDarkMode()
   const [dialogIsOpen, setIsOpen] = useState(false)
   const [listaGeral, setListaGeral] = useState(valorLocalStorage ? Number(valorLocalStorage) : 25);
   const [gridRef, setGridRef] = useState(null)
+  const [loadedData, setLoadedData] = useState()
+  const [loading, setLoading] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [queryParams, setQueryParams] = useState<LoadDataParams>({
     skip: 0,
@@ -69,21 +71,21 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   useEffect(() => {
     localStorage.setItem('lista_geral', listaGeral.toString());
   }, [listaGeral]);
- 
+
   const openDialog = () => {
-      setIsOpen(true)
+    setIsOpen(true)
   }
 
   const onDialogClose = (e: MouseEvent) => {
-      console.log('onDialogClose', e)
-      setIsOpen(false)
+    console.log('onDialogClose', e)
+    setIsOpen(false)
   }
 
   const onDialogOk = (e: MouseEvent) => {
-      console.log('onDialogOk', e)
-      setIsOpen(false)
+    console.log('onDialogOk', e)
+    setIsOpen(false)
   }
-    const opcoes = [
+  const opcoes = [
     { value: 5, label: '5' },
     { value: 10, label: '10' },
     { value: 15, label: '15' },
@@ -94,10 +96,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     { value: 100, label: '100' },
   ];
 
-  
+
   const handleChange = (opcaoSelecionada) => {
     setListaGeral(opcaoSelecionada.value);
-    localStorage.setItem('lista_geral',String(opcaoSelecionada.value))
+    localStorage.setItem('lista_geral', String(opcaoSelecionada.value))
   };
 
   const loadData = async (params: any, exportExcel = false) => {
@@ -107,8 +109,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       const tableConfig = {
         skip: skip,
         limit: limit,
-        filename:filename,
-        exportExcel:exportExcel,
+        filename: filename,
+        exportExcel: exportExcel,
         groupBy: groupBy && groupBy.length ? groupBy : undefined,
         sortInfo: JSON.stringify(sortInfo),
         filterBy: JSON.stringify(filterValue)
@@ -141,17 +143,19 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         }
       });
 
-      const totalCount = response.headers['x-total-count'];
       const data = response.data.data;
       const count = response.data.meta.total;
 
-      return { data, count, totalCount };
+      setLoading(true)
+      return {data, count};
 
     } catch (error) {
       console.error('An error occurred while fetching data: ', error);
       throw error;
     }
   }
+
+  const dataSource = useCallback(loadData, [url])
 
   const gridStyle = { minHeight: 750, width: '100%' };
 
@@ -173,27 +177,27 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   )
 
   function downloadAndNotify() {
-     return toast.push(notification)
+    return toast.push(notification)
   }
 
   const renderPaginationToolbar = useCallback((paginationProps) => {
-  
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    options={
+    options = {
       pageText: 'Página ',
       ofText: ' de ',
       perPageText: 'Resultados por página',
       showingText: 'Exibindo '
     }
-    
-  
+
+
     return (
       <div style={{ paddingTop: '40px' }}>
-        <PaginationToolbar {...paginationProps} {... options} bordered={true}>
-          </PaginationToolbar>
-          
-        <div  style={{position:'absolute', right:'10px', bottom:'10px'}}>
-        <HiOutlineCog onClick={() => openDialog()} size={'20px'} />
+        <PaginationToolbar {...paginationProps} {...options} bordered={true}>
+        </PaginationToolbar>
+
+        <div style={{ position: 'absolute', right: '10px', bottom: '10px' }}>
+          <HiOutlineCog onClick={() => openDialog()} size={'20px'} />
         </div>
       </div>
     );
@@ -202,31 +206,31 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
 
   return (
     <div>
-        <Dialog
-                isOpen={dialogIsOpen}
- 
-            >
-                <h5 className="mb-4">Preferências da CTable</h5>
-                <p>
-                  <b>Quantidade de itens padrão:</b>
-      <Select
-        options={opcoes}
-          onChange={handleChange}
-        placeholder="Selecione um número"
-      />                  </p>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={onDialogClose}
-                    >
-                        Cancelar
-                    </Button>
-                    <Button variant="solid" onClick={onDialogOk}>
-                        Salvar
-                    </Button>
-                </div>
-   </Dialog>
+      <Dialog
+        isOpen={dialogIsOpen}
+
+      >
+        <h5 className="mb-4">Preferências da CTable</h5>
+        <p>
+          <b>Quantidade de itens padrão:</b>
+          <Select
+            options={opcoes}
+            onChange={handleChange}
+            placeholder="Selecione um número"
+          />                  </p>
+        <div className="text-right mt-6">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            variant="plain"
+            onClick={onDialogClose}
+          >
+            Cancelar
+          </Button>
+          <Button variant="solid" onClick={onDialogOk}>
+            Salvar
+          </Button>
+        </div>
+      </Dialog>
 
       {options}
       <div style={{ marginBottom: 20 }}>
@@ -243,11 +247,19 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         </Button>
       </div>
 
+        {loading?(
+          <div className="text-sm text-gray-600 mb-4">
+            carregando
+          </div>
+        ):(
+          <div className="text-sm text-gray-600 mb-4">
+            carregado
+          </div>
+        )}
       <ReactDataGrid
-        onReady={setGridRef}
         renderPaginationToolbar={renderPaginationToolbar}
         i18n={i18n}
-        onFilterValueChange={handleFilterValueChange}
+        wrapMultiple={false}
         idProperty="id"
         defaultFilterValue={defaultFilterValue}
         columns={columns}
@@ -260,12 +272,15 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         style={gridStyle}
         enableColumnAutosize={false}
         limit={listaGeral}
-        onLimitChange={setListaGeral}
         loadingText="Carregando ... "
         emptyText="Não há dados para serem exibidos"
         disableGroupByToolbar={true}
-        dataSource={loadData}
-        />
+        dataSource={dataSource}
+        onLoadingChange={setLoading}
+        onFilterValueChange={handleFilterValueChange}
+        onLimitChange={setListaGeral}
+        onReady={setGridRef}
+      />
     </div>
   )
 }
