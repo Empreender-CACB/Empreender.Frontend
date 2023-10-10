@@ -298,10 +298,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
                 duration={500}
                 offset={-80}
               >
-                poioi
-                <h5>{item.nmfantasia} <TagActiveInative value={item.flativo} activeText="S" />
-                </h5>
-                <span>{item.nucnpjcpf || '-'} {item.empresa.flativo}</span>
+                <span className='font-black'>{item.nmfantasia} <TagActiveInative value={item.empresa_ativa} activeText="S" /></span>
+                <br />
+                <span>{item.nucnpjcpf || '-'} {item.flativo}</span>
+                <p><span className="font-black">Ramo: </span>{item.nmramoativ}</p>
                 <p className="mt-2">{item.nmcidade} - {item.nmuf}</p>
               </Link>
             </>

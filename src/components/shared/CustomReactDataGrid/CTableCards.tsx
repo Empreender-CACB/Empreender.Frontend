@@ -17,9 +17,10 @@ const CTableCards: React.FC<CTableCardsProps> = ({ data, renderItem }) => {
 
       {data.map((item, index) => (        
         <Card
+          bodyClass="h-full"
           key={index}
           clickable
-          className="hover:shadow-lg transition duration-150 ease-in-out"
+          className="hover:shadow-lg transition duration-150 ease-in-out h"
         >
           {renderItem(item, index)}
         </Card>
