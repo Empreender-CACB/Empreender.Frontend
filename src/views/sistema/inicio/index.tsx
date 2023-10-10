@@ -45,18 +45,18 @@ const Inicio = () => {
 
     const { nmusuario } = useAppSelector((state) => state.auth.user)
 
-    // const [images, setImages] = useState([])
-    // useEffect(() => {
-    //     const fetchImages = async () => {
-    //         try {
-    //             const response = await apiGetImages()
-    //             setImages(response.data)
-    //         } catch (error) {
-    //             console.error('Não foi possível carregar as imagens:', error)
-    //         }
-    //     }
-    //     fetchImages()
-    // }, [])
+    const [images, setImages] = useState([])
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const response = await apiGetImages()
+                setImages(response.data)
+            } catch (error) {
+                console.error('Não foi possível carregar as imagens:', error)
+            }
+        }
+        fetchImages()
+    }, [])
 
     const [videos, setVideos] = useState([])
     useEffect(() => {
