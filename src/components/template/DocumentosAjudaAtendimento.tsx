@@ -6,6 +6,20 @@ import { apiGetDocumentos } from '@/services/MenuService'
 
 const DocumentosAjudaAtendimento = () => {
     const [documentosData, setDocumentosData] = useState<GrupoDocumento[]>([])
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+    const shouldOpenDown = windowWidth <= 1200
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth)
+        }
+
+        window.addEventListener('resize', handleResize)
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     useEffect(() => {
         const fetchDocumentos = async () => {
@@ -21,11 +35,12 @@ const DocumentosAjudaAtendimento = () => {
     }, [])
 
     return (
-        <Dropdown.Menu title={'Documentos'}>
+        <Dropdown.Menu openDown={shouldOpenDown} title={'Documentos'}>
             {documentosData.map((grupo) => (
                 <Dropdown.Menu
                     key={grupo.grupo}
-                    openLeft
+                    openDown={shouldOpenDown}
+                    openLeft={!shouldOpenDown}
                     title={grupo.grupo + (grupo.temNovidade ? ' * ' : '')}
                     style={grupo.temNovidade ? { color: 'red !important' } : {}}
                 >

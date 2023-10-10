@@ -95,20 +95,32 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
             },
             [eventKey, onSelect, menu]
         )
-
         const handleClick = useCallback(
             (e: SyntheticEvent) => {
+                e.stopPropagation() // Impede a propagação do evento
+
                 if (disabled) {
                     return
                 }
 
                 if (submenu) {
-                    openSubmenuIfExists()
+                    if (open) {
+                        submenuControl.closeMenu()
+                    } else {
+                        openSubmenuIfExists()
+                    }
                 } else {
                     activate(e)
                 }
             },
-            [disabled, submenu, openSubmenuIfExists, activate]
+            [
+                disabled,
+                submenu,
+                open,
+                openSubmenuIfExists,
+                activate,
+                submenuControl,
+            ]
         )
 
         const handleMouseOver = useCallback(() => {

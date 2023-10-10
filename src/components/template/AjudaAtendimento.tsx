@@ -62,9 +62,10 @@ const _AjudaAtendimento = ({ className }: CommonProps) => {
     return (
         <div>
             <Dropdown
+                openDown
                 menuStyle={{ minWidth: 240 }}
                 renderTitle={AjudaAvatar}
-                placement="bottom-end"
+                placement="bottom-center"
             >
                 {filteredItems.map((item) => (
                     <Dropdown.Item

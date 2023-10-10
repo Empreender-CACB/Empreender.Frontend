@@ -30,6 +30,8 @@ export interface DropdownProps extends CommonProps, DropdownToggleSharedProps {
     onOpen?: () => void
     onClose?: () => void
     onToggle?: (open?: boolean) => void
+    openDown?: boolean;
+    openLeft?: boolean;
 }
 
 const { BOTTOM_START } = PLACEMENT as Record<string, DropdownPlacement>
@@ -180,6 +182,8 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((props, ref) => {
             hidden={!open}
             placement={placement}
             id={menuId}
+            openDown={props.openDown}
+            openLeft={props.openLeft} 
             onSelect={handleSelect}
         >
             {children}
