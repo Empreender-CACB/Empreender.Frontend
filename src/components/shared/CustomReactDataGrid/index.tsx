@@ -6,7 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button, Dialog } from '@/components/ui'
+import { Button, Dialog, Card } from '@/components/ui'
 import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
@@ -16,6 +16,9 @@ import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/green-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-dark.css'
+import { Link } from 'react-router-dom'
+import CTableCards from './CTableCards'
+import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 //import './theme.css'
 import i18n from './i18n'
 
@@ -49,12 +52,13 @@ type LoadDataParams = {
 
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFilterValue, url, options, filename }) => {
 
+  const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth);
   const valorLocalStorage = localStorage.getItem('lista_geral');
   const [isDark] = useDarkMode()
   const [dialogIsOpen, setIsOpen] = useState(false)
   const [listaGeral, setListaGeral] = useState(valorLocalStorage ? Number(valorLocalStorage) : 25);
   const [gridRef, setGridRef] = useState(null)
-  const [loadedData, setLoadedData] = useState()
+  const [loadedData, setLoadedData] = useState([])
   const [loading, setLoading] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [queryParams, setQueryParams] = useState<LoadDataParams>({
@@ -71,6 +75,16 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
   useEffect(() => {
     localStorage.setItem('lista_geral', listaGeral.toString());
   }, [listaGeral]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLarguraDaTela(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const openDialog = () => {
     setIsOpen(true)
@@ -146,8 +160,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
       const data = response.data.data;
       const count = response.data.meta.total;
 
+      setLoadedData(data)
       setLoading(true)
-      return {data, count};
+      return { data, count };
 
     } catch (error) {
       console.error('An error occurred while fetching data: ', error);
@@ -203,7 +218,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
     );
   }, []);
 
-
+  const hideTable = larguraDaTela <= 768;
+  const hideClass = hideTable ? 'hidden' : 'block';
   return (
     <div>
       <Dialog
@@ -247,41 +263,59 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({ columns, defaultFil
         </Button>
       </div>
 
-        {loading?(
-          <div className="text-sm text-gray-600 mb-4">
-            carregando
-          </div>
-        ):(
-          <div className="text-sm text-gray-600 mb-4">
-            carregado
-          </div>
-        )}
-      <ReactDataGrid
-        renderPaginationToolbar={renderPaginationToolbar}
-        i18n={i18n}
-        wrapMultiple={false}
-        idProperty="id"
-        defaultFilterValue={defaultFilterValue}
-        columns={columns}
-        theme={isDark ? "blue-dark" : "blue-light"}
-        defaultLimit={30}
-        enableFiltering={true}
-        userSelect={true}
-        columnUserSelect={true}
-        pagination
-        style={gridStyle}
-        enableColumnAutosize={false}
-        limit={listaGeral}
-        loadingText="Carregando ... "
-        emptyText="Não há dados para serem exibidos"
-        disableGroupByToolbar={true}
-        dataSource={dataSource}
-        onLoadingChange={setLoading}
-        onFilterValueChange={handleFilterValueChange}
-        onLimitChange={setListaGeral}
-        onReady={setGridRef}
-      />
+        <ReactDataGrid className={`${hideClass}`}
+          renderPaginationToolbar={renderPaginationToolbar}
+          i18n={i18n}
+          wrapMultiple={false}
+          idProperty="id"
+          defaultFilterValue={defaultFilterValue}
+          columns={columns}
+          theme={isDark ? "blue-dark" : "blue-light"}
+          defaultLimit={30}
+          enableFiltering={true}
+          userSelect={true}
+          columnUserSelect={true}
+          pagination
+          style={gridStyle}
+          enableColumnAutosize={false}
+          limit={listaGeral}
+          loadingText="Carregando ... "
+          emptyText="Não há dados para serem exibidos"
+          disableGroupByToolbar={true}
+          dataSource={dataSource}
+          onLoadingChange={setLoading}
+          onFilterValueChange={handleFilterValueChange}
+          onLimitChange={setListaGeral}
+          onReady={setGridRef}
+        /> 
+        <CTableCards
+          data={loadedData}
+          renderItem={(item, index) => (
+            <>
+              <Link
+                to={`./${item.idempresa}`}
+                smooth={true}
+                duration={500}
+                offset={-80}
+              >
+                poioi
+                <h5>{item.nmfantasia} <TagActiveInative value={item.flativo} activeText="S" />
+                </h5>
+                <span>{item.nucnpjcpf || '-'} {item.empresa.flativo}</span>
+                <p className="mt-2">{item.nmcidade} - {item.nmuf}</p>
+              </Link>
+            </>
+          )}
+        />
+
+
+
+
+
+
     </div>
+
+
   )
 }
 
