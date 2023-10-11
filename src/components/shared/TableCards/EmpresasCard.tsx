@@ -11,7 +11,7 @@ export const EmpresasCard = ({ data }) => {
         >
             <div className="w-full flex justify-between">
                 <h5>{data.nmfantasia} </h5>
-                <TagActiveInative value={data.empresa_ativa} activeText="S" />
+                <TagActiveInative value={data["empresa.flativo"]} activeText="S" />
             </div>
 
             <span>{data.nucnpjcpf || '-'}</span>

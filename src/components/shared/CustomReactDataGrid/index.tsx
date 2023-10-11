@@ -7,7 +7,7 @@ import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button, Dialog } from '@/components/ui'
-import { HiDownload, HiFilter, HiOutlineCog } from 'react-icons/hi'
+import { HiDownload, HiFilter, HiOutlineCog, HiOutlineViewGrid, HiOutlineViewList } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
 import Select from 'react-select'
@@ -15,6 +15,7 @@ import type { MouseEvent } from 'react'
 import '@inovua/reactdatagrid-community/theme/default-dark.css'
 import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-dark.css'
+import Tooltip from '@/components/ui/Tooltip'
 import CTableCards from './CTableCards'
 //import './theme.css'
 import i18n from './i18n'
@@ -59,6 +60,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const valorLocalStorage = localStorage.getItem('lista_geral')
     const [isDark] = useDarkMode()
+    const [view, setView] = useState('list')
     const [dialogIsOpen, setIsOpen] = useState(false)
     const [listaGeral, setListaGeral] = useState(
         valorLocalStorage ? Number(valorLocalStorage) : 25
@@ -77,6 +79,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         groupBy: '',
         filterValue: {},
     })
+
+    const onViewToggle = () => {
+        setView(view === 'grid' ? 'list' : 'grid')
+    }
 
     useEffect(() => {
         localStorage.setItem('lista_geral', listaGeral.toString())
@@ -264,6 +270,22 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
             {options}
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'end' }}>
+            <Tooltip title={view === 'grid' ? 'Lista' : 'Cards'}>
+                    <Button
+                        className="hidden md:flex"
+                        variant="plain"
+                        size="sm"
+                        icon={
+                            view === 'grid' ? (
+                                <HiOutlineViewList />
+                            ) : (
+                                <HiOutlineViewGrid />
+                            )
+                        }
+                        onClick={() => onViewToggle()}
+                    />
+                </Tooltip>
+                
                 <Button
                     icon={<HiFilter />}
                     size="sm"
@@ -287,7 +309,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 </Button>
             </div>
 
-            <ReactDataGrid
+            {loadedData && hideTable  || view === 'grid' ? (
+                <CTableCards data={loadedData} renderItem={CardLayout} />
+            ) : 
+                <ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
@@ -312,10 +337,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onFilterValueChange={handleFilterValueChange}
                 onLimitChange={setListaGeral}
                 onReady={setGridRef}
-            />
-            {loadedData && hideTable ? (
-                <CTableCards data={loadedData} renderItem={CardLayout} />
-            ) : null}
+                />
+        }
         </div>
     )
 }
