@@ -240,7 +240,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         )
     }, [])
 
-    const hideTable = larguraDaTela <= widthSize
+    const hideTable = larguraDaTela <= widthSize  || view === 'grid'
     const hideClass = hideTable ? 'hidden' : 'block'
     return (
         <div>
@@ -311,8 +311,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
             {loadedData && hideTable  || view === 'grid' ? (
                 <CTableCards data={loadedData} renderItem={CardLayout} />
-            ) : 
-                <ReactDataGrid
+            ) : null
+        }
+
+<ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
@@ -338,7 +340,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onLimitChange={setListaGeral}
                 onReady={setGridRef}
                 />
-        }
         </div>
     )
 }
