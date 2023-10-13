@@ -5,18 +5,18 @@ import { GoSignIn } from 'react-icons/go'
 
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { Button, Tag } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 import { HiDownload, HiPlusCircle } from 'react-icons/hi'
-import classNames from 'classnames'
 import { setUser, signInSuccess, useAppDispatch } from '@/store'
 import axios from 'axios'
 import { UsuariosCard } from '@/components/shared/TableCards/UsuariosCard'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
+import { apiEntrarComo } from '@/services/MenuService'
 
 moment.locale('pt-br')
 
@@ -30,48 +30,37 @@ const defaultFilterValue = [
     { name: 'flativo', operator: 'contains', type: 'string', value: '' },
 ]
 
-type StatusType = 'S' | 'N'
-
-const statusMapping: Record<StatusType, { label: string; class: string }> = {
-    S: {
-        label: 'Ativo',
-        class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
-    },
-    N: {
-        label: 'Inativo',
-        class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
-    },
-}
-
 const Usuarios = () => {
     const dispatch = useAppDispatch()
 
-    const handleEntrarComo = (userData: any) => {
-        const cpf = userData.nucpf.replace(/[.-]/g, '');
+    const handleEntrarComo = async (userData: any) => {
+        const cpf = userData.nucpf.replace(/[.-]/g, '')
 
-        axios
-            .post(`${import.meta.env.VITE_API_URL}/entrar-como`, { nucpf: cpf })
-            .then((response) => {
-                const newToken = response.data.token.token
-                const adaptedUser = {
-                    nucpf: response.data.user.nucpf,
-                    nmusuario: response.data.user.nmusuario,
-                    dsemail: response.data.user.dsemail,
-                    perfil: response.data.user.perfil,
-                    cod_perfil: response.data.user.cod_perfil,
-                    fotouser: response.data.user.fotouser,
-                    recursos: response.data.user.recursos,
-                    preferencias: response.data.user.preferencias,
-                }
-                dispatch(signInSuccess(newToken))
-                dispatch(setUser(adaptedUser))
+        try {
+            const response = await apiEntrarComo(cpf)
+            const newToken = response.data.token.token
+            const adaptedUser = {
+                nucpf: response.data.user.nucpf,
+                nmusuario: response.data.user.nmusuario,
+                dsemail: response.data.user.dsemail,
+                perfil: response.data.user.perfil,
+                cod_perfil: response.data.user.cod_perfil,
+                fotouser: response.data.user.fotouser,
+                recursos: response.data.user.recursos,
+                preferencias: response.data.user.preferencias,
+            }
+            dispatch(signInSuccess(newToken))
+            dispatch(setUser(adaptedUser))
 
-                const encodedCredentials = btoa(`${adaptedUser.nucpf}:${adaptedUser.nmusuario}`);
-                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/adminutils/trocar-usuario?credentials=${encodedCredentials}`;
-            })
-            .catch((error) => {
-                console.error('Erro ao tentar entrar como outro usuário', error)
-            })
+            const encodedCredentials = btoa(
+                `${adaptedUser.nucpf}:${adaptedUser.nmusuario}`
+            )
+            window.location.href = `${
+                import.meta.env.VITE_PHP_URL
+            }/sistema/adminutils/trocar-usuario?credentials=${encodedCredentials}`
+        } catch (error) {
+            console.error('Erro ao tentar entrar como outro usuário', error)
+        }
     }
 
     const columns = [
@@ -150,7 +139,7 @@ const Usuarios = () => {
             </div>
 
             <CustomReactDataGrid
-                filename='Usuários'
+                filename="Usuários"
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/usuarios`}

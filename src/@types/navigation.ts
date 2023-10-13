@@ -20,3 +20,17 @@ export interface GrupoDocumento {
     temNovidade: boolean
     subMenu: Documento[]
 }
+
+export interface UserResponse {
+    token: { token: string }
+    user: {
+        nucpf: string
+        nmusuario: string
+        dsemail: string
+        perfil: string
+        cod_perfil: string
+        fotouser: string
+        recursos: any
+        preferencias: any
+    }
+}

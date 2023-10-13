@@ -1,4 +1,4 @@
-import { GrupoDocumento, NavigationTree } from "@/@types/navigation";
+import { GrupoDocumento, NavigationTree, UserResponse } from "@/@types/navigation";
 import ApiService from "./ApiService";
 
 export const apiGetNavigationConfig = () => {
@@ -12,5 +12,13 @@ export const apiGetDocumentos = () => {
     return ApiService.fetchData<GrupoDocumento[]>({
         url: '/documentos',
         method: 'get',
+    })
+}
+
+export const apiEntrarComo = (cpf: string) => {
+    return ApiService.fetchData<UserResponse>({
+        url: '/entrar-como',
+        method: 'post',
+        data: { nucpf: cpf }
     })
 }
