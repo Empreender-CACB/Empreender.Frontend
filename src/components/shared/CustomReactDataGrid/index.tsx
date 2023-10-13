@@ -6,7 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
-import { Button, Dialog } from '@/components/ui'
+import { Button, Dialog, Drawer } from '@/components/ui'
 import { HiDownload, HiFilter, HiOutlineCog, HiOutlineViewGrid, HiOutlineViewList } from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
@@ -17,9 +17,9 @@ import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-dark.css'
 import Tooltip from '@/components/ui/Tooltip'
 import CTableCards from './CTableCards'
+import { BsFiletypeXlsx } from 'react-icons/bs'
 //import './theme.css'
 import i18n from './i18n'
-
 interface CustomReactDataGridProps {
     filename: string
     columns: any[]
@@ -58,6 +58,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     CardLayout,
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
+    const [drawerOpen, setDrawerOpen] = useState(false)
     const valorLocalStorage = localStorage.getItem('lista_geral')
     const [isDark] = useDarkMode()
     const [view, setView] = useState('list')
@@ -79,6 +80,63 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         groupBy: '',
         filterValue: {},
     })
+
+    const openDrawer = () => {
+        setDrawerOpen(true)
+    }
+
+    const defaultFilterValue1 = [
+
+        { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
+        {
+            name: 'nmuf',
+            operator: "inlist",
+            type: 'select',
+            value: ''
+        },
+        {
+            name: 'nmcidade',
+            operator: 'contains',
+            type: 'string',
+            value: '',
+        },
+        {
+            name: 'nmfantasia',
+            operator: 'contains',
+            type: 'string',
+            value: 'Emanoel',
+        },
+        { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
+        { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
+        {
+            name: 'nmramoativ',
+            operator: 'contains',
+            type: 'string',
+            value: '',
+        },
+        {
+            name: 'empresa.flativo',
+            operator: "equals",
+            type: 'select',
+            value: ''
+        },
+    ]
+    const onDrawerClose = () => {
+        setDrawerOpen(false)
+        gridRef.current.setFilterValue(defaultFilterValue1)
+        
+    }
+
+    const Footer = (
+        <div className="text-right w-full">
+            <Button size="sm" className="mr-2" onClick={() => onDrawerClose()}>
+                Cancelar
+            </Button>
+            <Button size="sm" variant="solid" onClick={() => onDrawerClose()}>
+                Filtrar
+            </Button>
+        </div>
+    )
 
     const onViewToggle = () => {
         setView(view === 'grid' ? 'list' : 'grid')
@@ -240,7 +298,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         )
     }, [])
 
-    const hideTable = larguraDaTela <= widthSize  || view === 'grid'
+    const hideTable = larguraDaTela <= widthSize || view === 'grid'
     const hideClass = hideTable ? 'hidden' : 'block'
     return (
         <div>
@@ -270,7 +328,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
             {options}
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'end' }}>
-            <Tooltip title={view === 'grid' ? 'Lista' : 'Cards'}>
+                <Tooltip title={view === 'grid' ? 'Lista' : 'Cards'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -285,20 +343,29 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         onClick={() => onViewToggle()}
                     />
                 </Tooltip>
-                
+
                 <Button
                     icon={<HiFilter />}
                     size="sm"
+                    className='mx-2'
                     onClick={() => {
                         gridRef.current.clearAllFilters()
                         gridRef.current.setFilterValue(defaultFilterValue)
                     }}
                 >
-                    Limpar filtros
+                    Limpar
                 </Button>
                 <Button
+                    icon={<HiFilter />}
+                    size="sm"
+                    
+                    onClick={() => openDrawer()}>
+                    Filtros
+                </Button>
+
+                <Button
                     disabled={isDownloading}
-                    icon={isDownloading ? <Spinner /> : <HiDownload />}
+                    icon={isDownloading ? <Spinner /> : <BsFiletypeXlsx />}
                     className="mx-2"
                     size="sm"
                     onClick={() => {
@@ -309,12 +376,22 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 </Button>
             </div>
 
-            {loadedData && hideTable  || view === 'grid' ? (
+            <Drawer
+                title="Filtrar busca"
+                isOpen={drawerOpen}
+                footer={Footer}
+                onClose={onDrawerClose}
+                onRequestClose={onDrawerClose}
+            >
+                Drawer Content
+            </Drawer>
+
+            {loadedData && hideTable || view === 'grid' ? (
                 <CTableCards data={loadedData} renderItem={CardLayout} />
             ) : null
-        }
+            }
 
-<ReactDataGrid
+            <ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
@@ -339,7 +416,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onFilterValueChange={handleFilterValueChange}
                 onLimitChange={setListaGeral}
                 onReady={setGridRef}
-                />
+            />
         </div>
     )
 }
