@@ -383,7 +383,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onClose={onDrawerClose}
                 onRequestClose={onDrawerClose}
             >
-                Drawer Content
+               Renderizando filtros....
             </Drawer>
 
             {loadedData && hideTable || view === 'grid' ? (
