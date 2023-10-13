@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Slider from 'react-slick'
 
+import xml2js from 'xml2js'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { useAppSelector } from '@/store'
-import MapHeat from '@/components/template/MapHeat'
 import { apiGetImages, apiGetVideos } from '@/services/TelaInicialServices'
-import {
-    StatisticCard,
-    StatisticGroup,
-} from '@/components/template/StatisticCard'
-import {
-    HiOfficeBuilding,
-    HiOutlineClipboardCheck,
-    HiOutlineClipboardList,
-    HiOutlineOfficeBuilding,
-} from 'react-icons/hi'
 
 const greetingMessage = () => {
     const currentHour = new Date().getHours()
@@ -44,6 +34,44 @@ const Inicio = () => {
     }
 
     const { nmusuario } = useAppSelector((state) => state.auth.user)
+    const [avisoNavigantes, setAvisoNavigantes] = useState([])
+
+    useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                const response = await fetch(
+                    'https://blog.cacbempreenderapp.org.br/?feed=rss2'
+                )
+                const data = await response.text()
+
+                xml2js.parseString(data, (error, result) => {
+                    if (error) {
+                        console.error('Error parsing XML:', error)
+                        return
+                    }
+
+                    const items = result.rss.channel[0].item
+                    const newsList = items.map((item, index) => {
+                        return {
+                            titulo: item.title[0],
+                            descricao: item.description[0]
+                                .split('...')[0]
+                                .substr(0, 170),
+                            link_leiamais: item.link[0],
+                        }
+                    })
+
+                    console.log(newsList);
+
+                    setAvisoNavigantes(newsList)
+                })
+            } catch (error) {
+                console.error('Failed to fetch news:', error)
+            }
+        }
+
+        fetchNews()
+    }, [])
 
     const [images, setImages] = useState([])
     useEffect(() => {
@@ -79,74 +107,23 @@ const Inicio = () => {
                     {nmusuario ? nmusuario.split(' ')[0] : ''}
                 </h2>
             </div>
-            <StatisticGroup>
-                <StatisticCard
-                    icon={<HiOfficeBuilding />}
-                    backgroundColor="bg-blue-100"
-                    textColor="text-blue-600"
-                    label="Número de Empresas"
-                    value={500}
-                    growthValue={50}
-                />
-                <StatisticCard
-                    icon={<HiOutlineOfficeBuilding />}
-                    backgroundColor="bg-green-100"
-                    textColor="text-green-600"
-                    label="Entidades Cadastradas"
-                    value={28}
-                    growthValue={8}
-                />
-                <StatisticCard
-                    icon={<HiOutlineClipboardList />}
-                    backgroundColor="bg-yellow-100"
-                    textColor="text-yellow-600"
-                    label="Projetos em Andamento"
-                    value={8}
-                    growthValue={3}
-                />
-                <StatisticCard
-                    icon={<HiOutlineClipboardCheck />}
-                    backgroundColor="bg-red-100"
-                    textColor="text-red-600"
-                    label="Projetos Concluídos 2023"
-                    value={30}
-                    growthValue={5}
-                />
-            </StatisticGroup>
 
             <div className="flex flex-col sm:flex-row items-start justify-between w-full">
                 <div className="w-full sm:w-[60%] mb-4 sm:mb-0">
-                    <div className="mb-4 w-full">
-                        <h2 className="text-lg font-bold mb-2">
-                            Últimas Notícias
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="bg-white p-4 rounded shadow-sm">
-                                <h3 className="font-medium mb-2">
-                                    Título da Notícia 1
-                                </h3>
-                                <p>Resumo da notícia 1...</p>
-                            </div>
-                            <div className="bg-white p-4 rounded shadow-sm">
-                                <h3 className="font-medium mb-2">
-                                    Título da Notícia 2
-                                </h3>
-                                <p>Resumo da notícia 2...</p>
-                            </div>
-                            <div className="bg-white p-4 rounded shadow-sm">
-                                <h3 className="font-medium mb-2">
-                                    Título da Notícia 3
-                                </h3>
-                                <p>Resumo da notícia 3...</p>
-                            </div>
+                    {/* <MapHeat /> */}
+                    {avisoNavigantes.map((news, index) => (
+                        <div key={index}>
+                            <h1>{news.titulo}</h1>
+                            <p>{news.descricao}</p>
+                            <a
+                                href={news.link_leiamais}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Leia mais
+                            </a>
                         </div>
-                        <div className="text-right mt-2">
-                            <button className="text-indigo-600 hover:text-indigo-800 transition duration-150">
-                                Ver mais
-                            </button>
-                        </div>
-                    </div>
-                    <MapHeat />
+                    ))}
                 </div>
                 <div className="w-full sm:w-1/2 sm:max-w-[492px] mx-auto sm:mx-0">
                     <Slider {...settingsImages} className="max-h-[616px]">
