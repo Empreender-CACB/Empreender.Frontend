@@ -7,7 +7,13 @@ import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import axios from 'axios'
 import { Button, Dialog, Drawer } from '@/components/ui'
-import { HiDownload, HiFilter, HiOutlineCog, HiOutlineViewGrid, HiOutlineViewList } from 'react-icons/hi'
+import {
+    HiDownload,
+    HiFilter,
+    HiOutlineCog,
+    HiOutlineViewGrid,
+    HiOutlineViewList,
+} from 'react-icons/hi'
 import PaginationToolbar from '@inovua/reactdatagrid-community/packages/PaginationToolbar'
 import useDarkMode from '@/utils/hooks/useDarkmode'
 import Select from 'react-select'
@@ -20,6 +26,7 @@ import CTableCards from './CTableCards'
 import { BsFiletypeXlsx } from 'react-icons/bs'
 //import './theme.css'
 import i18n from './i18n'
+import { TableConfigType, apiDataTable } from '@/services/DataTableService'
 interface CustomReactDataGridProps {
     filename: string
     columns: any[]
@@ -86,13 +93,16 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     }
 
     const defaultFilterValue1 = [
-
-        { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
+        {
+            name: 'empresa.idempresa',
+            type: 'number',
+            columnName: 'empresa.idempresa',
+        },
         {
             name: 'nmuf',
-            operator: "inlist",
+            operator: 'inlist',
             type: 'select',
-            value: ''
+            value: '',
         },
         {
             name: 'nmcidade',
@@ -107,7 +117,12 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             value: 'Emanoel',
         },
         { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
-        { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
+        {
+            name: 'dtultimaalteracao',
+            operator: 'after',
+            type: 'date',
+            value: '',
+        },
         {
             name: 'nmramoativ',
             operator: 'contains',
@@ -116,15 +131,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         },
         {
             name: 'empresa.flativo',
-            operator: "equals",
+            operator: 'equals',
             type: 'select',
-            value: ''
+            value: '',
         },
     ]
     const onDrawerClose = () => {
         setDrawerOpen(false)
         gridRef.current.setFilterValue(defaultFilterValue1)
-        
     }
 
     const Footer = (
@@ -189,7 +203,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         try {
             const { skip, limit, sortInfo, groupBy, filterValue } = params
 
-            const tableConfig = {
+            const tableConfig: TableConfigType = {
                 skip: skip,
                 limit: limit,
                 filename: filename,
@@ -202,38 +216,29 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             if (exportExcel) {
                 setIsDownloading(true)
                 const toastId = String(await downloadAndNotify())
-                await axios
-                    .get(url, {
-                        params: {
-                            tableConfig,
-                        },
-                    })
-                    .then((response) => {
-                        const relativeUrl = response.data
-                        const cleanedRelativeUrl = relativeUrl.replace(
-                            /^public\//,
-                            ''
-                        )
-                        const baseUrl = 'https://api.cacbempreenderapp.org.br' // Remove the trailing slash
-                        const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`
-                        setIsDownloading(false)
-                        toast.remove(toastId)
-                        window.open(absoluteUrl, '_blank')
-                        return absoluteUrl
-                    })
-                return false
+
+                const response = await apiDataTable(url, tableConfig)
+
+                const relativeUrl = response.data
+                const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '')
+                const baseUrl = 'https://api.cacbempreenderapp.org.br'
+                const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`
+
+                setIsDownloading(false)
+                toast.remove(toastId)
+                window.open(absoluteUrl, '_blank')
+
+                return absoluteUrl
             }
-            const response = await axios.get(url, {
-                params: {
-                    tableConfig,
-                },
-            })
+
+            const response = await apiDataTable(url, tableConfig)
 
             const data = response.data.data
             const count = response.data.meta.total
 
             setLoadedData(data)
             setLoading(true)
+
             return { data, count }
         } catch (error) {
             console.error('An error occurred while fetching data: ', error)
@@ -327,7 +332,13 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             </Dialog>
 
             {options}
-            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'end' }}>
+            <div
+                style={{
+                    marginBottom: 20,
+                    display: 'flex',
+                    justifyContent: 'end',
+                }}
+            >
                 <Tooltip title={view === 'grid' ? 'Lista' : 'Cards'}>
                     <Button
                         className="hidden md:flex"
@@ -347,7 +358,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 <Button
                     icon={<HiFilter />}
                     size="sm"
-                    className='mx-2'
+                    className="mx-2"
                     onClick={() => {
                         gridRef.current.clearAllFilters()
                         gridRef.current.setFilterValue(defaultFilterValue)
@@ -358,8 +369,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 <Button
                     icon={<HiFilter />}
                     size="sm"
-                    
-                    onClick={() => openDrawer()}>
+                    onClick={() => openDrawer()}
+                >
                     Filtros
                 </Button>
 
@@ -383,13 +394,12 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onClose={onDrawerClose}
                 onRequestClose={onDrawerClose}
             >
-               Renderizando filtros....
+                Renderizando filtros....
             </Drawer>
 
-            {loadedData && hideTable || view === 'grid' ? (
+            {(loadedData && hideTable) || view === 'grid' ? (
                 <CTableCards data={loadedData} renderItem={CardLayout} />
-            ) : null
-            }
+            ) : null}
 
             <ReactDataGrid
                 className={`${hideClass}`}

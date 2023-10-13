@@ -13,7 +13,6 @@ import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import { setUser, signInSuccess, useAppDispatch } from '@/store'
-import axios from 'axios'
 import { UsuariosCard } from '@/components/shared/TableCards/UsuariosCard'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import { apiEntrarComo } from '@/services/MenuService'

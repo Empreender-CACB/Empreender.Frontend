@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface NavigationTree {
     key: string
     path: string
@@ -28,7 +29,7 @@ export interface UserResponse {
         nmusuario: string
         dsemail: string
         perfil: string
-        cod_perfil: string
+        cod_perfil: number
         fotouser: string
         recursos: any
         preferencias: any
