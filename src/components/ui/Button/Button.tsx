@@ -31,7 +31,7 @@ type ButtonColor = {
     textColor: string
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref): JSX.Element => {
     const {
         active = false,
         block = false,
