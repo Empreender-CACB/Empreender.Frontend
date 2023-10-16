@@ -65,24 +65,24 @@ const UserAlerts = () => {
                 </Alert>
             )}
 
-            {data?.atualizarEmail || true && (
+            {/* {data?.atualizarEmail || true && ( */}
                 <Alert showIcon type="warning" className='mb-1' customIcon={<HiMail />}>
                     Várias contas foram detectadas com seu e-mail. Por favor,
                     atualize.
                 </Alert>
-            )}
+            {/* )} */}
 
-            {data?.temNovidade || true && (
+            {/* {data?.temNovidade || true && ( */}
                 <Alert showIcon type="success" className='mb-1' customIcon={<HiBell />}>
                     Você tem novas atualizações ou notificações.
                 </Alert>
-            )}
+            {/* )} */}
 
-            {data?.atualizarSenha || true && (
+            {/* {data?.atualizarSenha || true && ( */}
                 <Alert showIcon type="warning" className='mb-1' customIcon={<HiLockClosed />}>
                     Alerta de segurança: Por favor, atualize sua senha.
                 </Alert>
-            )}
+            {/* )} */}
         </Card>
     )
 }
