@@ -77,7 +77,7 @@ const columns = [
         name: 'nmfantasia',
         header: 'Nome',
         defaultFlex: 1.5,
-        type: 'Nome',
+        type: 'string',
         render: ({ data }: any) => (
             <div>
                 <Link to={`/sistema/empresas/${data.idempresa}`}>

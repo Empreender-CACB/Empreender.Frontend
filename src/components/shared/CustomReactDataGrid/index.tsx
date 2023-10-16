@@ -5,7 +5,7 @@ import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
-import axios from 'axios'
+import { MdFilterAltOff } from "react-icons/md"
 import { Button, Dialog, Drawer } from '@/components/ui'
 import {
     HiDownload,
@@ -23,7 +23,6 @@ import '@inovua/reactdatagrid-community/theme/blue-light.css'
 import '@inovua/reactdatagrid-community/theme/blue-dark.css'
 import Tooltip from '@/components/ui/Tooltip'
 import CTableCards from './CTableCards'
-import { BsFiletypeXlsx } from 'react-icons/bs'
 //import './theme.css'
 import i18n from './i18n'
 import { TableConfigType, apiDataTable } from '@/services/DataTableService'
@@ -339,7 +338,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     justifyContent: 'end',
                 }}
             >
-                <Tooltip title={view === 'grid' ? 'Lista' : 'Cards'}>
+                               <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -355,36 +354,44 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     />
                 </Tooltip>
 
+                <Tooltip title={'Limpar filtros'}>
+
+                
                 <Button
-                    icon={<HiFilter />}
+                    icon={<MdFilterAltOff />}
+                    variant="plain"
                     size="sm"
-                    className="mx-2"
+                    className='mx-2 '
                     onClick={() => {
                         gridRef.current.clearAllFilters()
                         gridRef.current.setFilterValue(defaultFilterValue)
                     }}
                 >
-                    Limpar
                 </Button>
+                </Tooltip>
+
+                <Tooltip title={'Filtrar dados'}>
                 <Button
                     icon={<HiFilter />}
                     size="sm"
-                    onClick={() => openDrawer()}
-                >
-                    Filtros
+                    variant="plain"
+                    onClick={() => openDrawer()}>
                 </Button>
-
+                </Tooltip>
+                
+                <Tooltip title={'Exportar excel'}>
                 <Button
                     disabled={isDownloading}
-                    icon={isDownloading ? <Spinner /> : <BsFiletypeXlsx />}
+                    icon={isDownloading ? <Spinner /> : <HiDownload />}
                     className="mx-2"
+                    variant='plain'
                     size="sm"
                     onClick={() => {
                         loadData(queryParams, true)
                     }}
                 >
-                    Exportar
                 </Button>
+                </Tooltip>
             </div>
 
             <Drawer
