@@ -58,12 +58,12 @@ const UserAlerts = () => {
                 </Alert>
             )}
 
-            {data?.foiAniversario || true && (
+            {/* {data?.foiAniversario || true && ( */}
                 <Alert showIcon type="info" className='mb-1' customIcon={<HiCake />}>
                     Esperamos que tenha tido uma ótima celebração de
                     aniversário.
                 </Alert>
-            )}
+            {/* )} */}
 
             {/* {data?.atualizarEmail || true && ( */}
                 <Alert showIcon type="warning" className='mb-1' customIcon={<HiMail />}>
