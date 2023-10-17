@@ -9,8 +9,7 @@ import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import Radio from '@/components/ui/Radio'
 
-
-import { HiDownload, HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
@@ -59,11 +58,11 @@ const columns = [
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
         defaultFlex: 1,
-        dateFormat: 'MM-DD-YYYY',
+        dateFormat: 'DD/MM/YYYY',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'DD-MM-YYYY',
+                dateFormat: 'DD/MM/YYYY',
                 placeholder:
                     index === 1
                         ? 'A data é anterior à...'
@@ -126,26 +125,9 @@ const defaultFilterValue = [
         name: 'nucleo.flativo',
         operator: 'equals',
         type: 'select',
-        value: '',
+        value: 'S',
     },
 ]
-
-// const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-//     return fetch(
-//         `${import.meta.env.VITE_API_URL}/nucleos` +
-//             '?skip=' +
-//             skip +
-//             '&limit=' +
-//             limit +
-//             (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-//             '&sortInfo=' +
-//             JSON.stringify(sortInfo) 
-//     ).then((response) => {
-//         return response.json().then((data) => {
-//             return { data: data.data, count: data.meta.total }
-//         })
-//     })
-// }
 
 const Nucleos = () => {
     const [nameValue, setNameValue] = useState('nmnucleo')

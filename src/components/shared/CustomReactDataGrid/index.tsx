@@ -221,7 +221,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
                 const relativeUrl = response.data
                 const cleanedRelativeUrl = relativeUrl.replace(/^public\//, '')
-                const baseUrl = 'https://api.cacbempreenderapp.org.br'
+                const baseUrl = `${import.meta.env.VITE_API_URL}`
                 const absoluteUrl = `${baseUrl}/${cleanedRelativeUrl}`
 
                 setIsDownloading(false)
