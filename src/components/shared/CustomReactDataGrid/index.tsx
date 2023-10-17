@@ -5,11 +5,10 @@ import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
-import { MdFilterAltOff } from "react-icons/md"
+import { MdFilterAltOff, MdFilterAlt } from "react-icons/md"
 import { Button, Dialog, Drawer } from '@/components/ui'
 import {
     HiDownload,
-    HiFilter,
     HiOutlineCog,
     HiOutlineViewGrid,
     HiOutlineViewList,
@@ -338,7 +337,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     justifyContent: 'end',
                 }}
             >
-                               <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
+                <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -372,14 +371,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
                 <Tooltip title={'Filtrar dados'}>
                 <Button
-                    icon={<HiFilter />}
+                    icon={<MdFilterAlt />}
                     size="sm"
                     variant="plain"
                     onClick={() => openDrawer()}>
                 </Button>
                 </Tooltip>
                 
-                <Tooltip title={'Exportar excel'}>
+                <Tooltip title={'Exportar dados'}>
                 <Button
                     disabled={isDownloading}
                     icon={isDownloading ? <Spinner /> : <HiDownload />}
