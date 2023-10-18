@@ -33,7 +33,7 @@ const NucleoDetalhes = () => {
     useEffect(() => {
         async function fetchNucleo() {
             const response = await fetch(
-                `https://api.cacbempreenderapp.org.br/nucleos/${idnucleo}`
+                `${import.meta.env.VITE_API_URL}/nucleos/${idnucleo}`
             )
 
             if (response.ok) {
