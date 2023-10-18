@@ -12,9 +12,9 @@ import Radio from '@/components/ui/Radio'
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
-import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 
-import 'moment/locale/pt-br'
+import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+import { NucleosCard } from '@/components/shared/TableCards/NucleosCard'
 
 moment.locale('pt-br')
 const activeValue = [
@@ -132,10 +132,6 @@ const defaultFilterValue = [
 const Nucleos = () => {
     const [nameValue, setNameValue] = useState('nmnucleo')
     const [nucleoType, setNucleoType] = useState('todas')
-    const [options, setOptions] = useState([]);
-    const [selectedOptions, setSelectedOptions] = useState([]);
-
-    const gridStyle = { minHeight: 750, width: '100%' }
 
     const onChange = (val: string) => {
         setNameValue(val)
@@ -184,6 +180,7 @@ const Nucleos = () => {
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/nucleos?nameValue=${nameValue}&nucleoType=${nucleoType}`}
                 options={radioGroup}
+                CardLayout={NucleosCard}
             />
             
         </AdaptableCard>

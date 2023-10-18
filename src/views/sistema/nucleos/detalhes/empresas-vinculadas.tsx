@@ -89,7 +89,7 @@ type Props = {
 const NucleosEmpresas = ({ idnucleo }: Props) => {
     const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
         return fetch(
-            'https://api.cacbempreenderapp.org.br/lista-reunioes/' +
+            `${import.meta.env.VITE_API_URL}/lista-reunioes` +
                 `?idnucleo=${idnucleo}` +
                 '&skip=' +
                 skip +
