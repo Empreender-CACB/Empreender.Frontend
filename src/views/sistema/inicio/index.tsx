@@ -19,11 +19,21 @@ type Noticia = {
     link: string
 }
 
-const greetingMessage = () => {
+const greetingMessage = (capitalize = true) => {
     const currentHour = new Date().getHours()
-    if (currentHour < 12) return 'Bom dia'
-    if (currentHour < 18) return 'Boa tarde'
-    return 'Boa noite'
+
+    let greeting = ''
+    if (currentHour < 12) {
+        greeting = 'bom dia'
+    } else if (currentHour < 18) {
+        greeting = 'boa tarde'
+    } else {
+        greeting = 'boa noite'
+    }
+
+    return capitalize
+        ? greeting.charAt(0).toUpperCase() + greeting.slice(1)
+        : greeting
 }
 
 const settingsImages = {
@@ -95,16 +105,19 @@ const Inicio = () => {
 
     return (
         <div className="p-6">
-            <div className="mb-4 w-full">
+            <div className="flex justify-between items-center mb-4 w-full">
                 <h2>
                     {greetingMessage()},{' '}
                     {nmusuario ? nmusuario.split(' ')[0] : ''}
                 </h2>
+                <UserAlerts />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start justify-between w-full">
-                <div className="w-full sm:w-[60%] mb-4 sm:mb-0">
-                    {/* <MapHeat /> */}
+            <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 w-full items-start">
+
+                {/* Primeira Coluna: Notícias e Mensagem de Boas-vindas */}
+                <div className="lg:col-span-4 col-span-1">
+                    {/* Bloco de Notícias */}
                     <div className="my-7 w-full">
                         <div className="flex justify-between align-center">
                             <h2 className="text-lg font-bold mb-2">
@@ -120,7 +133,7 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
                                     <a
@@ -142,9 +155,53 @@ const Inicio = () => {
                             ))}
                         </div>
                     </div>
-                    <UserAlerts />
+
+                    {/* Bloco de boas-vindas */}
+                    <div
+                        className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
+                        style={{
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1599697777020-57693fa1bffe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWgelgDfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')`,
+                        }}
+                    >
+                        <div className="text-white font-bold mt-4 flex-grow">
+                            <h2 className="text-white mb-4">
+                                Olá, {greetingMessage(false)}.
+                            </h2>
+                            <h5 className="text-white mb-4">
+                                Sim, estamos em obras. Vamos trocar de pneu.
+                                Andando (de avião).
+                            </h5>
+                            <h5 className="text-white mb-4">
+                                A viagem levará algum tempo, precisamos ir
+                                devagar, mas confiamos que chegaremos bem. Aos
+                                poucos teremos novo portal, tecnologicamente
+                                renovado, mais fácil de usar, mais seguro, mais
+                                padronizado e mais fácil de manter, além de
+                                novas facilidades.
+                            </h5>
+
+                            <div className="flex justify-between items-center flex-wrap">
+                                <h5 className="text-white max-w-xs lg:max-w-[550px] lg:mr-4">
+                                    Bom momento para enviar críticas e sugestões{' '}
+                                    <a href="#" className="underline">
+                                        (clique aqui)
+                                    </a>
+                                    . São muito bem-vindas.
+                                </h5>
+                                <Button
+                                    className="w-full lg:w-auto"
+                                    variant="twoTone"
+                                    size="sm"
+                                >
+                                    Saiba mais
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="w-full sm:w-1/2 sm:max-w-[492px] mx-auto sm:mx-0">
+
+                {/* Segunda Coluna: Carrossel de Imagens */}
+                <div className="lg:col-span-2 col-span-1 w-full">
                     <Slider {...settingsImages} className="max-h-[616px]">
                         {images.map((image: { link: string }, index: Key) => (
                             <div key={index} className="w-full">
@@ -158,22 +215,13 @@ const Inicio = () => {
                                             style={{
                                                 border: '2px solid black',
                                             }}
-                                            // src={`https://teste.cacbempreenderapp.org.br/sistema/anexo/download-anexo/aid/${btoa(
-                                            //     image.id_anexo
-                                            // )}`}
-
                                             src={`/img/slide1.png`}
                                             alt={`Slide ${index}`}
                                         />
                                     </a>
                                 ) : (
                                     <img
-                                        style={{
-                                            border: '2px solid black',
-                                        }}
-                                        // src={`https://teste.cacbempreenderapp.org.br/sistema/anexo/download-anexo/aid/${btoa(
-                                        //     image.id_anexo
-                                        // )}`}
+                                        style={{ border: '2px solid black' }}
                                         src={`/img/slide1.png`}
                                         alt={`Slide ${index}`}
                                     />
