@@ -114,8 +114,6 @@ const Inicio = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 w-full items-start">
-
-                {/* Primeira Coluna: Notícias e Mensagem de Boas-vindas */}
                 <div className="lg:col-span-4 col-span-1">
                     {/* Bloco de Notícias */}
                     <div className="my-7 w-full">

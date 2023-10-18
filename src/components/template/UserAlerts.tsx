@@ -5,7 +5,7 @@ import {
     HiBell,
     HiLockClosed,
 } from 'react-icons/hi'
-import { Alert, Button, Dialog } from '../ui' // Certifique-se de que os imports estão corretos.
+import { Alert, Button, Dialog } from '../ui'
 import { useEffect, useState } from 'react'
 import ApiService from '@/services/ApiService'
 import { AxiosResponse } from 'axios'
@@ -92,25 +92,6 @@ const UserAlerts = () => {
         fetchData()
     }, [])
 
-    const getFirstAlert = () => {
-        const firstAlert = alertsConfig.find(
-            (alert) => data && Boolean(data[alert.key])
-        )
-        console.log(firstAlert, data)
-        if (!firstAlert) return null
-
-        return (
-            <Alert
-                showIcon
-                type={firstAlert.type as TypeAttributes.Status}
-                className="mb-1"
-                customIcon={firstAlert.icon}
-            >
-                {firstAlert.message}
-            </Alert>
-        )
-    }
-
     const renderAlertsInModal = () => {
         return alertsConfig
             .map((alert) => {
@@ -134,14 +115,12 @@ const UserAlerts = () => {
 
     return (
         <div className="relative flex items-center space-x-4">
-            {' '}
-            {/* This will make them side by side */}
             {activeAlerts.length > 0 && (
                 <Alert
                     key={activeAlerts[0].key}
                     showIcon
                     type={activeAlerts[0].type as TypeAttributes.Status}
-                    className="mb-1 alert-small" // Assuming "alert-small" reduces the size. Adjust as necessary.
+                    className="mb-1 alert-small"
                     customIcon={activeAlerts[0].icon}
                 >
                     {activeAlerts[0].message}
@@ -151,13 +130,14 @@ const UserAlerts = () => {
                 <Button
                     size="xs"
                     variant='solid'
-                    className="absolute top-10 right-0" // This will position the button at the top right corner of the parent div.
+                    className="absolute top-10 right-0"
                     onClick={() => setShowModal(true)}
                 >
                     +
                 </Button>
             )}
             <Dialog isOpen={showModal} onClose={() => setShowModal(false)}>
+                <h5 className="mb-4">Seus avisos</h5>
                 {renderAlertsInModal()}
             </Dialog>
         </div>
