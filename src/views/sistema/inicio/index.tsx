@@ -9,8 +9,7 @@ import { useAppSelector } from '@/store'
 import { apiGetImages, apiGetVideos } from '@/services/TelaInicialServices'
 import ApiService from '@/services/ApiService'
 import { AxiosResponse } from 'axios'
-import { Alert, Card } from '@/components/ui'
-import { HiFire } from 'react-icons/hi'
+import { Card } from '@/components/ui'
 import UserAlerts from '@/components/template/UserAlerts'
 
 type Noticia = {
