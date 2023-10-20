@@ -28,7 +28,7 @@ import { TableConfigType, apiDataTable } from '@/services/DataTableService'
 interface CustomReactDataGridProps {
     filename: string
     columns: any[]
-    defaultFilterValue: any
+    defaultFilterValue?: any
     url: string
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
@@ -110,7 +110,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         },
         {
             name: 'nmfantasia',
-            operator: 'contains',
+            operator: 'endswith',
             type: 'string',
             value: 'Emanoel',
         },
@@ -355,41 +355,41 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
                 <Tooltip title={'Limpar filtros'}>
 
-                
-                <Button
-                    icon={<MdFilterAltOff />}
-                    variant="plain"
-                    size="sm"
-                    className='mx-2 '
-                    onClick={() => {
-                        gridRef.current.clearAllFilters()
-                        gridRef.current.setFilterValue(defaultFilterValue)
-                    }}
-                >
-                </Button>
+
+                    <Button
+                        icon={<MdFilterAltOff />}
+                        variant="plain"
+                        size="sm"
+                        className='mx-2 '
+                        onClick={() => {
+                            gridRef.current.clearAllFilters()
+                            gridRef.current.setFilterValue(defaultFilterValue)
+                        }}
+                    >
+                    </Button>
                 </Tooltip>
 
                 <Tooltip title={'Filtrar dados'}>
-                <Button
-                    icon={<MdFilterAlt />}
-                    size="sm"
-                    variant="plain"
-                    onClick={() => openDrawer()}>
-                </Button>
+                    <Button
+                        icon={<MdFilterAlt />}
+                        size="sm"
+                        variant="plain"
+                        onClick={() => openDrawer()}>
+                    </Button>
                 </Tooltip>
-                
+
                 <Tooltip title={'Exportar dados'}>
-                <Button
-                    disabled={isDownloading}
-                    icon={isDownloading ? <Spinner /> : <HiDownload />}
-                    className="mx-2"
-                    variant='plain'
-                    size="sm"
-                    onClick={() => {
-                        loadData(queryParams, true)
-                    }}
-                >
-                </Button>
+                    <Button
+                        disabled={isDownloading}
+                        icon={isDownloading ? <Spinner /> : <HiDownload />}
+                        className="mx-2"
+                        variant='plain'
+                        size="sm"
+                        onClick={() => {
+                            loadData(queryParams, true)
+                        }}
+                    >
+                    </Button>
                 </Tooltip>
             </div>
 
@@ -400,7 +400,12 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onClose={onDrawerClose}
                 onRequestClose={onDrawerClose}
             >
-                Renderizando filtros....
+
+                {columns.map((column, index) => (
+                    
+                    <div key={index}>{column.header}</div>
+
+                ))}
             </Drawer>
 
             {(loadedData && hideTable) || view === 'grid' ? (
@@ -413,7 +418,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 i18n={i18n}
                 wrapMultiple={false}
                 idProperty="id"
-                defaultFilterValue={defaultFilterValue}
+                defaultFilterValue={defaultFilterValue || columns}
                 columns={columns}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}

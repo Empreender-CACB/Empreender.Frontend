@@ -32,7 +32,7 @@ const activeValue = [
 ]
 
 const columns = [
-    { name: 'empresa.idempresa', header: 'ID', columnName: 'empresa.idempresa', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter, },
+    { name: 'empresa.idempresa', header: 'ID', columnName: 'empresa.idempresa', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter },
     {
         name: 'nmuf', header: 'UF', type: 'select',
         filterEditor: SelectFilter,
@@ -43,12 +43,14 @@ const columns = [
             }),
         }
     },
-    { name: 'nmcidade', header: 'Cidade', type: 'string' },
+    { name: 'nmcidade', header: 'Cidade', type: 'string', operator: 'contains', value: '' },
     {
         name: 'nmfantasia',
         header: 'Nome',
         defaultFlex: 1.5,
         type: 'string',
+        operator: 'contains',
+        value: '',
         render: ({ data }: any) => (
             <div>
                 <Link to={`/sistema/empresas/${data.idempresa}`}>
@@ -57,12 +59,14 @@ const columns = [
             </div>
         ),
     },
-    { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1 },
+    { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1, operator: 'contains', value: '' },
     {
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
         defaultFlex: 1,
         dateFormat: 'DD-MM-YYYY',
+        operator: 'after',
+        value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
@@ -78,9 +82,9 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-    { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1 },
+    { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1, operator: 'contains', value: '' },
     {
-        name: 'empresa.flativo', header: 'Ativa', type: 'select',
+        name: 'empresa.flativo', header: 'Ativa', type: 'select', operator: 'equals', value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: activeValue.map(option => {
@@ -89,46 +93,9 @@ const columns = [
         },
         render: ({ value }: any) => (
             <div className="flex items-center justify-center">
-               <TagActiveInative value={value} activeText="S" />
+                <TagActiveInative value={value} activeText="S" />
             </div>
         ),
-    },
-]
-
-const defaultFilterValue = [
-
-    { name: 'empresa.idempresa', type: 'number', columnName: 'empresa.idempresa'} ,
-    {
-        name: 'nmuf',
-        operator: "inlist",
-        type: 'select',
-        value: ''
-    },
-    {
-        name: 'nmcidade',
-        operator: 'contains',
-        type: 'string',
-        value: '',
-    },
-    {
-        name: 'nmfantasia',
-        operator: 'contains',
-        type: 'string',
-        value: '',
-    },
-    { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
-    { name: 'dtultimaalteracao', operator: 'after', type: 'date', value: '' },
-    {
-        name: 'nmramoativ',
-        operator: 'contains',
-        type: 'string',
-        value: '',
-    },
-    {
-        name: 'empresa.flativo',
-        operator: "equals",
-        type: 'select',
-        value: ''
     },
 ]
 
@@ -251,7 +218,7 @@ const Empresas = () => {
             <CustomReactDataGrid
                 filename='Empresas'
                 columns={columns}
-                defaultFilterValue={defaultFilterValue}
+                //defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
