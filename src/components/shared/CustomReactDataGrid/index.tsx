@@ -5,8 +5,8 @@ import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
-import { MdFilterAltOff, MdFilterAlt } from "react-icons/md"
-import { Button, Dialog, Drawer } from '@/components/ui'
+import { MdFilterAltOff, MdFilterAlt } from 'react-icons/md'
+import { Button, DatePicker, Dialog, Drawer, Input } from '@/components/ui'
 import {
     HiDownload,
     HiOutlineCog,
@@ -197,6 +197,98 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         localStorage.setItem('lista_geral', String(opcaoSelecionada.value))
     }
 
+    const OPERATOR_LABELS = {
+        contains: 'Contém',
+        notContains: 'Não contém',
+        eq: 'Igual a',
+        neq: 'Diferente de',
+        empty: 'Está vazio',
+        notEmpty: 'Não está vazio',
+        startsWith: 'Começa com',
+        endsWith: 'Termina com',
+        gt: 'Maior que',
+        gte: 'Maior ou igual a',
+        lt: 'Menor que',
+        lte: 'Menor ou igual a',
+        inrange: 'Dentro do intervalo',
+        notinrange: 'Fora do intervalo',
+        inlist: 'Está na lista',
+        notinlist: 'Não está na lista',
+        after: 'Depois de',
+        afterOrOn: 'Depois ou em',
+        before: 'Antes de',
+        beforeOrOn: 'Antes ou em',
+    }
+
+    const OPERATORS_BY_TYPE = {
+        string: [
+            'contains',
+            'notContains',
+            'eq',
+            'neq',
+            'empty',
+            'notEmpty',
+            'startsWith',
+            'endsWith',
+        ],
+        number: [
+            'eq',
+            'neq',
+            'gt',
+            'gte',
+            'lt',
+            'lte',
+            'inrange',
+            'notinrange',
+        ],
+        boolean: ['eq', 'neq'],
+        select: ['eq', 'neq', 'inlist', 'notinlist'],
+        date: [
+            'after',
+            'afterOrOn',
+            'before',
+            'beforeOrOn',
+            'eq',
+            'neq',
+            'inrange',
+            'notinrange',
+        ],
+    }
+
+    const renderInputByType = (type, column) => {
+        switch (type) {
+            case 'string':
+                return <Input placeholder={column.header} />
+            case 'number':
+                return <Input placeholder={column.header} type="number" />
+            case 'select':
+                return (
+                    <Select
+                        placeholder="Selecione"
+                        options={column.filterEditorProps?.dataSource || []}
+                    />
+                )
+            case 'date':
+                return <DatePicker placeholder={column.header} />
+            // Adicione outros tipos conforme necessário
+            default:
+                return null
+        }
+    }
+
+    const renderOperatorSelect = (type) => {
+        const operators = OPERATORS_BY_TYPE[type] || []
+        return (
+            <Select
+                placeholder="Operador"
+                options={operators.map((op) => ({
+                    value: op,
+                    label: OPERATOR_LABELS[op],
+                }))}
+            />
+        )
+    }
+
     const loadData = async (params: any, exportExcel = false) => {
         try {
             const { skip, limit, sortInfo, groupBy, filterValue } = params
@@ -354,19 +446,16 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 </Tooltip>
 
                 <Tooltip title={'Limpar filtros'}>
-
-
                     <Button
                         icon={<MdFilterAltOff />}
                         variant="plain"
                         size="sm"
-                        className='mx-2 '
+                        className="mx-2 "
                         onClick={() => {
                             gridRef.current.clearAllFilters()
                             gridRef.current.setFilterValue(defaultFilterValue)
                         }}
-                    >
-                    </Button>
+                    ></Button>
                 </Tooltip>
 
                 <Tooltip title={'Filtrar dados'}>
@@ -374,8 +463,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         icon={<MdFilterAlt />}
                         size="sm"
                         variant="plain"
-                        onClick={() => openDrawer()}>
-                    </Button>
+                        onClick={() => openDrawer()}
+                    ></Button>
                 </Tooltip>
 
                 <Tooltip title={'Exportar dados'}>
@@ -383,13 +472,12 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         disabled={isDownloading}
                         icon={isDownloading ? <Spinner /> : <HiDownload />}
                         className="mx-2"
-                        variant='plain'
+                        variant="plain"
                         size="sm"
                         onClick={() => {
                             loadData(queryParams, true)
                         }}
-                    >
-                    </Button>
+                    ></Button>
                 </Tooltip>
             </div>
 
@@ -400,11 +488,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onClose={onDrawerClose}
                 onRequestClose={onDrawerClose}
             >
-
                 {columns.map((column, index) => (
-                    
-                    <div key={index}>{column.header}</div>
-
+                    <div key={index} className="flex flex-col mb-8">
+                        <div className="font-bold mb-2">{column.header}</div>
+                        <div className="mb-2">
+                            {renderInputByType(column.type, column)}
+                        </div>
+                        <div>{renderOperatorSelect(column.type)}</div>
+                    </div>
                 ))}
             </Drawer>
 

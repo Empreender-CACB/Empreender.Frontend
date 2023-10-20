@@ -13,10 +13,7 @@ import Select from '@/components/ui/Select'
 import axios from 'axios'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
-import {
-    HiOutlineReply,
-    HiPlusCircle,
-} from 'react-icons/hi'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
@@ -32,18 +29,35 @@ const activeValue = [
 ]
 
 const columns = [
-    { name: 'empresa.idempresa', header: 'ID', columnName: 'empresa.idempresa', type: 'number', defaultFlex: 0.6, filterEditor: NumberFilter },
     {
-        name: 'nmuf', header: 'UF', type: 'select',
+        name: 'empresa.idempresa',
+        header: 'ID',
+        columnName: 'empresa.idempresa',
+        type: 'number',
+        operator: 'eq',
+        defaultFlex: 0.6,
+        filterEditor: NumberFilter,
+    },
+    {
+        name: 'nmuf',
+        header: 'UF',
+        type: 'select',
+        operator: 'eq',
         filterEditor: SelectFilter,
         filterEditorProps: {
             multiple: true,
-            dataSource: estadosBrasileiros.map(state => {
+            dataSource: estadosBrasileiros.map((state) => {
                 return { id: state.nome, label: state.sigla }
             }),
-        }
+        },
     },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', operator: 'contains', value: '' },
+    {
+        name: 'nmcidade',
+        header: 'Cidade',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+    },
     {
         name: 'nmfantasia',
         header: 'Nome',
@@ -59,12 +73,20 @@ const columns = [
             </div>
         ),
     },
-    { name: 'nucnpjcpf', header: 'CNPJ', defaultFlex: 1, operator: 'contains', value: '' },
+    {
+        name: 'nucnpjcpf',
+        header: 'CNPJ',
+        defaultFlex: 1,
+        type: 'string',
+        operator: 'contains',
+        value: '',
+    },
     {
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
         defaultFlex: 1,
         dateFormat: 'DD-MM-YYYY',
+        type: 'date',
         operator: 'after',
         value: '',
         filterEditor: DateFilter,
@@ -82,12 +104,23 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-    { name: 'nmramoativ', header: 'Ramo', defaultFlex: 1, operator: 'contains', value: '' },
     {
-        name: 'empresa.flativo', header: 'Ativa', type: 'select', operator: 'equals', value: '',
+        name: 'nmramoativ',
+        header: 'Ramo',
+        defaultFlex: 1,
+        type: 'string',
+        operator: 'contains',
+        value: '',
+    },
+    {
+        name: 'empresa.flativo',
+        header: 'Ativa',
+        type: 'select',
+        operator: 'equals',
+        value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
-            dataSource: activeValue.map(option => {
+            dataSource: activeValue.map((option) => {
                 return { id: option.value, label: option.name }
             }),
         },
@@ -100,29 +133,28 @@ const columns = [
 ]
 
 const Empresas = () => {
-
-
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState([])
     // const [selectedOptions, setSelectedOptions] = useState([]);
 
     useEffect(() => {
         // Fazer a solicitação à API
-        axios.get('http://localhost:3333/segmentos')
+        axios
+            .get('http://localhost:3333/segmentos')
             .then((response) => {
                 // Mapear os dados da API para o formato esperado pelo Select
                 const mappedOptions = response.data.map((segmento: any) => ({
                     value: segmento.idsegmento.toString(),
                     label: segmento.dssegmento,
-                }));
+                }))
                 // Definir as opções no estado
-                setOptions(mappedOptions);
+                setOptions(mappedOptions)
             })
             .catch((error) => {
-                console.error('Erro ao buscar dados da API:', error);
-            });
-    }, []);
+                console.error('Erro ao buscar dados da API:', error)
+            })
+    }, [])
 
     const onChangeSegmentos = (e: any) => {
         console.log(e)
@@ -132,20 +164,26 @@ const Empresas = () => {
         setNameValue(val)
     }
 
-
     const onChangeEmpresa = (val: string) => {
         setEmpresaType(val)
     }
 
     const radioGroup = (
-
-        <div className='pb-4'>
-            <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
+        <div className="pb-4">
+            <Radio.Group
+                className="lg:mb-0"
+                value={nameValue}
+                onChange={onChange}
+            >
                 <span className="pr-2 font-black">Nome: </span>
                 <Radio value={'nmfantasia'}>Fantasia</Radio>
                 <Radio value={'nurazaosocial'}>Razão Social</Radio>
             </Radio.Group>
-            <Radio.Group className=" pb-4 lg:mb-0" value={empresaType} onChange={onChangeEmpresa}>
+            <Radio.Group
+                className=" pb-4 lg:mb-0"
+                value={empresaType}
+                onChange={onChangeEmpresa}
+            >
                 <span className="pr-2 font-black">Empresa: </span>
                 <Radio value={'todas'}>Todas</Radio>
                 <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
@@ -155,8 +193,7 @@ const Empresas = () => {
 
             {empresaType === 'somente_nucleadas' && (
                 <div>
-
-                    <div className='col-span-1'>
+                    <div className="col-span-1">
                         <span className="font-black">Segmento: </span>
 
                         <Select
@@ -168,16 +205,10 @@ const Empresas = () => {
                             onChange={onChangeSegmentos}
                         />
                     </div>
-
                 </div>
             )}
-
-
         </div>
-
-
-
-    );
+    )
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -188,7 +219,9 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/`}
+                            to={`${
+                                import.meta.env.VITE_PHP_URL
+                            }/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>
@@ -198,8 +231,7 @@ const Empresas = () => {
                         className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
                         to="/data/product-list.csv"
                         target="_blank"
-                    >
-                    </Link>
+                    ></Link>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
                         to="/app/sales/product-new"
@@ -216,14 +248,15 @@ const Empresas = () => {
                 </div>
             </div>
             <CustomReactDataGrid
-                filename='Empresas'
+                filename="Empresas"
                 columns={columns}
                 //defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={`${
+                    import.meta.env.VITE_API_URL
+                }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
             />
-
         </AdaptableCard>
     )
 }
