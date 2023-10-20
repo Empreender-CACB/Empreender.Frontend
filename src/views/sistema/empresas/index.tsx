@@ -34,7 +34,6 @@ const columns = [
         header: 'ID',
         columnName: 'empresa.idempresa',
         type: 'number',
-        operator: 'eq',
         defaultFlex: 0.6,
         filterEditor: NumberFilter,
     },
