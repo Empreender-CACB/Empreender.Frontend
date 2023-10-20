@@ -6,7 +6,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GrCloudDownload } from 'react-icons/gr'
 import ReactDataGrid from '@inovua/reactdatagrid-community'
 import { MdFilterAltOff, MdFilterAlt } from 'react-icons/md'
-import { Button, DatePicker, Dialog, Drawer, Input } from '@/components/ui'
+import { Button, DatePicker, Dialog, Drawer, Input, Pagination } from '@/components/ui'
 import {
     HiDownload,
     HiOutlineCog,
@@ -53,6 +53,18 @@ type LoadDataParams = {
     exportOption?: boolean
 }
 
+type Option = {
+    value: number
+    label: string
+}
+
+const paginateOptions: Option[] = [
+    { value: 5, label: '5 / página' },
+    { value: 10, label: '10 / página' },
+    { value: 20, label: '20 / página' },
+    { value: 50, label: '50 / página' },
+]
+
 const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     columns,
     defaultFilterValue,
@@ -74,10 +86,13 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     const [gridRef, setGridRef] = useState(null)
     const [loadedData, setLoadedData] = useState([])
     const [loading, setLoading] = useState(false)
+    const [totalItems, setTotalItems] = useState()
     const [isDownloading, setIsDownloading] = useState(false)
+    const [pageSize, setPageSize] = useState(paginateOptions[0].value)
+    const [page, setPage] = useState(1)
     const [queryParams, setQueryParams] = useState<LoadDataParams>({
         skip: 0,
-        limit: 10,
+        limit: 30,
         sortInfo: {
             field: '',
             order: 'ASC',
@@ -86,57 +101,23 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
         filterValue: {},
     })
 
+    const onPaginationChange = (val: number) => {
+        setPage(val)
+        setQueryParams((prevParams) => ({
+            ...prevParams,
+            skip: Math.ceil(val *30 ) - 1,
+        }))
+        console.log(queryParams)
+        dataSource(queryParams)
+    }
+
     const openDrawer = () => {
         setDrawerOpen(true)
     }
 
-    const defaultFilterValue1 = [
-        {
-            name: 'empresa.idempresa',
-            type: 'number',
-            columnName: 'empresa.idempresa',
-        },
-        {
-            name: 'nmuf',
-            operator: 'inlist',
-            type: 'select',
-            value: '',
-        },
-        {
-            name: 'nmcidade',
-            operator: 'contains',
-            type: 'string',
-            value: '',
-        },
-        {
-            name: 'nmfantasia',
-            operator: 'endswith',
-            type: 'string',
-            value: 'Emanoel',
-        },
-        { name: 'nucnpjcpf', operator: 'contains', type: 'string', value: '' },
-        {
-            name: 'dtultimaalteracao',
-            operator: 'after',
-            type: 'date',
-            value: '',
-        },
-        {
-            name: 'nmramoativ',
-            operator: 'contains',
-            type: 'string',
-            value: '',
-        },
-        {
-            name: 'empresa.flativo',
-            operator: 'equals',
-            type: 'select',
-            value: '',
-        },
-    ]
     const onDrawerClose = () => {
         setDrawerOpen(false)
-        gridRef.current.setFilterValue(defaultFilterValue1)
+        //gridRef.current.setFilterValue(defaultFilterValue1)
     }
 
     const Footer = (
@@ -325,6 +306,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
             const data = response.data.data
             const count = response.data.meta.total
+            setTotalItems(count)
 
             setLoadedData(data)
             setLoading(true)
@@ -500,7 +482,20 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             </Drawer>
 
             {(loadedData && hideTable) || view === 'grid' ? (
-                <CTableCards data={loadedData} renderItem={CardLayout} />
+                <>
+                    <CTableCards data={loadedData} renderItem={CardLayout} />
+                    <div className="flex items-center">
+                        <Pagination  pageSize={listaGeral} total={totalItems} onChange={onPaginationChange} />
+                        <div style={{ minWidth: 120 }}>
+                            <Select
+                                size="sm"
+                                defaultValue={paginateOptions[0]}
+                                options={paginateOptions}
+                            />
+                        </div>
+                    </div>                </>
+
+
             ) : null}
 
             <ReactDataGrid

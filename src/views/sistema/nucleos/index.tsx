@@ -23,9 +23,10 @@ const activeValue = [
 ]
 
 const columns = [
-    { name: 'idnucleo', header: 'ID', type: 'string' },
+    { name: 'idnucleo', header: 'ID', type: 'string', value: '' },
     {
         name: 'iduf', header: 'UF', type: 'select',
+        value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: estadosBrasileiros.map(state => {
