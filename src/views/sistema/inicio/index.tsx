@@ -130,7 +130,7 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
                                     <a
@@ -157,49 +157,45 @@ const Inicio = () => {
                     <div
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1599697777020-57693fa1bffe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWgelgDfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80')`,
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://ciclovivo.com.br/wp-content/uploads/2016/08/ipe_amarelo_DF.jpg')`,
+                            backgroundPosition: '15% 60%'
                         }}
                     >
-                        <div className="text-white font-bold mt-4 flex-grow">
+                        <div className="text-white font-bold mt-4 flex-grow w-full lg:w-1/2">
                             <h2 className="text-white mb-4">
-                                Olá, {greetingMessage(false)}.
+                                Estamos em obras!
                             </h2>
-                            <h5 className="text-white mb-4">
-                                Sim, estamos em obras. Vamos trocar de pneu.
-                                Andando (de avião).
-                            </h5>
-                            <h5 className="text-white mb-4">
+                            <h6 className="text-white mb-4">
+                                Vamos trocar de pneu. Andando.
+                            </h6>
+                            <h6 className="text-white mb-4">
                                 A viagem levará algum tempo, precisamos ir
                                 devagar, mas confiamos que chegaremos bem. Aos
-                                poucos teremos novo portal, tecnologicamente
-                                renovado, mais fácil de usar, mais seguro, mais
-                                padronizado e mais fácil de manter, além de
-                                novas facilidades.
-                            </h5>
+                                poucos teremos um novo portal.
+                            </h6>
 
-                            <div className="flex justify-between items-center flex-wrap">
-                                <h5 className="text-white max-w-xs lg:max-w-[550px] lg:mr-4">
-                                    Bom momento para enviar críticas e sugestões{' '}
-                                    <a href="#" className="underline">
-                                        (clique aqui)
-                                    </a>
-                                    . São muito bem-vindas.
-                                </h5>
-                                <Button
-                                    className="w-full lg:w-auto"
-                                    variant="twoTone"
-                                    size="sm"
-                                >
-                                    Saiba mais
-                                </Button>
-                            </div>
+                            <h6 className="text-white mb-4">
+                                Bom momento para enviar críticas e sugestões{' '}
+                                <a href="#" className="underline">
+                                    (clique aqui)
+                                </a>
+                                . São muito bem-vindas.
+                            </h6>
+
+                            <Button
+                                className="w-full lg:w-auto"
+                                variant="solid"
+                                size="sm"
+                            >
+                                Saiba mais
+                            </Button>
                         </div>
                     </div>
                 </div>
 
                 {/* Segunda Coluna: Carrossel de Imagens */}
                 <div className="lg:col-span-2 col-span-1 w-full">
-                    <Slider {...settingsImages} className="max-h-[616px]">
+                    <Slider {...settingsImages} className="max-h-[800px]">
                         {images.map((image: { link: string }, index: Key) => (
                             <div key={index} className="w-full">
                                 {image.link ? (
