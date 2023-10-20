@@ -1,26 +1,11 @@
 import '@inovua/reactdatagrid-community/index.css'
-
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
-import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import Radio from '@/components/ui/Radio'
-
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { Button } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
-
-import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { NucleosCard } from '@/components/shared/TableCards/NucleosCard'
-
-moment.locale('pt-br')
-const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
-]
 
 const columns = [
     { name: 'idpreferencia', header: 'ID', type: 'string' },
@@ -48,6 +33,11 @@ const columns = [
         name: 'grupo',
         type: 'string',
         header: 'Grupo'  
+    },
+    {
+        name: 'slug',
+        type: 'string',
+        header: 'Slug'  
     }
 
    
@@ -86,9 +76,15 @@ const defaultFilterValue = [
     {
         name: 'grupo',
         operator: 'contains',
-        type: 'string'    
-    }
-    ,
+        type: 'string' ,
+        value: '',   
+    },
+    {
+        name: 'slug',
+        operator: 'contains',
+        type: 'string' ,
+        value: '',   
+    },
 ]
 
 const Preferencias = () => {
@@ -123,7 +119,7 @@ const Preferencias = () => {
                 </div>
             </div>
             <CustomReactDataGrid
-                filename='Nucleos'
+                filename='Preferencias'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/preferences`}
