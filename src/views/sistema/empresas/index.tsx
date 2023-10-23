@@ -163,34 +163,44 @@ const Empresas = () => {
         setNameValue(val)
     }
 
-    const onChangeEmpresa = (val: string) => {
-        setEmpresaType(val)
+    const onChangeEmpresa = (option: any) => {
+        return setEmpresaType(option.value)
     }
 
-    const radioGroup = (
-        <div className="pb-4">
-            <Radio.Group
-                className="lg:mb-0"
-                value={nameValue}
-                onChange={onChange}
-            >
-                <span className="pr-2 font-black">Nome: </span>
-                <Radio value={'nmfantasia'}>Fantasia</Radio>
-                <Radio value={'nurazaosocial'}>Razão Social</Radio>
-            </Radio.Group>
-            <Radio.Group
-                className=" pb-4 lg:mb-0"
-                value={empresaType}
-                onChange={onChangeEmpresa}
-            >
-                <span className="pr-2 font-black">Empresa: </span>
-                <Radio value={'todas'}>Todas</Radio>
-                <Radio value={'somente_nucleadas'}>Somente nucleadas</Radio>
-                <Radio value={'nao_nucleadas'}>Somente não nucleadas</Radio>
-                <Radio value={'projetos'}>Projeto</Radio>
-            </Radio.Group>
+    const empresaOptions = [
+        { value: 'todas', label: 'Todas' },
+        { value: 'somente_nucleadas', label: 'Somente nucleadas' },
+        { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
+        { value: 'projetos', label: 'Projeto' },
+    ];
 
-            {empresaType === 'somente_nucleadas' && (
+    const nameOptions = [
+        { value: 'nmfantasia', label: 'Fantasia' },
+        { value: 'nurazaosocial', label: 'Razão Social' },
+
+    ];
+        const radioGroup = (
+            <div>
+                        <div className="pb-4 flex items-center">
+
+            <div className='flex items-center pr-5'>
+            <span className="pr-2 font-black">Nome: </span>
+                <Select
+                defaultValue={nameOptions[0]}
+                options={nameOptions}
+                onChange={(e:any) => setNameValue(e.value)}></Select>
+            </div>
+
+            <div className='pr-10 flex items-center'>
+            <span className="pr-2 font-black">Empresa: </span>
+                <Select
+                defaultValue={empresaOptions[0]}
+                options={empresaOptions}
+                onChange={onChangeEmpresa}></Select>
+            </div>
+
+        </div>
+        {empresaType === 'somente_nucleadas' && (
                 <div>
                     <div className="col-span-1">
                         <span className="font-black">Segmento: </span>
@@ -206,7 +216,8 @@ const Empresas = () => {
                     </div>
                 </div>
             )}
-        </div>
+            </div>
+
     )
 
     return (
