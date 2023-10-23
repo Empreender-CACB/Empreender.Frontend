@@ -278,13 +278,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 skip: skip,
                 limit: limit,
                 filename: filename,
-                exportExcel: exportExcel,
+                exportExcel: exportExcel, // TODO: exportInfo: {name: column.name, header: column.header
                 groupBy: groupBy && groupBy.length ? groupBy : undefined,
                 sortInfo: JSON.stringify(sortInfo),
                 filterBy: JSON.stringify(filterValue),
             }
 
             if (exportExcel) {
+                tableConfig.exportInfo = columns.map((column) => ({name: column.name, header: column.header}))
                 setIsDownloading(true)
                 const toastId = String(await downloadAndNotify())
 
@@ -497,7 +498,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
 
             ) : null}
-
             <ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
