@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { useAppSelector } from '@/store'
 import DocumentosAjudaAtendimento from './DocumentosAjudaAtendimento'
+import { Tag } from '../ui'
 
 type DropdownList = {
     label: string
@@ -60,7 +61,12 @@ const _AjudaAtendimento = ({ className }: CommonProps) => {
     )
 
     return (
-        <div>
+        <div className='flex items-center'>
+                <div className="mr-2">
+                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema`}>
+                        <Tag>Versão 4.0</Tag>
+                    </Link> 
+                </div>
             <Dropdown
                 openDown
                 menuStyle={{ minWidth: 240 }}
