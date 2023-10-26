@@ -62,7 +62,7 @@ const _AjudaAtendimento = ({ className }: CommonProps) => {
 
     return (
         <div className='flex items-center'>
-                <div className="mr-2">
+                <div>
                     <Link to={`${import.meta.env.VITE_PHP_URL}/sistema`}>
                         <Tag>Versão 4.0</Tag>
                     </Link> 
