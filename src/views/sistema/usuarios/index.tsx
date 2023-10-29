@@ -112,16 +112,6 @@ const Usuarios = () => {
                 <h3 className="mb-4 lg:mb-0">Usuários</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
-                        download
-                        className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
-                        to="/data/user-list.csv"
-                        target="_blank"
-                    >
-                        <Button block size="sm" icon={<HiDownload />}>
-                            Exportar
-                        </Button>
-                    </Link>
-                    <Link
                         className="block lg:inline-block md:mb-0 mb-4"
                         to="/app/users/user-new"
                     >
