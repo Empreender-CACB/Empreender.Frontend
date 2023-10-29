@@ -25,15 +25,26 @@ import CTableCards from './CTableCards'
 //import './theme.css'
 import i18n from './i18n'
 import { TableConfigType, apiDataTable } from '@/services/DataTableService'
-interface CustomReactDataGridProps {
+interface CustomReactDataGridPropsBasic {
     filename: string
     columns: any[]
     defaultFilterValue?: any
-    url: string
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
     widthSize?: number
 }
+
+interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
+    url: string,
+    data?: never
+}
+
+interface CustomReactDataGridPropsData extends CustomReactDataGridPropsBasic{
+    url?: never
+    data: []
+}
+
+type CustomReactDataGridProps =CustomReactDataGridPropsUrl | CustomReactDataGridPropsData
 
 type SortInfo = {
     field: string
