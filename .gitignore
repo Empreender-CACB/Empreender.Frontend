@@ -13,6 +13,7 @@ dist
 dist-ssr
 build
 *.local
+.env
 
 # Editor directories and files
 .vscode/*
@@ -25,5 +26,4 @@ build
 *.sln
 *.sw?
 .vite-cache/
-.env
 .env
