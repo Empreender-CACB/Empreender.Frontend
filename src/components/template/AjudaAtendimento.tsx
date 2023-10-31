@@ -17,7 +17,7 @@ type DropdownList = {
 const ajudaDropdownItemList: DropdownList[] = [
     {
         label: 'Aviso aos Navegantes',
-        path: 'https://teste.cacbempreenderapp.org.br/sistema/faq/blog',
+        path:  `${import.meta.env.VITE_PHP_URL}/sistema/faq/blog`,
     },
     {
         label: 'Fale Conosco',
@@ -25,19 +25,19 @@ const ajudaDropdownItemList: DropdownList[] = [
     },
     {
         label: 'FAQ',
-        path: 'https://teste.cacbempreenderapp.org.br/sistema/faq/index',
+        path:  `${import.meta.env.VITE_PHP_URL}/sistema/faq/index`,
     },
     {
         label: 'Liberações',
-        path: 'https://teste.cacbempreenderapp.org.br/sistema/liberacoes/',
+        path: `${import.meta.env.VITE_PHP_URL}/sistema/liberacoes/`,
     },
     {
         label: 'Painel Covid',
-        path: 'https://teste.cacbempreenderapp.org.br/sistema/faq/paineis-zoho/painel/covid',
+        path:  `${import.meta.env.VITE_PHP_URL}/sistema/faq/paineis-zoho/painel/covid`,
     },
     {
         label: 'Painel Empreender',
-        path: 'https://teste.cacbempreenderapp.org.br/sistema/faq/paineis-zoho/painel/empreender',
+        path:  `${import.meta.env.VITE_PHP_URL}/sistema/faq/paineis-zoho/painel/empreender`,
         recurso: 'paineis_zoho',
     },
 ]
