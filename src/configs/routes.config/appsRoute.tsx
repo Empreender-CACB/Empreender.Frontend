@@ -77,6 +77,21 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/prestcontas/painel-documentos-aguardando-aprovacao`,
         component: lazy(() => import('@/views/sistema/prestcontas/painel-documentos-aguardando-aprovacao')),
     },
+    {
+        key: 'sistemaConcurso.painel',
+        path: `${APP_PREFIX_PATH}/concurso/painel-entidade/:idconcurso/:identidade`,
+        component: lazy(() => import('@/views/sistema/concurso/painel-entidade')),
+    },
+    {
+        key: 'sistemaConcurso.e2022-painel',
+        path: `${APP_PREFIX_PATH}/concurso/e2022-painel/:idconcurso`,
+        component: lazy(() => import('@/views/sistema/concurso/e2022-painel')),
+    },
+    {
+        key: 'sistemaAdminutils.quadro',
+        path: `${APP_PREFIX_PATH}/adminutils/acompanhamento-geral/quadro/:idquadro`,
+        component: lazy(() => import('@/views/sistema/adminutils/acompanhamento-geral/quadro')),
+    },
 ]
 
 export default appsRoute

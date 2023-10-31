@@ -54,8 +54,17 @@ const Inicio = () => {
         nextArrow: <button style={{ color: 'black', zIndex: 1 }}>{'>'}</button>,
     }
 
-    const { nmusuario } = useAppSelector((state) => state.auth.user)
+    const { nmusuario, preferencias } = useAppSelector(
+        (state) => state.auth.user
+    )
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
+
+    let num_noticias = '3';
+
+    if (preferencias && preferencias.num_noticias) {
+        num_noticias = preferencias.num_noticias
+    }
+    console.log('preferencias', preferencias)
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -130,7 +139,9 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div
+                            className={`grid grid-cols-${num_noticias} sm:grid-cols-${num_noticias} gap-4`}
+                        >
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
                                     <a
@@ -158,7 +169,7 @@ const Inicio = () => {
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
                             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://ciclovivo.com.br/wp-content/uploads/2016/08/ipe_amarelo_DF.jpg')`,
-                            backgroundPosition: '15% 60%'
+                            backgroundPosition: '15% 60%',
                         }}
                     >
                         <div className="text-white font-bold mt-4 flex-grow w-full lg:w-1/2">

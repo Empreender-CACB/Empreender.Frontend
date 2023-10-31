@@ -1,6 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SLICE_BASE_NAME } from './constants'
 
+type Preferencias = {
+    data_lancamentos?: string
+    lista_lancamentos?: string
+    pre_filtro_lancamentos?: string
+    lista_geral?: string
+    num_noticias?: string
+}
+
 export type UserState = {
     nucpf?: string
     nmusuario?: string
@@ -9,7 +17,7 @@ export type UserState = {
     cod_perfil?: number
     fotouser?: string
     recursos: string[]
-    preferencias?: string[]
+    preferencias?: Preferencias
 }
 
 const initialState: UserState = {
@@ -20,7 +28,7 @@ const initialState: UserState = {
     cod_perfil: 0,
     fotouser: '',
     recursos: [],
-    preferencias: [],
+    preferencias: {},
 }
 
 const userSlice = createSlice({

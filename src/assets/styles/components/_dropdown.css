@@ -48,7 +48,7 @@
 }
 
 .dropdown-toggle-default {
-  @apply cursor-pointer p-2 inline-block;
+  @apply cursor-pointer inline-block;
 
   &.dropdown-toggle-disabled {
     @apply opacity-60;
