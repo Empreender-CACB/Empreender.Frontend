@@ -44,7 +44,7 @@ interface CustomReactDataGridPropsData extends CustomReactDataGridPropsBasic{
     data: []
 }
 
-type CustomReactDataGridProps =CustomReactDataGridPropsUrl | CustomReactDataGridPropsData
+type CustomReactDataGridProps = CustomReactDataGridPropsUrl | CustomReactDataGridPropsData
 
 type SortInfo = {
     field: string
