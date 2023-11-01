@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FormItem from '@/components/ui/Form/FormItem';
 import FormContainer from '@/components/ui/Form/FormContainer';
 import Input from '@/components/ui/Input';
-import HeaderLogo from '@/components/template/HeaderLogo';
+import HeaderForm from './HeaderForm';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared'
@@ -90,11 +90,11 @@ function CursoForm() {
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
       <div className="header-container">
-        <HeaderLogo />
-        <h2 style={{ marginBottom: '40px' }}></h2>
+        <HeaderForm/>
+        <h2 style={{ marginBottom: '20px' }}></h2>
         <div className="text-container">
-          <h2 style={{ marginBottom: '30px' }}>Curso de formação de consultores</h2>
-          <h3 style={{ marginBottom: '60px' }}>Módulo remoto</h3>
+          <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
+          <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
         </div>
       </div>
       <FormContainer layout="vertical" labelWidth={100}>
