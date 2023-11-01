@@ -59,7 +59,7 @@ const Inicio = () => {
     )
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
-    let num_noticias = '3';
+    let num_noticias = '3'
 
     if (preferencias && preferencias.num_noticias) {
         num_noticias = preferencias.num_noticias
@@ -140,7 +140,7 @@ const Inicio = () => {
                             </a>
                         </div>
                         <div
-                            className={`grid grid-cols-${num_noticias} sm:grid-cols-${num_noticias} gap-4`}
+                            className={`grid grid-cols-1 md:grid-cols-${num_noticias} gap-4`}
                         >
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
