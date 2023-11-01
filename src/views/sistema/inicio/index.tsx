@@ -139,7 +139,7 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className={`grid grid-cols-${noticiasBlog.length} md:gap-4`}>
+                        <div className={`grid grid-cols-1 md:grid-cols-${noticiasBlog.length} gap-4`}>
 
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
