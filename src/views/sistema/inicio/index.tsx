@@ -54,17 +54,17 @@ const Inicio = () => {
         nextArrow: <button style={{ color: 'black', zIndex: 1 }}>{'>'}</button>,
     }
 
-    const { nmusuario, preferencias } = useAppSelector(
+    const { nmusuario } = useAppSelector(
         (state) => state.auth.user
     )
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
-    let num_noticias = '3';
+    // let num_noticias = '3'
 
-    if (preferencias && preferencias.num_noticias) {
-        num_noticias = preferencias.num_noticias
-    }
-    console.log('preferencias', preferencias)
+    // if (preferencias && preferencias.num_noticias) {
+    //     num_noticias = preferencias.num_noticias
+    // }
+    // console.log('preferencias', preferencias)
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -139,9 +139,8 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div
-                            className={`grid grid-cols-${num_noticias} sm:grid-cols-${num_noticias} gap-4`}
-                        >
+                        <div className={`grid grid-cols-1 md:grid-cols-${noticiasBlog.length} gap-4`}>
+
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index}>
                                     <a
