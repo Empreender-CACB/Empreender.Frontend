@@ -1,9 +1,8 @@
-name: Deploy to Server
+name: Deploy to Test Server
 
 on:
   push:
-    branches:
-      - main
+    branches: [ teste ]
 
 jobs:
   build:
