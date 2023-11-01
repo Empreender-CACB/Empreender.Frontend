@@ -14,12 +14,12 @@ function ModalForm({ isOpen, onRequestClose }: ModalFormProps) {
   const customStyles = {
     content: {
       backgroundColor: 'transparent', 
-      borderRadius: '11px',
+      border: 'none',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)', 
-      width: '80%',
-      height: '85%',
+      width: '60%',
+      height: '80%',
     },
   };
 
