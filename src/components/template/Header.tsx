@@ -35,6 +35,7 @@ const Header = (props: HeaderProps) => {
                 </div>
             </div>
         </header>
+        
     )
 }
 
