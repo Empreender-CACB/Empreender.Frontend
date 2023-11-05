@@ -38,7 +38,11 @@ const PageContainer = (props: PageContainerProps) => {
     //document.body.style.transform = 'scale(0.95)';
 
     return (
+        
         <div className="h-full flex flex-auto flex-col justify-between">
+        <p className="bg-blue-600 h-10 flex items-center justify-center text-sm font-medium text-white px-4 sm:px-6 lg:px-8">
+          Você está navegando no ambiante de testes da V5.
+        </p>
             <main className="h-full">
                 <div
                     className={classNames(
