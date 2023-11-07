@@ -26,6 +26,16 @@ const authRoute: Routes = [
         component: lazy(() => import('@/views/auth/ResetPassword')),
         authority: [],
     },
+    {
+        key: 'formulario',
+        path: `/formulario`,
+        component: lazy(() => import('@/views/auth/Formulario')),
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default authRoute
