@@ -1,126 +1,120 @@
 import '@inovua/reactdatagrid-community/index.css'
-
-import { useState, useCallback } from 'react'
 import moment from 'moment'
-import ReactDataGrid from '@inovua/reactdatagrid-community'
-
-
 import 'moment/locale/pt-br'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui'
 import { HiDownload } from 'react-icons/hi'
+import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
+import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
+import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
+import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
+import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 
 moment.locale('pt-br')
-
-const columns = [
-    { name: 'idreuniao', header: 'ID da Reunião', type: 'number' },
-    { name: 'dsmotivo', header: 'Motivo', type: 'string', defaultFlex: 1 },
-    {
-        name: 'dtreuniao',
-        header: 'Data da Reunião',
-        type: 'date',
-        defaultFlex: 1,
-        render: ({ value }) =>
-            value ? moment(value).format('DD-MM-YYYY') : '-',
-    },
-    { name: 'iduf', header: 'UF', type: 'string', defaultFlex: 1 },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 },
-]
-
-const defaultFilterValue = [
-    { name: 'idreuniao', operator: 'contains', type: 'number', value: '' },
-    { name: 'dsmotivo', operator: 'contains', type: 'string', value: '' },
-    { name: 'dtreuniao', operator: 'after', type: 'date', value: '' },
-    { name: 'iduf', operator: 'contains', type: 'string', value: '' },
-    { name: 'nmcidade', operator: 'contains', type: 'string', value: '' },
-]
-
-const i18n = Object.assign({}, ReactDataGrid.defaultProps.i18n, {
-    pageText: 'Página ',
-    ofText: ' de ',
-    perPageText: 'Resultados por página',
-    showingText: 'Mostrando ',
-    clearAll: 'Limpar tudo',
-    clear: 'Limpar',
-    showFilteringRow: 'Mostrar linha de filtragem',
-    hideFilteringRow: 'Esconder linha de filtragem',
-    dragHeaderToGroup: 'Arraste o cabeçalho para agrupar',
-    disable: 'Desabilitar',
-    enable: 'Habilitar',
-    sortAsc: 'Ordenar em ordem ascendente',
-    sortDesc: 'Ordenar em ordem descendente',
-    unsort: 'Remover ordenação',
-    group: 'Agrupar',
-    ungroup: 'Desagrupar',
-    lockStart: 'Fixar início',
-    lockEnd: 'Fixar fim',
-    unlock: 'Desafixar',
-    columns: 'Colunas',
-    contains: 'Contém',
-    startsWith: 'Começa com',
-    endsWith: 'Termina com',
-    notContains: 'Não contém',
-    neq: 'Diferente',
-    eq: 'Igual',
-    notEmpty: 'Não vazio',
-    beforeOrOn: 'Antes de',
-    afterOrOn: 'A partir de',
-    after: 'Após',
-    empty: 'Vazio',
-    inrange: 'No intervalo',
-    notinrange: 'Fora do intervalo',
-    lt: 'Menor que',
-    lte: 'Menor ou igual a',
-    gt: 'Maior que',
-    gte: 'Maior ou igual a',
-    'calendar.todayButtonText': 'Hoje',
-    calendar: {
-        todayButtonText: 'Hoje1',
-        clearButtonText: 'Limpar',
-        okButtonText: 'OK',
-        cancelButtonText: 'Cancelar',
-    },
-})
 
 type Props = {
     idnucleo: number
 }
 
+const activeValue = [
+    { name: 'Ativo', value: 'S' },
+    { name: 'Inativo', value: 'N' },
+]
+
+const columns = [
+    {
+        name: 'iduf',
+        header: 'UF',
+        type: 'select',
+        value: '',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: estadosBrasileiros.map((state) => {
+                return { id: state.sigla, label: state.sigla }
+            }),
+        },
+    },
+    {
+        name: 'nmcidade',
+        header: 'Cidade',
+        type: 'string',
+    },
+    {
+        name: 'nucnpjcpf',
+        header: 'CNPJ',
+        defaultFlex: 1.5,
+        type: 'string',
+    },
+    {
+        name: 'nmfantasia',
+        header: 'Nome fantasia',
+        type: 'string',
+        value: '',
+    },
+    {
+        name: 'lista_contatos',
+        header: 'Empresario/Diretor',
+        type: 'string',
+    },
+    {
+        name: 'empresa.flativo',
+        header: 'Status',
+        type: 'select',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: activeValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ value }: any) => (
+            <div className="flex items-center justify-center">
+                <TagActiveInative value={value} activeText="S" />
+            </div>
+        ),
+    },
+    {
+        name: 'data_alteracao',
+        header: 'Data Vínculo',
+        defaultFlex: 1,
+        dateFormat: 'DD/MM/YYYY',
+        filterEditor: DateFilter,
+        filterEditorProps: ({ index }: any) => {
+            return {
+                dateFormat: 'DD/MM/YYYY',
+                placeholder:
+                    index === 1
+                        ? 'A data é anterior à...'
+                        : 'A data é posterior à',
+            }
+        },
+        render: ({ value, cellProps: { dateFormat } }: any) =>
+            moment(value).format(dateFormat) === 'Invalid date'
+                ? '-'
+                : moment(value).format(dateFormat),
+    },
+    {
+        name: 'empresa_ativa',
+        header: 'Vínculo',
+        type: 'select',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: activeValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ value }: any) => (
+            <div className="flex items-center justify-center">
+                <TagActiveInative value={value} activeText="S" />
+            </div>
+        ),
+    },
+]
+
 const NucleosEmpresas = ({ idnucleo }: Props) => {
-    const loadData = ({ skip, limit, sortInfo, groupBy, filterValue }) => {
-        return fetch(
-            `${import.meta.env.VITE_API_URL}/lista-reunioes` +
-                `?idnucleo=${idnucleo}` +
-                '&skip=' +
-                skip +
-                '&limit=' +
-                limit +
-                (groupBy && groupBy.length ? '&groupBy=' + groupBy : '') +
-                '&sortInfo=' +
-                JSON.stringify(sortInfo) +
-                '&filterBy=' +
-                JSON.stringify(filterValue)
-        ).then((response) => {
-            return response.json().then((data) => {
-                return { data: data.data, count: data.meta.total }
-            })
-        })
-    }
-
-    const [selected, setSelected] = useState({ 2: true, 5: true })
-    const dataSource = useCallback(loadData, [])
-
-    const onSelectionChange = useCallback(({ selected }) => {
-        setSelected(selected)
-    }, [])
-
-    const gridStyle = { minHeight: 750, width: '100%' }
-
     return (
         <div className="mt-4">
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Empresas Vinculadas</h3>
-                {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         download
@@ -134,7 +128,13 @@ const NucleosEmpresas = ({ idnucleo }: Props) => {
                     </Link>
                 </div>
             </div>
-            <h2>Em construção!</h2>
+            <CustomReactDataGrid
+                filename={`Empresas Vinculadas - Núcleo ${idnucleo}`}
+                columns={columns}
+                url={`${
+                    import.meta.env.VITE_API_URL
+                }/nucleos/empresas-vinculadas/${idnucleo}`}
+            />
         </div>
     )
 }

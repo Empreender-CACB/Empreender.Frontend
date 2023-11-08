@@ -1,6 +1,6 @@
 import '@inovua/reactdatagrid-community/index.css'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
