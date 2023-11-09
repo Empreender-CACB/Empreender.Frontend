@@ -7,6 +7,7 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared'
 import CpfInput from './CpfInput';
+import HeaderLogo from '@/components/template/HeaderLogo';
 
 const ufOptions = [
   { value: 'AC', label: 'Acre' },
@@ -88,15 +89,22 @@ function CursoForm() {
   };
 
   return (
-    <AdaptableCard className="h-full" bodyClass="h-full">
-      <div className="header-container">
-        <HeaderForm/>
-        <h2 style={{ marginBottom: '20px' }}></h2>
-        <div className="text-container">
-          <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
-          <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
-        </div>
+<AdaptableCard className="h-full" bodyClass="h-full">
+  <div className="header-container flex flex-col items-left">
+    <div className="flex items-center">
+    <div style={{ maxWidth: '200px' }}>
+        <HeaderForm />
       </div>
+      <div style={{ maxWidth: '200px' }}>
+        <HeaderLogo />
+      </div>
+    </div>
+    <h2 style={{ marginBottom: '20px' }}></h2>
+    <div className="text-container">
+      <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
+      <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
+    </div>
+  </div>
       <FormContainer layout="vertical" labelWidth={100}>
         <form>
           <FormItem label="Nome completo" asterisk htmlFor="nome" invalid>
