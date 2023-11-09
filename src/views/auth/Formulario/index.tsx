@@ -8,12 +8,15 @@ const styles = {
     alignItems: 'center',
     height: '100vh', 
   },
+  formContainer: {
+    width: '50%',
+  },
 };
 
 const CursoFormulario = () => {
   return (
     <div style={styles.container}>
-      <Container>
+      <Container style={styles.formContainer}>
         <CursoForm />
       </Container>
     </div>
