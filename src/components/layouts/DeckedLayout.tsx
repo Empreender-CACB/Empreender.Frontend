@@ -10,7 +10,6 @@ import MobileNav from '@/components/template/MobileNav';
 import Search from '@/components/template/Search';
 import View from '@/views';
 import AjudaAtendimento from '../template/AjudaAtendimento';
-import ModalForm from '../template/curso/ModalForm';
 
 const HeaderActionsStart = () => {
   return (
@@ -43,7 +42,6 @@ const HeaderActionsEnd = () => {
       <Notification />
       <SidePanel />
       <UserDropdown hoverable={false} />
-      <ModalForm isOpen={isModalOpen} onRequestClose={toggleModal} />
     </>
   );
 };

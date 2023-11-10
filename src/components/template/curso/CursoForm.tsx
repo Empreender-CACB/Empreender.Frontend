@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react'
 import FormItem from '@/components/ui/Form/FormItem'
 import FormContainer from '@/components/ui/Form/FormContainer'
 import Input from '@/components/ui/Input'
 // import HeaderLogo from '@/components/template/HeaderLogo'
-import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 import { AdaptableCard } from '@/components/shared'
-import CpfInput from './CpfInput'
 import { Upload } from '@/components/ui'
+import InputMask from 'react-input-mask'
+import { Formik, Field, Form } from 'formik'
+import * as Yup from 'yup'
+import { HiOutlineEyeOff, HiOutlineEye } from 'react-icons/hi'
+import Select from '@/components/ui/Select'
+
+import CpfInput from './CpfInput'
+import Logo from '../Logo'
+import ApiService from '@/services/ApiService'
+import axios from 'axios'
 
 const ufOptions = [
     { value: 'AC', label: 'Acre' },
@@ -39,28 +48,24 @@ const ufOptions = [
     { value: 'TO', label: 'Tocantins' },
 ]
 
-const turmaOptions = [
-    { value: 'T01', label: 'Turma 01' },
-    { value: 'T02', label: 'Turma 02' },
-]
+// const turmaOptions = [
+//     { value: 'T01', label: 'Turma 01' },
+//     { value: 'T02', label: 'Turma 02' },
+// ]
+
+const validationSchema = Yup.object().shape({
+    nome: Yup.string().required('Nome completo é obrigatório'),
+    cpf: Yup.string().required('CPF é obrigatório'),
+    uf: Yup.string().required('UF é obrigatório'),
+    cidade: Yup.string().required('Cidade é obrigatória'),
+    email: Yup.string().email('Email inválido').required('Email é obrigatório'),
+    celular: Yup.string().required('Celular é obrigatório'),
+    // turma: Yup.string().required('Turma do Curso é obrigatória'),
+})
 
 function CursoForm() {
     const [estadoSelecionado, setEstadoSelecionado] = useState('')
-    const [cidade, setCidade] = useState([])
-    const [isValid, setIsValid] = useState(true)
-    const [email, setEmail] = useState()
-    const [emailIsValid, setEmailIsValid] = useState(true)
-
-    const validaEmail = (value) => {
-        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
-        return emailRegex.test(value)
-    }
-
-    const checaEmail = (event) => {
-        const newValue = event.target.value
-        setEmail(newValue)
-        setEmailIsValid(validaEmail(newValue))
-    }
+    const [cidades, setCidades] = useState([])
 
     useEffect(() => {
         if (estadoSelecionado) {
@@ -82,16 +87,31 @@ function CursoForm() {
             }
 
             const data = await response.json()
-            setCidade(data)
+            console.log(data)
+            setCidades(data)
         } catch (error) {
             console.error('Erro ao buscar cidades do IBGE:', error)
         }
     }
 
     return (
-        <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="header-container">
-                {/* <HeaderForm /> */}
+        <AdaptableCard className="h-full max-w-4xl mx-auto" bodyClass="h-full">
+            <div className="header-container flex flex-col items-left">
+                <span>Portal do Empreender - V5</span>
+                <div className="flex items-center justify-between">
+                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
+                        <Logo />
+                    </div>
+                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
+                        <Logo logoPath="logo-empreender.png" />
+                    </div>
+                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
+                        <Logo logoPath="al_invest_logo.jpg" />
+                    </div>
+                    <div style={{ maxWidth: '150px' }}>
+                        <Logo logoPath="sebrae.svg" />
+                    </div>
+                </div>
                 <h2 style={{ marginBottom: '20px' }}></h2>
                 <div className="text-container">
                     <h3 style={{ marginBottom: '10px' }}>
@@ -100,104 +120,156 @@ function CursoForm() {
                     <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
                 </div>
             </div>
-            <FormContainer layout="vertical" labelWidth={100}>
-                <form>
-                    <FormItem
-                        asterisk
-                        invalid
-                        label="Nome completo"
-                        htmlFor="nome"
-                    >
-                        <Input
-                            required
-                            type="text"
-                            id="nome"
-                            name="nome"
-                            size="sm"
-                        />
-                    </FormItem>
+            <Formik
+                initialValues={{
+                    nome: '',
+                    cpf: '',
+                    uf: '',
+                    cidade: '',
+                    email: '',
+                    turma: '',
+                    arquivo: [],
+                }}
+                // validationSchema={validationSchema}
+                onSubmit={(values) => {
+                    const formData = new FormData()
+                    values.arquivo.forEach((file) => {
+                        formData.append('files', file)
+                    })
 
-                    <FormItem asterisk invalid label="UF" htmlFor="uf">
-                        <Select
-                            required
-                            placeholder="Selecione o estado"
-                            options={ufOptions}
-                            size="sm"
-                            onChange={(value) => {
-                                setEstadoSelecionado(value)
-                            }}
-                        />
-                    </FormItem>
+                    formData.append('arquivo', values.arquivo) // Adicione seus arquivos aqui
+                    formData.append('nome', values.nome)
+                    formData.append('cpf', values.cpf)
+                    formData.append('uf', values.uf.label)
+                    formData.append('cidade', values.cidade.label)
+                    formData.append('email', values.email)
+                    formData.append('turma', values.turma)
 
-                    <FormItem asterisk invalid label="Cidade" htmlFor="cidade">
-                        <Select
-                            required
-                            placeholder="Selecione a cidade"
-                            options={cidade.map((city) => ({
-                                value: city.id,
-                                label: city.nome,
-                            }))}
-                            size="sm"
-                        />
-                    </FormItem>
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:3333/candidaturas',
+                        data: formData,
+                        headers: {
+                            'Content-Type': 'multipart/form-data', 
+                        },
+                    })
+                        .then((response) => {
+                            console.log('Resposta do servidor:', response.data)
+                        })
+                        .catch((error) => {
+                            console.error('Erro ao enviar formulário:', error)
+                        })
+                }}
+            >
+                {({ setFieldValue }) => (
+                    <Form>
+                        <FormContainer>
+                            <FormItem
+                                asterisk
+                                label="Nome completo"
+                                htmlFor="nome"
+                            >
+                                <Field
+                                    type="text"
+                                    id="nome"
+                                    name="nome"
+                                    size="sm"
+                                    component={Input}
+                                />
+                            </FormItem>
 
-                    <FormItem
-                        asterisk
-                        label="Email"
-                        htmlFor="email"
-                        invalid={!emailIsValid}
-                    >
-                        <Input
-                            required
-                            type="email"
-                            id="email"
-                            name="email"
-                            size="sm"
-                            value={email}
-                            onChange={checaEmail}
-                        />
-                        {emailIsValid ? (
-                            true
-                        ) : (
-                            <span style={{ color: 'red' }}>Email inválido</span>
-                        )}
-                    </FormItem>
+                            <FormItem asterisk label="CPF" htmlFor="cpf">
+                                <Field
+                                    type="text"
+                                    id="cpf"
+                                    name="cpf"
+                                    size="sm"
+                                    component={Input}
+                                />
+                            </FormItem>
 
-                    <FormItem
-                        asterisk
-                        label="CPF"
-                        htmlFor="cpf"
-                        invalid={!isValid}
-                    >
-                        <CpfInput isValid={isValid} setIsValid={setIsValid} />
-                    </FormItem>
+                            <FormItem asterisk label="UF" htmlFor="uf">
+                                <Field
+                                    required
+                                    placeholder="Selecione o estado"
+                                    name="uf"
+                                    size="sm"
+                                    component={Select}
+                                    options={ufOptions}
+                                    onChange={(value) => {
+                                        setFieldValue('uf', value)
+                                        setFieldValue('cidade', '')
+                                        setEstadoSelecionado(value)
+                                    }}
+                                />
+                            </FormItem>
 
-                    <FormItem
-                        asterisk
-                        invalid
-                        label="Turma do Curso"
-                        htmlFor="turma"
-                    >
-                        <Select
-                            required
-                            placeholder="Selecione a turma"
-                            options={turmaOptions}
-                            size="sm"
-                        />
-                    </FormItem>
+                            <FormItem asterisk label="Cidade" htmlFor="cidade">
+                                <Field
+                                    required
+                                    name="cidade"
+                                    size="sm"
+                                    component={Select}
+                                    options={cidades.map((city) => ({
+                                        value: city.id,
+                                        label: city.nome,
+                                    }))}
+                                    onChange={(e) => {
+                                        setFieldValue('cidade', e)
+                                    }}
+                                />
+                            </FormItem>
 
-                    <Upload draggable multiple showList />
+                            <FormItem asterisk label="Email" htmlFor="email">
+                                <Field
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    size="sm"
+                                    component={Input}
+                                />
+                            </FormItem>
 
-                    <Button
-                        variant="solid"
-                        type="submit"
-                        size="sm"
-                        disabled={!isValid || !emailIsValid}
-                    >
-                        Enviar
-                    </Button>
-                </form>
-            </FormContainer>
+                            <FormItem
+                                asterisk
+                                label="Celular"
+                                htmlFor="celular"
+                            >
+                                <Field required name="celular" size="sm">
+                                    {({ field }: any) => (
+                                        <InputMask
+                                            {...field}
+                                            mask="(99) 99999-9999"
+                                            placeholder="(00) 00000-0000"
+                                        >
+                                            {(inputProps: any) => (
+                                                <Input
+                                                    {...inputProps}
+                                                    autoComplete="off"
+                                                    component={Input}
+                                                />
+                                            )}
+                                        </InputMask>
+                                    )}
+                                </Field>
+                            </FormItem>
+
+                            <Upload
+                                draggable
+                                multiple
+                                showList
+                                onChange={(files) => {
+                                    setFieldValue('arquivo', files)
+                                }}
+                            />
+
+                            <Button variant="solid" type="submit" size="sm">
+                                Enviar
+                            </Button>
+                        </FormContainer>
+                    </Form>
+                )}
+            </Formik>
         </AdaptableCard>
     )
 }
