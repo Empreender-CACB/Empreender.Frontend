@@ -60,7 +60,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
             setFiles(fileList)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fileList])
+    }, [JSON.stringify(fileList)])
 
     const triggerMessage = (msg: string | ReactNode = '') => {
         toast.push(
@@ -147,7 +147,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
         }
 
         if (draggable && !children) {
-            return <span>Choose a file or drag and drop here</span>
+            return <span>Selecione um arquivo ou arraste e solte aqui</span>
         }
 
         return children
@@ -219,14 +219,16 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
             {tip}
             {showList && (
                 <div className="upload-file-list">
-                    {files.map((file, index) => (
+                    {files.map((file, index) => {
+                        console.log(file)
+                        return (
                         <FileItem key={file.name + index} file={file}>
                             <CloseButton
                                 className="upload-file-remove"
                                 onClick={() => removeFile(index)}
                             />
                         </FileItem>
-                    ))}
+                    )})}
                 </div>
             )}
         </>
