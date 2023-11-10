@@ -5,7 +5,7 @@ const publicRoute: Routes = [
     {
         key: 'inscricoes',
         path: `/inscricoes`,
-        component: lazy(() => import('@/views/Candidatura')),
+        component: lazy(() => import('@/views/Inscricoes')),
         meta: {
             layout: 'blank',
             pageContainerType: 'gutterless',
