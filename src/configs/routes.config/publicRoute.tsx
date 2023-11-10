@@ -3,8 +3,8 @@ import type { Routes } from '@/@types/routes'
 
 const publicRoute: Routes = [
     {
-        key: 'candidatura',
-        path: `/candidatura`,
+        key: 'inscricoes',
+        path: `/inscricoes`,
         component: lazy(() => import('@/views/Candidatura')),
         meta: {
             layout: 'blank',
