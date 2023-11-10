@@ -3,16 +3,13 @@ import { useState, useEffect } from 'react'
 import FormItem from '@/components/ui/Form/FormItem'
 import FormContainer from '@/components/ui/Form/FormContainer'
 import Input from '@/components/ui/Input'
-// import HeaderLogo from '@/components/template/HeaderLogo'
 import Button from '@/components/ui/Button'
-import { AdaptableCard } from '@/components/shared'
 import { Upload } from '@/components/ui'
 import InputMask from 'react-input-mask'
 import { Formik, Field, Form } from 'formik'
 import * as Yup from 'yup'
 import Select from '@/components/ui/Select'
 
-import Logo from '../Logo'
 import axios from 'axios'
 
 const ufOptions = [
@@ -57,7 +54,6 @@ const validationSchema = Yup.object().shape({
     cidade: Yup.string().required('Cidade é obrigatória'),
     email: Yup.string().email('Email inválido').required('Email é obrigatório'),
     celular: Yup.string().required('Celular é obrigatório'),
-    // turma: Yup.string().required('Turma do Curso é obrigatória'),
 })
 
 function CursoForm() {
@@ -92,182 +88,158 @@ function CursoForm() {
     }
 
     return (
-        <AdaptableCard className="h-full max-w-4xl mx-auto" bodyClass="h-full">
-            <div className="header-container flex flex-col items-left">
-                <span>Portal do Empreender - V5</span>
-                <div className="flex items-center justify-between">
-                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
-                        <Logo />
-                    </div>
-                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
-                        <Logo logoPath="logo-empreender.png" />
-                    </div>
-                    <div style={{ maxWidth: '200px', minWidth: '100px' }}>
-                        <Logo logoPath="al_invest_logo.jpg" />
-                    </div>
-                    <div style={{ maxWidth: '150px' }}>
-                        <Logo logoPath="sebrae.svg" />
-                    </div>
-                </div>
-                <h2 style={{ marginBottom: '20px' }}></h2>
-                <div className="text-container">
-                    <h3 style={{ marginBottom: '10px' }}>
-                        Seleção de consultores de núcleos setoriais
-                    </h3>
-                    <h4 style={{ marginBottom: '20px' }}>Inscrição</h4>
-                </div>
-            </div>
-            <Formik
-                initialValues={{
-                    nome: '',
-                    cpf: '',
-                    uf: '',
-                    cidade: '',
-                    email: '',
-                    turma: '',
-                    arquivo: [],
-                }}
-                // validationSchema={validationSchema}
-                onSubmit={(values) => {
-                    const formData = new FormData()
-                    values.arquivo.forEach((file) => {
-                        formData.append('files', file)
+        <Formik
+            initialValues={{
+                nome: '',
+                cpf: '',
+                uf: '',
+                cidade: '',
+                email: '',
+                turma: '',
+                arquivo: [],
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+                const formData = new FormData()
+                values.arquivo.forEach((file) => {
+                    formData.append('files', file)
+                })
+
+                formData.append('arquivo', values.arquivo)
+                formData.append('nome', values.nome)
+                formData.append('cpf', values.cpf)
+                formData.append('uf', values.uf.label)
+                formData.append('cidade', values.cidade.label)
+                formData.append('email', values.email)
+                formData.append('turma', values.turma)
+
+                axios({
+                    method: 'post',
+                    url: `${import.meta.env.VITE_API_URL}/candidaturas`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                })
+                    .then((response) => {
+                        console.log('Resposta do servidor:', response.data)
                     })
-
-                    formData.append('arquivo', values.arquivo) // Adicione seus arquivos aqui
-                    formData.append('nome', values.nome)
-                    formData.append('cpf', values.cpf)
-                    formData.append('uf', values.uf.label)
-                    formData.append('cidade', values.cidade.label)
-                    formData.append('email', values.email)
-                    formData.append('turma', values.turma)
-
-                    axios({
-                        method: 'post',
-                        url: 'http://localhost:3333/candidaturas',
-                        data: formData,
-                        headers: {
-                            'Content-Type': 'multipart/form-data', 
-                        },
+                    .catch((error) => {
+                        console.error('Erro ao enviar formulário:', error)
                     })
-                        .then((response) => {
-                            console.log('Resposta do servidor:', response.data)
-                        })
-                        .catch((error) => {
-                            console.error('Erro ao enviar formulário:', error)
-                        })
-                }}
-            >
-                {({ setFieldValue }) => (
-                    <Form>
-                        <FormContainer>
-                            <FormItem
-                                asterisk
-                                label="Nome completo"
-                                htmlFor="nome"
-                            >
-                                <Field
-                                    type="text"
-                                    id="nome"
-                                    name="nome"
-                                    size="sm"
-                                    component={Input}
-                                />
-                            </FormItem>
+            }}
+        >
+            {({ setFieldValue }) => (
+                <Form>
+                    <FormContainer>
+                        <FormItem asterisk label="Nome completo" htmlFor="nome">
+                            <Field
+                                type="text"
+                                id="nome"
+                                name="nome"
+                                size="sm"
+                                component={Input}
+                            />
+                        </FormItem>
 
-                            <FormItem asterisk label="CPF" htmlFor="cpf">
-                                <Field
-                                    type="text"
-                                    id="cpf"
-                                    name="cpf"
-                                    size="sm"
-                                    component={Input}
-                                />
-                            </FormItem>
+                        <FormItem asterisk label="CPF" htmlFor="cpf">
+                            <Field required name="cpf" size="sm">
+                                {({ field }: any) => (
+                                    <InputMask
+                                        {...field}
+                                        mask="999.9999.99-99"
+                                        placeholder="000.0000.00-00"
+                                    >
+                                        {(inputProps: any) => (
+                                            <Input
+                                                {...inputProps}
+                                                autoComplete="off"
+                                                component={Input}
+                                            />
+                                        )}
+                                    </InputMask>
+                                )}
+                            </Field>
+                        </FormItem>
 
-                            <FormItem asterisk label="UF" htmlFor="uf">
-                                <Field
-                                    required
-                                    placeholder="Selecione o estado"
-                                    name="uf"
-                                    size="sm"
-                                    component={Select}
-                                    options={ufOptions}
-                                    onChange={(value) => {
-                                        setFieldValue('uf', value)
-                                        setFieldValue('cidade', '')
-                                        setEstadoSelecionado(value)
-                                    }}
-                                />
-                            </FormItem>
-
-                            <FormItem asterisk label="Cidade" htmlFor="cidade">
-                                <Field
-                                    required
-                                    name="cidade"
-                                    size="sm"
-                                    component={Select}
-                                    options={cidades.map((city) => ({
-                                        value: city.id,
-                                        label: city.nome,
-                                    }))}
-                                    onChange={(e) => {
-                                        setFieldValue('cidade', e)
-                                    }}
-                                />
-                            </FormItem>
-
-                            <FormItem asterisk label="Email" htmlFor="email">
-                                <Field
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    size="sm"
-                                    component={Input}
-                                />
-                            </FormItem>
-
-                            <FormItem
-                                asterisk
-                                label="Celular"
-                                htmlFor="celular"
-                            >
-                                <Field required name="celular" size="sm">
-                                    {({ field }: any) => (
-                                        <InputMask
-                                            {...field}
-                                            mask="(99) 99999-9999"
-                                            placeholder="(00) 00000-0000"
-                                        >
-                                            {(inputProps: any) => (
-                                                <Input
-                                                    {...inputProps}
-                                                    autoComplete="off"
-                                                    component={Input}
-                                                />
-                                            )}
-                                        </InputMask>
-                                    )}
-                                </Field>
-                            </FormItem>
-
-                            <Upload
-                                draggable
-                                multiple
-                                showList
-                                onChange={(files) => {
-                                    setFieldValue('arquivo', files)
+                        <FormItem asterisk label="UF" htmlFor="uf">
+                            <Field
+                                required
+                                placeholder="Selecione o estado"
+                                name="uf"
+                                size="sm"
+                                component={Select}
+                                options={ufOptions}
+                                onChange={(value) => {
+                                    setFieldValue('uf', value)
+                                    setFieldValue('cidade', '')
+                                    setEstadoSelecionado(value)
                                 }}
                             />
+                        </FormItem>
 
-                            <Button variant="solid" type="submit" size="sm">
-                                Enviar
-                            </Button>
-                        </FormContainer>
-                    </Form>
-                )}
-            </Formik>
-        </AdaptableCard>
+                        <FormItem asterisk label="Cidade" htmlFor="cidade">
+                            <Field
+                                required
+                                name="cidade"
+                                size="sm"
+                                component={Select}
+                                options={cidades.map((city) => ({
+                                    value: city.id,
+                                    label: city.nome,
+                                }))}
+                                onChange={(e) => {
+                                    setFieldValue('cidade', e)
+                                }}
+                            />
+                        </FormItem>
+
+                        <FormItem asterisk label="Email" htmlFor="email">
+                            <Field
+                                type="text"
+                                id="email"
+                                name="email"
+                                size="sm"
+                                component={Input}
+                            />
+                        </FormItem>
+
+                        <FormItem asterisk label="Celular" htmlFor="celular">
+                            <Field required name="celular" size="sm">
+                                {({ field }: any) => (
+                                    <InputMask
+                                        {...field}
+                                        mask="(99) 99999-9999"
+                                        placeholder="(00) 00000-0000"
+                                    >
+                                        {(inputProps: any) => (
+                                            <Input
+                                                {...inputProps}
+                                                autoComplete="off"
+                                                component={Input}
+                                            />
+                                        )}
+                                    </InputMask>
+                                )}
+                            </Field>
+                        </FormItem>
+
+                        <Upload
+                            draggable
+                            multiple
+                            showList
+                            onChange={(files) => {
+                                setFieldValue('arquivo', files)
+                            }}
+                        />
+
+                        <Button variant="solid" type="submit" size="sm">
+                            Enviar
+                        </Button>
+                    </FormContainer>
+                </Form>
+            )}
+        </Formik>
     )
 }
 
