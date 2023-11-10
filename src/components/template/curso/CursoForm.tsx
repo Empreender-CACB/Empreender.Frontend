@@ -112,9 +112,9 @@ function CursoForm() {
                 <h2 style={{ marginBottom: '20px' }}></h2>
                 <div className="text-container">
                     <h3 style={{ marginBottom: '10px' }}>
-                        Formação de consultores de núcleos setoriais
+                        Seleção de consultores de núcleos setoriais
                     </h3>
-                    <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
+                    <h4 style={{ marginBottom: '20px' }}>Inscrição</h4>
                 </div>
             </div>
             <Formik
