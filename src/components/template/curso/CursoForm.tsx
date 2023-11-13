@@ -6,11 +6,13 @@ import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { Upload } from '@/components/ui'
 import InputMask from 'react-input-mask'
-import { Formik, Field, Form } from 'formik'
+import { Formik, Field, Form, FieldArray } from 'formik'
 import * as Yup from 'yup'
 import Select from '@/components/ui/Select'
 
 import axios from 'axios'
+import FileItem from '@/components/ui/Upload/FileItem'
+import CloseButton from '@/components/ui/CloseButton'
 
 const ufOptions = [
     { value: 'AC', label: 'Acre' },
@@ -47,14 +49,30 @@ const ufOptions = [
 //     { value: 'T02', label: 'Turma 02' },
 // ]
 
-const validationSchema = Yup.object().shape({
-    nome: Yup.string().required('Nome completo é obrigatório'),
-    cpf: Yup.string().required('CPF é obrigatório'),
-    uf: Yup.string().required('UF é obrigatório'),
-    cidade: Yup.string().required('Cidade é obrigatória'),
-    email: Yup.string().email('Email inválido').required('Email é obrigatório'),
-    celular: Yup.string().required('Celular é obrigatório'),
-})
+// const validationSchema = Yup.object().shape({
+//     nome: Yup.string().required('Nome completo é obrigatório'),
+//     cpf: Yup.string().required('CPF é obrigatório'),
+//     uf: Yup.string().required('UF é obrigatório'),
+//     cidade: Yup.string().required('Cidade é obrigatória'),
+//     email: Yup.string().email('Email inválido').required('Email é obrigatório'),
+//     celular: Yup.string().required('Celular é obrigatório'),
+// })
+
+const tipoArquivoOptions = [
+    { value: 'documento', label: 'Documento' },
+    { value: 'imagem', label: 'Imagem' },
+    { value: 'outra-coisa', label: 'Outra Coisa' },
+]
+
+const initialValues = {
+    nome: '',
+    cpf: '',
+    uf: '',
+    cidade: '',
+    email: '',
+    turma: '',
+    arquivos: [{ arquivo: null, tipoArquivo: null }],
+}
 
 function CursoForm() {
     const [estadoSelecionado, setEstadoSelecionado] = useState('')
@@ -87,49 +105,52 @@ function CursoForm() {
         }
     }
 
+    const [arquivos, setArquivos] = useState(initialValues.arquivos)
+
+    const removeFile = (fileIndex) => {
+        // Implemente a lógica de remoção aqui
+        // Por exemplo:
+        const updatedArquivos = [...arquivos]
+        updatedArquivos.splice(fileIndex, 1)
+        setArquivos(updatedArquivos)
+    }
+
     return (
         <Formik
-            initialValues={{
-                nome: '',
-                cpf: '',
-                uf: '',
-                cidade: '',
-                email: '',
-                turma: '',
-                arquivo: [],
-            }}
-            validationSchema={validationSchema}
+            initialValues={initialValues}
+            // validationSchema={validationSchema}
             onSubmit={(values) => {
-                const formData = new FormData()
-                values.arquivo.forEach((file) => {
-                    formData.append('files', file)
-                })
+                console.log(values)
+                //     const formData = new FormData()
+                //     values.arquivo.forEach((file) => {
+                //         formData.append('files', file)
+                //     })
 
-                formData.append('arquivo', values.arquivo)
-                formData.append('nome', values.nome)
-                formData.append('cpf', values.cpf)
-                formData.append('uf', values.uf.label)
-                formData.append('cidade', values.cidade.label)
-                formData.append('email', values.email)
-                formData.append('turma', values.turma)
+                //     formData.append('arquivo', values.arquivo)
+                //     formData.append('nome', values.nome)
+                //     formData.append('cpf', values.cpf)
+                //     formData.append('uf', values.uf.label)
+                //     formData.append('cidade', values.cidade.label)
+                //     formData.append('email', values.email)
+                //     formData.append('turma', values.turma)
 
-                axios({
-                    method: 'post',
-                    url: `${import.meta.env.VITE_API_URL}/candidaturas`,
-                    data: formData,
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                    .then((response) => {
-                        console.log('Resposta do servidor:', response.data)
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao enviar formulário:', error)
-                    })
+                //     axios({
+                //         method: 'post',
+                //         url: `${import.meta.env.VITE_API_URL}/candidaturas`,
+                //         data: formData,
+                //         headers: {
+                //             'Content-Type': 'multipart/form-data',
+                //         },
+                //     })
+                //         .then((response) => {
+                //             console.log('Resposta do servidor:', response.data)
+                //         })
+                //         .catch((error) => {
+                //             console.error('Erro ao enviar formulário:', error)
+                //         })
             }}
         >
-            {({ setFieldValue }) => (
+            {({ values, setFieldValue, isSubmitting }) => (
                 <Form>
                     <FormContainer>
                         <FormItem asterisk label="Nome completo" htmlFor="nome">
@@ -143,7 +164,7 @@ function CursoForm() {
                         </FormItem>
 
                         <FormItem asterisk label="CPF" htmlFor="cpf">
-                            <Field required name="cpf" size="sm">
+                            <Field name="cpf" size="sm">
                                 {({ field }: any) => (
                                     <InputMask
                                         {...field}
@@ -164,7 +185,6 @@ function CursoForm() {
 
                         <FormItem asterisk label="UF" htmlFor="uf">
                             <Field
-                                required
                                 placeholder="Selecione o estado"
                                 name="uf"
                                 size="sm"
@@ -180,7 +200,6 @@ function CursoForm() {
 
                         <FormItem asterisk label="Cidade" htmlFor="cidade">
                             <Field
-                                required
                                 name="cidade"
                                 size="sm"
                                 component={Select}
@@ -205,7 +224,7 @@ function CursoForm() {
                         </FormItem>
 
                         <FormItem asterisk label="Celular" htmlFor="celular">
-                            <Field required name="celular" size="sm">
+                            <Field name="celular" size="sm">
                                 {({ field }: any) => (
                                     <InputMask
                                         {...field}
@@ -224,14 +243,125 @@ function CursoForm() {
                             </Field>
                         </FormItem>
 
-                        <Upload
+                        {/* <Upload
                             draggable
                             multiple
                             showList
                             onChange={(files) => {
                                 setFieldValue('arquivo', files)
                             }}
-                        />
+                        /> */}
+
+                        {/* Campos de upload de arquivo dinâmicos */}
+                        <FieldArray name="arquivos">
+                            {({ push, remove }) => (
+                                <div>
+                                    {values.arquivos.map((arquivo, index) => (
+                                        <div
+                                            key={index}
+                                            className="file-upload-container flex justify-between"
+                                        >
+                                            {arquivo.arquivo ? (
+                                                <div className="flex items-center">
+                                                    <div className="file-item-container">
+                                                        {/* FileItem */}
+                                                        <FileItem
+                                                            key={
+                                                                arquivo.arquivo
+                                                                    .name +
+                                                                index
+                                                            }
+                                                            file={
+                                                                arquivo.arquivo
+                                                            }
+                                                        >
+                                                            <CloseButton
+                                                                className="upload-file-remove"
+                                                                onClick={() => {
+                                                                    // Remova o arquivo e o tipo do arquivo
+                                                                    const updatedArquivos =
+                                                                        [
+                                                                            ...values.arquivos,
+                                                                        ]
+                                                                    updatedArquivos[
+                                                                        index
+                                                                    ] = {
+                                                                        arquivo:
+                                                                            null,
+                                                                        tipoArquivo:
+                                                                            '',
+                                                                    }
+                                                                    setFieldValue(
+                                                                        'arquivos',
+                                                                        updatedArquivos
+                                                                    )
+                                                                }}
+                                                            />
+                                                        </FileItem>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                    <Field
+                                                        component={Select}
+                                                        options={tipoArquivoOptions}
+                                                        name={`arquivos[${index}].tipoArquivo`}
+                                                        className="tipo-arquivo-select"
+                                                        onChange={(option) => {
+                                                            // Atualize o tipo de arquivo no índice especificado
+                                                            const updatedArquivos = [...values.arquivos];
+                                                            updatedArquivos[index].tipoArquivo = option.value;
+                                                            setFieldValue(`arquivos[${index}].tipoArquivo`, option.value);
+                                                        }}
+                                                        value={arquivo.tipoArquivo}
+                                                    />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center">
+                                                    <Upload
+                                                        onFileRemove={
+                                                            removeFile
+                                                        }
+                                                        onChange={(files) => {
+                                                            // Atualize o arquivo no índice especificado
+                                                            const updatedArquivos =
+                                                                [
+                                                                    ...values.arquivos,
+                                                                ]
+                                                            updatedArquivos[
+                                                                index
+                                                            ] = {
+                                                                arquivo:
+                                                                    files[0],
+                                                                tipoArquivo: '',
+                                                            }
+                                                            setFieldValue(
+                                                                'arquivos',
+                                                                updatedArquivos
+                                                            )
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                    {/* Botão "Adicionar Arquivo" */}
+                                    <div>
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                push({
+                                                    arquivo: null,
+                                                    tipoArquivo: '',
+                                                })
+                                            }}
+                                            disabled={isSubmitting}
+                                        >
+                                            Adicionar Arquivo
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </FieldArray>
 
                         <Button variant="solid" type="submit" size="sm">
                             Enviar
