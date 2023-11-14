@@ -114,35 +114,32 @@ function CursoForm() {
         setArquivos(updatedArquivos)
     }
 
+    const handleSubmit = async (values) => {
+        const formData = new FormData();
+        formData.append('nome', values.nome);
+        formData.append('cpf', values.cpf);
+        formData.append('uf', values.uf);
+        formData.append('cidade', values.cidade);
+        formData.append('telefone', values.telefone);
+        formData.append('email', values.email);
+        formData.append('arquivos', values.arquivos);
+    
+        try {
+          await axios.post(`${import.meta.env.VITE_API_URL}/candidaturas`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+        } catch (error) {
+            console.log('Emanoel só quer jogar, preguiçoso')
+        }
+      };
+
     return (
         <Formik
             initialValues={initialValues}
             // validationSchema={validationSchema}
-            onSubmit={(values) => {
-                console.log(values)
-                const formData = new FormData()
-                formData.append('arquivos', values.arquivos)
-                formData.append('nome', values.nome)
-                formData.append('cpf', values.cpf)
-                formData.append('uf', values.uf)
-                formData.append('cidade', values.cidade)
-                formData.append('email', values.email)
-                console.log('formData',formData)
-                axios({
-                    method: 'post',
-                    url: `${import.meta.env.VITE_API_URL}/candidaturas`,
-                    data: formData,
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                    .then((response) => {
-                        console.log('Resposta do servidor:', response.data)
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao enviar formulário:', error)
-                    })
-            }}
+            onSubmit={handleSubmit}
         >
             {({ values, setFieldValue, isSubmitting }) => (
                 <Form>
