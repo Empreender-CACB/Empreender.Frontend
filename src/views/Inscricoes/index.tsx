@@ -27,7 +27,7 @@ const CursoFormulario = () => {
           flexDirection: 'column',
           alignItems: 'center',
           maxWidth: '800px',
-          maxHeight: '800px',
+          minHeight: '800px',
           textAlign: 'center',
           padding: '20px',
       },
@@ -98,15 +98,11 @@ const CursoFormulario = () => {
                             {showWelcome && (
                                 <>
                                     <h2 style={styles.h2}>
-                                        Bem-vindo ao processo de inscrição de
-                                        consultores!
+                                      Seleção de consultores de núcleos setoriais
                                     </h2>
                                     <div style={styles.separator}></div>
                                     <h4 style={styles.h4}>
-                                        Seja parte da nossa equipe!
-                                        <br />
-                                        Junte-se a nós como consultor e ajude a
-                                        impulsionar o Empreender.
+                                        Seja parte da equipe EMPREENDER!
                                     </h4>
                                     <div style={styles.buttonContainer}>
                                         <Button

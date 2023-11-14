@@ -220,7 +220,6 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
             {showList && (
                 <div className="upload-file-list">
                     {files.map((file, index) => {
-                        console.log(file)
                         return (
                         <FileItem key={file.name + index} file={file}>
                             <CloseButton
