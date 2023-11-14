@@ -17,6 +17,7 @@
     "@fullcalendar/interaction": "^6.1.8",
     "@fullcalendar/react": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
+    "@headlessui/react": "^1.7.17",
     "@inovua/reactdatagrid-community": "^5.10.2",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.3",
