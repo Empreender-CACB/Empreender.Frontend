@@ -1,395 +1,188 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react'
-import FormItem from '@/components/ui/Form/FormItem'
-import FormContainer from '@/components/ui/Form/FormContainer'
-import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
-import { Upload } from '@/components/ui'
-import InputMask from 'react-input-mask'
-import { Formik, Field, Form, FieldArray } from 'formik'
-import * as Yup from 'yup'
-import Select from '@/components/ui/Select'
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
+import { useState } from 'react'
+import { Switch } from '@headlessui/react'
 
-import axios from 'axios'
-import FileItem from '@/components/ui/Upload/FileItem'
-import CloseButton from '@/components/ui/CloseButton'
-
-const ufOptions = [
-    { value: 'AC', label: 'Acre' },
-    { value: 'AL', label: 'Alagoas' },
-    { value: 'AP', label: 'Amapá' },
-    { value: 'AM', label: 'Amazonas' },
-    { value: 'BA', label: 'Bahia' },
-    { value: 'CE', label: 'Ceará' },
-    { value: 'DF', label: 'Distrito Federal' },
-    { value: 'ES', label: 'Espírito Santo' },
-    { value: 'GO', label: 'Goiás' },
-    { value: 'MA', label: 'Maranhão' },
-    { value: 'MT', label: 'Mato Grosso' },
-    { value: 'MS', label: 'Mato Grosso do Sul' },
-    { value: 'MG', label: 'Minas Gerais' },
-    { value: 'PA', label: 'Pará' },
-    { value: 'PB', label: 'Paraíba' },
-    { value: 'PR', label: 'Paraná' },
-    { value: 'PE', label: 'Pernambuco' },
-    { value: 'PI', label: 'Piauí' },
-    { value: 'RJ', label: 'Rio de Janeiro' },
-    { value: 'RN', label: 'Rio Grande do Norte' },
-    { value: 'RS', label: 'Rio Grande do Sul' },
-    { value: 'RO', label: 'Rondônia' },
-    { value: 'RR', label: 'Roraima' },
-    { value: 'SC', label: 'Santa Catarina' },
-    { value: 'SP', label: 'São Paulo' },
-    { value: 'SE', label: 'Sergipe' },
-    { value: 'TO', label: 'Tocantins' },
-]
-
-// const turmaOptions = [
-//     { value: 'T01', label: 'Turma 01' },
-//     { value: 'T02', label: 'Turma 02' },
-// ]
-
-// const validationSchema = Yup.object().shape({
-//     nome: Yup.string().required('Nome completo é obrigatório'),
-//     cpf: Yup.string().required('CPF é obrigatório'),
-//     uf: Yup.string().required('UF é obrigatório'),
-//     cidade: Yup.string().required('Cidade é obrigatória'),
-//     email: Yup.string().email('Email inválido').required('Email é obrigatório'),
-//     celular: Yup.string().required('Celular é obrigatório'),
-// })
-
-const tipoArquivoOptions = [
-    { value: 'documento', label: 'Documento' },
-    { value: 'imagem', label: 'Imagem' },
-    { value: 'outra-coisa', label: 'Outra Coisa' },
-]
-
-const initialValues = {
-    nome: '',
-    cpf: '',
-    uf: '',
-    cidade: '',
-    email: '',
-    arquivos: [{ arquivo: null, tipoArquivo: null }],
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
 }
 
-function CursoForm() {
-    const [estadoSelecionado, setEstadoSelecionado] = useState('')
-    const [cidades, setCidades] = useState([])
+export default function Example() {
+  const [agreed, setAgreed] = useState(false)
 
-    useEffect(() => {
-        if (estadoSelecionado) {
-            buscaCidades(estadoSelecionado)
-        }
-    }, [estadoSelecionado])
+  return (
+    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div
+        className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+        aria-hidden="true"
+      >
+        <div
+          className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+          style={{
+            clipPath:
+              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+          }}
+        />
+      </div>
+      <div className="mx-auto max-w-2xl text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Contact sales</h2>
+        <p className="mt-2 text-lg leading-8 text-gray-600">
+          Aute magna irure deserunt veniam aliqua magna enim voluptate.
+        </p>
+      </div>
+      <form action="#" method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+          <div className='sm:col-span-2'>
+            <label htmlFor="name" className="block text-sm font-semibold leading-6 text-gray-900">
+              Nome Completo
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="text"
+                name="name"
+                id="name"
+                autoComplete="name"
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="cpf" className="block text-sm font-semibold leading-6 text-gray-900">
+              CPF
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="text"
+                name="cpf"
+                id="cpf"
+                autoComplete="cpf"
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
 
-    const buscaCidades = async ({ value, label }) => {
-        try {
-            const response = await fetch(
-                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${value}/municipios`,
-                { method: 'GET' }
-            )
+          <div>
+            <label htmlFor="telefone" className="block text-sm font-semibold leading-6 text-gray-900">
+              Telefone
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="text"
+                name="telefone"
+                id="telefone"
+                autoComplete="telefone"
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
 
-            if (!response.ok) {
-                throw new Error(
-                    `Erro na solicitação: ${response.status} - ${response.statusText}`
-                )
-            }
-
-            const data = await response.json()
-            console.log(data)
-            setCidades(data)
-        } catch (error) {
-            console.error('Erro ao buscar cidades do IBGE:', error)
-        }
-    }
-
-    const [arquivos, setArquivos] = useState(initialValues.arquivos)
-
-    const removeFile = (fileIndex) => {
-        // Implemente a lógica de remoção aqui
-        // Por exemplo:
-        const updatedArquivos = [...arquivos]
-        updatedArquivos.splice(fileIndex, 1)
-        setArquivos(updatedArquivos)
-    }
-
-    const handleSubmit = async (values) => {
-        const formData = new FormData();
-        formData.append('nome', values.nome);
-        formData.append('cpf', values.cpf);
-        formData.append('uf', values.uf);
-        formData.append('cidade', values.cidade);
-        formData.append('telefone', values.telefone);
-        formData.append('email', values.email);
-        formData.append('arquivos', values.arquivos);
-    
-        try {
-          await axios.post(`${import.meta.env.VITE_API_URL}/candidaturas`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-        } catch (error) {
-            console.log('Emanoel só quer jogar, preguiçoso')
-        }
-      };
-
-    return (
-        <Formik
-            initialValues={initialValues}
-            // validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-        >
-            {({ values, setFieldValue, isSubmitting }) => (
-                <Form>
-                    <FormContainer>
-                        <FormItem asterisk label="Nome completo" htmlFor="nome">
-                            <Field
-                                type="text"
-                                id="nome"
-                                name="nome"
-                                size="sm"
-                                component={Input}
-                            />
-                        </FormItem>
-
-                        <FormItem asterisk label="CPF" htmlFor="cpf">
-                            <Field name="cpf" size="sm">
-                                {({ field }: any) => (
-                                    <InputMask
-                                        {...field}
-                                        mask="999.9999.99-99"
-                                        placeholder="000.0000.00-00"
-                                    >
-                                        {(inputProps: any) => (
-                                            <Input
-                                                {...inputProps}
-                                                autoComplete="off"
-                                                component={Input}
-                                            />
-                                        )}
-                                    </InputMask>
-                                )}
-                            </Field>
-                        </FormItem>
-
-                        <FormItem asterisk label="UF" htmlFor="uf">
-                            <Field
-                                placeholder="Selecione o estado"
-                                name="uf"
-                                size="sm"
-                                component={Select}
-                                options={ufOptions}
-                                onChange={(value) => {
-                                    setFieldValue('uf', value)
-                                    setFieldValue('cidade', '')
-                                    setEstadoSelecionado(value)
-                                }}
-                            />
-                        </FormItem>
-
-                        <FormItem asterisk label="Cidade" htmlFor="cidade">
-                            <Field
-                                name="cidade"
-                                size="sm"
-                                component={Select}
-                                options={cidades.map((city) => ({
-                                    value: city.id,
-                                    label: city.nome,
-                                }))}
-                                onChange={(e) => {
-                                    setFieldValue('cidade', e)
-                                }}
-                            />
-                        </FormItem>
-
-                        <FormItem asterisk label="Email" htmlFor="email">
-                            <Field
-                                type="text"
-                                id="email"
-                                name="email"
-                                size="sm"
-                                component={Input}
-                            />
-                        </FormItem>
-
-                        <FormItem asterisk label="Celular" htmlFor="celular">
-                            <Field name="celular" size="sm">
-                                {({ field }: any) => (
-                                    <InputMask
-                                        {...field}
-                                        mask="(99) 99999-9999"
-                                        placeholder="(00) 00000-0000"
-                                    >
-                                        {(inputProps: any) => (
-                                            <Input
-                                                {...inputProps}
-                                                autoComplete="off"
-                                                component={Input}
-                                            />
-                                        )}
-                                    </InputMask>
-                                )}
-                            </Field>
-                        </FormItem>
-
-                        {/* <Upload
-                            draggable
-                            multiple
-                            showList
-                            onChange={(files) => {
-                                setFieldValue('arquivo', files)
-                            }}
-                        /> */}
-
-                        <FormItem asterisk label="Arquivos" htmlFor="arquivos">
-                            {/* Campos de upload de arquivo dinâmicos */}
-                            <FieldArray name="arquivos">
-                                {({ push, remove }) => (
-                                    <div>
-                                        {values.arquivos.map(
-                                            (arquivo, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="file-upload-container grid grid-cols-12 gap-4 flex items-center"
-                                                >
-                                                    {arquivo.arquivo ? (
-                                                        <>
-                                                            <div className="col-span-8">
-                                                                <div className="file-item-container">
-                                                                    {/* FileItem */}
-                                                                    <FileItem
-                                                                        key={
-                                                                            arquivo
-                                                                                .arquivo
-                                                                                .name +
-                                                                            index
-                                                                        }
-                                                                        file={
-                                                                            arquivo.arquivo
-                                                                        }
-                                                                    >
-                                                                        <CloseButton
-                                                                            className="upload-file-remove"
-                                                                            onClick={() => {
-                                                                                // Remova o arquivo e o tipo do arquivo
-                                                                                const updatedArquivos =
-                                                                                    [
-                                                                                        ...values.arquivos,
-                                                                                    ]
-                                                                                updatedArquivos[
-                                                                                    index
-                                                                                ] =
-                                                                                    {
-                                                                                        arquivo:
-                                                                                            null,
-                                                                                        tipoArquivo:
-                                                                                            '',
-                                                                                    }
-                                                                                setFieldValue(
-                                                                                    'arquivos',
-                                                                                    updatedArquivos
-                                                                                )
-                                                                            }}
-                                                                        />
-                                                                    </FileItem>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-span-4">
-                                                                <Field
-                                                                    component={
-                                                                        Select
-                                                                    }
-                                                                    options={
-                                                                        tipoArquivoOptions
-                                                                    }
-                                                                    name={`arquivos[${index}].tipoArquivo`}
-                                                                    className="tipo-arquivo-select"
-                                                                    onChange={(
-                                                                        selectedOption
-                                                                    ) =>
-                                                                        setFieldValue(
-                                                                            `arquivos[${index}].tipoArquivo`,
-                                                                            selectedOption.value
-                                                                        )
-                                                                    }
-                                                                    value={
-                                                                        tipoArquivoOptions.find(
-                                                                            (
-                                                                                option
-                                                                            ) =>
-                                                                                option.value ===
-                                                                                values
-                                                                                    .arquivos[
-                                                                                    index
-                                                                                ]
-                                                                                    .tipoArquivo
-                                                                        ) || ''
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        </>
-                                                    ) : (
-                                                        <div className="col-span-8">
-                                                            <Upload
-                                                                onFileRemove={
-                                                                    removeFile
-                                                                }
-                                                                onChange={(
-                                                                    files
-                                                                ) => {
-                                                                    // Atualize o arquivo no índice especificado
-                                                                    const updatedArquivos =
-                                                                        [
-                                                                            ...values.arquivos,
-                                                                        ]
-                                                                    updatedArquivos[
-                                                                        index
-                                                                    ] = {
-                                                                        arquivo:
-                                                                            files[0],
-                                                                        tipoArquivo:
-                                                                            '',
-                                                                    }
-                                                                    setFieldValue(
-                                                                        'arquivos',
-                                                                        updatedArquivos
-                                                                    )
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )
-                                        )}
-                                        {/* Botão "Adicionar Arquivo" */}
-                                        <div>
-                                            <Button
-                                                type="button"
-                                                onClick={() => {
-                                                    push({
-                                                        arquivo: null,
-                                                        tipoArquivo: '',
-                                                    })
-                                                }}
-                                                disabled={isSubmitting}
-                                            >
-                                                Adicionar Arquivo
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-                            </FieldArray>
-                        </FormItem>
-                        <Button variant="solid" type="submit" size="sm">
-                            Enviar
-                        </Button>
-                    </FormContainer>
-                </Form>
-            )}
-        </Formik>
-    )
+          <div className="sm:col-span-2">
+            <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
+              Email
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autoComplete="email"
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
+              Estado e cidade
+            </label>
+            <div className="relative mt-2.5">
+              <div className="absolute inset-y-0 left-0 flex items-center">
+                <label htmlFor="country" className="sr-only">
+                  Country
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  className="h-full rounded-md border-0 bg-transparent bg-none py-0 pl-4 pr-90 text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm"
+                >
+                  <option>US</option>
+                  <option>CA</option>
+                  <option>EU</option>
+                </select>
+ 
+              </div>
+              <input
+                type="tel"
+                name="phone-number"
+                id="phone-number"
+                autoComplete="tel"
+                className="block w-full rounded-md border-0 px-3.5 py-2 pl-20 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
+              Message
+            </label>
+            <div className="mt-2.5">
+              <textarea
+                name="message"
+                id="message"
+                rows={4}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                defaultValue={''}
+              />
+            </div>
+          </div>
+          <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2">
+            <div className="flex h-6 items-center">
+              <Switch
+                checked={agreed}
+                onChange={setAgreed}
+                className={classNames(
+                  agreed ? 'bg-blue-600' : 'bg-gray-200',
+                  'flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                )}
+              >
+                <span className="sr-only">Concordar com termos</span>
+                <span
+                  aria-hidden="true"
+                  className={classNames(
+                    agreed ? 'translate-x-3.5' : 'translate-x-0',
+                    'h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out'
+                  )}
+                />
+              </Switch>
+            </div>
+            <Switch.Label className="text-sm leading-6 text-gray-600">
+              Ao selecionar este campo, você concorda com nossos{' '}
+              <a href="#" className="font-semibold text-blue-600">
+                termos de privacidade
+              </a>
+              .
+            </Switch.Label>
+          </Switch.Group>
+        </div>
+        <div className="mt-10">
+          <button
+            type="submit"
+            className="block w-full rounded-md bg-blue-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          >
+            Enviar Candidatura
+          </button>
+        </div>
+      </form>
+    </div>
+  )
 }
-
-export default CursoForm
