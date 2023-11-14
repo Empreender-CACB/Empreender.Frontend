@@ -70,7 +70,6 @@ const initialValues = {
     uf: '',
     cidade: '',
     email: '',
-    turma: '',
     arquivos: [{ arquivo: null, tipoArquivo: null }],
 }
 
@@ -121,33 +120,28 @@ function CursoForm() {
             // validationSchema={validationSchema}
             onSubmit={(values) => {
                 console.log(values)
-                //     const formData = new FormData()
-                //     values.arquivo.forEach((file) => {
-                //         formData.append('files', file)
-                //     })
-
-                //     formData.append('arquivo', values.arquivo)
-                //     formData.append('nome', values.nome)
-                //     formData.append('cpf', values.cpf)
-                //     formData.append('uf', values.uf.label)
-                //     formData.append('cidade', values.cidade.label)
-                //     formData.append('email', values.email)
-                //     formData.append('turma', values.turma)
-
-                //     axios({
-                //         method: 'post',
-                //         url: `${import.meta.env.VITE_API_URL}/candidaturas`,
-                //         data: formData,
-                //         headers: {
-                //             'Content-Type': 'multipart/form-data',
-                //         },
-                //     })
-                //         .then((response) => {
-                //             console.log('Resposta do servidor:', response.data)
-                //         })
-                //         .catch((error) => {
-                //             console.error('Erro ao enviar formulário:', error)
-                //         })
+                const formData = new FormData()
+                formData.append('arquivos', values.arquivos)
+                formData.append('nome', values.nome)
+                formData.append('cpf', values.cpf)
+                formData.append('uf', values.uf)
+                formData.append('cidade', values.cidade)
+                formData.append('email', values.email)
+                console.log('formData',formData)
+                axios({
+                    method: 'post',
+                    url: `${import.meta.env.VITE_API_URL}/candidaturas`,
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                })
+                    .then((response) => {
+                        console.log('Resposta do servidor:', response.data)
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao enviar formulário:', error)
+                    })
             }}
         >
             {({ values, setFieldValue, isSubmitting }) => (
@@ -252,33 +246,103 @@ function CursoForm() {
                             }}
                         /> */}
 
-                        {/* Campos de upload de arquivo dinâmicos */}
-                        <FieldArray name="arquivos">
-                            {({ push, remove }) => (
-                                <div>
-                                    {values.arquivos.map((arquivo, index) => (
-                                        <div
-                                            key={index}
-                                            className="file-upload-container flex justify-between"
-                                        >
-                                            {arquivo.arquivo ? (
-                                                <div className="flex items-center">
-                                                    <div className="file-item-container">
-                                                        {/* FileItem */}
-                                                        <FileItem
-                                                            key={
-                                                                arquivo.arquivo
-                                                                    .name +
-                                                                index
-                                                            }
-                                                            file={
-                                                                arquivo.arquivo
-                                                            }
-                                                        >
-                                                            <CloseButton
-                                                                className="upload-file-remove"
-                                                                onClick={() => {
-                                                                    // Remova o arquivo e o tipo do arquivo
+                        <FormItem asterisk label="Arquivos" htmlFor="arquivos">
+                            {/* Campos de upload de arquivo dinâmicos */}
+                            <FieldArray name="arquivos">
+                                {({ push, remove }) => (
+                                    <div>
+                                        {values.arquivos.map(
+                                            (arquivo, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="file-upload-container grid grid-cols-12 gap-4 flex items-center"
+                                                >
+                                                    {arquivo.arquivo ? (
+                                                        <>
+                                                            <div className="col-span-8">
+                                                                <div className="file-item-container">
+                                                                    {/* FileItem */}
+                                                                    <FileItem
+                                                                        key={
+                                                                            arquivo
+                                                                                .arquivo
+                                                                                .name +
+                                                                            index
+                                                                        }
+                                                                        file={
+                                                                            arquivo.arquivo
+                                                                        }
+                                                                    >
+                                                                        <CloseButton
+                                                                            className="upload-file-remove"
+                                                                            onClick={() => {
+                                                                                // Remova o arquivo e o tipo do arquivo
+                                                                                const updatedArquivos =
+                                                                                    [
+                                                                                        ...values.arquivos,
+                                                                                    ]
+                                                                                updatedArquivos[
+                                                                                    index
+                                                                                ] =
+                                                                                    {
+                                                                                        arquivo:
+                                                                                            null,
+                                                                                        tipoArquivo:
+                                                                                            '',
+                                                                                    }
+                                                                                setFieldValue(
+                                                                                    'arquivos',
+                                                                                    updatedArquivos
+                                                                                )
+                                                                            }}
+                                                                        />
+                                                                    </FileItem>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-span-4">
+                                                                <Field
+                                                                    component={
+                                                                        Select
+                                                                    }
+                                                                    options={
+                                                                        tipoArquivoOptions
+                                                                    }
+                                                                    name={`arquivos[${index}].tipoArquivo`}
+                                                                    className="tipo-arquivo-select"
+                                                                    onChange={(
+                                                                        selectedOption
+                                                                    ) =>
+                                                                        setFieldValue(
+                                                                            `arquivos[${index}].tipoArquivo`,
+                                                                            selectedOption.value
+                                                                        )
+                                                                    }
+                                                                    value={
+                                                                        tipoArquivoOptions.find(
+                                                                            (
+                                                                                option
+                                                                            ) =>
+                                                                                option.value ===
+                                                                                values
+                                                                                    .arquivos[
+                                                                                    index
+                                                                                ]
+                                                                                    .tipoArquivo
+                                                                        ) || ''
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <div className="col-span-8">
+                                                            <Upload
+                                                                onFileRemove={
+                                                                    removeFile
+                                                                }
+                                                                onChange={(
+                                                                    files
+                                                                ) => {
+                                                                    // Atualize o arquivo no índice especificado
                                                                     const updatedArquivos =
                                                                         [
                                                                             ...values.arquivos,
@@ -287,7 +351,7 @@ function CursoForm() {
                                                                         index
                                                                     ] = {
                                                                         arquivo:
-                                                                            null,
+                                                                            files[0],
                                                                         tipoArquivo:
                                                                             '',
                                                                     }
@@ -297,72 +361,30 @@ function CursoForm() {
                                                                     )
                                                                 }}
                                                             />
-                                                        </FileItem>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                    <Field
-                                                        component={Select}
-                                                        options={tipoArquivoOptions}
-                                                        name={`arquivos[${index}].tipoArquivo`}
-                                                        className="tipo-arquivo-select"
-                                                        onChange={(option) => {
-                                                            // Atualize o tipo de arquivo no índice especificado
-                                                            const updatedArquivos = [...values.arquivos];
-                                                            updatedArquivos[index].tipoArquivo = option.value;
-                                                            setFieldValue(`arquivos[${index}].tipoArquivo`, option.value);
-                                                        }}
-                                                        value={arquivo.tipoArquivo}
-                                                    />
-                                                    </div>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            ) : (
-                                                <div className="flex items-center">
-                                                    <Upload
-                                                        onFileRemove={
-                                                            removeFile
-                                                        }
-                                                        onChange={(files) => {
-                                                            // Atualize o arquivo no índice especificado
-                                                            const updatedArquivos =
-                                                                [
-                                                                    ...values.arquivos,
-                                                                ]
-                                                            updatedArquivos[
-                                                                index
-                                                            ] = {
-                                                                arquivo:
-                                                                    files[0],
-                                                                tipoArquivo: '',
-                                                            }
-                                                            setFieldValue(
-                                                                'arquivos',
-                                                                updatedArquivos
-                                                            )
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
+                                            )
+                                        )}
+                                        {/* Botão "Adicionar Arquivo" */}
+                                        <div>
+                                            <Button
+                                                type="button"
+                                                onClick={() => {
+                                                    push({
+                                                        arquivo: null,
+                                                        tipoArquivo: '',
+                                                    })
+                                                }}
+                                                disabled={isSubmitting}
+                                            >
+                                                Adicionar Arquivo
+                                            </Button>
                                         </div>
-                                    ))}
-                                    {/* Botão "Adicionar Arquivo" */}
-                                    <div>
-                                        <Button
-                                            type="button"
-                                            onClick={() => {
-                                                push({
-                                                    arquivo: null,
-                                                    tipoArquivo: '',
-                                                })
-                                            }}
-                                            disabled={isSubmitting}
-                                        >
-                                            Adicionar Arquivo
-                                        </Button>
                                     </div>
-                                </div>
-                            )}
-                        </FieldArray>
-
+                                )}
+                            </FieldArray>
+                        </FormItem>
                         <Button variant="solid" type="submit" size="sm">
                             Enviar
                         </Button>
