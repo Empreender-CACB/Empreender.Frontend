@@ -11,7 +11,17 @@ const publicRoute: Routes = [
             pageContainerType: 'gutterless',
             footer: false,
         },
-    },    
+    },
+    {
+        key: 'curso',
+        path: `/curso-form`,
+        component: lazy(() => import('@/views/sistema/cursoform')),
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
