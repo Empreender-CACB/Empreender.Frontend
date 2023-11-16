@@ -92,6 +92,16 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/adminutils/acompanhamento-geral/quadro/:idquadro`,
         component: lazy(() => import('@/views/sistema/adminutils/acompanhamento-geral/quadro')),
     },
+    {
+        key: 'sistema.inscricao',
+        path: `${APP_PREFIX_PATH}/inscricao-curso`,
+        component: lazy(() => import('@/views/sistema/inscricao/index')),
+
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default appsRoute

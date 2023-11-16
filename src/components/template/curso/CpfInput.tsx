@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Input from '@/components/ui/Input'; 
+import useAuth from '@/utils/hooks/useAuth'
+import { setUser, signInSuccess, useAppDispatch, useAppSelector } from '@/store'
 
 function formataCPF(cpf) {
   cpf = cpf.replace(/\D/g, '');
@@ -51,7 +53,9 @@ interface CpfInputProps {
 }
 
 function CpfInput({ isValid, setIsValid }: CpfInputProps) {
-  const [cpf, setCPF] = useState('');
+  const { signIn, signUp, signOut } = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  const [cpf, setCPF] = useState(user ? user.nucpf : '');
 
   function checaCPF(e: React.ChangeEvent<HTMLInputElement>) {
     const formattedCPF = formataCPF(e.target.value);

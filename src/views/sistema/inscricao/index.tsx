@@ -6,17 +6,16 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh', 
-  },
-  formContainer: {
-    width: '50%',
+    height: '100vh',
+    width: '40%',
+    margin: '0 auto',
   },
 };
 
 const CursoFormulario = () => {
   return (
     <div style={styles.container}>
-      <Container style={styles.formContainer}>
+      <Container>
         <CursoForm />
       </Container>
     </div>

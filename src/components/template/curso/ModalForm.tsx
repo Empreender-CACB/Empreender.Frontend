@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import CursoForm from './CursoForm';
+import CursoForm from './CursoNucleoForm';
 
 
 interface ModalFormProps {

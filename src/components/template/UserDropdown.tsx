@@ -5,10 +5,11 @@ import useAuth from '@/utils/hooks/useAuth'
 import { setUser, signInSuccess, useAppDispatch, useAppSelector } from '@/store'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { HiOutlineUser, HiOutlineCog, HiOutlineLogout } from 'react-icons/hi'
+import { HiOutlineUser, HiOutlineCog, HiOutlineLogout, HiOutlinePencil } from 'react-icons/hi'
 import type { CommonProps } from '@/@types/common'
 import { GoSignIn } from 'react-icons/go'
 import axios from 'axios'
+import { APP_PREFIX_PATH } from '@/constants/route.constant'
 
 type DropdownList = {
     label: string
@@ -26,6 +27,11 @@ const dropdownItemList: DropdownList[] = [
         label: 'Preferências',
         path: '/app/account/settings/profile',
         icon: <HiOutlineCog />,
+    },
+    {
+        label: 'Inscrição para curso',
+        path: `${APP_PREFIX_PATH}/inscricao-curso`, 
+        icon: <HiOutlinePencil/>
     },
 ]
 

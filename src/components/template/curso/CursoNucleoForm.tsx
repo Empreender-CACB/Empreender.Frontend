@@ -8,6 +8,8 @@ import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared'
 import CpfInput from './CpfInput';
 import HeaderLogo from '@/components/template/HeaderLogo';
+import useAuth from '@/utils/hooks/useAuth'
+import { setUser, signInSuccess, useAppDispatch, useAppSelector } from '@/store'
 
 const ufOptions = [
   { value: 'AC', label: 'Acre' },
@@ -46,10 +48,13 @@ const turmaOptions = [
 
 
 function CursoForm() {
+  const { signIn, signUp, signOut } = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  const [nome, setNome] = useState(user ? user.nmusuario : '');
   const [estadoSelecionado, setEstadoSelecionado] = useState('');
   const [cidade, setCidade] = useState([]);
   const [isValid, setIsValid] = useState(true);
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState(user ? user.dsemail : '');
   const [emailIsValid, setEmailIsValid] = useState(true);
 
 
@@ -108,7 +113,7 @@ function CursoForm() {
       <FormContainer layout="vertical" labelWidth={100}>
         <form>
           <FormItem label="Nome completo" asterisk htmlFor="nome" invalid>
-            <Input type="text" id="nome" name="nome" required size="sm" />
+            <Input type="text" id="nome" name="nome" required size="sm" value={nome}/>
           </FormItem>
 
           <FormItem label="UF" asterisk htmlFor="uf" invalid>
