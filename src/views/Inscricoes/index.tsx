@@ -200,7 +200,7 @@ export default function Example() {
                         Faça parte da equipe <span className='underline decoration-2 decoration-sky-500 underline-offset-4'>EMPREENDER</span>
                     </p>
                     <a  target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="text-base font-semibold leading-7 mt-10 text-black">
-                     📕 edital da seleção <span aria-hidden="true">→</span>
+                     📕 Edital <span aria-hidden="true">→</span>
                             </a>
 
                 </div>                    
@@ -329,9 +329,10 @@ export default function Example() {
 
                             {/* Select */}
                             <select name="type_document" className="border p-2 rounded-md">
-                                <option value="tipo1">Currículo</option>
-                                <option value="tipo2">Documento </option>
-                                <option value="tipo3">Tipo 3</option>
+                                <option value="Currículo profissional">Currículo Profissional</option>
+                                <option value="Formação acadêmica">Formação acadêmica</option>
+                                <option value="Experiência profissional">Experiência profissional</option>
+                                <option value="Cursos realizados">Cursos realizados</option>
                             </select>
                             {inputs.length > 1 && (
                                 <Button

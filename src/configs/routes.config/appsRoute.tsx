@@ -88,6 +88,16 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/adminutils/acompanhamento-geral/quadro/:idquadro`,
         component: lazy(() => import('@/views/sistema/adminutils/acompanhamento-geral/quadro')),
     },
+    {
+        key: 'sistema.cursoform',
+        path: `${APP_PREFIX_PATH}/curso-form`,
+        component: lazy(() => import('@/views/sistema/cursoform/index')),
+
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default appsRoute

@@ -1,5 +1,5 @@
 import { Container } from '@/components/shared';
-import CursoForm from '@/components/template/curso/CursoForm';
+import CursoForm from '@/components/template/curso/CursoNucleoForm';
 
 const styles = {
   container: {
