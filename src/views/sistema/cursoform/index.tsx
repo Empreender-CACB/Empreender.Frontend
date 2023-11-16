@@ -1,5 +1,5 @@
 import { Container } from '@/components/shared';
-import CursoForm from '@/components/template/curso/CursoNucleoForm';
+import CursoNucleoForm from '@/components/template/curso/CursoNucleoForm';
 
 const styles = {
   container: {
@@ -12,14 +12,14 @@ const styles = {
   },
 };
 
-const CursoFormulario = () => {
+const CursoNucleoFormulario = () => {
   return (
     <div style={styles.container}>
       <Container>
-        <CursoForm />
+        <CursoNucleoForm />
       </Container>
     </div>
   );
 }
 
-export default CursoFormulario;
+export default CursoNucleoFormulario;

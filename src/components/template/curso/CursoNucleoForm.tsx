@@ -47,7 +47,7 @@ const turmaOptions = [
 ]
 
 
-function CursoForm() {
+function CursoNucleoForm() {
   const { signIn, signUp, signOut } = useAuth();
   const user = useAppSelector((state) => state.auth.user);
   const [nome, setNome] = useState(user ? user.nmusuario : '');
@@ -175,4 +175,4 @@ function CursoForm() {
   );
 }
 
-export default CursoForm;
+export default CursoNucleoForm;

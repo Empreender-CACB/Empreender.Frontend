@@ -30,7 +30,7 @@ const dropdownItemList: DropdownList[] = [
     },
     {
         label: 'Inscrição para curso',
-        path: `${APP_PREFIX_PATH}/inscricao-curso`, 
+        path: `${APP_PREFIX_PATH}/curso-form`, 
         icon: <HiOutlinePencil/>
     },
 ]
