@@ -17,10 +17,6 @@ const appsRoute: Routes = [
         key: 'sistemaEmpresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:idempresa`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
-
-        // meta: {
-        //     pageContainerType: 'gutterless',
-        // },
     },
     {
         key: 'sistemaNucleos.nucleos',

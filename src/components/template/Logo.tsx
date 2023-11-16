@@ -8,6 +8,7 @@ interface LogoProps extends CommonProps {
     mode?: 'light' | 'dark'
     imgClass?: string
     logoWidth?: number | string
+    logoPath?: string
 }
 
 const LOGO_SRC_PATH = '/img/logo/'
@@ -20,6 +21,7 @@ const Logo = (props: LogoProps) => {
         imgClass,
         style,
         logoWidth = 'auto',
+        logoPath = 'logo-cacb.png'
     } = props
 
     const layoutType = useAppSelector((state) => state.theme.layout.type)
@@ -50,7 +52,7 @@ const Logo = (props: LogoProps) => {
             <img
                 className={imgClass}
                 // src={`${LOGO_SRC_PATH}logo-${mode}-${type}.png`}
-                src={`${LOGO_SRC_PATH}logo-cacb.png`}
+                src={`${LOGO_SRC_PATH}${logoPath}`}
                 alt={`${APP_NAME} logo`}
             />
         </div>
