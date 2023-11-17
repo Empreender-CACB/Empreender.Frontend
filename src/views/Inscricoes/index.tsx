@@ -6,7 +6,8 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Button from '@/components/ui/Button'
 import { HiOutlinePlus } from 'react-icons/hi'
-import { BsFilePdf } from 'react-icons/bs'
+
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -89,9 +90,15 @@ export default function Example() {
 
 
     const handleDeleteInput = (index) => {
+
+        
         const newArray = [...inputs];
         newArray.splice(index, 1);
         setInputs(newArray);
+        index.preventDefault()
+        index.stopPropagation()
+       // index.stopImmediatePropagation()
+        return false
     };
 
     const toastNotification = (
@@ -104,7 +111,6 @@ export default function Example() {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-
 
         const formData = new FormData();
         formData.append('nome', event.target.nome.value);
@@ -177,7 +183,7 @@ export default function Example() {
             </div>
             {success && (<SuccessComponent />)}
 
-            <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+            <div className="isolate bg-white px-6 py-10 sm:py-10 lg:px-8">
 
                 <div
                     className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
@@ -205,7 +211,7 @@ export default function Example() {
 
                 </div>                    
                 
-                <form onSubmit={handleSubmit} action="#" method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
+                <form onSubmit={handleSubmit} id="form" action="#" method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
 
 
 <div className="mb-10" ><ErrorComponent errors={errors} /></div>
@@ -269,7 +275,23 @@ export default function Example() {
             />
         </div>
     </div>
-    <div className="sm:col-span-2">
+    <div>
+        <label htmlFor="sexo" className="block text-sm font-semibold leading-6 text-gray-900">
+            Sexo
+        </label>
+        <div className="mt-2.5">
+        <select
+                    id="uf"
+                    name="uf"
+
+                    className='block w-full rounded-md border-0 px-3.5 py-2 pl-20 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6'
+                >
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+        </div>
+    </div>
+    <div className="">
         <label htmlFor="phone-number" className="block text-sm font-semibold leading-6 text-gray-900">
             Estado e cidade
         </label>
@@ -281,7 +303,7 @@ export default function Example() {
                 <select
                     id="uf"
                     name="uf"
-                    className="h-full rounded-md border-0 bg-transparent bg-none py-0 pl-4 pr-90 text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm"
+                    className="h-full rounded-md border-r-2 bg-transparent bg-none py-0 pl-4 pr-90 text-gray-400 sm:text-sm"
                 >
                     <option>DF</option>
                     <option>BA</option>
@@ -294,21 +316,7 @@ export default function Example() {
                 name="cidade"
                 id="cidade"
                 autoComplete="cidade"
-                className="block w-full rounded-md border-0 px-3.5 py-2 pl-20 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-            />
-        </div>
-    </div>
-    <div className="sm:col-span-2">
-        <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-            Informações adicionais
-        </label>
-        <div className="mt-2.5">
-            <textarea
-                name="message"
-                id="message"
-                rows={4}
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                defaultValue={''}
+                className="block w-full rounded-md border-0 px-3.5 py-2 pl-20 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"
             />
         </div>
     </div>
@@ -326,7 +334,7 @@ export default function Example() {
                             <label className="flex-shrink-0 bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
                                 <input type="file" name="files" className="w-50" />
                             </label>
-
+<br />
                             {/* Select */}
                             <select name="type_document" className="border p-2 rounded-md">
                                 <option value="Currículo profissional">Currículo Profissional</option>
@@ -335,14 +343,11 @@ export default function Example() {
                                 <option value="Cursos realizados">Cursos realizados</option>
                             </select>
                             {inputs.length > 1 && (
-                                <Button
-                                    variant="solid"
-                                    color="red-400"
-                                    shape="circle"
-                                    size="xs"
-                                    onClick={() => handleDeleteInput(index)}
-                                    icon={<CloseIcon />}
-                                />)}
+                                
+                                <span onClick={() => handleDeleteInput(index)}>
+                                    <CloseIcon />
+                                </span>
+                               )}
 
                         </div>
                         {index === inputs.length - 1 && (
@@ -377,10 +382,10 @@ export default function Example() {
             </Switch>
         </div>
         <Switch.Label className="text-sm leading-6 text-gray-600">
-            Ao selecionar este campo, você concorda com nossos{' '}
-            <a href="#" className="font-semibold text-blue-600">
+            Ao selecionar este campo, você concorda com a manutenção dos seus dados na Plataforma do Empreender.{' '}
+            {/* <a href="#" className="font-semibold text-blue-600">
                 termos de privacidade
-            </a>
+            </a> */}
             .
         </Switch.Label>
     </Switch.Group>
@@ -390,7 +395,7 @@ export default function Example() {
         type="submit"
         className="block w-full rounded-md bg-blue-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-        Enviar Candidatura
+        Enviar inscrição
     </button>
 </div>
 </form>
