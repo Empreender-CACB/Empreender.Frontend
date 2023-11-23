@@ -22,6 +22,16 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'cadastra',
+        path: `/cadastra-empresa`,
+        component: lazy(() => import('@/views/sistema/sebrae')),
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
