@@ -7,7 +7,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    width: '40%',
+    width: '100%',
     margin: '0 auto',
   },
 };
@@ -15,7 +15,21 @@ const styles = {
 const CadastraEmpresaFormulario = () => {
   return (
     <div style={styles.container}>
-      <Container>
+      <style>
+        {`
+          @media (min-width: 768px) {
+            #container {
+              width: 40%;
+            }
+          }
+          @media (max-width: 767px) {
+            #container {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+      <Container id="container">
         <CadastraEmpresa />
       </Container>
     </div>

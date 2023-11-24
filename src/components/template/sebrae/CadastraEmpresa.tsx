@@ -62,49 +62,73 @@ const ufMapping: UfMapping = {
     'TO': 'Tocantins',
   };
 
-function CadastraEmpresa() {
-  const [estadoSelecionado, setEstadoSelecionado] = useState('');
-  const [cidade, setCidade] = useState([]);
-  const [isValid, setIsValid] = useState(true);
-  const [cnpj, setCnpj] = useState('');
-  const [empresaData, setEmpresaData] = useState({});
-  const [email, setEmail] = useState('');
-  const [emailIsValid, setEmailIsValid] = useState(true);
-
-
-  const validaEmail = (value) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    return emailRegex.test(value);
-  };
-
-  const checaEmail = (event) => {
-    const newValue = event.target.value;
-    setEmail(newValue);
-    setEmailIsValid(validaEmail(newValue));
-  };
-
-
-  const handleCnpjChange = async (event) => {
-    const newCnpj = event.target.value.replace(/\D/g, '');
-    const isValidCnpj = validaCNPJ(newCnpj);
-    setIsValid(isValidCnpj);
+  function CadastraEmpresa() {
+    const [estadoSelecionado, setEstadoSelecionado] = useState('');
+    const [cidade, setCidade] = useState([]);
+    const [isValid, setIsValid] = useState(true);
+    const [cnpj, setCnpj] = useState('');
+    const [empresaData, setEmpresaData] = useState({});
+    const [email, setEmail] = useState('');
+    const [emailIsValid, setEmailIsValid] = useState(true);
+  
+    const validaEmail = (value) => {
+      const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+      return emailRegex.test(value);
+    };
+  
+    const checaEmail = (event) => {
+      const newValue = event.target.value;
+      setEmail(newValue);
+      setEmailIsValid(validaEmail(newValue));
+    };
+  
+    const handleCnpjChange = async (event) => {
+      const newCnpj = event.target.value.replace(/\D/g, '');
+      const isValidCnpj = validaCNPJ(newCnpj);
+      setIsValid(isValidCnpj);
+  
+      if (isValidCnpj) {
+        try {
+          const response = await fetch(`http://localhost:3000/rfb/info-empresa/?cnpj=${newCnpj}`, { method: 'GET' });
+          if (response.ok) {
+            const data = await response.json();
+            setEmpresaData(data[0]);
+          } else {
+            console.error('Erro ao obter os dados da empresa:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Erro ao obter os dados da empresa:', error);
+        }
+      }
+      setCnpj(newCnpj);
+    };
+  
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
     
-    if (isValidCnpj) {
+      const formData = new FormData(event.currentTarget);
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+      console.log(formData)
       try {
-        const response = await fetch(`http://localhost:3000/rfb/info-empresa/?cnpj=${newCnpj}`, {method: 'GET'});
+        const response = await fetch('http://localhost:3000/empresas/cadastra', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+  
         if (response.ok) {
-          const data = await response.json();
-          setEmpresaData(data[0]);
+          // a parada de ir pra página do sebrae fica aqui
         } else {
-          console.error('Erro ao obter os dados da empresa:', response.statusText);
+          console.error('Erro ao enviar os dados:', response.statusText);
         }
       } catch (error) {
-        console.error('Erro ao obter os dados da empresa:', error);
+        console.error('Erro ao enviar os dados:', error);
       }
-    }
-    const formattedCnpj = formataCNPJ(newCnpj);
-    setCnpj(formattedCnpj);
-  };
+    };
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -133,7 +157,7 @@ function CadastraEmpresa() {
         </div>
       </div>
       <FormContainer layout="vertical" labelWidth={100}>
-        <form>
+      <form onSubmit={handleSubmit}>
           <FormItem label="Nome completo" asterisk htmlFor="nome" invalid>
             <Input type="text" id="nome" name="nome" required size="sm" />
           </FormItem>
@@ -211,7 +235,7 @@ function CadastraEmpresa() {
           </FormItem>
           <div style={{ display: 'flex', gap: '100px' }}>
 
-          <FormItem label="UF da Empresa" htmlFor="ufEmpresa" invalid>
+          <FormItem label="UF" htmlFor="ufEmpresa" invalid>
           <Input
               type="text"
               id="ufEmpresa"
@@ -222,7 +246,7 @@ function CadastraEmpresa() {
             />
           </FormItem>
 
-          <FormItem label="Cidade da Empresa" htmlFor="cidadeEmpresa" invalid>
+          <FormItem label="Cidade" htmlFor="cidadeEmpresa" invalid>
             <Input
               type="text"
               id="cidadeEmpresa"
