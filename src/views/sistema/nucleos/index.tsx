@@ -23,7 +23,7 @@ const activeValue = [
 ]
 
 const columns = [
-    { name: 'idnucleo', header: 'ID', type: 'string', value: '' },
+    { name: 'idnucleo', header: 'ID', type: 'string', value: '', defaultFlex: 0.3, },
     {
         name: 'iduf', header: 'UF', type: 'select',
         value: '',
@@ -32,7 +32,8 @@ const columns = [
             dataSource: estadosBrasileiros.map(state => {
                 return { id: state.sigla, label: state.sigla }
             }),
-        }
+        },
+        defaultFlex: 0.3,
     },
     {
         name: 'nmcidade', header: 'Cidade', type: 'string'
@@ -54,11 +55,12 @@ const columns = [
         name: 'dssegmento',
         header: 'Segmento',
         type: 'string',
+        defaultFlex: 1,
     },
     {
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
-        defaultFlex: 1,
+        defaultFlex: 0.5,
         dateFormat: 'DD/MM/YYYY',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
@@ -88,6 +90,7 @@ const columns = [
                <TagActiveInative value={value} activeText="S" />
             </div>
         ),
+        defaultFlex: 0.4,
     },
 ]
 
