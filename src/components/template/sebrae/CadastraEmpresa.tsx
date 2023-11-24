@@ -106,11 +106,8 @@ const ufMapping: UfMapping = {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
     
-      const formData = new FormData(event.currentTarget);
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-      console.log(formData)
+      const formData = new FormData()
+      formData.append()
       try {
         const response = await fetch('http://localhost:3000/empresas/cadastra', {
           method: 'POST',
