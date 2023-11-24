@@ -23,13 +23,10 @@ const activeValue = [
 ]
 
 const columns = [
-<<<<<<< Updated upstream
-    { name: 'idnucleo', header: 'ID', type: 'string' },
-=======
     { name: 'idnucleo', header: 'ID', type: 'string', value: '', defaultFlex: 0.3, },
->>>>>>> Stashed changes
     {
         name: 'iduf', header: 'UF', type: 'select',
+        value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: estadosBrasileiros.map(state => {

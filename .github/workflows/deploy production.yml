@@ -1,8 +1,8 @@
-name: Deploy to Test Server
+name: Deploy to Production Server
 
 on:
   push:
-    branches: [ teste ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,18 +17,18 @@ jobs:
       with:
         node-version: '16.x'
     - name: Creating .env file
-      run: echo "VITE_API_URL=https://api.cacbempreenderapp.org.br" > .env && echo "VITE_PHP_URL=https://teste.cacbempreenderapp.org.br" >> .env
+      run: echo "VITE_API_URL=https://back.cacbempreenderapp.org.br" > .env && echo "VITE_PHP_URL=https://www.empreender.org.br" >> .env
     - name: Install npm dependencies
       run: npm install
     - name: Run build task
       run: npm run build --if-present
-    - name: Deploy to Server
+    - name: Deploy to  Production Server
       uses: easingthemes/ssh-deploy@main
       env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY_PRODUCTION }}
           ARGS: "-rlgoDzvc -i --delete"
           SOURCE: "dist/"
-          REMOTE_HOST: "167.99.157.110"
+          REMOTE_HOST: "67.207.91.26"
           REMOTE_USER: "root"
           TARGET: "/usr/share/nginx/html/Empreender.Frontend"
           EXCLUDE: "/dist/, /node_modules/"
