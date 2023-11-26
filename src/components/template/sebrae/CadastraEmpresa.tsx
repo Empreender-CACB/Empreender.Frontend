@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import FormItem from '@/components/ui/Form/FormItem';
 import FormContainer from '@/components/ui/Form/FormContainer';
 import Input from '@/components/ui/Input';
-import HeaderLogo from '@/components/template/HeaderLogo';
-import HeaderForm from '../curso/HeaderForm';
 import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared';
-import { method } from 'lodash';
 import { formataCNPJ, validaCNPJ } from './CnpjInput';
 import axios from 'axios';
 
@@ -65,8 +62,6 @@ const ufMapping: UfMapping = {
 };
 
 function CadastraEmpresa() {
-  const [estadoSelecionado, setEstadoSelecionado] = useState('');
-  const [cidade, setCidade] = useState([]);
   const [isValid, setIsValid] = useState(true);
   const [cnpj, setCnpj] = useState('');
   const [empresaData, setEmpresaData] = useState({});
@@ -76,12 +71,6 @@ function CadastraEmpresa() {
   const validaEmail = (value) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     return emailRegex.test(value);
-  };
-
-  const checaEmail = (event) => {
-    const newValue = event.target.value;
-    setEmail(newValue);
-    setEmailIsValid(validaEmail(newValue));
   };
 
   const handleCnpjChange = async (event) => {
@@ -107,13 +96,15 @@ function CadastraEmpresa() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append('nome', event.target.nome.value)
-    formData.append('cnpj', event.target.cnpj.value)
-    formData.append('email', event.target.email.value)
-    formData.append('ano_nascimento', event.target.nascimento.value)
-    formData.append('sexo', event.target.sexo.value)
-    console.log(formData)
+
+    const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj']
+
+    const formData = new FormData()
+    for (const field of fields) {
+      if (event.target[field] === undefined) continue;
+      formData.append(field, event.target[field].value);
+      console.log(event.target[field].value)
+    }
 
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/empresas/cadastra`, formData, {
@@ -121,12 +112,8 @@ function CadastraEmpresa() {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      // Handle success, e.g., redirect or show a success message
     } catch (error) {
       console.error('Error submitting form:', error);
-
-      // Handle error, e.g., show an error message to the user
     }
   };
 
@@ -259,18 +246,18 @@ function CadastraEmpresa() {
                 readOnly
               />
             </FormItem>
-            </div>
+          </div>
 
 
-            <div className='flex center items-center mt-5'>
-              <Button variant="solid" type="submit" size="sm" disabled={!emailIsValid || !isValid}>
-                Enviar
-              </Button>
+          <div className='flex center items-center mt-5'>
+            <Button variant="solid" type="submit" size="sm" disabled={!emailIsValid || !isValid}>
+              Enviar
+            </Button>
 
-              <span className='ml-5'>
-                Ao clicar em enviar você será redirecionado para a plataforma do Sebrae
-              </span>
-            </div>
+            <span className='ml-5'>
+              Ao clicar em enviar você será redirecionado para a plataforma do Sebrae
+            </span>
+          </div>
         </form>
       </FormContainer>
     </AdaptableCard>
