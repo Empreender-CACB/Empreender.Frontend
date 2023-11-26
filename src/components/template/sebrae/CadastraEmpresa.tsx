@@ -123,17 +123,17 @@ function CadastraEmpresa() {
       <div className="header-container">
         <div className="flex items-center space-x-4">
           <div className="mt-10 mx-auto center max-w-7xl pb-12 px-6">
-            <div className="grid grid-cols-2 gap-8 md:grid-cols-6 lg:grid-cols-4">
-              <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+            <div className="grid grid-cols-2 gap-8">
+            <div className="col-span-2 flex justify-center sm:col-span-1">
                 <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" />
               </div>
-              <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <div className="col-span-2 flex justify-center sm:col-span-1">
                 <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" />
               </div>
-              <div className="col-span-1 flex justify-center md:col-span-2 lg:col-span-1">
+              <div className="col-span-2 flex justify-center sm:col-span-1">
                 <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" />
               </div>
-              <div className="col-span-1 flex justify-center md:col-span-3 lg:col-span-1">
+              <div className="col-span-2 flex justify-center sm:col-span-1">
                 <img
                   className="h-12"
                   src="https://beta.cacbempreenderapp.org.br/img/logo/sebrae.svg"
@@ -150,34 +150,34 @@ function CadastraEmpresa() {
       <FormContainer layout="vertical" labelWidth={100}>
         <form onSubmit={handleSubmit}>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-8'>
-            <FormItem className='sm:col-span-2' label="Nome completo" asterisk htmlFor="nome" invalid>
-              <Input type="text" id="nome" name="nome" required size="sm" />
+            <FormItem invalid asterisk className='sm:col-span-2' label="Nome completo" htmlFor="nome" >
+              <Input required type="text" id="nome" name="nome" size="sm" />
             </FormItem>
 
-            <FormItem label="Sexo" asterisk htmlFor="sexo" invalid>
+            <FormItem invalid asterisk label="Sexo" htmlFor="sexo" >
               <Select
+                required
                 name='sexo'
                 placeholder="Selecione"
                 options={sexoOptions}
-                required
                 size="sm"
               />
             </FormItem>
 
-            <FormItem label="Ano de nascimento" asterisk htmlFor="nascimento" invalid>
-              <Input type='number' id='nascimento' name='nascimento' required
+            <FormItem asterisk invalid label="Ano de nascimento"  htmlFor="nascimento" >
+              <Input required type='number' id='nascimento' name='nascimento' 
                 placeholder="Digite seu ano de nascimento"
                 size="sm"
               />
             </FormItem>
 
 
-            <FormItem className='sm:col-span-2' label="Email" asterisk htmlFor="email" invalid={!emailIsValid}>
+            <FormItem asterisk className='sm:col-span-2' label="Email" htmlFor="email" invalid={!emailIsValid}>
               <Input
+                required
                 type="email"
                 id="email"
                 name="email"
-                required
                 size="sm"
                 value={email}
                 onChange={(event) => {
@@ -189,12 +189,12 @@ function CadastraEmpresa() {
               {emailIsValid ? true : <span style={{ color: 'red' }}>Email inválido</span>}
             </FormItem>
 
-            <FormItem className='sm:col-span-2' label="CNPJ" asterisk htmlFor="cnpj" invalid={!isValid}>
+            <FormItem asterisk className='sm:col-span-2' label="CNPJ" htmlFor="cnpj" invalid={!isValid}>
               <Input
+                required
                 type="text"
                 id="cnpj"
                 name="cnpj"
-                required
                 size="sm"
                 value={cnpj}
                 onChange={handleCnpjChange}
@@ -203,47 +203,47 @@ function CadastraEmpresa() {
 
             </FormItem>
 
-            <FormItem label="Nome Fantasia" htmlFor="nomeFantasia" invalid>
+            <FormItem invalid label="Nome Fantasia" htmlFor="nomeFantasia">
               <Input
+                readOnly
                 type="text"
                 id="nomeFantasia"
                 name="nomeFantasia"
                 size="sm"
                 value={empresaData !== undefined ? empresaData.st_nome_fantasia : ''}
-                readOnly
               />
             </FormItem>
 
-            <FormItem label="Porte da Empresa" htmlFor="porteEmpresa" invalid>
+            <FormItem invalid label="Porte da Empresa" htmlFor="porteEmpresa">
               <Input
+                readOnly
                 type="text"
                 id="porteEmpresa"
                 name="porteEmpresa"
                 size="sm"
                 value={empresaData !== undefined ? porteMapping[empresaData.porte] : ''}
-                readOnly
               />
             </FormItem>
 
-            <FormItem label="UF" htmlFor="ufEmpresa" invalid>
+            <FormItem invalid label="UF" htmlFor="ufEmpresa">
               <Input
+                readOnly
                 type="text"
                 id="ufEmpresa"
                 name="ufEmpresa"
                 size="sm"
                 value={empresaData !== undefined ? ufMapping[empresaData.st_uf] : ''}
-                readOnly
               />
             </FormItem>
 
-            <FormItem label="Cidade" htmlFor="cidadeEmpresa" invalid>
+            <FormItem invalid label="Cidade" htmlFor="cidadeEmpresa">
               <Input
+                readOnly
                 type="text"
                 id="cidadeEmpresa"
                 name="cidadeEmpresa"
                 size="sm"
                 value={empresaData !== undefined ? empresaData.nmcidade : ''}
-                readOnly
               />
             </FormItem>
           </div>
