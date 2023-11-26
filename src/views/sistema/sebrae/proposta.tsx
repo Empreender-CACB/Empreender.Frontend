@@ -14,7 +14,7 @@ const styles = {
 
 const CadastraEmpresaFormulario = () => {
 
-  if(1===2) {
+  if(1===1) {
   
     return (
       <div className='flex justify-center items-center  sm:w-90'>
