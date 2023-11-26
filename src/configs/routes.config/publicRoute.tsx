@@ -28,7 +28,6 @@ const publicRoute: Routes = [
         component: lazy(() => import('@/views/sistema/sebrae')),
         meta: {
             layout: 'blank',
-            pageContainerType: 'gutterless',
             footer: false,
         },
     },
@@ -38,7 +37,6 @@ const publicRoute: Routes = [
         component: lazy(() => import('@/views/sistema/sebrae/proposta')),
         meta: {
             layout: 'blank',
-            pageContainerType: 'gutterless',
             footer: false,
         },
     },
