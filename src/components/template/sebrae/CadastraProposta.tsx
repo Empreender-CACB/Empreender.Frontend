@@ -65,13 +65,8 @@ function CadastraProposta() {
     const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState({});
-    const [email, setEmail] = useState('');
-    const [emailIsValid, setEmailIsValid] = useState(true);
 
-    const validaEmail = (value) => {
-        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-        return emailRegex.test(value);
-    };
+
 
     const handleCnpjChange = async (event) => {
         const newCnpj = event.target.value.replace(/\D/g, '');
@@ -80,7 +75,9 @@ function CadastraProposta() {
 
         if (isValidCnpj) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=34270694000107${newCnpj}`, { method: 'GET' });
+
+                // Usamos axios. Mudar
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`, { method: 'GET' });
                 if (response.ok) {
                     const data = await response.json();
                     setEmpresaData(data[0]);
@@ -94,7 +91,7 @@ function CadastraProposta() {
         setCnpj(newCnpj);
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
 
         const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj']
@@ -166,32 +163,46 @@ function CadastraProposta() {
                                 <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Nome Completo
                                 </label>
-                                <input type="text" id="nome" name="nome" required className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
+                                <input required type="text" id="nome" name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
                             </div>
                             <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="email" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Email
                                 </label>
-                                <input type="email" id="email" name="email" required className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
+                                <input required type="email" id="email" name="email" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
                             </div>
                             <div className="flex flex-col w-full col-span-2 sm:col-span-1">
-                                <label htmlFor="email" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
+                                <label htmlFor="sexo" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Sexo
                                 </label>
-                                <input type="email" id="email" name="email" required className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
-                            </div>
+                                <select required id="sexo" name="sexo" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent text-gray-500 dark:text-gray-400">
+                                    {/* <option selected disabled>Escolha uma das opções</option> */}
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                    <option value="PNI">Prefiro não informar</option>
+                                </select>                            </div>
                             <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="ano_nascimento" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Ano de Nascimento
                                 </label>
-                                <input type="number" id="ano_nascimento" name="ano_nascimento" required className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe apenas o ano de nascimento" />
+                                <input required type="number" id="ano_nascimento" name="ano_nascimento" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe apenas o ano de nascimento" />
                             </div>
 
                             <div className="flex flex-col w-full col-span-2 sm:col-span-2">
-                                <label htmlFor="ano_nascimento" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
+                                <label htmlFor="cnpj" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     CNPJ da empresa
                                 </label>
-                                <input type="text" id="cnpj" name="ano_nascimento" required className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe o cnpj da empresa" />
+                                {/* <input required type="text" id="cnpj" name="cnpj"  placeholder="Informe o cnpj da empresa" /> */}
+                                <Input
+                                    required
+                                    placeholder='Infome o CNPJ da empresa'
+                                    className='focus:border-blue-700 bg-transparent placeholder-gray-500 '
+                                    type="text"
+                                    id="cnpj"
+                                    name="cnpj"
+                                    value={cnpj}
+                                    onChange={handleCnpjChange}
+                                />
                             </div>
 
                         </div>
@@ -208,18 +219,18 @@ function CadastraProposta() {
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <div className="flex items-baseline">
                                 <span className="bg-teal-200 text-teal-800 text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
-                                    Porte Empresa
+                                   {porteMapping[empresaData.porte]}
                                 </span>
                                 <div className="ml-2 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                                   UF  &bull; Cidade
+                                    {empresaData.nmcidade}  &bull; {empresaData.st_uf}
                                 </div>
                             </div>
 
-                            <h4 className="mt-1 text-xl font-semibold uppercase leading-tight truncate">{'Nome da Empresa'}</h4>
+                            <h4 className="mt-1 text-xl font-semibold uppercase leading-tight truncate">{empresaData.razao_social}</h4>
 
                             <div className="mt-1">
-                                {'cnpj'}
-                            
+                                <span className='text-bold'>Nome fantasia: </span>{empresaData.st_nome_fantasia}
+
                             </div>
                         </div>
                     </div>
