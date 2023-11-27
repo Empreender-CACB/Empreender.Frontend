@@ -18,10 +18,10 @@ type PorteMapping = {
 };
 
 const porteMapping: PorteMapping = {
-    '01': 'Micro Empresa',
-    '03': 'Empresa de Pequeno Porte',
-    '05': 'Outra',
-    '00': 'Não Informado',
+    'MPE': 'Micro Empresa',
+    'EPP': 'Empresa de Pequeno Porte',
+    'OUTRA': 'Outra',
+    'NÃO INFORMADO': 'Não Informado',
 };
 
 
@@ -59,7 +59,7 @@ function CadastraProposta() {
     const [validCNPJ, setValidCNPJ] = useState(false);
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
-  
+
 
 
     const handleCnpjChange = async (event) => {
@@ -74,7 +74,7 @@ function CadastraProposta() {
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`, { method: 'GET' });
                 if (response.ok) {
                     const data = await response.json();
-                    setEmpresaData(data[0]);
+                    setEmpresaData(data);
                 } else {
                     console.error('Erro ao obter os dados da empresa:', response.statusText);
                 }
@@ -93,11 +93,11 @@ function CadastraProposta() {
 
     const toastNotificationSucess = (
         <Notification title="Obrigado por participar." type="info">
-             Em instantes você será redirecionado.
+            Em instantes você será redirecionado.
         </Notification>
     )
 
-    
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -119,14 +119,17 @@ function CadastraProposta() {
             setErrors(null);
             setSuccess(true);
             toast.push(toastNotificationSucess)
-            setTimeout(function() {
+            setTimeout(function () {
                 window.location.href = "https://sebrae.com.br/esg";
             }, 3000);
-            
+
         } catch (error) {
             console.error('Error submitting form:', error);
             setErrors(error.response.data.errors);
             toast.push(toastNotification)
+            document.getElementById('errors').scrollIntoView({
+                behavior: 'smooth'
+              });
         }
     };
 
@@ -141,22 +144,21 @@ function CadastraProposta() {
                     {/* LOGOS DAS EMPRESAS */}
 
                     <div className="flex items-center space-x-4">
-                        <div className="mt-10 mx-auto center max-w-7xl pb-12 px-6">
+                        <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
                             <div className="grid grid-cols-4 gap-8">
                                 <div className="col-span-2 flex justify-center sm:col-span-1">
-                                    <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" />
+                                    <img className="img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" />
                                 </div>
                                 <div className="col-span-2 flex justify-center sm:col-span-1">
-                                    <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" />
+                                    <img className=" w-11/12 img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" />
                                 </div>
                                 <div className="col-span-2 flex justify-center sm:col-span-1">
-                                    <img className="h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" />
+                                    <img className="img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" />
                                 </div>
                                 <div className="col-span-2 flex justify-center sm:col-span-1">
                                     <img
-                                        className="h-12"
+                                        className="img object-contain sm:h-12"
                                         src="https://beta.cacbempreenderapp.org.br/img/logo/sebrae.svg"
-
                                     />
                                 </div>
                             </div>
@@ -165,12 +167,14 @@ function CadastraProposta() {
 
                     {/* END LOGOS EMPRESAS */}
 
-                    <div className="mb-10" ><ErrorComponent errors={errors} /></div>
+                    <div className="mb-10" id="errors" ><ErrorComponent errors={errors} /></div>
 
-                    <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                             <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Diagnóstico ESG Sebrae</h1>
                         </div>
+                        <p className='font-bold mt-4 texts text-gray-400'>A CACB participa da inciativa do Sebrae no sentido de oferecer às empresas um dianóstico de sua situação no que se refere às práticas ESG. Sua participação é muito importante. Abaixo, pedimos algumas poucas informações e logo após você será redirecionado para a plataforma do Sebrae.</p>
+
                     </div>
                     <div className="mx-auto">
                         <div className="grid grid-cols-2 gap-8 mt-9">
@@ -220,14 +224,14 @@ function CadastraProposta() {
                                     value={cnpj}
                                     onChange={handleCnpjChange}
                                 />
-                                 {validCNPJ ? true : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
+                                {validCNPJ ? true : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
                             </div>
 
                         </div>
                     </div>
                 </div>
 
-                {empresaData && validCNPJ?<div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                {empresaData && validCNPJ ? <div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
                     <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                             <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
@@ -238,22 +242,22 @@ function CadastraProposta() {
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <div className="flex items-baseline">
                                 <span className="bg-teal-200 text-teal-800 text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
-                                   {porteMapping[empresaData.porte]}
+                                    {porteMapping[empresaData.porte_empresa]}
                                 </span>
                                 <div className="ml-2 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                                    {empresaData.nmcidade}  &bull; {empresaData.st_uf}
+                                    {empresaData.dsendereco}  &bull; {empresaData.dsbairro}
                                 </div>
                             </div>
 
-                            <h4 className="mt-1 text-xl font-semibold uppercase leading-tight truncate">{empresaData.razao_social}</h4>
+                            <h4 className="mt-1 text-xl font-semibold uppercase leading-tight truncate">{empresaData.nurazaosocial}</h4>
 
                             <div className="mt-1">
-                                <span className='text-bold'>Nome fantasia: </span>{empresaData.st_nome_fantasia}
+                                <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
                             </div>
                         </div>
                     </div>
 
-                </div>:''}
+                </div> : ''}
 
 
                 <div className="container mx-auto w-11/12 xl:w-full pt-10">
@@ -261,7 +265,7 @@ function CadastraProposta() {
                         <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
                             Enviar
                         </button>
-                        <span className='ml-2 flex items-center'>Ao clicar em enviar você será redirecionado para a plataforma do Sebrae</span>
+                        <span className='ml-2 flex items-center'>Ao enviar você será redirecionado para a plataforma do Sebrae.</span>
                     </div>
                 </div>
             </div>
