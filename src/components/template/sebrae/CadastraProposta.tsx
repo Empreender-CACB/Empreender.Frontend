@@ -263,8 +263,8 @@ function CadastraProposta() {
 
                     </div>
 
-                    {empresaData && validCNPJ ? <div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
-                        <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5">
+                    {empresaData && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                        <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                             <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                 <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
                             </div>
@@ -281,7 +281,7 @@ function CadastraProposta() {
                                     </div>
                                 </div>
 
-                                <h4 className="mt-1 text-xl font-semibold uppercase leading-tight truncate">{empresaData.nurazaosocial}</h4>
+                                <h4 className="mt-1 text-xl font-semibold uppercase leading-tight sm:truncate">{empresaData.nurazaosocial}</h4>
 
                                 <div className="mt-1">
                                     <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
