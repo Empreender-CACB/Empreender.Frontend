@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import FormItem from '@/components/ui/Form/FormItem';
-import FormContainer from '@/components/ui/Form/FormContainer';
 import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared';
 import { formataCNPJ, validaCNPJ } from './CnpjInput';
 import axios from 'axios';
-
-
+import Notification from '@/components/ui/Notification'
+import toast from '@/components/ui/toast'
+import { CgClose as CloseIcon } from 'react-icons/cg'
 
 const sexoOptions = [
     { value: 'M', label: 'Masculino' },
@@ -27,51 +24,48 @@ const porteMapping: PorteMapping = {
     '00': 'Não Informado',
 };
 
-type UfMapping = {
-    [key: string]: string;
-};
 
-const ufMapping: UfMapping = {
-    'AC': 'Acre',
-    'AL': 'Alagoas',
-    'AP': 'Amapá',
-    'AM': 'Amazonas',
-    'BA': 'Bahia',
-    'CE': 'Ceará',
-    'DF': 'Distrito Federal',
-    'ES': 'Espírito Santo',
-    'GO': 'Goiás',
-    'MA': 'Maranhão',
-    'MT': 'Mato Grosso',
-    'MS': 'Mato Grosso do Sul',
-    'MG': 'Minas Gerais',
-    'PA': 'Pará',
-    'PB': 'Paraíba',
-    'PR': 'Paraná',
-    'PE': 'Pernambuco',
-    'PI': 'Piauí',
-    'RJ': 'Rio de Janeiro',
-    'RN': 'Rio Grande do Norte',
-    'RS': 'Rio Grande do Sul',
-    'RO': 'Rondônia',
-    'RR': 'Roraima',
-    'SC': 'Santa Catarina',
-    'SP': 'São Paulo',
-    'SE': 'Sergipe',
-    'TO': 'Tocantins',
-};
+const ErrorComponent = ({ errors }) => {
+    console.log(errors, 'oi')
+    if (!errors || errors.length === 0) {
+        return null; // Não há erros, não renderiza nada
+    }
 
+    return (
+        <div className="rounded-lg bg-red-50 p-4">
+            <div className="flex">
+                <div className="flex-shrink-0">
+                    <CloseIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+                </div>
+                <div className="ml-3">
+                    <h3 className="text-sm font-strong text-red-800">{`Há ${errors.length === 1 ? '' : ''
+                        } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
+                    <div className="mt-2 text-sm text-red-700">
+                        <ul role="list" className="list-disc space-y-1 pl-5">
+                            {errors.map((error, index) => (
+                                <li key={index}>{error.message}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 function CadastraProposta() {
     const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState({});
-
+    const [validCNPJ, setValidCNPJ] = useState(false);
+    const [errors, setErrors] = useState(null)
+    const [success, setSuccess] = useState(false)
+  
 
 
     const handleCnpjChange = async (event) => {
         const newCnpj = event.target.value.replace(/\D/g, '');
         const isValidCnpj = validaCNPJ(newCnpj);
-        setIsValid(isValidCnpj);
+        setValidCNPJ(isValidCnpj);
 
         if (isValidCnpj) {
             try {
@@ -91,6 +85,19 @@ function CadastraProposta() {
         setCnpj(newCnpj);
     };
 
+    const toastNotification = (
+        <Notification title="Falha na inscrição." type="danger">
+            Não foi possível completar a operação. Por favor, tente novamente.
+        </Notification>
+    )
+
+    const toastNotificationSucess = (
+        <Notification title="Falha na inscrição." type="info">
+            Você será redirecionado ao site do Sebrae em instantes
+        </Notification>
+    )
+
+    
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -109,8 +116,17 @@ function CadastraProposta() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            setErrors(null);
+            setSuccess(true);
+            toast.push(toastNotificationSucess)
+            setTimeout(function() {
+                window.location.href = "https://sebrae.com.br/esg";
+            }, 3000);
+            
         } catch (error) {
             console.error('Error submitting form:', error);
+            setErrors(error.response.data.errors);
+            toast.push(toastNotification)
         }
     };
 
@@ -149,6 +165,7 @@ function CadastraProposta() {
 
                     {/* END LOGOS EMPRESAS */}
 
+                    <div className="mb-10" ><ErrorComponent errors={errors} /></div>
 
                     <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
@@ -203,12 +220,14 @@ function CadastraProposta() {
                                     value={cnpj}
                                     onChange={handleCnpjChange}
                                 />
+                                 {validCNPJ ? true : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
                             </div>
 
                         </div>
                     </div>
                 </div>
-                <div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
+
+                {empresaData && validCNPJ?<div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
                     <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                             <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
@@ -230,17 +249,17 @@ function CadastraProposta() {
 
                             <div className="mt-1">
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.st_nome_fantasia}
-
                             </div>
                         </div>
                     </div>
 
-                </div>
+                </div>:''}
+
 
                 <div className="container mx-auto w-11/12 xl:w-full pt-10">
                     <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
                         <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
-                            Enviar inscrição
+                            Enviar
                         </button>
                         <span className='ml-2 flex items-center'>Ao clicar em enviar você será redirecionado para a plataforma do Sebrae</span>
                     </div>
