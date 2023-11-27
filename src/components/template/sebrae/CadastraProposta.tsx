@@ -92,8 +92,8 @@ function CadastraProposta() {
     )
 
     const toastNotificationSucess = (
-        <Notification title="Falha na inscrição." type="info">
-            Você será redirecionado ao site do Sebrae em instantes
+        <Notification title="Obrigado por participar." type="info">
+             Em instantes você será redirecionado.
         </Notification>
     )
 
