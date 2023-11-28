@@ -56,7 +56,7 @@ const ErrorComponent = ({ errors }) => {
 function CadastraProposta() {
     const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
-    const [empresaData, setEmpresaData] = useState({});
+    const [empresaData, setEmpresaData] = useState(null);
     const [validCNPJ, setValidCNPJ] = useState(false);
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
@@ -263,7 +263,7 @@ function CadastraProposta() {
 
                     </div>
 
-                    {empresaData && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                    {empresaData!==null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
                         <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                             <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                 <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
