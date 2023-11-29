@@ -200,9 +200,9 @@ function CadastraProposta() {
 
                         <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
                             <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
-                                <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Diagnóstico ESG Sebrae</h1>
+                                <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Diagnóstico ESG</h1>
                             </div>
-                            <p className='font-bold mt-4 texts text-gray-400'>A CACB participa da inciativa do Sebrae no sentido de oferecer às empresas um dianóstico de sua situação no que se refere às práticas ESG. Sua participação é muito importante. Abaixo, pedimos algumas poucas informações e logo após você será redirecionado para a plataforma do Sebrae.</p>
+                            <p className='font-bold mt-4 texts text-gray-400'>A CACB, no âmbito dos projetos EMPREENDER e AL Invest Verde, participa da inciativa do Sebrae no sentido de oferecer às empresas um diagnóstico de sua situação no que se refere às práticas ESG. Sua participação é muito importante. Abaixo, pedimos algumas poucas informações e logo após você será redirecionado para a plataforma do Sebrae.</p>
 
                         </div>
 
