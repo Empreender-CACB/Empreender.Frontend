@@ -189,16 +189,17 @@ function CadastraProposta() {
                             <div>
 
                             </div>
-                            <div className="mb-10" id="errors" ><ErrorComponent errors={errors} /></div>
 
                             <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
                                 <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                     <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
                                 </div>
 
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="text-base font-semibold leading-7 mt-10 text-black" rel="noreferrer">
-                                    📕 Edital <span aria-hidden="true">→</span>
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                    📕 Edital da seleção <span aria-hidden="true">→</span>
                                 </a>
+
+                                <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
 
                             </div>
 
