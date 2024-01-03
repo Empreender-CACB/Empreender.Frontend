@@ -55,3 +55,7 @@
 .input-suffix-end {
   @apply absolute top-2/4 transform -translate-y-2/4 ltr:right-2.5 rtl:left-2.5 flex;
 }
+
+.no-border {
+  border: none !important;
+}

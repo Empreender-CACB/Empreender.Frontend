@@ -25,3 +25,16 @@
     duration-300 
     ease-in-out;
 }
+
+.no-border {
+  border: none !important;
+}
+
+.no-border:focus-visible {
+  border: none !important;
+  outline: none !important;
+}
+
+.no-border:focus {
+  outline: none !important;
+}
