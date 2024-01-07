@@ -10,6 +10,7 @@ import MobileNav from '@/components/template/MobileNav';
 import Search from '@/components/template/Search';
 import View from '@/views';
 import AjudaAtendimento from '../template/AjudaAtendimento';
+import SearchBar from '@/components/template/SearchBar';
 
 const HeaderActionsStart = () => {
   return (
@@ -26,6 +27,7 @@ const HeaderActionsEnd = () => {
     <>
       <AjudaAtendimento hoverable={false} />
       <Search />
+      <SearchBar />
       <LanguageSelector />
       <Notification />
       <SidePanel />
