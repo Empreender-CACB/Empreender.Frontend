@@ -17,15 +17,15 @@ interface ForgotPasswordFormProps extends CommonProps {
 }
 
 type ForgotPasswordFormSchema = {
-    email: string
+    cpf: string
 }
 
 const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Please enter your email'),
+    cpf: Yup.string().required('Por favor, informe o seu CPF'),
 })
 
 const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
-    const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
+    const { disableSubmit = false, className, signInUrl = '/' } = props
 
     const [emailSent, setEmailSent] = useState(false)
 
@@ -66,7 +66,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                     <>
                         <h3 className="mb-1">Esqueci minha senha</h3>
                         <p>
-                        Digite seu endereço de email para receber um código de verificação
+                        Preencha o campo com seu CPF para receber sua nova senha:
                         </p>
                     </>
                 )}
@@ -78,7 +78,7 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    email: '',
+                    cpf: '',
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
@@ -94,14 +94,14 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                         <FormContainer>
                             <div className={emailSent ? 'hidden' : ''}>
                                 <FormItem
-                                    invalid={errors.email && touched.email}
-                                    errorMessage={errors.email}
+                                    invalid={errors.cpf && touched.cpf}
+                                    errorMessage={errors.cpf}
                                 >
                                     <Field
-                                        type="email"
+                                        type="text"
                                         autoComplete="off"
-                                        name="email"
-                                        placeholder="Email"
+                                        name="cpf"
+                                        placeholder="CPF"
                                         component={Input}
                                     />
                                 </FormItem>
