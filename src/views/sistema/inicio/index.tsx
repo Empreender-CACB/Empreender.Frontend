@@ -11,6 +11,7 @@ import ApiService from '@/services/ApiService'
 import { AxiosResponse } from 'axios'
 import { Card } from '@/components/ui'
 import UserAlerts from '@/components/template/UserAlerts'
+import Dialog from '@/components/ui/Dialog';
 
 type Noticia = {
     titulo: string
@@ -44,6 +45,9 @@ const settingsImages = {
 }
 
 const Inicio = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedVideoId, setSelectedVideoId] = useState(null);
+
     const settingsVideos = {
         dots: true,
         infinite: true,
@@ -254,6 +258,11 @@ const Inicio = () => {
                                 <div
                                     key={video.id}
                                     className="p-2 sm:w-1/4 w-full"
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        setSelectedVideoId(videoId);
+                                        setIsDialogOpen(true);
+                                    }}
                                 >
                                     <a
                                         href="#"
@@ -277,6 +286,28 @@ const Inicio = () => {
                         }
                     )}
                 </Slider>
+                <Dialog
+                    width={800}
+                    height={600}
+                    isOpen={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
+                    onRequestClose={() => setIsDialogOpen(false)}
+                >
+                    {selectedVideoId && (
+                        <>
+                        <iframe
+                        style={{ marginTop: '15px', paddingBottom: '-15px' }}
+                            width="100%"
+                            height="500px"
+                            src={`https://www.youtube.com/embed/${selectedVideoId}`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                        </>                
+        
+                        
+                    )}
+                </Dialog>
             </div>
         </div>
     )
