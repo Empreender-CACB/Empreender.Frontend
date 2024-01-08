@@ -26,7 +26,6 @@ const HeaderActionsEnd = () => {
   return (
     <>
       <AjudaAtendimento hoverable={false} />
-      <Search />
       <SearchBar />
       <LanguageSelector />
       <Notification />
