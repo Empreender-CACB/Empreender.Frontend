@@ -140,7 +140,7 @@ const Empresas = () => {
     useEffect(() => {
         // Fazer a solicitação à API
         axios
-            .get('http://localhost:3333/segmentos')
+            .get(`${import.meta.env.VITE_API_URL}/segmentos`)
             .then((response) => {
                 // Mapear os dados da API para o formato esperado pelo Select
                 const mappedOptions = response.data.map((segmento: any) => ({

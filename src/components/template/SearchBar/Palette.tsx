@@ -2,22 +2,8 @@ import { Fragment, useState, Dispatch, SetStateAction } from 'react'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { ExclamationTriangleIcon, FolderIcon, LifebuoyIcon } from '@heroicons/react/24/outline'
-
-const projects = [
-  { id: 1, name: 'Workflow Inc. / Website Redesign', category: 'Projects', url: '#' },
-  // More projects...
-]
-
-const users = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    url: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  // More users...
-]
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -30,22 +16,56 @@ type PaletteProps = {
 
 export default function Palette({ open, setOpen }: PaletteProps) {
       const [rawQuery, setRawQuery] = useState('')
+      const [nucleos, setNucleos] = useState('')
+      const [empresas, setEmpresas] = useState('')
+      const [usuarios, setUsuarios] = useState('')
 
   const query = rawQuery.toLowerCase().replace(/^[#>]/, '')
 
-  const filteredProjects =
-    rawQuery === '#'
-      ? projects
-      : query === '' || rawQuery.startsWith('>')
-      ? []
-      : projects.filter((project) => project.name.toLowerCase().includes(query))
+      function reset() {
+        setOpen(false)
+        setNucleos('')
+        setEmpresas('')
+        setUsuarios('')
+      }
 
-  const filteredUsers =
-    rawQuery === '>'
-      ? users
-      : query === '' || rawQuery.startsWith('#')
-      ? []
-      : users.filter((user) => user.name.toLowerCase().includes(query))
+      function searchQuery(query:any) {
+        console.log(query)
+        setRawQuery(query)
+        if (query.startsWith('?')) {
+          setNucleos('')
+          setEmpresas('')
+          setUsuarios('')
+          return
+        }
+        axios
+        .get(`${import.meta.env.VITE_API_URL}/searchbar?busca=${encodeURIComponent(query)}`)
+        .then((response) => {
+
+          if (query.startsWith('#')) {
+            setNucleos(response.data.nucleos)
+            setEmpresas('')
+            setUsuarios('')
+          }
+          else if (query.startsWith('>')) {
+            setEmpresas(response.data.empresas)
+            setUsuarios('')
+            setNucleos('')
+          }
+          else {
+            setNucleos(response.data.nucleos)
+            setEmpresas(response.data.empresas)
+            setUsuarios(response.data.usuarios)
+          }
+            })
+        .catch((error) => {
+            console.error('Erro ao buscar dados da API:', error)
+            setNucleos('')
+            setEmpresas('')
+            setUsuarios('')
+        })
+
+      }
 
   return (
     <Transition.Root show={open} as={Fragment} afterLeave={() => setRawQuery('')} appear>
@@ -73,7 +93,8 @@ export default function Palette({ open, setOpen }: PaletteProps) {
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
-              <Combobox onChange={(item) => (window.location = item.url)}>
+              {/* <Combobox onChange={(item) => (window.location = "/empresas/10")}> */}
+                <Combobox onChange={()=> reset()}>
                 <div className="relative">
                   <MagnifyingGlassIcon
                     className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400"
@@ -82,23 +103,23 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                   <Combobox.Input
                     className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-800 placeholder-gray-400 sm:text-sm focus:border-none!important border-none no-border "
                     placeholder="Pesquisar..."
-                    onChange={(event) => setRawQuery(event.target.value)}
+                    onChange={(event) => searchQuery(event.target.value)}
                   />
                 </div>
-
-                {(filteredProjects.length > 0 || filteredUsers.length > 0) && (
+                {(empresas.length > 0 || usuarios.length > 0) && (
                   <Combobox.Options
                     static
                     className="max-h-80 scroll-py-10 scroll-py-10 scroll-pb-2 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
                   >
-                    {filteredProjects.length > 0 && (
+                    {empresas.length > 0 && (
                       <li>
-                        <h2 className="text-xs font-semibold text-gray-900">Projects</h2>
+                        <h2 className="text-xs font-semibold text-gray-900">Empresas</h2>
                         <ul className="-mx-4 mt-2 text-sm text-gray-700">
-                          {filteredProjects.map((project) => (
+                          {empresas.map((empresa) => (
+                            <Link to={`/sistema/empresas/${empresa.idempresa}/`} key={empresa.idempresa}>
                             <Combobox.Option
-                              key={project.id}
-                              value={project}
+                              key={empresa.idempresa}
+                              value={empresa.idempresa}
                               className={({ active }) =>
                                 classNames(
                                   'flex cursor-default select-none items-center px-4 py-2',
@@ -112,22 +133,24 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                                     className={classNames('h-6 w-6 flex-none', active ? 'text-white' : 'text-gray-400')}
                                     aria-hidden="true"
                                   />
-                                  <span className="ml-3 flex-auto truncate">{project.name}</span>
+                                  <span className="ml-3 flex-auto truncate">{empresa.nmfantasia}</span>
                                 </>
                               )}
                             </Combobox.Option>
+                            </Link>
+
                           ))}
                         </ul>
                       </li>
                     )}
-                    {filteredUsers.length > 0 && (
+                    {usuarios.length > 0 && (
                       <li>
-                        <h2 className="text-xs font-semibold text-gray-900">Users</h2>
+                        <h2 className="text-xs font-semibold text-gray-900">Usuários</h2>
                         <ul className="-mx-4 mt-2 text-sm text-gray-700">
-                          {filteredUsers.map((user) => (
+                          {usuarios.map((usuario) => (
                             <Combobox.Option
-                              key={user.id}
-                              value={user}
+                              key={usuario.id}
+                              value={usuario}
                               className={({ active }) =>
                                 classNames(
                                   'flex cursor-default select-none items-center px-4 py-2',
@@ -135,8 +158,8 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                                 )
                               }
                             >
-                              <img src={user.imageUrl} alt="" className="h-6 w-6 flex-none rounded-full" />
-                              <span className="ml-3 flex-auto truncate">{user.name}</span>
+                              <img src={'https://empreender.cacbempreenderapp.org.br/img/avatars/user-icon.png'} alt="" className="h-6 w-6 flex-none rounded-full" />
+                              <span className="ml-3 flex-auto truncate">{usuario.nmusuario}</span>
                             </Combobox.Option>
                           ))}
                         </ul>
@@ -144,6 +167,7 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                     )}
                   </Combobox.Options>
                 )}
+
 
                 {rawQuery === '?' && (
                   <div className="py-14 px-6 text-center text-sm sm:px-14">
@@ -156,7 +180,7 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                   </div>
                 )}
 
-                {query !== '' && rawQuery !== '?' && filteredProjects.length === 0 && filteredUsers.length === 0 && (
+                {query !== '' && rawQuery !== '?' && usuarios.length === 0 && empresas.length === 0 && nucleos.length === 0 &&(
                   <div className="py-14 px-6 text-center text-sm sm:px-14">
                     <ExclamationTriangleIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                     <p className="mt-4 font-semibold text-gray-900">Nenhum resultado encontrado</p>
