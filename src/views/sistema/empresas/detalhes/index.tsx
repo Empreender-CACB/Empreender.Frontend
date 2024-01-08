@@ -20,10 +20,11 @@ import { Empresa } from '@/@types/generalTypes'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
 import axios from 'axios'
 
+
 const { TabNav, TabList, TabContent } = Tabs
 
 const EmpresaDetalhes = () => {
-    const { idempresa } = useParams()
+    const params = useParams();
 
     const [empresa, setEmpresa] = useState<Empresa | null>(null)
     const [loading, setLoading] = useState(true)
@@ -32,7 +33,7 @@ const EmpresaDetalhes = () => {
         async function fetchEmpresa() {
             try {
                 const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/empresas/${idempresa}`
+                    `${import.meta.env.VITE_API_URL}/empresas/${params.id}`
                 );
                 
                 setEmpresa(response.data);
@@ -44,7 +45,7 @@ const EmpresaDetalhes = () => {
         }
 
         fetchEmpresa()
-    }, [])
+    }, [params.id])
 
     return (
         <Loading loading={loading}>

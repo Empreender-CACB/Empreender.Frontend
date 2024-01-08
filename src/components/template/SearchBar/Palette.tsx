@@ -22,6 +22,13 @@ export default function Palette({ open, setOpen }: PaletteProps) {
 
   const query = rawQuery.toLowerCase().replace(/^[#>]/, '')
 
+      function reset() {
+        setOpen(false)
+        setNucleos('')
+        setEmpresas('')
+        setUsuarios('')
+      }
+
       function searchQuery(query:any) {
         console.log(query)
         setRawQuery(query)
@@ -87,7 +94,7 @@ export default function Palette({ open, setOpen }: PaletteProps) {
           >
             <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
               {/* <Combobox onChange={(item) => (window.location = "/empresas/10")}> */}
-                <Combobox onChange={(item)=> (item.preventDefault())}>
+                <Combobox onChange={()=> reset()}>
                 <div className="relative">
                   <MagnifyingGlassIcon
                     className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-400"
