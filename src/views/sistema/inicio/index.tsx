@@ -171,8 +171,8 @@ const Inicio = () => {
                     <div
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://ciclovivo.com.br/wp-content/uploads/2016/08/ipe_amarelo_DF.jpg')`,
-                            backgroundPosition: '15% 60%',
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1670364781788-29998f919471?q=80&w=2835&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+                            backgroundPosition: '-10% 9%',
                         }}
                     >
                         <div className="text-white font-bold mt-4 flex-grow w-full lg:w-1/2">
