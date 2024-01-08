@@ -6,7 +6,7 @@ import PasswordInput from '@/components/shared/PasswordInput'
 import ActionLink from '@/components/shared/ActionLink'
 import { apiResetPassword } from '@/services/AuthService'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import type { CommonProps } from '@/@types/common'
@@ -23,16 +23,16 @@ type ResetPasswordFormSchema = {
 }
 
 const validationSchema = Yup.object().shape({
-    password: Yup.string().required('Please enter your password'),
+    password: Yup.string().required('Por favor, insira uma nova senha.'),
     confirmPassword: Yup.string().oneOf(
         [Yup.ref('password')],
-        'Your passwords do not match'
+        'As senhas não são iguais.'
     ),
 })
 
 const ResetPasswordForm = (props: ResetPasswordFormProps) => {
     const { disableSubmit = false, className, signInUrl = '/sign-in' } = props
-
+    const [tokenParams, setTokenParams] = useSearchParams('default');
     const [resetComplete, setResetComplete] = useState(false)
 
     const [message, setMessage] = useTimeOutMessage()
@@ -44,9 +44,15 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
         setSubmitting: (isSubmitting: boolean) => void
     ) => {
         const { password } = values
+         
         setSubmitting(true)
         try {
-            const resp = await apiResetPassword({ password })
+            const token = tokenParams.get("token");
+            if (token === null) {
+                console.error("Token is null");
+                return;
+            }
+            const resp = await apiResetPassword({ password, token})
             if (resp.data) {
                 setSubmitting(false)
                 setResetComplete(true)
@@ -69,15 +75,14 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
             <div className="mb-6">
                 {resetComplete ? (
                     <>
-                        <h3 className="mb-1">Reset done</h3>
-                        <p>Your password has been successfully reset</p>
+                    #{tokenParams.get("token")}
+                        <h3 className="mb-1">Senha atualizada com sucesso</h3>
+                        <p>Agora você já pode realizar login na plataforma.</p>
                     </>
                 ) : (
                     <>
-                        <h3 className="mb-1">Set new password</h3>
-                        <p>
-                            Your new password must different to previos password
-                        </p>
+                        <h3 className="mb-1">Defina sua nova senha</h3>
+
                     </>
                 )}
             </div>
@@ -88,8 +93,8 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
             )}
             <Formik
                 initialValues={{
-                    password: '123Qwe1',
-                    confirmPassword: '123Qwe1',
+                    password: '',
+                    confirmPassword: '',
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
@@ -106,7 +111,7 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
                             {!resetComplete ? (
                                 <>
                                     <FormItem
-                                        label="Password"
+                                        label="Senha"
                                         invalid={
                                             errors.password && touched.password
                                         }
@@ -115,12 +120,13 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
                                         <Field
                                             autoComplete="off"
                                             name="password"
-                                            placeholder="Password"
+                                            placeholder="Senha"
                                             component={PasswordInput}
                                         />
                                     </FormItem>
                                     <FormItem
-                                        label="Confirm Password"
+                                        style={{marginTop: '15px'}}
+                                        label="Confirme a senha"
                                         invalid={
                                             errors.confirmPassword &&
                                             touched.confirmPassword
@@ -130,19 +136,20 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
                                         <Field
                                             autoComplete="off"
                                             name="confirmPassword"
-                                            placeholder="Confirm Password"
+                                            placeholder="Confirme a senha"
                                             component={PasswordInput}
                                         />
                                     </FormItem>
                                     <Button
+                                        style={{marginTop: '15px'}}
                                         block
                                         loading={isSubmitting}
                                         variant="solid"
                                         type="submit"
                                     >
                                         {isSubmitting
-                                            ? 'Submiting...'
-                                            : 'Submit'}
+                                            ? 'Enviando...'
+                                            : 'Enviar'}
                                     </Button>
                                 </>
                             ) : (
@@ -152,13 +159,13 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
                                     type="button"
                                     onClick={onContinue}
                                 >
-                                    Continue
+                                    Continuar
                                 </Button>
                             )}
 
                             <div className="mt-4 text-center">
-                                <span>Back to </span>
-                                <ActionLink to={signInUrl}>Sign in</ActionLink>
+                                <span>Voltar para o </span>
+                                <ActionLink to={signInUrl}>login</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>

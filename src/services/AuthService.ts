@@ -33,7 +33,7 @@ export async function apiSignOut() {
 
 export async function apiForgotPassword(data: ForgotPassword) {
     return ApiService.fetchData({
-        url: '/forgot-password',
+        url: '/auth/forgot-password',
         method: 'post',
         data,
     })
@@ -41,7 +41,7 @@ export async function apiForgotPassword(data: ForgotPassword) {
 
 export async function apiResetPassword(data: ResetPassword) {
     return ApiService.fetchData({
-        url: '/reset-password',
+        url: '/auth/reset-password',
         method: 'post',
         data,
     })
