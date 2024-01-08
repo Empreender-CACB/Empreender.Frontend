@@ -10,7 +10,7 @@ const appsRoute: Routes = [
     },
     {
         key: 'sistemaEmpresas.empresas',
-        path: `${APP_PREFIX_PATH}/empresas`,
+        path: `${APP_PREFIX_PATH}/empresas/`,
         component: lazy(() => import('@/views/sistema/empresas')),
     },
     {
