@@ -2,6 +2,7 @@ import { Fragment, useState, Dispatch, SetStateAction } from 'react'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { ExclamationTriangleIcon, FolderIcon, LifebuoyIcon } from '@heroicons/react/24/outline'
+import ApiService from '@/services/ApiService'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
@@ -174,7 +175,7 @@ export default function Palette({ open, setOpen }: PaletteProps) {
                     <LifebuoyIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
                     <p className="mt-4 font-semibold text-gray-900">Ajuda com a paleta de pesquisa</p>
                     <p className="mt-2 text-gray-500">
-                    Use esta ferramenta para procurar rapidamente por informações em toda a nossa plataforma. Para que a pesquisa funcione, é necessário ter ao menos 3 palavras.  
+                    Use esta ferramenta para procurar rapidamente por informações em toda a nossa plataforma. Para fins de perfomance, os resultados são limitados a 5 itens por categoria.
                     Você também pode usar os modificadores de pesquisa encontrados no rodapé abaixo para limitar os resultados apenas a empresas ou nucleos. 
                     </p>
                   </div>
