@@ -35,7 +35,7 @@ const AllRoutes = (props: AllRoutesProps) => {
                         element={
                             <PageContainer {...props} {...route.meta}>
                                 <AppRoute
-                                    routeKey={route.key}
+                                    routeKey={route.key + index}
                                     component={route.component}
                                     {...route.meta}
                                 />
@@ -46,13 +46,13 @@ const AllRoutes = (props: AllRoutesProps) => {
                 <Route path="*" element={<Navigate replace to="/" />} />
             </Route>
             <Route path="/" element={<AuthRoute />}>
-                {authRoutes.map((route) => (
+                {authRoutes.map((route,index) => (
                     <Route
-                        key={route.path}
+                        key={route.path + index}
                         path={route.path}
                         element={
                             <AppRoute
-                                routeKey={route.key}
+                                routeKey={route.key + index}
                                 component={route.component}
                                 {...route.meta}
                             />
@@ -61,13 +61,13 @@ const AllRoutes = (props: AllRoutesProps) => {
                 ))}
             </Route>
             <Route path="/" element={<PublicRoute />}>
-                {publicRoutes.map((route) => (
+                {publicRoutes.map((route, index) => (
                     <Route
-                        key={route.path}
+                        key={route.path + index}
                         path={route.path}
                         element={
                             <AppRoute
-                                routeKey={route.key}
+                                routeKey={route.key + index}
                                 component={route.component}
                                 {...route.meta}
                             />

@@ -60,7 +60,7 @@
     "react-portal": "^4.2.2",
     "react-quill": "^2.0.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.9.0",
+    "react-router-dom": "^6.21.1",
     "react-scroll": "^1.8.9",
     "react-select": "^5.7.2",
     "react-simple-maps": "^3.0.0",

@@ -9,13 +9,13 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/inicio')),
     },
     {
-        key: 'sistemaEmpresas.empresas',
-        path: `${APP_PREFIX_PATH}/empresas`,
+        key: 'Empresas.lista',
+        path: `${APP_PREFIX_PATH}/empresas/`,
         component: lazy(() => import('@/views/sistema/empresas')),
     },
     {
-        key: 'sistemaEmpresas.detalhes',
-        path: `${APP_PREFIX_PATH}/empresas/:idempresa`,
+        key: 'Empresas.detalhes',
+        path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
     },
     {
