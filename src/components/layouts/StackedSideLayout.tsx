@@ -4,7 +4,7 @@ import UserDropdown from '@/components/template/UserDropdown'
 import LanguageSelector from '@/components/template/LanguageSelector'
 import Notification from '@/components/template/Notification'
 import MobileNav from '@/components/template/MobileNav'
-import Search from '@/components/template/Search'
+import SearchBar from '@/components/template/SearchBar'
 import StackedSideNav from '@/components/template/StackedSideNav'
 import View from '@/views'
 import AjudaAtendimento from '../template/AjudaAtendimento'
@@ -13,7 +13,7 @@ const HeaderActionsStart = () => {
     return (
         <>
             <MobileNav />
-            <Search />
+            <SearchBar />
         </>
     )
 }
