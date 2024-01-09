@@ -28,16 +28,14 @@ import useResponsive from '@/utils/hooks/useResponsive'
 import acronym from '@/utils/acronym'
 
 type NotificationList = {
-    id: string
-    target: string
-    description: string
-    date: string
-    image: string
-    type: number
-    location: string
-    locationLabel: string
-    status: string
-    readed: boolean
+    id: number
+    nucpf: string
+    titulo: string
+    mensagem: string
+    lida: boolean
+    data_criacao: string
+    entidade: string
+    id_entidade: string
 }
 
 const notificationHeight = 'h-72'
@@ -156,8 +154,8 @@ const _Notification = ({ className }: { className?: string }) => {
 
     const onMarkAllAsRead = useCallback(() => {
         const list = notificationList.map((item: NotificationList) => {
-            if (!item.readed) {
-                item.readed = true
+            if (!item.lida) {
+                item.lida = true
             }
             return item
         })
@@ -168,13 +166,13 @@ const _Notification = ({ className }: { className?: string }) => {
     const onMarkAsRead = useCallback(
         (id: string) => {
             const list = notificationList.map((item) => {
-                if (item.id === id) {
-                    item.readed = true
+                if (String(item.id) === id) {
+                    item.lida = true
                 }
                 return item
             })
             setNotificationList(list)
-            const hasUnread = notificationList.some((item) => !item.readed)
+            const hasUnread = notificationList.some((item) => !item.lida)
 
             if (!hasUnread) {
                 setUnreadNotification(false)
@@ -197,8 +195,8 @@ const _Notification = ({ className }: { className?: string }) => {
         >
             <Dropdown.Item variant="header">
                 <div className="border-b border-gray-200 dark:border-gray-600 px-4 py-2 flex items-center justify-between">
-                    <h6>Notifications</h6>
-                    <Tooltip title="Mark all as read">
+                    <h6>Notificações</h6>
+                    <Tooltip title="Marcar todas como lida">
                         <Button
                             variant="plain"
                             shape="circle"
@@ -230,14 +228,14 @@ const _Notification = ({ className }: { className?: string }) => {
                                                 {item.target}{' '}
                                             </span>
                                         )}
-                                        <span>{item.description}</span>
+                                        <span>{item.mensagem}</span>
                                     </div>
-                                    <span className="text-xs">{item.date}</span>
+                                    <span className="text-xs">{item.data_criacao}</span>
                                 </div>
                                 <Badge
                                     className="absolute top-4 ltr:right-4 rtl:left-4 mt-1.5"
                                     innerClass={`${
-                                        item.readed ? 'bg-gray-300' : bgTheme
+                                        item.lida ? 'bg-gray-300' : bgTheme
                                     } `}
                                 />
                             </div>
@@ -266,9 +264,9 @@ const _Notification = ({ className }: { className?: string }) => {
                                     alt="no-notification"
                                 />
                                 <h6 className="font-semibold">
-                                    No notifications!
+                                   Sem novas notificações!
                                 </h6>
-                                <p className="mt-1">Please Try again later</p>
+                                <p className="mt-1">Tente novamente mais tarde</p>
                             </div>
                         </div>
                     )}
@@ -280,7 +278,7 @@ const _Notification = ({ className }: { className?: string }) => {
                         to="/app/account/activity-log"
                         className="font-semibold cursor-pointer p-2 px-3 text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
                     >
-                        View All Activity
+                        Visualizar todas
                     </Link>
                 </div>
             </Dropdown.Item>

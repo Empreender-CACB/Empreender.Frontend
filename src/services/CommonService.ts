@@ -4,7 +4,7 @@ export async function apiGetNotificationCount() {
     return ApiService.fetchData<{
         count: number
     }>({
-        url: '/notification/count',
+        url: '/notifications/count',
         method: 'get',
     })
 }
@@ -12,19 +12,18 @@ export async function apiGetNotificationCount() {
 export async function apiGetNotificationList() {
     return ApiService.fetchData<
         {
-            id: string
-            target: string
-            description: string
-            date: string
-            image: string
-            type: number
-            location: string
-            locationLabel: string
-            status: string
-            readed: boolean
+            id: number
+            nucpf: string
+            titulo: string
+            mensagem: string
+            lida: boolean
+            data_criacao: string
+            entidade: string
+            id_entidade: string
+
         }[]
     >({
-        url: '/notification/list',
+        url: '/notifications',
         method: 'get',
     })
 }

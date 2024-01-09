@@ -84,7 +84,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                             <FormItem
                                 label="User Name"
                                 invalid={errors.userName && touched.userName}
-                                errorMessage={errors.userName}
                             >
                                 <Field
                                     type="text"
@@ -97,7 +96,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                             <FormItem
                                 label="Email"
                                 invalid={errors.email && touched.email}
-                                errorMessage={errors.email}
                             >
                                 <Field
                                     type="email"
@@ -110,7 +108,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                             <FormItem
                                 label="Password"
                                 invalid={errors.password && touched.password}
-                                errorMessage={errors.password}
                             >
                                 <Field
                                     autoComplete="off"
@@ -125,7 +122,6 @@ const SignUpForm = (props: SignUpFormProps) => {
                                     errors.confirmPassword &&
                                     touched.confirmPassword
                                 }
-                                errorMessage={errors.confirmPassword}
                             >
                                 <Field
                                     autoComplete="off"
