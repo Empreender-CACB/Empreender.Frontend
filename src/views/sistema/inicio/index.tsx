@@ -222,14 +222,14 @@ const Inicio = () => {
                                             style={{
                                                 border: '2px solid black',
                                             }}
-                                            src={`/img/slide1.png`}
+                                            src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
                                             alt={`Slide ${index}`}
                                         />
                                     </a>
                                 ) : (
                                     <img
                                         style={{ border: '2px solid black' }}
-                                        src={`/img/slide1.png`}
+                                        src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
                                         alt={`Slide ${index}`}
                                     />
                                 )}
