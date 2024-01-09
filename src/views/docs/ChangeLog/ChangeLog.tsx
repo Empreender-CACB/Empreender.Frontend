@@ -55,7 +55,7 @@ const Changelog = () => {
     return (
         <Container>
             <AdaptableCard>
-                <h4>Changelog</h4>
+                <h4>Atualizações</h4>
                 {logData.map((elm) => (
                     <Log
                         key={elm.version}

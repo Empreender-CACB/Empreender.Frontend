@@ -12,6 +12,7 @@ import { AxiosResponse } from 'axios'
 import { Card } from '@/components/ui'
 import UserAlerts from '@/components/template/UserAlerts'
 import Dialog from '@/components/ui/Dialog';
+import { Link } from 'react-router-dom'
 
 type Noticia = {
     titulo: string
@@ -196,6 +197,7 @@ const Inicio = () => {
                                 . São muito bem-vindas.
                             </h6>
 
+                            <Link to="/docs/changelog">
                             <Button
                                 className="w-full lg:w-auto"
                                 variant="solid"
@@ -203,6 +205,7 @@ const Inicio = () => {
                             >
                                 Saiba mais
                             </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
