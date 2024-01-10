@@ -12,8 +12,9 @@ import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { useState } from 'react'
-import axios from 'axios'
 import ApiService from '@/services/ApiService'
+import moment from 'moment'
+import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
 
 const E2022Consultores = () => {
     const columns = [
@@ -61,12 +62,16 @@ const E2022Consultores = () => {
             type: 'string',
         },
         {
-            name: 'data',
+            name: 'created_at',
             header: 'Data de Inscrição',
             defaultFlex: 1.5,
             type: 'date',
             dateFormat: 'DD/MM/YYYY',
             filterEditor: DateFilter,
+            render: ({ value, cellProps: { dateFormat } }: any) =>
+                moment(value).format(dateFormat) === 'Invalid date'
+                    ? '-'
+                    : moment(value).format(dateFormat),
         },
     ];
 
@@ -81,22 +86,17 @@ const E2022Consultores = () => {
             const response = await ApiService.fetchData<Blob>({
                 url: '/selecoes/e2022-consultores-download',
                 method: 'post',
-                responseType: 'blob',
                 data: { candidaturaIds: selectedRows }
-            });            
-    
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'anexos.zip');
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+            }).then((data: any) => {
+                window.open( import.meta.env.VITE_API_URL + data.data.url, '_blank')
+            });
+
+            console.log(response);
         } catch (error) {
             console.error('Erro ao exportar documentos:', error);
         }
     };
-    
+
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -131,6 +131,7 @@ const E2022Consultores = () => {
                     }/selecoes/e2022-consultores`}
                 isSelectable
                 onSelectedRowsChange={handleSelectedRowsChange}
+                CardLayout={CandidaturaCard}
             />
         </AdaptableCard>
     );

@@ -6,7 +6,6 @@ import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import Radio from '@/components/ui/Radio'
 import { Button } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
@@ -140,7 +139,7 @@ const Empresas = () => {
     useEffect(() => {
         // Fazer a solicitação à API
         axios
-            .get('http://localhost:3333/segmentos')
+            .get(`${import.meta.env.VITE_API_URL}/segmentos`)
             .then((response) => {
                 // Mapear os dados da API para o formato esperado pelo Select
                 const mappedOptions = response.data.map((segmento: any) => ({
