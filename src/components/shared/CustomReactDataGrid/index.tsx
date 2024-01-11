@@ -396,16 +396,24 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
     const [selected, setSelected] = useState({});
 
-    const onSelectionChange = useCallback(({ selected }) => {
-        setSelected(selected);
-    }, []);
-
-    const handleSelectionChange = useCallback(({ selected }) => {
+    const handleSelectionChange = useCallback(({ selected, data }) => {
+        let selectedRows;
+    
+        if (selected === true) {
+            // Todas as linhas estão selecionadas
+            selectedRows = data.map(item => item.id);
+        } else {
+            // Apenas linhas específicas estão selecionadas
+            selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
+        }
+    
         setSelected(selected);
         if (onSelectedRowsChange) {
-            onSelectedRowsChange(Object.keys(selected).map(key => parseInt(key)));
+            onSelectedRowsChange(selectedRows);
         }
     }, [onSelectedRowsChange]);
+    
+    
 
     return (
         <div>
@@ -523,10 +531,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                                 options={paginateOptions}
                             />
                         </div>
-                    </div>                </>
-
-
+                    </div>                
+                </>
             ) : null}
+            
             <ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}

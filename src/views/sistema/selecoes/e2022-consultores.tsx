@@ -4,7 +4,7 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button } from '@/components/ui'
+import { Button, Notification } from '@/components/ui'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
@@ -15,6 +15,20 @@ import { useState } from 'react'
 import ApiService from '@/services/ApiService'
 import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
+
+import toast from '@/components/ui/toast'
+
+// const toastNotification = (
+//     <Notification title="Falha na inscrição." type="danger">
+//         Não foi possível completar a operação. Por favor, tente novamente.
+//     </Notification>
+// )
+
+// const toastNotificationSucess = (
+//     <Notification title="Obrigado por participar." type="info">
+//         Em instantes você será redirecionado.
+//     </Notification>
+// )
 
 const E2022Consultores = () => {
     const columns = [
@@ -82,21 +96,23 @@ const E2022Consultores = () => {
     };
 
     const handleExportDocuments = async () => {
-        try {
-            const response = await ApiService.fetchData<Blob>({
-                url: '/selecoes/e2022-consultores-download',
-                method: 'post',
-                data: { candidaturaIds: selectedRows }
-            }).then((data: any) => {
-                window.open( import.meta.env.VITE_API_URL + data.data.url, '_blank')
-            });
-
-            console.log(response);
-        } catch (error) {
-            console.error('Erro ao exportar documentos:', error);
-        }
+        await ApiService.fetchData<Blob>({
+            url: '/selecoes/e2022-consultores-download',
+            method: 'post',
+            data: { candidaturaIds: selectedRows }
+        }).then((data: any) => {
+            window.open( import.meta.env.VITE_API_URL + data.data.url )
+            toast.push(
+                <Notification title="Download feito com sucesso!" type="info" />
+            )
+        }).catch((error: any) => {
+            toast.push(
+                <Notification title="Erro ao realizar download." type="danger">
+                    {error.response.data}
+                </Notification>
+            )
+        });
     };
-
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -119,6 +135,7 @@ const E2022Consultores = () => {
                         size="sm"
                         icon={<HiPlusCircle />}
                         onClick={handleExportDocuments}
+                        disabled={selectedRows.length === 0}
                     >
                         Exportar Documentos
                     </Button>
