@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -9,7 +9,6 @@ import { CgClose as CloseIcon } from 'react-icons/cg'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros';
 import { IMaskInput } from 'react-imask';
 import { BsFilePdf, BsFileWord } from 'react-icons/bs';
-
 
 const ErrorComponent = ({ errors }: any) => {
     console.log(errors, 'oi')
@@ -43,16 +42,11 @@ function CadastraProposta() {
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}]);
 
-
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
     };
 
-
-
     const handleDeleteInput = (index: any) => {
-
-
         const newArray = [...inputs];
         newArray.splice(index, 1);
         setInputs(newArray);
@@ -85,7 +79,6 @@ function CadastraProposta() {
         )
     }
 
-
     const toastNotification = (
         <Notification title="Falha na inscrição." type="danger">
             Não foi possível completar a operação. Por favor, tente novamente.
@@ -97,7 +90,6 @@ function CadastraProposta() {
             Por favor, aguarde a confirmação da sua inscrição por email.
         </Notification>
     )
-
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -197,21 +189,21 @@ function CadastraProposta() {
                                 </div>
 
                                 <div className="flex">
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
-                                    <BsFilePdf  /> Termo de Referência 
-                                </a>
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
-                                    <BsFilePdf /> Perfil Profissional 
-                                </a>
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
-                                    <BsFileWord className="blue" /> Modelo de Currículo 
-                                </a>
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">                                        
+                                        <BsFilePdf /> Termo de Referência
+                                    </a>
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                        <BsFilePdf /> Perfil Profissional
+                                    </a>
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                        <BsFileWord className="blue" /> Modelo de Currículo
+                                    </a>
                                 </div>
-                                
 
 
-                                
-                                
+
+
+
 
                                 <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
 
