@@ -197,13 +197,13 @@ function CadastraProposta() {
                                 </div>
 
                                 <div className="flex">
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
                                     <BsFilePdf  /> Termo de Referência 
                                 </a>
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
                                     <BsFilePdf /> Perfil Profissional 
                                 </a>
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/arquivos/arquivo-download-app/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
                                     <BsFileWord className="blue" /> Modelo de Currículo 
                                 </a>
                                 </div>
