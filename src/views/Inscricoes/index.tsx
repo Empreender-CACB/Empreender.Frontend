@@ -8,6 +8,7 @@ import { HiOutlinePlus } from 'react-icons/hi'
 import { CgClose as CloseIcon } from 'react-icons/cg'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros';
 import { IMaskInput } from 'react-imask';
+import { BsFilePdf, BsFileWord } from 'react-icons/bs';
 
 
 const ErrorComponent = ({ errors }: any) => {
@@ -195,9 +196,22 @@ function CadastraProposta() {
                                     <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
                                 </div>
 
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
-                                    📕 Edital da seleção <span aria-hidden="true">→</span>
+                                <div className="flex">
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                    <BsFilePdf  /> Termo de Referência 
                                 </a>
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                    <BsFilePdf /> Perfil Profissional 
+                                </a>
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                    <BsFileWord className="blue" /> Modelo de Currículo 
+                                </a>
+                                </div>
+                                
+
+
+                                
+                                
 
                                 <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
 
