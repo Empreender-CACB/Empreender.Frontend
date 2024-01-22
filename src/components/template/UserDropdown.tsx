@@ -25,7 +25,7 @@ const dropdownItemList: DropdownList[] = [
     },
     {
         label: 'Preferências',
-        path: '/app/account/settings/profile',
+        path: `${import.meta.env.VITE_PHP_URL}/sistema/usuario/preferencias-usuario`,
         icon: <HiOutlineCog />,
     },
     {
