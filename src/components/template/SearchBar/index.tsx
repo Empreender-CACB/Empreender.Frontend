@@ -7,8 +7,8 @@ export default function SearchBar() {
 
     return(<>
                
-    
-    <button className={'text-2xl'} onClick={() => setOpen(true)}><HiOutlineSearch /></button>
-        <Palette open={open} setOpen={setOpen} />
+    {/* Botão de pesquisa geral no site */}
+    {/* <button className={'text-2xl'} onClick={() => setOpen(true)}><HiOutlineSearch /></button>
+        <Palette open={open} setOpen={setOpen} /> */}
     </>)
 }
