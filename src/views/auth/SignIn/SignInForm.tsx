@@ -139,7 +139,7 @@ const SignInForm = (props: SignInFormProps) => {
                             </Button>
                             <div className="mt-4 text-center">
                                 {/* <span>{`Ainda não possui uma conta?`} </span> */}
-                                <ActionLink to={signUpUrl}>Primeiro Acesso</ActionLink>
+                                {/* <ActionLink to={signUpUrl}>Primeiro Acesso</ActionLink> */}
                             </div>
                         </FormContainer>
                     </Form>
