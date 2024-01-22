@@ -8,6 +8,11 @@ const docsRoute: Routes = [
         path: `${DOCS_PREFIX_PATH}/changelog`,
         component: lazy(() => import('@/views/docs/ChangeLog')),
     },
+    {
+        key: 'docs.cookies',
+        path: `${DOCS_PREFIX_PATH}/cookies`,
+        component: lazy(() => import('@/views/docs/Cookies')),
+    },
 ]
 
 export default docsRoute
