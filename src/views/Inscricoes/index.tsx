@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -8,7 +8,7 @@ import { HiOutlinePlus } from 'react-icons/hi'
 import { CgClose as CloseIcon } from 'react-icons/cg'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros';
 import { IMaskInput } from 'react-imask';
-
+import { BsFilePdf, BsFileWord } from 'react-icons/bs';
 
 const ErrorComponent = ({ errors }: any) => {
     console.log(errors, 'oi')
@@ -42,16 +42,11 @@ function CadastraProposta() {
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}]);
 
-
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
     };
 
-
-
     const handleDeleteInput = (index: any) => {
-
-
         const newArray = [...inputs];
         newArray.splice(index, 1);
         setInputs(newArray);
@@ -84,7 +79,6 @@ function CadastraProposta() {
         )
     }
 
-
     const toastNotification = (
         <Notification title="Falha na inscrição." type="danger">
             Não foi possível completar a operação. Por favor, tente novamente.
@@ -96,7 +90,6 @@ function CadastraProposta() {
             Por favor, aguarde a confirmação da sua inscrição por email.
         </Notification>
     )
-
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -161,18 +154,18 @@ function CadastraProposta() {
                     <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
                         <div className="grid grid-cols-4 gap-8">
                             <div className="col-span-2 flex justify-center sm:col-span-1">
-                                <img className="img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" />
+                                <img className="img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/logo-cacb.png" />
                             </div>
                             <div className="col-span-2 flex justify-center sm:col-span-1">
-                                <img className=" w-11/12 img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" />
+                                <img className=" w-11/12 img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/logo-empreender.png" />
                             </div>
                             <div className="col-span-2 flex justify-center sm:col-span-1">
-                                <img className="img object-contain sm:h-12" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" />
+                                <img className="img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" />
                             </div>
                             <div className="col-span-2 flex justify-center sm:col-span-1">
                                 <img
                                     className="img object-contain sm:h-12"
-                                    src="https://beta.cacbempreenderapp.org.br/img/logo/sebrae.svg"
+                                    src="https://empreender.cacbempreenderapp.org.br/img/logo/sebrae.svg"
                                 />
                             </div>
                         </div>
@@ -195,9 +188,22 @@ function CadastraProposta() {
                                     <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
                                 </div>
 
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
-                                    📕 Edital da seleção <span aria-hidden="true">→</span>
-                                </a>
+                                <div className="flex">
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">                                        
+                                        <BsFilePdf /> Termo de Referência
+                                    </a>
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                        <BsFilePdf /> Perfil Profissional
+                                    </a>
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                        <BsFileWord className="blue" /> Modelo de Currículo
+                                    </a>
+                                </div>
+
+
+
+
+
 
                                 <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
 

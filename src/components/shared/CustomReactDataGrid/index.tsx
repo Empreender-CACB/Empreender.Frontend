@@ -31,12 +31,14 @@ interface CustomReactDataGridPropsBasic {
     defaultFilterValue?: any
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    isSelectable?: boolean
+    onSelectedRowsChange?: any
     widthSize?: number
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
     url: string,
-    data?: never
+    data?: never,
 }
 
 interface CustomReactDataGridPropsData extends CustomReactDataGridPropsBasic{
@@ -84,6 +86,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     filename,
     widthSize = 1280,
     CardLayout,
+    isSelectable,
+    onSelectedRowsChange
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -389,6 +393,28 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
     const hideTable = larguraDaTela <= widthSize || view === 'grid'
     const hideClass = hideTable ? 'hidden' : 'block'
+
+    const [selected, setSelected] = useState({});
+
+    const handleSelectionChange = useCallback(({ selected, data }) => {
+        let selectedRows;
+    
+        if (selected === true) {
+            // Todas as linhas estão selecionadas
+            selectedRows = data.map(item => item.id);
+        } else {
+            // Apenas linhas específicas estão selecionadas
+            selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
+        }
+    
+        setSelected(selected);
+        if (onSelectedRowsChange) {
+            onSelectedRowsChange(selectedRows);
+        }
+    }, [onSelectedRowsChange]);
+    
+    
+
     return (
         <div>
             <Dialog isOpen={dialogIsOpen}>
@@ -505,10 +531,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                                 options={paginateOptions}
                             />
                         </div>
-                    </div>                </>
-
-
+                    </div>                
+                </>
             ) : null}
+            
             <ReactDataGrid
                 className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
@@ -534,7 +560,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onFilterValueChange={handleFilterValueChange}
                 onLimitChange={setListaGeral}
                 onReady={setGridRef}
+                checkboxColumn={isSelectable}
+                selected={selected}
+                onSelectionChange={handleSelectionChange}
             />
+            
         </div>
     )
 }

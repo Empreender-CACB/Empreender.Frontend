@@ -6,6 +6,6 @@ import type { Routes } from '@/@types/routes'
 
 export const authRoutes: Routes = [...authRoute]
 
-export const protectedRoutes: Routes = [...appsRoute,...docsRoute,]
+export const protectedRoutes: Routes = [...appsRoute]
 
-export const publicRoutes: Routes = [...publicRoute]
+export const publicRoutes: Routes = [...publicRoute,...docsRoute,]

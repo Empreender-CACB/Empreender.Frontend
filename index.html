@@ -11,42 +11,54 @@
       content="Portal Empreender - Beta"
     />
     <title>Portal Empreender - Versão 5.0</title>
-    <script src="https://cookiethough.dev/lib/1.5"></script>
+
+    <script src="https://unpkg.com/cookie-notice@^1/dist/cookie.notice.min.js"></script>
     
+
   </head>
   <body>
-    <script>CookieThough.init({
-      "policies": [
-        {
-          "id": "essential",
-          "label": "Essenciais",
-          "description": "Precisamos guardar alguns cookies técnicos, para que o site funcione corretamente.",
-          "category": "essential",
-        },
-        {
-          "id": "functional",
-          "label": "Funcionais",
-          "category": "functional",
-          "description": "Precisamos salvar algumas preferências básicas, por exemplo: temas, preferências únicas de tabelas",
-        },
-      ],
-      "essentialLabel": "Sempre ativo",
-      "permissionLabels": {
-        "accept": "Aceitar",
-        "acceptAll": "Aceitar todos",
-        "decline": "Somente os necessários"
-      },
-      "cookiePreferenceKey": "cookie-preferences",
-      "header": {
-          "title": "Nossa política de cookies",
-          "description": "Todo mundo quer mostrar o seu melhor lado - e o Portal Empreender também. É por isso que utilizamos cookies para lhe garantir uma melhor experiência."
-      },
-      "cookiePolicy": {
-        "url":"https://google.com",
-        "label":"Leia nossa política de cookies na íntegra",
-      },
-      "customizeLabel": "Customizar"
-    })</script>
+    <script>
+      new cookieNoticeJS({
+  
+          'messageLocales': {
+              'it': 'Custom localized message'
+          },
+  
+          'buttonLocales': {
+              'it': 'Chiudi'
+          },
+  
+          // Position for the cookie-notifier (default=bottom)
+          'cookieNoticePosition': 'bottom',
+  
+          'learnMoreLinkEnabled': true,
+  
+          'learnMoreLinkHref': '/docs/cookies',
+  
+          'learnMoreLinkText': {
+              'en': 'Saiba mais'
+          },
+  
+          'expiresIn': 360,
+  
+          'fontFamily': 'inherit',
+          'fontSize': '12px',
+  
+          'buttonBgColor': '#0f7cbf',
+  
+          'buttonTextColor': '#fff',
+  
+          'noticeBgColor': '#000',
+  
+          'noticeTextColor': '#fff',
+  
+          'linkColor': '#fff',
+  
+          'linkTarget': '',
+  
+          'debug': false
+      });
+  </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
