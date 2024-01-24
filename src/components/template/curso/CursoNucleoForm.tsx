@@ -94,27 +94,32 @@ function CursoNucleoForm() {
   };
 
   return (
-<AdaptableCard className="h-full" bodyClass="h-full">
-  <div className="header-container flex flex-col items-left">
-    <div className="flex items-center">
-    <div style={{ maxWidth: '200px' }}>
-        <HeaderForm />
+    <AdaptableCard className="h-full" bodyClass="h-full">
+      <div className="header-container">
+        <div className="flex items-center space-x-4">
+          <div className="mt-10 mx-auto center max-w-7xl pb-12 px-6">
+            <div className="grid grid-cols-2 gap-8">
+            <div className="col-span-2 flex justify-center sm:col-span-1">
+                <img className="h-12" src="/public/img/logo/logo-cacb.png" />
+              </div>
+              <div className="col-span-2 flex justify-center sm:col-span-1">
+                <img className="h-12" src="/public/img/logo/sebrae.svg" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="text-container mb-10">
+          <h2>Inscrição para curso de Consultores</h2>
+        </div>
       </div>
-      <div style={{ maxWidth: '200px' }}>
-        <HeaderLogo />
-      </div>
-    </div>
-    <h2 style={{ marginBottom: '20px' }}></h2>
-    <div className="text-container">
-      <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
-      <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
-    </div>
-  </div>
+
+      
       <FormContainer layout="vertical" labelWidth={100}>
         <form>
-          <FormItem label="Nome completo" asterisk htmlFor="nome" invalid>
-            <Input type="text" id="nome" name="nome" required size="sm" value={nome}/>
-          </FormItem>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-8'>
+            <FormItem invalid asterisk className='sm:col-span-2' label="Nome completo" htmlFor="nome" >
+              <Input required type="text" id="nome" name="nome" size="sm" />
+            </FormItem>
 
           <FormItem label="UF" asterisk htmlFor="uf" invalid>
             <Select
@@ -165,10 +170,13 @@ function CursoNucleoForm() {
               size="sm"
             />
           </FormItem>
+          </div>
 
+          <div className='flex center items-center mt-5'>
           <Button variant="solid" type="submit" size="sm" disabled = {!isValid || !emailIsValid}>
             Enviar
           </Button>
+          </div>
         </form>
       </FormContainer>
     </AdaptableCard>
