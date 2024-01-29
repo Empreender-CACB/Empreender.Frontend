@@ -42,7 +42,7 @@ const publicRoute: Routes = [
     },
     {
         key: 'diagnostico_esg',
-        path: `/esg/diagnostico`,
+        path: `/esg/diagnostico/:cnpj`,
         component: lazy(() => import('@/views/Inscricoes/esg/diagnostico')),
         meta: {
             layout: 'blank',
