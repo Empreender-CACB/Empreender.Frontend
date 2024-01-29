@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
 import { AdaptableCard } from '@/components/shared';
 import { formataCNPJ, validaCNPJ } from './CnpjInput';
+import { validaCPF } from './CpfInput';
 import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -58,8 +59,10 @@ const ErrorComponent = ({ errors }) => {
 function CadastraProposta() {
     const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
+    const [cpf, setCpf] = useState('');
     const [empresaData, setEmpresaData] = useState(null);
     const [validCNPJ, setValidCNPJ] = useState(false);
+    const [validCPF, setValidCPF] = useState(false)
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
 
@@ -110,6 +113,14 @@ function CadastraProposta() {
         }
         setCnpj(newCnpj);
     };
+    
+    const handleCpfChange = async (event) => {
+        const newCpf = event.target.value.replace(/\D/g, '');
+        const isValidCpf = validaCPF(newCpf);
+        setValidCPF(isValidCpf);
+
+        setCpf(newCpf);
+    }
 
     const toastNotification = (
         <Notification title="Falha na inscrição." type="danger">
@@ -127,7 +138,16 @@ function CadastraProposta() {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
-        const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj']
+        const isValidCpf = validaCPF(cpf);
+
+        if (!isValidCpf) {
+            console.error('CPF Inválido');
+            toast.push(toastNotification);
+            return;
+        }
+    
+
+        const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj', 'cpf']
 
         const formData = new FormData()
         for (const field of fields) {
@@ -140,6 +160,12 @@ function CadastraProposta() {
             await axios.post(`${import.meta.env.VITE_API_URL}/empresas/cadastra`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                },
+            });
+            
+            await axios.post(`${import.meta.env.VITE_API_URL}/rfb/cadastra-empresa`, {cnpj}, {
+                headers: {
+                    'Content-Type': 'application/json',
                 },
             });
             setErrors(null);
@@ -236,7 +262,7 @@ function CadastraProposta() {
                                     <input required type="number" id="ano_nascimento" name="ano_nascimento" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe apenas o ano de nascimento" />
                                 </div>
 
-                                <div className="flex flex-col w-full col-span-2 sm:col-span-2">
+                                <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
                                     <label htmlFor="cnpj" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                         CNPJ da empresa
                                     </label>
@@ -252,6 +278,23 @@ function CadastraProposta() {
                                         onChange={handleCnpjChange}
                                     />
                                     {validCNPJ ? true : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
+                                </div>
+                                <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
+                                    <label htmlFor="cpf" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
+                                        CPF
+                                    </label>
+                                    {/* <input required type="text" id="cnpj" name="cnpj"  placeholder="Informe o cnpj da empresa" /> */}
+                                    <Input
+                                        required
+                                        placeholder='Infome o seu CPF'
+                                        className='focus:border-blue-700 bg-transparent placeholder-gray-500 '
+                                        type="text"
+                                        id="cpf"
+                                        name="cpf"
+                                        value={cpf}
+                                        onChange={handleCpfChange}
+                                    />
+                                    {validCPF ? true : <span style={{ color: 'red' }}>Informe um CPF válido</span>}
                                 </div>
 
                             </div>
@@ -273,7 +316,7 @@ function CadastraProposta() {
                                         {porteMapping[empresaData.porte_empresa]}
                                     </span>
                                     <div className="ml-2 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                                        {empresaData.dsendereco}  &bull; {empresaData.dsbairro}
+                                        {empresaData.dsendereco}  &bull; {empresaData.dsbairro} &bull; {empresaData.nmcidade} &bull; {empresaData.ufcidade} 
                                     </div>
                                 </div>
 
@@ -286,6 +329,7 @@ function CadastraProposta() {
                         </div>
 
                     </div> : ''}
+
 
 
                     <div className="container mx-auto w-11/12 xl:w-full pt-10">
