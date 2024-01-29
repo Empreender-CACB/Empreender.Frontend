@@ -11,7 +11,6 @@ import { IMaskInput } from 'react-imask';
 import { BsFilePdf, BsFileWord } from 'react-icons/bs';
 
 const ErrorComponent = ({ errors }: any) => {
-    console.log(errors, 'oi')
     if (!errors || errors.length === 0) {
         return null; // Não há erros, não renderiza nada
     }
@@ -146,11 +145,8 @@ function CadastraProposta() {
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
-
             <form className=' bg-white sm:w-full lg:w-9/12' id="login" onSubmit={handleSubmit}>
-                {/* LOGOS DAS EMPRESAS */}
-
-                <div className=" flex items-center space-x-4">
+                <div className="flex items-center space-x-4">
                     <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
                         <div className="grid grid-cols-4 gap-8">
                             <div className="col-span-2 flex justify-center sm:col-span-1">
@@ -177,19 +173,13 @@ function CadastraProposta() {
                 {!success && (
                     <div className="dark:bg-gray-800 px-10">
                         <div className="container mx-auto bg-white dark:bg-gray-800 rounded">
-
-
-                            <div>
-
-                            </div>
-
                             <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
                                 <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                     <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
                                 </div>
 
                                 <div className="flex">
-                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">                                        
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
                                         <BsFilePdf /> Termo de Referência
                                     </a>
                                     <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
@@ -199,11 +189,6 @@ function CadastraProposta() {
                                         <BsFileWord className="blue" /> Modelo de Currículo
                                     </a>
                                 </div>
-
-
-
-
-
 
                                 <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
 
@@ -330,10 +315,7 @@ function CadastraProposta() {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-
 
                         <div className="container mx-auto w-11/12 xl:w-full pt-10">
                             <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
@@ -349,9 +331,7 @@ function CadastraProposta() {
                     <p className="pl-4 text-sm text-gray-500">
                         Programa Empreender 1999-2023 - Versão 5
                     </p>
-
                 </div>
-
             </form>
         </div>
 

@@ -6,6 +6,8 @@ import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { CgClose as CloseIcon } from 'react-icons/cg'
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui';
 
 const sexoOptions = [
     { value: 'M', label: 'Masculino' },
@@ -190,12 +192,6 @@ function CadastraProposta() {
                 <div className="dark:bg-gray-800 px-10">
                     <div className="container mx-auto bg-white dark:bg-gray-800 rounded">
 
-
-
-
-                        <div>
-
-                        </div>
                         <div className="mb-10" id="errors" ><ErrorComponent errors={errors} /></div>
 
                         <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
@@ -263,7 +259,7 @@ function CadastraProposta() {
 
                     </div>
 
-                    {empresaData!==null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                    {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
                         <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                             <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                 <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
@@ -293,11 +289,20 @@ function CadastraProposta() {
 
 
                     <div className="container mx-auto w-11/12 xl:w-full pt-10">
-                        <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
-                            <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
-                                Enviar
-                            </button>
-                            <span className='ml-2 flex items-center'>Ao enviar você será redirecionado para a plataforma do Sebrae.</span>
+                        <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-between">
+                            <div className='flex'>
+                                <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
+                                    Enviar
+                                </button>
+
+                                <span className='ml-2 flex items-center'>Ao enviar você será redirecionado para a plataforma do Sebrae.</span>
+                            </div>
+
+                            <Button variant='solid' className='ml-2'>
+                                <Link to="/esg/diagnostico">
+                                    Diagnóstico
+                                </Link>
+                            </Button>
                         </div>
                     </div>
                 </div>
