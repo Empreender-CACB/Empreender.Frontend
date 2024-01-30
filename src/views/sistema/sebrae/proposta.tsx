@@ -25,9 +25,28 @@ const CadastraEmpresaFormulario = () => {
   }
 
   return (
-      <Container>
+
+
+    <div style={styles.container}>
+      {/* ?????? style direto? */}
+      <style>
+        {`
+          @media (min-width: 768px) {
+            #container {
+              width: 40%; 
+            }
+          }
+          @media (max-width: 767px) {
+            #container {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+      <Container id="container">
         <CadastraEmpresa />
       </Container>
+    </div>
   );
 }
 
