@@ -1,6 +1,5 @@
 import { Container } from '@/components/shared';
 import CadastraEmpresa from '@/components/template/sebrae/CadastraEmpresa';
-import CadastraProposta from '@/components/template/sebrae/CadastraProposta';
 import CadastraProposta2 from '@/components/template/sebrae/CadastraProposta2';
 const styles = {
   container: {
@@ -13,7 +12,7 @@ const styles = {
   },
 };
 
-const CadastraEmpresaFormulario2 = () => {
+const CadastraEmpresaFormulario = () => {
 
   if(1===1) {
   
@@ -32,4 +31,4 @@ const CadastraEmpresaFormulario2 = () => {
   );
 }
 
-export default CadastraEmpresaFormulario2;
+export default CadastraEmpresaFormulario;

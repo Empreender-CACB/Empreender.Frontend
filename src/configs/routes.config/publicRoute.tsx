@@ -40,6 +40,15 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'cadastro_empresa_esg',
+        path: `/esg2/cadastro`,
+        component: lazy(() => import('@/views/sistema/sebrae/proposta2')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
