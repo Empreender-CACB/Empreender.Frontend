@@ -79,8 +79,6 @@ const DiagnosticoEsg = () => {
                     });
                 }
             } catch (error) {
-                console.log('entrou aqui 2', error)
-
                 navigate('/esg/cadastro');
             }
         };
@@ -96,17 +94,17 @@ const DiagnosticoEsg = () => {
     const getCurrentQuestionOptions = (): AlternativaComSelecao[] => {
         const currentQuesitos = diagnosticData[currentArea]?.quesitos[currentQuestionIndex];
         const alternativas = currentQuesitos?.alternativas || [];
-    
+
         return alternativas.map(alt => ({
             ...alt,
-            isSelected: respostas[currentQuesitos?.id] === alt.id
+            isSelected: selectedOption?.id === alt.id || respostas[currentQuesitos?.id] === alt.id
         }));
-    };    
+    };
 
     const handleNextQuestion = async () => {
         const quesitoId = diagnosticData[currentArea].quesitos[currentQuestionIndex].id;
         const alternativaId = selectedOption?.id;
-    
+
         if (alternativaId !== undefined) {
             try {
                 await ApiService.fetchData({
@@ -114,17 +112,23 @@ const DiagnosticoEsg = () => {
                     method: 'post',
                     data: { id: diagId, answers: { [quesitoId]: alternativaId } }
                 });
+
+                setRespostas(prevRespostas => ({
+                    ...prevRespostas,
+                    [quesitoId]: alternativaId
+                }));
+
             } catch (error: any) {
                 toast.push(
-                    <Notification title={error?.data.message} type="success" />
+                    <Notification title={error?.data.message} type="danger" />
                 );
             }
         }
-    
+
         const totalQuestionsInCurrentArea = getTotalQuestions(currentArea);
         const isLastArea = currentArea === diagnosticData.length - 1;
         const isLastQuestion = currentQuestionIndex === totalQuestionsInCurrentArea - 1;
-    
+
         if (isLastArea && isLastQuestion) {
             handleSubmit();
         } else if (currentQuestionIndex < totalQuestionsInCurrentArea - 1) {
@@ -133,10 +137,10 @@ const DiagnosticoEsg = () => {
             setCurrentArea(currentArea + 1);
             setCurrentQuestionIndex(0);
         }
-    
+
         setSelectedOption(null);
     };
-    
+
 
     const handlePreviousQuestion = () => {
         if (currentQuestionIndex > 0) {
@@ -147,15 +151,18 @@ const DiagnosticoEsg = () => {
             setCurrentArea(previousAreaIndex);
             setCurrentQuestionIndex(totalQuestionsInPreviousArea - 1);
         }
-    };    
-
-    const setSelectedOptionAndEnableNext = (option: Alternativa) => {
-        setSelectedOption(option);
     };
 
     const handleOptionSelect = (option: Alternativa) => {
-        setSelectedOptionAndEnableNext(option);
+        setSelectedOption(option);
+
+        const quesitoId = diagnosticData[currentArea].quesitos[currentQuestionIndex].id;
+        setRespostas(prevRespostas => ({
+            ...prevRespostas,
+            [quesitoId]: option.id
+        }));
     };
+
 
     const handleSubmit = async () => {
         toast.push(
@@ -308,7 +315,6 @@ const DiagnosticoEsg = () => {
                                     </div>
                                 </div>
                             ))}
-
                         </div>
 
                         <div className="mt-4 flex justify-between items-center">
