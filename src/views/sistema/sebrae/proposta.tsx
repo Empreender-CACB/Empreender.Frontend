@@ -1,7 +1,6 @@
 import { Container } from '@/components/shared';
 import CadastraEmpresa from '@/components/template/sebrae/CadastraEmpresa';
 import CadastraProposta from '@/components/template/sebrae/CadastraProposta';
-import CadastraProposta2 from '@/components/template/sebrae/CadastraProposta2';
 const styles = {
   container: {
     display: 'flex',
@@ -13,13 +12,13 @@ const styles = {
   },
 };
 
-const CadastraEmpresaFormulario2 = () => {
+const CadastraEmpresaFormulario = () => {
 
   if(1===1) {
   
     return (
       <div className='flex justify-center items-center  sm:w-90'>
-        <CadastraProposta2/>
+        <CadastraProposta/>
       </div>
     
     )
@@ -32,4 +31,4 @@ const CadastraEmpresaFormulario2 = () => {
   );
 }
 
-export default CadastraEmpresaFormulario2;
+export default CadastraEmpresaFormulario;

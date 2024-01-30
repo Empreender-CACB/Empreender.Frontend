@@ -12,7 +12,7 @@ const styles = {
   },
 };
 
-const CadastraEmpresaFormulario = () => {
+const CadastraEmpresaFormulario2 = () => {
 
   if(1===1) {
   
@@ -31,4 +31,4 @@ const CadastraEmpresaFormulario = () => {
   );
 }
 
-export default CadastraEmpresaFormulario;
+export default CadastraEmpresaFormulario2;
