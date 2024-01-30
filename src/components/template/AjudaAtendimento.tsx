@@ -115,7 +115,7 @@ A CACB está em constante processo de adequação à LGPD. Quaisquer dúvidas so
                 </div>
             </Dialog>
 
-            <div>
+            <div className="hidden md:block">
                 <Link to={`${import.meta.env.VITE_PHP_URL}/sistema`}>
                     <Tag>Versão 4.0</Tag>
                 </Link>

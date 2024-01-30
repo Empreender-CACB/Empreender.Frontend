@@ -1,68 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="https://teste.cacbempreenderapp.org.br/img/favicon.ico" />
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Portal Empreender - Beta"
-    />
-    <title>Portal Empreender - Versão 5.0</title>
 
-    <script src="https://unpkg.com/cookie-notice@^1/dist/cookie.notice.min.js"></script>
-    
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="https://teste.cacbempreenderapp.org.br/img/favicon.ico" />
 
-  </head>
-  <body>
-    <script>
-      new cookieNoticeJS({
-  
-          'messageLocales': {
-              'en': 'Utilizamos cookies para garantir que você tenha a melhor experiência em nosso site. Se você continuar a usar este site, assumimos que você aceita isso.'
-          },
-  
-          'buttonLocales': {
-              'it': 'Chiudi'  
-          },
-  
-          // Position for the cookie-notifier (default=bottom)
-          'cookieNoticePosition': 'bottom',
-  
-          'learnMoreLinkEnabled': true,
-  
-          'learnMoreLinkHref': 'https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTY0OQ==',
-  
-          'learnMoreLinkText': {
-              'en': 'Saiba mais',
-              'pt': 'Saiba mais',
-              'pt-br': 'Saiba mais',
-          },
-  
-          'expiresIn': 360,
-  
-          'fontFamily': 'inherit',
-          'fontSize': '12px',
-  
-          'buttonBgColor': '#0f7cbf',
-  
-          'buttonTextColor': '#fff',
-  
-          'noticeBgColor': '#0c4a6e',
-  
-          'noticeTextColor': '#fff',
-  
-          'linkColor': '#fff',
-  
-          'linkTarget': '',
-  
-          'debug': false
-      });
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Portal Empreender - Beta" />
+  <title>Portal Empreender - Versão 5.0</title>
+
+  <script src="https://unpkg.com/cookie-notice@^1/dist/cookie.notice.min.js"></script>
+
+
+</head>
+
+<body>
+  <script>
+    new cookieNoticeJS({
+
+      'messageLocales': {
+        'en': 'Utilizamos cookies para garantir que você tenha a melhor experiência em nosso portal. Se você continuar a usar este portal, assumimos que você aceita isso.',
+        'pt': 'Utilizamos cookies para garantir que você tenha a melhor experiência em nosso portal. Se você continuar a usar este portal, assumimos que você aceita isso.',
+        'pt-br': 'Utilizamos cookies para garantir que você tenha a melhor experiência em nosso portal. Se você continuar a usar este portal, assumimos que você aceita isso.'
+
+
+      },
+
+      'buttonLocales': {
+        'it': 'Chiudi'
+      },
+
+      // Position for the cookie-notifier (default=bottom)
+      'cookieNoticePosition': 'bottom',
+
+      'learnMoreLinkEnabled': true,
+
+      'learnMoreLinkHref': 'https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTY0OQ==',
+
+      'learnMoreLinkText': {
+        'en': 'Saiba mais',
+        'pt': 'Saiba mais',
+        'pt-br': 'Saiba mais'
+      },
+
+      'expiresIn': 360,
+
+      'fontFamily': 'inherit',
+      'fontSize': '12px',
+
+      'buttonBgColor': '#0f7cbf',
+
+      'buttonTextColor': '#fff',
+
+      'noticeBgColor': '#0c4a6e',
+
+      'noticeTextColor': '#fff',
+
+      'linkColor': '#fff',
+
+      'linkTarget': '_blank',
+
+      'debug': false
+    });
   </script>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
