@@ -18,35 +18,16 @@ const CadastraEmpresaFormulario = () => {
   
     return (
       <div className='flex justify-center items-center  sm:w-90'>
-        <CadastraProposta/>
+        <CadastraProposta2/>
       </div>
     
     )
   }
 
   return (
-
-
-    <div style={styles.container}>
-      {/* ?????? style direto? */}
-      <style>
-        {`
-          @media (min-width: 768px) {
-            #container {
-              width: 40%; 
-            }
-          }
-          @media (max-width: 767px) {
-            #container {
-              width: 100%;
-            }
-          }
-        `}
-      </style>
-      <Container id="container">
+      <Container>
         <CadastraEmpresa />
       </Container>
-    </div>
   );
 }
 
