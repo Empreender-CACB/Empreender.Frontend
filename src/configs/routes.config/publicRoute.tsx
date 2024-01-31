@@ -50,6 +50,15 @@ const publicRoute: Routes = [
         },
     },
     {
+        key: 'diagnostico_esg_visualizacao',
+        path: `/esg/diagnostico/visualizacao/:cnpj`,
+        component: lazy(() => import('@/views/Inscricoes/esg/diagnostico/visualizacao')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
+    {
         key: 'cadastro_empresa_esg',
         path: `/esg2/cadastro`,
         component: lazy(() => import('@/views/sistema/sebrae/proposta2')),
