@@ -127,7 +127,7 @@ function CadastraProposta2() {
 
             setErrors(null);
             if (response.status === 200) {
-                navigate(`/esg/diagnostico/${event.target['cnpj'].value}`);
+                navigate(`/esg2/diagnostico/${event.target['cnpj'].value}`);
             }
 
         } catch (error: any) {
