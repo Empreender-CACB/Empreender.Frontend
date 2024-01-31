@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Notification } from '@/components/ui';
 import ApiService from '@/services/ApiService';
-import { CheckIcon } from '@heroicons/react/20/solid';
 import toast from '@/components/ui/toast'
 
 interface Alternativa {
@@ -130,7 +129,7 @@ const DiagnosticoEsg = () => {
         const isLastQuestion = currentQuestionIndex === totalQuestionsInCurrentArea - 1;
 
         if (isLastArea && isLastQuestion) {
-            handleSubmit();
+            navigate(`/esg/diagnostico/visualizacao/${cnpj}`);
         } else if (currentQuestionIndex < totalQuestionsInCurrentArea - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else if (currentArea < diagnosticData.length - 1) {
@@ -163,11 +162,34 @@ const DiagnosticoEsg = () => {
         }));
     };
 
+    const handleAreaChange = (newAreaIndex: number) => {
+        setCurrentArea(newAreaIndex);
+        setCurrentQuestionIndex(0);
+    };
 
-    const handleSubmit = async () => {
-        toast.push(
-            <Notification title="Diagnóstico finalizado com sucesso." type="success" />
-        );
+    const isAreaCompleted = (areaIndex: number): boolean => {
+        const quesitos = diagnosticData[areaIndex]?.quesitos || [];
+
+        return quesitos.every(quesito => {
+            const respostaQuesito = respostas[quesito.id];
+            return respostaQuesito !== undefined && respostaQuesito !== null;
+        });
+    };
+
+    const isAreaPartiallyCompleted = (areaIndex: number) => {
+        const quesitos = diagnosticData[areaIndex]?.quesitos;
+        let hasAnswered = false;
+        let hasUnanswered = false;
+    
+        quesitos.forEach(quesito => {
+            if (respostas[quesito.id] !== undefined) {
+                hasAnswered = true;
+            } else {
+                hasUnanswered = true;
+            }
+        });
+    
+        return hasAnswered && hasUnanswered;
     };
 
     const isLastQuestionOfLastArea = currentArea === diagnosticData.length - 1 && currentQuestionIndex === getTotalQuestions(currentArea) - 1;
@@ -204,26 +226,53 @@ const DiagnosticoEsg = () => {
 
                         <nav aria-label="Progress">
                             <ol className="space-y-4 md:flex md:space-y-0 md:space-x-8">
-                                {diagnosticData.map((area, index) => (
-                                    <li key={area.id} className="md:flex-1">
-                                        <a
-                                            href="#"
-                                            className={`group pl-4 py-2 flex flex-col border-l-4 ${index === currentArea ? 'border-indigo-600' : 'border-gray-200'
-                                                } hover:border-indigo-800 md:pl-0 md:pt-4 md:pb-0 md:border-l-0 md:border-t-4`}
-                                        >
-                                            <span
-                                                className={`text-xs ${index === currentArea ? 'text-indigo-600' : 'text-gray-500'
-                                                    } font-semibold tracking-wide uppercase group-hover:text-indigo-800`}
+                                {diagnosticData.map((area, index) => {
+                                    const isCompleted = isAreaCompleted(index);
+                                    const isPartiallyCompleted = isAreaPartiallyCompleted(index);
+                                    const tooltipText = isCompleted
+                                        ? "Todos os quesitos respondidos"
+                                        : isPartiallyCompleted
+                                            ? "Ainda há quesitos a serem respondidos"
+                                            : "Nenhum quesito respondido";
+
+                                    return (
+                                        <li key={area.id} className="md:flex-1">
+                                            <a
+                                                href="#"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleAreaChange(index);
+                                                }}
+                                                className={`group pl-4 py-2 flex flex-col ${index === currentArea
+                                                        ? 'border-blue-600'
+                                                        : isCompleted
+                                                            ? 'border-green-600'
+                                                            : isPartiallyCompleted
+                                                                ? 'border-yellow-300'
+                                                                : 'border-gray-200'
+                                                    } hover:border-indigo-800 md:pl-0 md:pt-4 md:pb-0 md:border-l-0 md:border-t-4`}
+                                                title={tooltipText}
                                             >
-                                                {area.nome}
-                                            </span>
-                                        </a>
-                                    </li>
-                                ))}
+                                                <span
+                                                    className={`text-xs ${index === currentArea
+                                                            ? 'text-blue-600'
+                                                            : isCompleted
+                                                                ? 'text-green-600'
+                                                                : isPartiallyCompleted
+                                                                    ? 'text-yellow-600'
+                                                                    : 'text-gray-500'
+                                                        } font-semibold tracking-wide uppercase group-hover:text-indigo-800`}
+                                                >
+                                                    {area.nome}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    );
+                                })}
                             </ol>
                         </nav>
 
-                        
+
 
                         <div className="mt-8">
                             <div className='flex flex-col sm:flex-row justify-between items-center my-4'>
