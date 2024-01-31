@@ -60,6 +60,7 @@ function CadastraProposta2() {
     const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState(null);
+    const [respondeu, setRespondeu] = useState(true);
     const [validCNPJ, setValidCNPJ] = useState(false);
     const [validCPF, setValidCPF] = useState(user ? user.nucpf : false)
     const [errors, setErrors] = useState(null)
@@ -349,12 +350,17 @@ function CadastraProposta2() {
 
                     <div className="container mx-auto w-11/12 xl:w-full pt-10">
                         <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
-                            <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm mr-4" type="submit">
+                         {respondeu == false && validCNPJ && validCPF ?  < button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
                                 Responder
-                            </button>
-                            <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
-                                Apresentar
-                            </button>
+                            </button>: ''}
+                            {respondeu == true && validCNPJ && validCPF ? <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm mr-4" type="submit">
+                                Ver
+                            </button>: ''}
+                            {respondeu == true && validCNPJ && validCPF ? <input required type="text" id="codigo" name="codigo" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400 mr-4" placeholder="Informe seu código de acesso" /> : ''}
+
+                            {respondeu == true && validCNPJ && validCPF ? <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm ml-auto" type="submit">
+                              Gerar Código
+                            </button>: ''}
                         </div>
                     </div>
                 </div>
