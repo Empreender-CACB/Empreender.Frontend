@@ -7,6 +7,7 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { CgClose as CloseIcon } from 'react-icons/cg'
 import { useNavigate } from 'react-router-dom';
+import Tooltip from '@/components/ui/Tooltip'
 
 type PorteMapping = {
     [key: string]: string;
@@ -303,9 +304,9 @@ function CadastraProposta2() {
 
                             <div className="mt-1">
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
-                                {respondeu == true && validCNPJ && validCPF ? <button className="ml-20 bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm ml-auto" type="submit">
+                                {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado'><button className="ml-20 bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm ml-auto" type="submit">
                             Gerar Código
-                        </button> : ''}
+                        </button> </Tooltip>: ''}
                             </div>
                             
                         </div>
