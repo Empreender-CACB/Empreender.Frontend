@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Input from '@/components/ui/Input';
 import { validaCNPJ } from './CnpjInput';
 import { validaCPF } from './CpfInput';
@@ -6,7 +6,6 @@ import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { CgClose as CloseIcon } from 'react-icons/cg'
-import { useAppSelector } from '@/store'
 import { useNavigate } from 'react-router-dom';
 
 type PorteMapping = {
@@ -47,28 +46,27 @@ const ErrorComponent = ({ errors }: any) => {
     );
 };
 function CadastraProposta2() {
-    const user = useAppSelector((state) => state.auth.user);
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState<any>(null);
-    const [respondeu, setRespondeu] = useState(true);
+    const [respondeu, setRespondeu] = useState(false);
     const [validCNPJ, setValidCNPJ] = useState(false);
-    const [validCPF, setValidCPF] = useState(user ? user.nucpf : false)
-    const [errors, setErrors] = useState(null)
-    const [email, setEmail] = useState(user ? user.dsemail : '');
-    const [nome, setNome] = useState(user ? user.nmusuario : '');
-    const [cpf, setCpf] = useState(user ? user.nucpf : '');
+    const [validCPF, setValidCPF] = useState(false);
+    const [errors, setErrors] = useState(null);
+    const [cpf, setCpf] = useState('');
     const navigate = useNavigate();
 
     const handleCnpjChange = async (event: any) => {
         const newCnpj = event.target.value.replace(/\D/g, '');
+        setCnpj(newCnpj);
         const isValidCnpj = validaCNPJ(newCnpj);
         setValidCNPJ(isValidCnpj);
-
+    
         if (isValidCnpj) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`, { method: 'GET' });
-                if (response.ok) {
-                    const data = await response.json();
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`);
+    
+                if (response.status === 200) {
+                    const data = response.data;
                     setEmpresaData(data);
                 } else {
                     console.error('Erro ao obter os dados da empresa:', response.statusText);
@@ -77,15 +75,15 @@ function CadastraProposta2() {
                 console.error('Erro ao obter os dados da empresa:', error);
             }
         }
-        setCnpj(newCnpj);
     };
+    
 
     const handleCpfChange = async (event: any) => {
-        const newCpf = event.target.value.replace(/\D/g, '');
+        const newCpf = event.target.value.replace(/\D/g, '')
+        setCpf(newCpf)
         const isValidCpf = validaCPF(newCpf);
         setValidCPF(isValidCpf);
 
-        setCpf(newCpf);
     }
 
     const toastNotification = (
@@ -113,7 +111,7 @@ function CadastraProposta2() {
         }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/empresas/esg/cadastro`, formData, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/esg/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -141,6 +139,27 @@ function CadastraProposta2() {
             }
         }
     };
+
+    const handleRespondeu = async () => {
+        try{
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/esg/verify`, {params: {
+                cpf: cpf,
+                cnpj: cnpj,
+                tipo: 'esg2'
+            }});
+            if (response.status === 200) {
+                setRespondeu(true)
+            }
+        } catch (error) {
+            console.error('Erro ao verificar se usuario ja preencheu diagnostico', error);
+        }
+    }
+
+    useEffect(()=> {
+        if(validCNPJ && validCPF){
+            handleRespondeu()
+        }
+    }, [validCNPJ,validCPF])
 
 
     return (
@@ -179,10 +198,7 @@ function CadastraProposta2() {
                         </div>
                         <p className='font-bold mt-4 texts text-gray-400 text-justify'>A CACB, no âmbito dos projetos EMPREENDER e AL Invest Verde,
                             oferece às empresas um diagnóstico de sua situação no que se refere às práticas ESG. Sua participação é muito importante.
-                            Abaixo, pedimos algumas poucas informações e logo após você iniciar o preenchimento do diagnóstico.
-                            <br /><br /> Se você já preencheu e deseja apenas ver o resultado, informe apenas o seu cpf e o cnpj da empresa e
-                            clique em “Ver”, usando sua senha no portal ou código de acesso já enviado. Se esqueceu o código, basta
-                            pressionar “Gerar código” e um novo código será enviado.</p>
+                            Abaixo, pedimos algumas poucas informações e logo após você iniciar o preenchimento do diagnóstico.</p>
                     </div>
 
                     <div className="mx-auto">
@@ -228,19 +244,19 @@ function CadastraProposta2() {
                             </div>
 
 
-                            <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
+                            {respondeu == false && validCNPJ && validCPF ?  <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Nome Completo
                                 </label>
-                                <input required type="text" id="nome" name="nome" value={nome} className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
-                            </div>
-                            <div className="flex flex-col w-full col-span-2 sm:col-span-1">
+                                <input required type="text" id="nome" name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
+                            </div>: ''}
+                            {respondeu == false && validCNPJ && validCPF ? <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="email" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Email
                                 </label>
-                                <input required type="email" id="email" name="email" value={email} className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
-                            </div>
-                            <div className="flex flex-col w-full col-span-2 sm:col-span-1">
+                                <input required type="email" id="email" name="email" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
+                            </div>: ''}
+                            {respondeu == false && validCNPJ && validCPF ? <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="sexo" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Sexo
                                 </label>
@@ -249,13 +265,13 @@ function CadastraProposta2() {
                                     <option value="M">Masculino</option>
                                     <option value="F">Feminino</option>
                                     <option value="PNI">Prefiro não informar</option>
-                                </select>                            </div>
-                            <div className="flex flex-col w-full col-span-2 sm:col-span-1">
+                                </select>                            </div>: ''}
+                            {respondeu == false && validCNPJ && validCPF ? <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="ano_nascimento" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Ano de Nascimento
                                 </label>
                                 <input required type="number" id="ano_nascimento" name="ano_nascimento" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe apenas o ano de nascimento" />
-                            </div>
+                            </div>: ''}
 
 
                         </div>
@@ -296,7 +312,7 @@ function CadastraProposta2() {
                 <div className="container mx-auto w-11/12 xl:w-full pt-10">
                     <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
                         {respondeu == false && validCNPJ && validCPF ? < button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
-                            Responder
+                            Responder Diagnóstico
                         </button> : ''}
                         {respondeu == true && validCNPJ && validCPF ? <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm mr-4" type="submit">
                             Ver
