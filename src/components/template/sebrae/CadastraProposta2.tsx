@@ -109,6 +109,7 @@ function CadastraProposta2() {
             if (event.target[field] === undefined) continue;
             formData.append(field, event.target[field].value);
         }
+        formData.append('tipo', 'esg2');
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/esg/`, formData, {
@@ -152,6 +153,7 @@ function CadastraProposta2() {
             }
         } catch (error) {
             console.error('Erro ao verificar se usuario ja preencheu diagnostico', error);
+            setRespondeu(false)
         }
     }
 
@@ -159,7 +161,7 @@ function CadastraProposta2() {
         if(validCNPJ && validCPF){
             handleRespondeu()
         }
-    }, [validCNPJ,validCPF])
+    }, [validCNPJ,validCPF, cpf, cnpj])
 
 
     return (
@@ -301,7 +303,11 @@ function CadastraProposta2() {
 
                             <div className="mt-1">
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
+                                {respondeu == true && validCNPJ && validCPF ? <button className="ml-20 bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm ml-auto" type="submit">
+                            Gerar Código
+                        </button> : ''}
                             </div>
+                            
                         </div>
                     </div>
 
@@ -319,9 +325,6 @@ function CadastraProposta2() {
                         </button> : ''}
                         {respondeu == true && validCNPJ && validCPF ? <input required type="text" id="codigo" name="codigo" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400 mr-4" placeholder="Informe seu código de acesso" /> : ''}
 
-                        {respondeu == true && validCNPJ && validCPF ? <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm ml-auto" type="submit">
-                            Gerar Código
-                        </button> : ''}
                     </div>
                 </div>
             </div>
