@@ -37,19 +37,19 @@ const DiagnosticoEsg = () => {
     const [respostas, setRespostas] = useState<Respostas>({});
     const [diagId, setDiagId] = useState(0);
 
-    const { cnpj } = useParams();
+    const { id_usuario_sebrae_empresa } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
         const verificarDiagnostico = async () => {
             try {
                 const response: any = await ApiService.fetchData({
-                    url: `esg/diagnostico/${cnpj}`,
+                    url: `esg/diagnostico/${id_usuario_sebrae_empresa}`,
                     method: 'get',
                 });
 
                 if (!response.data.idDiagnostico) {
-                    navigate('/esg/cadastro');
+                    navigate('/esg2/cadastro');
                 } else {
                     setDiagId(response.data.idDiagnostico);
 
@@ -78,12 +78,12 @@ const DiagnosticoEsg = () => {
                     });
                 }
             } catch (error) {
-                navigate('/esg/cadastro');
+                navigate('/esg2/cadastro');
             }
         };
 
         verificarDiagnostico();
-    }, [cnpj, navigate]);
+    }, [id_usuario_sebrae_empresa, navigate]);
 
 
     const getTotalQuestions = (areaIndex: number): number => {
@@ -129,7 +129,7 @@ const DiagnosticoEsg = () => {
         const isLastQuestion = currentQuestionIndex === totalQuestionsInCurrentArea - 1;
 
         if (isLastArea && isLastQuestion) {
-            navigate(`/esg/diagnostico/visualizacao/${cnpj}`);
+            navigate(`/esg2/diagnostico/visualizacao/${diagId}`);
         } else if (currentQuestionIndex < totalQuestionsInCurrentArea - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         } else if (currentArea < diagnosticData.length - 1) {

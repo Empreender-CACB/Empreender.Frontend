@@ -121,7 +121,7 @@ function CadastraProposta2() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
+            
             await axios.post(`${import.meta.env.VITE_API_URL}/rfb/cadastra-empresa`, { cnpj }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ function CadastraProposta2() {
 
             setErrors(null);
             if (response.status === 200) {
-                navigate(`/esg2/diagnostico/${event.target['cnpj'].value}`);
+                navigate(`/esg2/diagnostico/${response.data.id}`);
             }
 
         } catch (error: any) {

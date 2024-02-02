@@ -42,7 +42,7 @@ const publicRoute: Routes = [
     },
     {
         key: 'diagnostico_esg',
-        path: `/esg2/diagnostico/:cnpj`,
+        path: `/esg2/diagnostico/:id_usuario_sebrae_empresa`,
         component: lazy(() => import('@/views/Inscricoes/esg/diagnostico')),
         meta: {
             layout: 'blank',
@@ -51,7 +51,7 @@ const publicRoute: Routes = [
     },
     {
         key: 'diagnostico_esg_visualizacao',
-        path: `/esg2/diagnostico/visualizacao/:cnpj`,
+        path: `/esg2/diagnostico/visualizacao/:id_diagnostico`,
         component: lazy(() => import('@/views/Inscricoes/esg/diagnostico/visualizacao')),
         meta: {
             layout: 'blank',
