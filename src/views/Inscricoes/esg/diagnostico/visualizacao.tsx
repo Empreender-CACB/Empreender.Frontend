@@ -1,8 +1,11 @@
 import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { format } from 'date-fns';
+
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { Empresa } from '@/@types/generalTypes';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -14,6 +17,13 @@ interface AlternativaEscolhida {
 interface RadarData {
     labels: string[];
     data: number[];
+}
+
+interface UsuarioSebrae {
+    id: number;
+    nome: string;
+    email: string;
+    data_inclusao: Date;
 }
 
 interface AlternativaEscolhida {
@@ -37,7 +47,9 @@ interface DadosDiagnostico {
         quesitoDescricao: string;
         alternativaEscolhida: AlternativaEscolhida;
     }[];
-    radarData?: RadarData;
+    radarData: RadarData;
+    empresa: Empresa;
+    usuarioSebrae: UsuarioSebrae;
 }
 
 
@@ -63,8 +75,6 @@ const VisualizacaoDiagnosticoEsg = () => {
         buscarDadosDiagnostico();
     }, [id_diagnostico]);
 
-
-    // Supondo que dadosDiagnostico já esteja definido e inicializado em algum lugar do componente
     const agrupadosPorArea: Record<string, AreaAgrupada> = dadosDiagnostico?.dados.reduce((acc: Record<string, AreaAgrupada>, item) => {
         if (!acc[item.areaNome]) {
             acc[item.areaNome] = {
@@ -83,7 +93,7 @@ const VisualizacaoDiagnosticoEsg = () => {
     const dataRadar = dadosDiagnostico?.radarData ? {
         labels: dadosDiagnostico.radarData.labels,
         datasets: [{
-            label: 'Nota por Área',
+            label: 'Nota por Área (porcentagem)',
             data: dadosDiagnostico.radarData.data,
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgba(255, 99, 132, 1)',
@@ -114,17 +124,17 @@ const VisualizacaoDiagnosticoEsg = () => {
                 angleLines: {
                     display: false
                 },
-                suggestedMin: 1,
-                suggestedMax: 6
+                suggestedMin: 0,
+                suggestedMax: 100
             }
         },
         plugins: {
             legend: {
-                position: 'top' as const, 
+                position: 'top' as const,
             },
         },
     };
-    
+
 
     return (
         <div className='bg-white sm:w-full lg:w-9/12 mx-auto'>
@@ -154,31 +164,51 @@ const VisualizacaoDiagnosticoEsg = () => {
 
             </div>
             {dadosDiagnostico && (
-                <div>
-                    <div className="bg-white sm:w-full lg:w-9/12 mx-auto p-5">
-                        <h2 className="text-xl font-semibold mb-4">Visualização Diagnóstico ESG</h2>
-                        {Object.values(agrupadosPorArea).map((area, index) => (
-                            <div key={index} className="mb-6">
-                                <h3 className="text-lg font-semibold mb-2">{area.nome}</h3>
-                                <div className="border p-4 rounded-md">
-                                    {area.quesitos.map((quesito, quesitoIndex) => (
-                                        <div key={quesitoIndex} className="mb-4">
-                                            <p className="font-medium">{quesito.descricao}</p>
-                                            <ul className="list-disc pl-5 mt-2">
-                                                <li className="text-green-600">{quesito.alternativaEscolhida.descricao} (Nota: {quesito.alternativaEscolhida.nota})</li>
-                                            </ul>
-                                        </div>
-                                    ))}
+                <div className="bg-white sm:w-full lg:w-9/12 mx-auto px-4 py-5 sm:p-6">
+                    <div className="flex flex-wrap -mx-4">
+                        <div className="w-full lg:w-7/12 px-4">
+                            <h2 className="text-xl font-semibold mb-4">Visualização do Diagnóstico ESG</h2>
+                            {Object.values(agrupadosPorArea).map((area, index) => (
+                                <div key={index} className="mb-6">
+                                    <h3 className="text-lg font-semibold mb-2">{area.nome}</h3>
+                                    <div className="border p-4 rounded-md">
+                                        {area.quesitos.map((quesito, quesitoIndex) => (
+                                            <div key={quesitoIndex} className="mb-4">
+                                                <p className="font-medium">{quesito.descricao}</p>
+                                                <ul className="list-disc pl-5 mt-2">
+                                                    <li className="text-green-600">{quesito.alternativaEscolhida.descricao} (Nota: {quesito.alternativaEscolhida.nota})</li>
+                                                </ul>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="w-full lg:w-5/12 px-4">
+                            <div className="mb-6">
+                                <h3 className="text-lg font-semibold mb-4">Informações Gerais</h3>
+                                <div className="border p-6 rounded-lg shadow-sm bg-white">
+                                    <p className="mb-4"><strong>Nome da Empresa:</strong> <span className="text-gray-600">{dadosDiagnostico.empresa.nmfantasia}</span></p>
+                                    <p className="mb-4"><strong>CNPJ:</strong> <span className="text-gray-600">{dadosDiagnostico.empresa.nucnpjcpf}</span></p>
+                                    <p className="mb-4"><strong>Usuário Sebrae:</strong> <span className="text-gray-600">{dadosDiagnostico.usuarioSebrae.nome}</span></p>
+                                    <p className="mb-4"><strong>Email:</strong> <span className="text-gray-600">{dadosDiagnostico.usuarioSebrae.email}</span></p>
+                                    <p className="mb-2"><strong>Data do Preenchimento:</strong> <span className="text-gray-600">{format(new Date(dadosDiagnostico.usuarioSebrae.data_inclusao), 'dd/MM/yyyy')}</span></p>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                    <div style={{ maxWidth: '600px', margin: 'auto' }}>
-                        <Radar data={dataRadar} options={options} />
+                            <div className="flex flex-col items-center justify-center bg-white p-5 border rounded-lg shadow-sm">
+                                <div className="w-full max-w-lg">
+                                    <Radar data={dataRadar} options={options} />
+                                </div>
+                                <p className="text-sm text-gray-500 text-center max-w-md" style={{ marginTop: '-50px' }}>
+                                    O gráfico acima representa a performance da empresa em cada área do diagnóstico ESG, calculada como uma porcentagem do aproveitamento total possível. Para cada área, consideramos a soma das notas obtidas em cada quesito e comparamos com o total de pontos que seria possível alcançar se todas as respostas fossem a nota máxima. Assim, a porcentagem reflete o quão próximo a empresa está de atingir a pontuação máxima em cada área, permitindo uma visão geral de suas forças e áreas que necessitam de melhorias.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
         </div>
+
     );
 };
 

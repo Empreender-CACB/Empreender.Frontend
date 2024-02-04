@@ -175,7 +175,7 @@ function CadastraProposta2() {
     const sendMailToken = async (event: any) => {
         try{
             event.preventDefault()
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/esg/sendToken`, {
+            await axios.post(`${import.meta.env.VITE_API_URL}/esg/sendToken`, {
                 cpf: cpf,
                 cnpj: cnpj
             });
