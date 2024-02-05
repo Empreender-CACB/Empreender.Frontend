@@ -190,7 +190,7 @@ const VisualizacaoDiagnosticoEsg = () => {
                                 <div className="border p-6 rounded-lg shadow-sm bg-white">
                                     <p className="mb-4"><strong>Nome da Empresa:</strong> <span className="text-gray-600">{dadosDiagnostico.empresa.nmfantasia}</span></p>
                                     <p className="mb-4"><strong>CNPJ:</strong> <span className="text-gray-600">{dadosDiagnostico.empresa.nucnpjcpf}</span></p>
-                                    <p className="mb-4"><strong>Usuário Sebrae:</strong> <span className="text-gray-600">{dadosDiagnostico.usuarioSebrae.nome}</span></p>
+                                    <p className="mb-4"><strong>Usuário:</strong> <span className="text-gray-600">{dadosDiagnostico.usuarioSebrae.nome}</span></p>
                                     <p className="mb-4"><strong>Email:</strong> <span className="text-gray-600">{dadosDiagnostico.usuarioSebrae.email}</span></p>
                                     <p className="mb-2"><strong>Data do Preenchimento:</strong> <span className="text-gray-600">{format(new Date(dadosDiagnostico.usuarioSebrae.data_inclusao), 'dd/MM/yyyy')}</span></p>
                                 </div>
@@ -200,7 +200,7 @@ const VisualizacaoDiagnosticoEsg = () => {
                                     <Radar data={dataRadar} options={options} />
                                 </div>
                                 <p className="text-sm text-gray-500 text-center max-w-md" style={{ marginTop: '-50px' }}>
-                                    O gráfico acima representa a performance da empresa em cada área do diagnóstico ESG, calculada como uma porcentagem do aproveitamento total possível. Para cada área, consideramos a soma das notas obtidas em cada quesito e comparamos com o total de pontos que seria possível alcançar se todas as respostas fossem a nota máxima. Assim, a porcentagem reflete o quão próximo a empresa está de atingir a pontuação máxima em cada área, permitindo uma visão geral de suas forças e áreas que necessitam de melhorias.
+                                    O gráfico acima representa a situação da empresa em cada área do diagnóstico ESG, calculada como uma porcentagem do valor máximo possível. Para cada área considera-se a soma das notas obtidas comparada com o total de pontos possível. Assim, o valor apresentado reflete o quão próximo a empresa está de atingir a pontuação máxima em cada área.
                                 </p>
                             </div>
                         </div>
