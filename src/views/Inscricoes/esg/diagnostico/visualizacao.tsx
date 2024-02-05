@@ -93,7 +93,7 @@ const VisualizacaoDiagnosticoEsg = () => {
     const dataRadar = dadosDiagnostico?.radarData ? {
         labels: dadosDiagnostico.radarData.labels,
         datasets: [{
-            label: 'Nota por Área (porcentagem)',
+            label: 'Notas (%)',
             data: dadosDiagnostico.radarData.data,
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             borderColor: 'rgba(255, 99, 132, 1)',
