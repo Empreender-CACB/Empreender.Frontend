@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Notification } from '@/components/ui';
+import { Button, Dialog, Notification } from '@/components/ui';
 import ApiService from '@/services/ApiService';
 import toast from '@/components/ui/toast'
 
@@ -36,9 +36,18 @@ const DiagnosticoEsg = () => {
     const [selectedOption, setSelectedOption] = useState<Alternativa | null>(null);
     const [respostas, setRespostas] = useState<Respostas>({});
     const [diagId, setDiagId] = useState(0);
+    const [dialogIsOpen, setIsOpen] = useState<boolean>(false)
 
     const { id_usuario_sebrae_empresa } = useParams();
     const navigate = useNavigate();
+
+    const onDialogClose = (e: MouseEvent) => {
+        setIsOpen(false)
+    }
+
+    const onDialogOk = (e: MouseEvent) => {
+        setIsOpen(false)
+    }
 
     useEffect(() => {
         const verificarDiagnostico = async () => {
@@ -180,7 +189,7 @@ const DiagnosticoEsg = () => {
         const quesitos = diagnosticData[areaIndex]?.quesitos;
         let hasAnswered = false;
         let hasUnanswered = false;
-    
+
         quesitos.forEach(quesito => {
             if (respostas[quesito.id] !== undefined) {
                 hasAnswered = true;
@@ -188,14 +197,51 @@ const DiagnosticoEsg = () => {
                 hasUnanswered = true;
             }
         });
-    
+
         return hasAnswered && hasUnanswered;
     };
+
+    const handleEncerrarDiagModal = () => {
+        setIsOpen(!dialogIsOpen)
+    }
+
+    const EncerrarDiagnostico = () => {
+        navigate(`/esg2/diagnostico/visualizacao/${diagId}`);
+    }
 
     const isLastQuestionOfLastArea = currentArea === diagnosticData.length - 1 && currentQuestionIndex === getTotalQuestions(currentArea) - 1;
 
     return (
         <div className='bg-white sm:w-full lg:w-9/12 mx-auto'>
+
+            <Dialog
+                isOpen={dialogIsOpen}
+                onClose={handleEncerrarDiagModal}
+                onRequestClose={handleEncerrarDiagModal}
+                style={{
+                    content: {
+                        marginTop: 250,
+                    },
+                }}
+            >
+                <h5 className="mb-4">Deseja encerrar o diagnóstico?</h5>
+                <p>
+                    Ao encerrar o diagnóstico, você não poderá mais responder seus quesitos.
+                </p>
+                <div className="text-right mt-6 flex flex-col sm:flex-row justify-between">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={handleEncerrarDiagModal}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button variant="solid" onClick={EncerrarDiagnostico}>
+                        Encerrar Diagnóstico
+                    </Button>
+                </div>
+            </Dialog>
+
             <div className="flex flex-col items-center">
                 {/* LOGOS DAS EMPRESAS */}
                 <div className=" flex items-center space-x-4">
@@ -244,23 +290,23 @@ const DiagnosticoEsg = () => {
                                                     handleAreaChange(index);
                                                 }}
                                                 className={`group pl-4 py-2 flex flex-col ${index === currentArea
-                                                        ? 'border-blue-600'
-                                                        : isCompleted
-                                                            ? 'border-green-600'
-                                                            : isPartiallyCompleted
-                                                                ? 'border-yellow-300'
-                                                                : 'border-gray-200'
+                                                    ? 'border-blue-600'
+                                                    : isCompleted
+                                                        ? 'border-green-600'
+                                                        : isPartiallyCompleted
+                                                            ? 'border-yellow-300'
+                                                            : 'border-gray-200'
                                                     } hover:border-indigo-800 md:pl-0 md:pt-4 md:pb-0 md:border-l-0 md:border-t-4`}
                                                 title={tooltipText}
                                             >
                                                 <span
                                                     className={`text-xs ${index === currentArea
-                                                            ? 'text-blue-600'
-                                                            : isCompleted
-                                                                ? 'text-green-600'
-                                                                : isPartiallyCompleted
-                                                                    ? 'text-yellow-600'
-                                                                    : 'text-gray-500'
+                                                        ? 'text-blue-600'
+                                                        : isCompleted
+                                                            ? 'text-green-600'
+                                                            : isPartiallyCompleted
+                                                                ? 'text-yellow-600'
+                                                                : 'text-gray-500'
                                                         } font-semibold tracking-wide uppercase group-hover:text-indigo-800`}
                                                 >
                                                     {area.nome}
@@ -331,24 +377,35 @@ const DiagnosticoEsg = () => {
                             ))}
                         </div>
 
-                        <div className="mt-4 flex justify-between items-center">
+                        <div className="mt-4 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
                             <Button
                                 onClick={handlePreviousQuestion}
                             >
                                 Voltar
                             </Button>
 
-                            <Button
-                                onClick={handleNextQuestion}
-                                variant='solid'
-                            >
-                                {isLastQuestionOfLastArea ? "Enviar diagnóstico" : "Próximo"}
-                            </Button>
+                            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                                <Button
+                                    onClick={handleEncerrarDiagModal}
+                                    variant='solid'
+                                    color="orange-500"
+                                >
+                                    Encerrar Diagnóstico
+                                </Button>
+
+                                <Button
+                                    onClick={handleNextQuestion}
+                                    variant='solid'
+                                >
+                                    {isLastQuestionOfLastArea ? "Enviar diagnóstico" : "Próximo"}
+                                </Button>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 
