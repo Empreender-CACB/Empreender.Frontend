@@ -74,9 +74,11 @@ function CadastraProposta2() {
                     setEmpresaData(data);
                 } else {
                     console.error('Erro ao obter os dados da empresa:', response.statusText);
+                    setValidCNPJ(false)
                 }
             } catch (error) {
                 console.error('Erro ao obter os dados da empresa:', error);
+                setValidCNPJ(false)
             }
         }
     };
