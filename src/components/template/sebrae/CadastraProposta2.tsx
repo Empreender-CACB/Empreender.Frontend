@@ -57,6 +57,7 @@ function CadastraProposta2() {
     const [validCPF, setValidCPF] = useState(false);
     const [errors, setErrors] = useState(null);
     const [cpf, setCpf] = useState('');
+    const [nome, setNome] = useState('')
     const navigate = useNavigate();
 
     const handleCnpjChange = async (event: any) => {
@@ -87,6 +88,7 @@ function CadastraProposta2() {
     const handleCpfChange = async (event: any) => {
         const newCpf = event.target.value.replace(/\D/g, '')
         setCpf(newCpf)
+        setNome('')
         const isValidCpf = validaCPF(newCpf);
         setValidCPF(isValidCpf);
 
@@ -162,10 +164,13 @@ function CadastraProposta2() {
             }});
             if (response.status === 200) {
                 setRespondeu(true)
+                const nome = response.data
+                setNome(nome)
             }
         } catch (error) {
             console.error('Erro ao verificar se usuario ja preencheu diagnostico', error);
             setRespondeu(false)
+            setNome('')
         }
     }
 
@@ -276,11 +281,11 @@ function CadastraProposta2() {
                             </div>
 
 
-                            {respondeu == false && validCNPJ && validCPF ?  <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
+                            {validCNPJ && validCPF ?  <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                     Nome Completo
                                 </label>
-                                <input required type="text" id="nome" name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
+                                <input required type="text" id="nome" value={respondeu ? nome : undefined} name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
                             </div>: ''}
                             {respondeu == false && validCNPJ && validCPF ? <div className="flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="email" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
