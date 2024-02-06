@@ -181,11 +181,11 @@ function CadastraProposta2() {
     const sendMailToken = async (event: any) => {
         try{
             event.preventDefault()
+            toast.push(toastNotificationEmail)
             await axios.post(`${import.meta.env.VITE_API_URL}/esg/sendToken`, {
                 cpf: cpf,
                 cnpj: cnpj
             });
-
         } catch (error) {
             console.error('Erro ao enviar email', error);
         }
@@ -333,10 +333,7 @@ function CadastraProposta2() {
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
                             </div>
                             {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado' placement='top'><Button className='mt-4' variant="solid" color='blue-800' 
-                            onClick={() => {
-                                sendMailToken
-                                toast.push(toastNotificationEmail)
-                                }}>
+                            onClick={sendMailToken}>
                             Gerar Código
                         </Button> </Tooltip>: ''}
                         </div>
