@@ -96,6 +96,12 @@ function CadastraProposta2() {
         </Notification>
     )
 
+       const toastNotificationEmail = (
+        <Notification title="Fique atento." type="info">
+            Em instantes você receberá o código no email cadastrado.
+        </Notification>
+    )
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -303,14 +309,14 @@ function CadastraProposta2() {
 
                 </div>
 
-                {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded">
                     <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                             <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
                         </div>
                     </div>
 
-                    <div className="relative px-4 pt-2">
+                    <div className="relative pt-2">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <div className="flex items-baseline">
                                 <span className="bg-teal-200 text-teal-800 text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
@@ -326,7 +332,11 @@ function CadastraProposta2() {
                             <div className="mt-1">
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
                             </div>
-                            {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado' placement='top'><Button className='mt-4' variant="solid" color='blue-800' onClick={sendMailToken}>
+                            {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado' placement='top'><Button className='mt-4' variant="solid" color='blue-800' 
+                            onClick={() => {
+                                sendMailToken
+                                toast.push(toastNotificationEmail)
+                                }}>
                             Gerar Código
                         </Button> </Tooltip>: ''}
                         </div>
@@ -341,7 +351,7 @@ function CadastraProposta2() {
                         {respondeu == false && validCNPJ && validCPF ? < button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
                             Responder Diagnóstico
                         </button> : ''}
-                        {respondeu == true && validCNPJ && validCPF ? <input required type="text" id="token" name="token" onChange={(e)=>{setToken(e.target.value)}} className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400 mr-4" placeholder="Informe seu código de acesso" /> : ''}
+                        {respondeu == true && validCNPJ && validCPF ? <input required type="text" id="token" name="token" onChange={(e)=>{setToken(e.target.value)}} className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400 mr-4" placeholder="Informe seu código" /> : ''}
                         {respondeu == true && validCNPJ && validCPF ? <Button variant="solid" disabled= {token.length < 1 } color='blue-800'onClick={redirectEsg}>
                             Acessar
                         </Button>: ''}
@@ -349,17 +359,15 @@ function CadastraProposta2() {
                     </div>
                 </div>
             </div>
-            <div className="bg-gray-100 flex flex-col justify-between pt-5 pb-10 border-t border-gray-300 sm:flex-row">
-                <p className="text-sm text-gray-500">
+                        <div className="bg-gray-100 flex flex-col justify-between pt-5 pb-10 border-t border-gray-300 sm:flex-row">
+                <p className="text-sm text-gray-500 whitespace-normal text-center">
                     Ao participar, você concorda com a manutenção dos dados informados para uso interno na gestão de usuários e aplicações da CACB.
                     <br />
                     Se tiver qualquer dificuldade, por favor, avise-nos pelo <a href='mailto:empreender@cacb.org.br'>empreender@cacb.org.br</a>.
                     <br /> <br />
-                    Programa Empreender 1999-2023 - Versão 5
+                    Programa Empreender 1999-2024 - Versão 5
                 </p>
-
             </div>
-
         </form>
 
     );
