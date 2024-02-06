@@ -356,7 +356,7 @@ function CadastraProposta2() {
                     </div>
                 </div>
             </div>
-                        <div className="bg-gray-100 flex flex-col justify-between pt-5 pb-10 border-t border-gray-300 sm:flex-row">
+            <div className="bg-gray-100 flex flex-col justify-center items-center pt-5 pb-10 border-t border-gray-300 sm:flex-row">
                 <p className="text-sm text-gray-500 whitespace-normal text-center">
                     Ao participar, você concorda com a manutenção dos dados informados para uso interno na gestão de usuários e aplicações da CACB.
                     <br />
