@@ -39,8 +39,10 @@ const greetingMessage = (capitalize = true) => {
 
 const settingsImages = {
     dots: true,
-    infinite: true,
+    scrollbar: false,
+    infinite: false,
     speed: 500,
+    swap:false,
     slidesToShow: 1,
     slidesToScroll: 1,
 }
