@@ -63,7 +63,7 @@ interface DadosDiagnostico {
 
 const VisualizacaoDiagnosticoEsg = () => {
     const [dadosDiagnostico, setDadosDiagnostico] = useState<DadosDiagnostico | null>(null);
-    const { id_diagnostico } = useParams();
+    const { token } = useParams();
 
     const navigate = useNavigate();
 
@@ -71,7 +71,7 @@ const VisualizacaoDiagnosticoEsg = () => {
         const buscarDadosDiagnostico = async () => {
             try {
                 const response = await ApiService.fetchData({
-                    url: `esg/visualizar-diagnostico/${id_diagnostico}`,
+                    url: `esg/visualizar-diagnostico/${token}`,
                     method: 'get',
                 });
                 if (response.data) {
@@ -83,7 +83,7 @@ const VisualizacaoDiagnosticoEsg = () => {
         };
 
         buscarDadosDiagnostico();
-    }, [id_diagnostico]);
+    }, [token]);
 
     const agrupadosPorArea: Record<string, AreaAgrupada> = dadosDiagnostico?.dados.reduce((acc: Record<string, AreaAgrupada>, item) => {
         if (!acc[item.areaNome]) {
@@ -198,7 +198,7 @@ const VisualizacaoDiagnosticoEsg = () => {
                             <div className='flex justify-end w-full mb-2'>
                                 {dadosDiagnostico.diagnostico.status !== "Encerrado" && 
                                     <Button
-                                        onClick={() => navigate(`/esg2/diagnostico/${dadosDiagnostico.diagnostico.id_responsavel_prenchimento}`)}
+                                        onClick={() => navigate(`/esg2/diagnostico/${token}`)}
                                         variant='solid'
                                         size='sm'
                                         color="green-500"
