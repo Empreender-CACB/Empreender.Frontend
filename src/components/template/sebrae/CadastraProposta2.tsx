@@ -99,12 +99,6 @@ function CadastraProposta2() {
         </Notification>
     )
 
-       const toastNotificationEmail = (
-        <Notification title="Fique atento." type="info">
-            Em instantes você receberá o código no email cadastrado.
-        </Notification>
-    )
-
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -187,7 +181,6 @@ function CadastraProposta2() {
     const sendMailToken = async (event: any) => {
         try{
             event.preventDefault()
-            toast.push(toastNotificationEmail)
             await axios.post(`${import.meta.env.VITE_API_URL}/esg/sendToken`, {
                 cpf: cpf,
                 cnpj: cnpj
