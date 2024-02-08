@@ -67,6 +67,15 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'confirmacao_esg',
+        path: `/esg2/diagnostico/confirmacao`,
+        component: lazy(() => import('@/views/Inscricoes/esg/diagnostico/confirmacao')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute

@@ -6,10 +6,9 @@ import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { CgClose as CloseIcon } from 'react-icons/cg'
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Tooltip from '@/components/ui/Tooltip'
 import { Button } from '@/components/ui';
-import { Console } from 'console';
 
 type PorteMapping = {
     [key: string]: string;
@@ -180,6 +179,7 @@ function CadastraProposta2() {
                 cnpj: cnpj
             });
 
+            navigate('/esg2/diagnostico/confirmacao');
         } catch (error) {
             console.error('Erro ao enviar email', error);
         }
@@ -326,8 +326,9 @@ function CadastraProposta2() {
                             <div className="mt-1">
                                 <span className='text-bold'>Nome fantasia: </span>{empresaData.nmfantasia}
                             </div>
-                            {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado' placement='top'><Button className='mt-4' variant="solid" color='blue-800' onClick={sendMailToken}>
-                            Gerar Código
+                            {respondeu == true && validCNPJ && validCPF ? <Tooltip title= 'Um código de acesso será enviado ao email cadastrado' placement='top'><Button className='mt-4' variant="solid" color='blue-800' 
+                            onClick={sendMailToken}>
+                            Acessar Diagnóstico
                         </Button> </Tooltip>: ''}
                         </div>
                     </div>
@@ -341,11 +342,6 @@ function CadastraProposta2() {
                         {respondeu == false && validCNPJ && validCPF ? < button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
                             Responder Diagnóstico
                         </button> : ''}
-                        {respondeu == true && validCNPJ && validCPF ? <input required type="text" id="token" name="token" onChange={(e)=>{setToken(e.target.value)}} className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400 mr-4" placeholder="Informe seu código de acesso" /> : ''}
-                        {respondeu == true && validCNPJ && validCPF ? <Button variant="solid" disabled= {token.length < 1 } color='blue-800'onClick={redirectEsg}>
-                            Acessar
-                        </Button>: ''}
-
                     </div>
                 </div>
             </div>
