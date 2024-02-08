@@ -1,11 +1,12 @@
 import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 import { Empresa } from '@/@types/generalTypes';
+import { Button } from '@/components/ui';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -41,6 +42,12 @@ interface AreaAgrupada {
     quesitos: QuesitoAgrupado[];
 }
 
+interface Diagnostico {
+    nome: string;
+    id_responsavel_prenchimento: string;
+    status: string;
+}
+
 interface DadosDiagnostico {
     dados: {
         areaNome: string;
@@ -49,19 +56,22 @@ interface DadosDiagnostico {
     }[];
     radarData: RadarData;
     empresa: Empresa;
+    diagnostico: Diagnostico;
     usuarioSebrae: UsuarioSebrae;
 }
 
 
 const VisualizacaoDiagnosticoEsg = () => {
     const [dadosDiagnostico, setDadosDiagnostico] = useState<DadosDiagnostico | null>(null);
-    const { id_diagnostico } = useParams();
+    const { token } = useParams();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarDadosDiagnostico = async () => {
             try {
                 const response = await ApiService.fetchData({
-                    url: `esg/visualizar-diagnostico/${id_diagnostico}`,
+                    url: `esg/visualizar-diagnostico/${token}`,
                     method: 'get',
                 });
                 if (response.data) {
@@ -73,7 +83,7 @@ const VisualizacaoDiagnosticoEsg = () => {
         };
 
         buscarDadosDiagnostico();
-    }, [id_diagnostico]);
+    }, [token]);
 
     const agrupadosPorArea: Record<string, AreaAgrupada> = dadosDiagnostico?.dados.reduce((acc: Record<string, AreaAgrupada>, item) => {
         if (!acc[item.areaNome]) {
@@ -185,6 +195,29 @@ const VisualizacaoDiagnosticoEsg = () => {
                             ))}
                         </div>
                         <div className="w-full lg:w-5/12 px-4">
+                            <div className='flex justify-end w-full mb-2'>
+                                {dadosDiagnostico.diagnostico.status !== "Encerrado" && 
+                                    <Button
+                                        onClick={() => navigate(`/esg2/diagnostico/${token}`)}
+                                        variant='solid'
+                                        size='sm'
+                                        color="green-500"
+                                        className='mr-2'
+                                    >
+                                        Responder
+                                    </Button>
+                                }
+
+                                <Button
+                                    onClick={() => window.print()}
+                                    variant='solid'
+                                    size='sm'
+                                    color="blue-700"
+                                >
+                                    Imprimir
+                                </Button>
+                            </div>
+
                             <div className="mb-6">
                                 <h3 className="text-lg font-semibold mb-4">Informações Gerais</h3>
                                 <div className="border p-6 rounded-lg shadow-sm bg-white">

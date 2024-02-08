@@ -38,33 +38,28 @@ const DiagnosticoEsg = () => {
     const [diagId, setDiagId] = useState(0);
     const [dialogIsOpen, setIsOpen] = useState<boolean>(false)
 
-    const { id_usuario_sebrae_empresa } = useParams();
+    const { token } = useParams();
     const navigate = useNavigate();
-
-    const onDialogClose = (e: MouseEvent) => {
-        setIsOpen(false)
-    }
-
-    const onDialogOk = (e: MouseEvent) => {
-        setIsOpen(false)
-    }
 
     useEffect(() => {
         const verificarDiagnostico = async () => {
             try {
                 const response: any = await ApiService.fetchData({
-                    url: `esg/diagnostico/${id_usuario_sebrae_empresa}`,
+                    url: `esg/diagnostico/${token}`,
                     method: 'get',
                 });
 
-                if (!response.data.idDiagnostico) {
+                if (!response.data.diagnostico) {
                     navigate('/esg2/cadastro');
+                } else if (response.data.diagnostico.status === "Encerrado") {
+                    navigate(`/esg2/diagnostico/visualizacao/${token}`);
                 } else {
-                    setDiagId(response.data.idDiagnostico);
+                    setDiagId(response.data.diagnostico.id);
+                    console.log(diagId); 
 
                     // Busca as respostas para preencher as alternativas já marcardas
                     await ApiService.fetchData({
-                        url: `esg/respostas-diagnostico/${response.data.idDiagnostico}`,
+                        url: `esg/respostas-diagnostico/${diagId}`,
                         method: 'get',
                     }).then((response: any) => {
                         setRespostas(response.data);
@@ -92,7 +87,7 @@ const DiagnosticoEsg = () => {
         };
 
         verificarDiagnostico();
-    }, [id_usuario_sebrae_empresa, navigate]);
+    }, [diagId, navigate]);
 
 
     const getTotalQuestions = (areaIndex: number): number => {
@@ -205,9 +200,24 @@ const DiagnosticoEsg = () => {
         setIsOpen(!dialogIsOpen)
     }
 
-    const EncerrarDiagnostico = () => {
-        navigate(`/esg2/diagnostico/visualizacao/${diagId}`);
+    const EncerrarDiagnostico = async () => {
+        try {
+            await ApiService.fetchData({
+                url: 'esg/alterar-status-diag',
+                method: 'POST',
+                data: {
+                    id: diagId,
+                    status: 'Encerrado'
+                }
+            });
+            navigate(`/esg2/diagnostico/visualizacao/${token}`);
+        } catch (error: any) {
+            toast.push(
+                <Notification title={error.response?.data?.message} type="danger" />
+            );
+        }
     }
+
 
     const isLastQuestionOfLastArea = currentArea === diagnosticData.length - 1 && currentQuestionIndex === getTotalQuestions(currentArea) - 1;
 
@@ -236,7 +246,7 @@ const DiagnosticoEsg = () => {
                     >
                         Cancelar
                     </Button>
-                    <Button variant="solid" onClick={EncerrarDiagnostico}>
+                    <Button variant="solid" color="orange-500" onClick={EncerrarDiagnostico}>
                         Encerrar Diagnóstico
                     </Button>
                 </div>
@@ -386,26 +396,33 @@ const DiagnosticoEsg = () => {
 
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                                 <Button
-                                    onClick={handleEncerrarDiagModal}
-                                    variant='solid'
-                                    color="orange-500"
+                                    onClick={() => navigate(`/esg2/diagnostico/visualizacao/${token}`)}
+                                variant='solid'
+                                color="green-500"
                                 >
-                                    Encerrar Diagnóstico
-                                </Button>
-
+                                Ver
+                            </Button>
+                            <Button
+                                onClick={handleEncerrarDiagModal}
+                                variant='solid'
+                                color="orange-500"
+                            >
+                                Encerrar Diagnóstico
+                            </Button>
+                            {!isLastQuestionOfLastArea ?
                                 <Button
                                     onClick={handleNextQuestion}
                                     variant='solid'
                                 >
-                                    {isLastQuestionOfLastArea ? "Enviar diagnóstico" : "Próximo"}
-                                </Button>
-                            </div>
+                                    Avançar
+                                </Button> : null
+                            }
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
+        </div >
     );
 };
 
