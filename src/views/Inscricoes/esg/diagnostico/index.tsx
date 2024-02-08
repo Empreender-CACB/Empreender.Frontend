@@ -38,23 +38,24 @@ const DiagnosticoEsg = () => {
     const [diagId, setDiagId] = useState(0);
     const [dialogIsOpen, setIsOpen] = useState<boolean>(false)
 
-    const { id_usuario_sebrae_empresa } = useParams();
+    const { token } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
         const verificarDiagnostico = async () => {
             try {
                 const response: any = await ApiService.fetchData({
-                    url: `esg/diagnostico/${id_usuario_sebrae_empresa}`,
+                    url: `esg/diagnostico/${token}`,
                     method: 'get',
                 });
 
                 if (!response.data.diagnostico) {
                     navigate('/esg2/cadastro');
                 } else if (response.data.diagnostico.status === "Encerrado") {
-                    navigate(`/esg2/diagnostico/visualizacao/${response.data.diagnostico.id}`);
+                    navigate(`/esg2/diagnostico/visualizacao/${token}`);
                 } else {
                     setDiagId(response.data.diagnostico.id);
+                    console.log(diagId); 
 
                     // Busca as respostas para preencher as alternativas já marcardas
                     await ApiService.fetchData({
@@ -86,7 +87,7 @@ const DiagnosticoEsg = () => {
         };
 
         verificarDiagnostico();
-    }, [id_usuario_sebrae_empresa, navigate]);
+    }, [diagId, navigate]);
 
 
     const getTotalQuestions = (areaIndex: number): number => {
@@ -209,14 +210,14 @@ const DiagnosticoEsg = () => {
                     status: 'Encerrado'
                 }
             });
-            navigate(`/esg2/diagnostico/visualizacao/${diagId}`);
+            navigate(`/esg2/diagnostico/visualizacao/${token}`);
         } catch (error: any) {
             toast.push(
                 <Notification title={error.response?.data?.message} type="danger" />
             );
         }
     }
-    
+
 
     const isLastQuestionOfLastArea = currentArea === diagnosticData.length - 1 && currentQuestionIndex === getTotalQuestions(currentArea) - 1;
 
@@ -395,32 +396,32 @@ const DiagnosticoEsg = () => {
 
                             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                                 <Button
-                                    onClick={() => navigate(`/esg2/diagnostico/visualizacao/${diagId}`)}
-                                    variant='solid'
-                                    color="green-500"
+                                    onClick={() => navigate(`/esg2/diagnostico/visualizacao/${token}`)}
+                                variant='solid'
+                                color="green-500"
                                 >
-                                    Ver
-                                </Button>
+                                Ver
+                            </Button>
+                            <Button
+                                onClick={handleEncerrarDiagModal}
+                                variant='solid'
+                                color="orange-500"
+                            >
+                                Encerrar Diagnóstico
+                            </Button>
+                            {!isLastQuestionOfLastArea ?
                                 <Button
-                                    onClick={handleEncerrarDiagModal}
+                                    onClick={handleNextQuestion}
                                     variant='solid'
-                                    color="orange-500"
                                 >
-                                    Encerrar Diagnóstico
-                                </Button>
-                                {!isLastQuestionOfLastArea ?
-                                    <Button
-                                        onClick={handleNextQuestion}
-                                        variant='solid'
-                                    >
-                                        Avançar
-                                    </Button> : null
-                                }
-                            </div>
+                                    Avançar
+                                </Button> : null
+                            }
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div >
     );
 };

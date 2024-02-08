@@ -130,7 +130,7 @@ function CadastraProposta2() {
 
             setErrors(null);
             if (response.status === 200) {
-                navigate(`/esg2/diagnostico/${response.data.id}`);
+                navigate(`/esg2/diagnostico/${response.data.token}`);
             }
 
         } catch (error: any) {
