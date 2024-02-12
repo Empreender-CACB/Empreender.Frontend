@@ -91,13 +91,13 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const valorLocalStorage = localStorage.getItem('lista_geral')
+    const valorLocalStorage = Number(localStorage.getItem('lista_geral'))
     const [isDark] = useDarkMode()
     const [view, setView] = useState('list')
     const [dialogIsOpen, setIsOpen] = useState(false)
     const [listaGeral, setListaGeral] = useState(
-        valorLocalStorage ? Number(valorLocalStorage) : 25
-    )
+        !isNaN(valorLocalStorage) ? valorLocalStorage : 25
+    );
     const [gridRef, setGridRef] = useState(null)
     const [loadedData, setLoadedData] = useState([])
     const [loading, setLoading] = useState(false)
