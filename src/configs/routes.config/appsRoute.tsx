@@ -89,6 +89,11 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/adminutils/acompanhamento-geral/quadro')),
     },
     {
+        key: 'sistema.parametros-gerais',
+        path: `${APP_PREFIX_PATH}/parametros-gerais`,
+        component: lazy(() => import('@/views/sistema/parametros-gerais')),
+    },
+    {
         key: 'sistema.cursoform',
         path: `${APP_PREFIX_PATH}/curso-form`,
         component: lazy(() => import('@/views/sistema/cursoform/index')),
