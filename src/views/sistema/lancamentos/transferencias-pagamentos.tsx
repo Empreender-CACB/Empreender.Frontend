@@ -1,6 +1,9 @@
+import '@inovua/reactdatagrid-community/index.css'
+
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
+import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import moment from 'moment'
 import Radio from '@/components/ui/Radio'
 
@@ -10,12 +13,12 @@ import { AdaptableCard } from '@/components/shared'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 import { TransferenciasPagamentosCard } from '@/components/shared/TableCards/TransferenciasPagamentosCard'
-
+import { maskMoney } from '@/utils/MaskMoney'
 
 moment.locale('pt-br')
 
 const columns = [
-    { name: 'idprojeto', header: 'Projeto', type:'string', value: '', defaultFlex: 0.3,},
+    { name: 'idprojeto', header: 'Projeto', type:'string', value: '', defaultFlex: 0.1,},
     { name: 'idlanc', header: 'Lançamento', type:'string'},
     { 
         name: 'dtliberacao', 
@@ -57,6 +60,14 @@ const columns = [
     },
     { name: 'nmcredor', header: 'Beneficiário', type:'string'},
     { name: 'tpfonterec', header: 'Origem', type:'string'},
+    { 
+        name: 'vllanc', 
+        header: 'Valor', 
+        type: 'number',
+        operator: 'equals',
+        filterEditor: NumberFilter,
+        render: ({ value } : any ) => (maskMoney(value))
+    },
     
 ]
 
@@ -98,6 +109,12 @@ const defaultFilterValue = [
         type: 'string',
         value: ''
     },
+    {
+        name: 'vllanc',
+        type: 'number',
+        value: '',
+        operator: 'eq',
+    },
 ]
 
 const Lancamentos = () => {
@@ -111,7 +128,7 @@ const Lancamentos = () => {
     const radioGroup = (
         <div>
             <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
-                <span className="pr-2 font-black">Mostrar Todos: </span>
+                <span className="pr-2 font-black">Mostrar Lançamentos Pagos: </span>
                 <Radio value={'todos'}></Radio>
             </Radio.Group>
         </div>
@@ -133,14 +150,14 @@ const Lancamentos = () => {
                     </Button>
                 </div>
             </div>
-            {<CustomReactDataGrid
+            <CustomReactDataGrid
                 filename='TransferenciasPagamentos'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/lancamentos/lista-transferencias-pagamentos?nameValue=${nameValue}&lancamentoType=${lancamentoType}`}
                 options={radioGroup}
                 CardLayout={TransferenciasPagamentosCard}
-            />}
+            />
             
         </AdaptableCard>
     )
