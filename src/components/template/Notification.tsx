@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button'
 import Tooltip from '@/components/ui/Tooltip'
 import {
     HiOutlineBell,
-    HiOutlineCalendar,
+    HiNewspaper,
     HiOutlineClipboardCheck,
     HiOutlineBan,
     HiOutlineMailOpen,
@@ -26,12 +26,12 @@ import useThemeClass from '@/utils/hooks/useThemeClass'
 import { useAppSelector } from '@/store'
 import useResponsive from '@/utils/hooks/useResponsive'
 import acronym from '@/utils/acronym'
-
 type NotificationList = {
     id: number
     nucpf: string
     titulo: string
     mensagem: string
+    url: string
     lida: boolean
     data_criacao: string
     entidade: string
@@ -51,25 +51,25 @@ const GeneratedAvatar = ({ target }: { target: string }) => {
 }
 
 const notificationTypeAvatar = (data: {
-    type: number
+    entidade: any
     target: string
     image: string
     status: string
 }) => {
-    const { type, target, image, status } = data
-    switch (type) {
+    const { entidade, target, image, status } = data
+    switch (entidade) {
         case 0:
             if (image) {
                 return <Avatar shape="circle" src={`${imagePath}${image}`} />
             } else {
                 return <GeneratedAvatar target={target} />
             }
-        case 1:
+        case 'blog_pde':
             return (
                 <Avatar
                     shape="circle"
-                    className="bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100"
-                    icon={<HiOutlineCalendar />}
+                    className="bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-100"
+                    icon={<HiNewspaper />}
                 />
             )
         case 2:
@@ -136,12 +136,13 @@ const _Notification = ({ className }: { className?: string }) => {
             setUnreadNotification(true)
         } else {
             setNoResult(true)
+            setUnreadNotification(false)
         }
     }, [setUnreadNotification])
 
     useEffect(() => {
         getNotificationCount()
-    }, [getNotificationCount])
+    }, [location.pathname, getNotificationCount])
 
     const onNotificationOpen = useCallback(async () => {
         if (notificationList.length === 0) {
@@ -164,9 +165,9 @@ const _Notification = ({ className }: { className?: string }) => {
     }, [notificationList])
 
     const onMarkAsRead = useCallback(
-        (id: string) => {
+        (id: number) => {
             const list = notificationList.map((item) => {
-                if (String(item.id) === id) {
+                if (Number(item.id) === id) {
                     item.lida = true
                 }
                 return item
@@ -195,8 +196,10 @@ const _Notification = ({ className }: { className?: string }) => {
         >
             <Dropdown.Item variant="header">
                 <div className="border-b border-gray-200 dark:border-gray-600 px-4 py-2 flex items-center justify-between">
-                    <h6>Notificações</h6>
-                    <Tooltip title="Marcar todas como lida">
+                    <h6>Notificações e alertas</h6>
+
+                    {/* Marcar todas como lida */}
+                    {/* <Tooltip title="Marcar todas como lida">
                         <Button
                             variant="plain"
                             shape="circle"
@@ -204,15 +207,15 @@ const _Notification = ({ className }: { className?: string }) => {
                             icon={<HiOutlineMailOpen className="text-xl" />}
                             onClick={onMarkAllAsRead}
                         />
-                    </Tooltip>
+                    </Tooltip> */}
                 </div>
             </Dropdown.Item>
             <div className={classNames('overflow-y-auto', notificationHeight)}>
                 <ScrollBar direction={direction}>
                     {notificationList.length > 0 &&
                         notificationList.map((item, index) => (
+                            <Link to={item.url} key={item.id}>
                             <div
-                                key={item.id}
                                 className={`relative flex px-4 py-4 cursor-pointer hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-black dark:hover:bg-opacity-20  ${
                                     !isLastChild(notificationList, index)
                                         ? 'border-b border-gray-200 dark:border-gray-600'
@@ -238,7 +241,9 @@ const _Notification = ({ className }: { className?: string }) => {
                                         item.lida ? 'bg-gray-300' : bgTheme
                                     } `}
                                 />
+
                             </div>
+                            </Link>
                         ))}
                     {loading && (
                         <div
@@ -250,7 +255,7 @@ const _Notification = ({ className }: { className?: string }) => {
                             <Spinner size={40} />
                         </div>
                     )}
-                    {noResult && (
+                    {notificationList.length < 1 && (
                         <div
                             className={classNames(
                                 'flex items-center justify-center',
@@ -266,7 +271,7 @@ const _Notification = ({ className }: { className?: string }) => {
                                 <h6 className="font-semibold">
                                    Sem novas notificações!
                                 </h6>
-                                <p className="mt-1">Tente novamente mais tarde</p>
+                                {/* <p className="mt-1">Volte depois ;)</p> */}
                             </div>
                         </div>
                     )}
@@ -274,12 +279,12 @@ const _Notification = ({ className }: { className?: string }) => {
             </div>
             <Dropdown.Item variant="header">
                 <div className="flex justify-center border-t border-gray-200 dark:border-gray-600 px-4 py-2">
-                    <Link
+                    {/* <Link
                         to="/app/account/activity-log"
                         className="font-semibold cursor-pointer p-2 px-3 text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
-                    >
-                        Visualizar todas
-                    </Link>
+                    > */}
+                        Sem mais notificações para exibir
+                    {/* </Link> */}
                 </div>
             </Dropdown.Item>
         </Dropdown>
