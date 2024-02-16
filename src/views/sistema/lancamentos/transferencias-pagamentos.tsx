@@ -18,12 +18,13 @@ import { maskMoney } from '@/utils/MaskMoney'
 moment.locale('pt-br')
 
 const columns = [
-    { name: 'idprojeto', header: 'Projeto', type:'string', value: '', defaultFlex: 0.1,},
-    { name: 'idlanc', header: 'Lançamento', type:'string'},
+    { name: 'idprojeto', header: 'Projeto', type:'string', value: '', defaultFlex: 0.1},
+    { name: 'idlanc', header: 'Lançamento', type:'string', defaultFlex: 0.1},
     { 
         name: 'dtliberacao', 
         header: 'Dt Liberação',
         dateFormat: 'DD/MM/YYYY',
+        defaultFlex: 0.1,
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
@@ -43,6 +44,7 @@ const columns = [
         name: 'dtpagamento', 
         header: 'Dt Pagamento',
         dateFormat: 'DD/MM/YYYY',
+        defaultFlex: 0.1,
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
@@ -58,13 +60,14 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-    { name: 'nmcredor', header: 'Beneficiário', type:'string'},
-    { name: 'tpfonterec', header: 'Origem', type:'string'},
+    { name: 'nmcredor', header: 'Beneficiário', type:'string', defaultFlex: 0.2},
+    { name: 'tpfonterec', header: 'Origem', type:'string', defaultFlex: 0.1},
     { 
         name: 'vllanc', 
         header: 'Valor', 
         type: 'number',
         operator: 'equals',
+        defaultFlex: 0.1,
         filterEditor: NumberFilter,
         render: ({ value } : any ) => (maskMoney(value))
     },
