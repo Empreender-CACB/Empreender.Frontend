@@ -13,6 +13,7 @@ import { Card } from '@/components/ui'
 import UserAlerts from '@/components/template/UserAlerts'
 import Dialog from '@/components/ui/Dialog';
 import { Link } from 'react-router-dom'
+import Forbidden from '@/utils/forbidden'
 
 type Noticia = {
     titulo: string
@@ -49,7 +50,7 @@ const settingsImages = {
 
 const Inicio = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedVideoId, setSelectedVideoId] = useState(null);
+    const [selectedVideoId, setSelectedVideoId] = useState<string>();
 
     const settingsVideos = {
         dots: true,
@@ -64,6 +65,9 @@ const Inicio = () => {
     const { nmusuario } = useAppSelector(
         (state) => state.auth.user
     )
+
+    console.log(useAppSelector((state) => state.auth.user));
+
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
     // let num_noticias = '3'
@@ -127,6 +131,14 @@ const Inicio = () => {
                 </h2>
                 <UserAlerts />
             </div>
+
+            <Forbidden permissions={['direito1', 'direito2']}>
+                <div>Visível se o usuário tiver 'direito1' OU 'direito2'.</div>
+            </Forbidden>
+
+            <Forbidden permissions={['direito1', 'direito2']} logic="and">
+                <div>Visível se o usuário tiver 'direito1' E 'direito2'.</div>
+            </Forbidden>
 
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 w-full items-start">
                 <div className="lg:col-span-4 col-span-1">
@@ -200,13 +212,13 @@ const Inicio = () => {
                             </h6>
 
                             <Link to="/docs/changelog">
-                            <Button
-                                className="w-full lg:w-auto"
-                                variant="solid"
-                                size="sm"
-                            >
-                                Saiba mais
-                            </Button>
+                                <Button
+                                    className="w-full lg:w-auto"
+                                    variant="solid"
+                                    size="sm"
+                                >
+                                    Saiba mais
+                                </Button>
                             </Link>
                         </div>
                     </div>
@@ -215,7 +227,7 @@ const Inicio = () => {
                 {/* Segunda Coluna: Carrossel de Imagens */}
                 <div className="lg:col-span-2 col-span-1 w-full">
                     <Slider {...settingsImages} className="max-h-[800px]">
-                        {images.map((image: { link: string }, index: Key) => (
+                        {images.map((image: { link: string, id_anexo: string }, index: Key) => (
                             <div key={index} className="w-full">
                                 {image.link ? (
                                     <a
@@ -254,7 +266,7 @@ const Inicio = () => {
                             titulo_carousel: string
                         }) => {
                             const videoIdMatch = video.link.match(/v=([^&]+)/)
-                            const videoId =
+                            const videoId: string =
                                 videoIdMatch && videoIdMatch[1]
                                     ? videoIdMatch[1]
                                     : ''
@@ -300,17 +312,17 @@ const Inicio = () => {
                 >
                     {selectedVideoId && (
                         <>
-                        <iframe
-                        style={{ marginTop: '15px', paddingBottom: '-15px' }}
-                            width="100%"
-                            height="500px"
-                            src={`https://www.youtube.com/embed/${selectedVideoId}`}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                        </>                
-        
-                        
+                            <iframe
+                                style={{ marginTop: '15px', paddingBottom: '-15px' }}
+                                width="100%"
+                                height="500px"
+                                src={`https://www.youtube.com/embed/${selectedVideoId}`}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </>
+
+
                     )}
                 </Dialog>
             </div>
