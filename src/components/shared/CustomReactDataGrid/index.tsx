@@ -397,23 +397,24 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     const [selected, setSelected] = useState({});
 
     const handleSelectionChange = useCallback(({ selected, data }) => {
-        let selectedRows;
-    
-        if (selected === true) {
-            // Todas as linhas estão selecionadas
-            selectedRows = data.map(item => item.id);
-        } else {
-            // Apenas linhas específicas estão selecionadas
-            selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
-        }
-    
-        setSelected(selected);
-        if (onSelectedRowsChange) {
-            onSelectedRowsChange(selectedRows);
+
+        if (isSelectable) {
+            let selectedRows;
+            if (selected === true) {
+                // Todas as linhas estão selecionadas
+                selectedRows = data.map(item => item.id);
+            } else {
+                // Apenas linhas específicas estão selecionadas
+                selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
+            }
+        
+            setSelected(selected);
+            if (onSelectedRowsChange) {
+                onSelectedRowsChange(selectedRows);
+            }
         }
     }, [onSelectedRowsChange]);
-    
-    
+        
 
     return (
         <div>
