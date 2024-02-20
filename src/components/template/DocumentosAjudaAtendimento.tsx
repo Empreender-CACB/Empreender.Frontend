@@ -46,7 +46,9 @@ const DocumentosAjudaAtendimento = () => {
                 >
                     {grupo.subMenu.map((sub: Documento) => (
                         <Dropdown.Item key={sub.id} className="mb-1 px-0">
-                            <Link className="flex h-full w-full px-2" to={'#'}>
+                    
+
+                            <Link target="_blank" className="flex h-full w-full px-2" to={`${import.meta.env.VITE_API_URL}/anexo/${sub.id}/download`}>
                                 <span className="flex gap-2 items-center w-full">
                                     <span
                                         className={
