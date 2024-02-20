@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Key, useEffect, useState } from 'react'
+import React, { Key, useEffect, useState } from 'react'
+import "./style.css"
 import Slider from 'react-slick'
 import Button from '@/components/ui/Button'
-
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { useAppSelector } from '@/store'
@@ -13,6 +13,9 @@ import { Card } from '@/components/ui'
 import UserAlerts from '@/components/template/UserAlerts'
 import Dialog from '@/components/ui/Dialog';
 import { Link } from 'react-router-dom'
+import { AdaptableCard } from '@/components/shared'
+import { useKeenSlider } from 'keen-slider/react'
+import 'keen-slider/keen-slider.min.css'
 
 type Noticia = {
     titulo: string
@@ -20,36 +23,59 @@ type Noticia = {
     link: string
 }
 
-const greetingMessage = (capitalize = true) => {
+const greetingMessage = () => {
     const currentHour = new Date().getHours()
 
     let greeting = ''
     if (currentHour < 12) {
-        greeting = 'bom dia'
+        greeting = 'Bom dia'
     } else if (currentHour < 18) {
-        greeting = 'boa tarde'
+        greeting = 'Boa tarde'
     } else {
-        greeting = 'boa noite'
+        greeting = 'Boa noite'
     }
 
-    return capitalize
-        ? greeting.charAt(0).toUpperCase() + greeting.slice(1)
-        : greeting
+    return greeting
 }
 
-const settingsImages = {
-    dots: true,
-    scrollbar: false,
-    infinite: false,
-    speed: 500,
-    swap:false,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+const Arrow = (props: {
+    disabled: boolean
+    left?: boolean
+    onClick: (e: any) => void
+}) => {
+    const disabled = props.disabled ? " arrow--disabled" : ""
+    return (
+        <svg
+            onClick={props.onClick}
+            className={`arrow ${props.left ? "arrow--left" : "arrow--right"
+                } ${disabled}`}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+        >
+            {props.left && (
+                <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
+            )}
+            {!props.left && (
+                <path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
+            )}
+        </svg>
+    )
 }
 
 const Inicio = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [currentSlide, setCurrentSlide] = React.useState(0)
+    const [loaded, setLoaded] = useState(false)
     const [selectedVideoId, setSelectedVideoId] = useState(null);
+    const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+        initial: 0,
+        slideChanged(slider) {
+            setCurrentSlide(slider.track.details.rel)
+        },
+        created() {
+            setLoaded(true)
+        },
+    })
 
     const settingsVideos = {
         dots: true,
@@ -92,7 +118,7 @@ const Inicio = () => {
         fetchNews()
     }, [])
 
-    const [images, setImages] = useState<any>([])
+    const [images, setImages] = useState(null);
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -121,10 +147,13 @@ const Inicio = () => {
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-4 w-full">
-                <h2>
-                    {greetingMessage()},{' '}
-                    {nmusuario ? nmusuario.split(' ')[0] : ''}
-                </h2>
+                <div>
+                    <h3>
+                        {greetingMessage()},{' '}
+                        {nmusuario ? nmusuario.split(' ')[0] : ''}
+                    </h3>
+                    <p>Bom trabalho !</p>
+                </div>
                 <UserAlerts />
             </div>
 
@@ -200,13 +229,13 @@ const Inicio = () => {
                             </h6>
 
                             <Link to="/docs/changelog">
-                            <Button
-                                className="w-full lg:w-auto"
-                                variant="solid"
-                                size="sm"
-                            >
-                                Saiba mais
-                            </Button>
+                                <Button
+                                    className="w-full lg:w-auto"
+                                    variant="solid"
+                                    size="sm"
+                                >
+                                    Saiba mais
+                                </Button>
                             </Link>
                         </div>
                     </div>
@@ -214,37 +243,86 @@ const Inicio = () => {
 
                 {/* Segunda Coluna: Carrossel de Imagens */}
                 <div className="lg:col-span-2 col-span-1 w-full">
-                    <Slider {...settingsImages} className="max-h-[800px]">
-                        {images.map((image: { link: string }, index: Key) => (
-                            <div key={index} className="w-full">
-                                {image.link ? (
-                                    <a
-                                        target="_blank"
-                                        href={image.link}
-                                        rel="noopener noreferrer"
-                                    >
-                                        <img
-                                            style={{
-                                                border: '2px solid black',
-                                            }}
-                                            src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
-                                            alt={`Slide ${index}`}
-                                        />
-                                    </a>
-                                ) : (
+                {images && (
+                    <>
+                    <div className="navigation-wrapper">
+                        <div ref={sliderRef} className="keen-slider">
+                        {images.map((image: { link: string }, index: Key) => (   
+                                                            
+                
+                            <div key={index} className={`keen-slider__slide number-slide1`}>
+                            {image.link ? (
+                                <a
+                                    target="_blank"
+                                    href={image.link}
+                                    rel="noopener noreferrer"
+                                >
                                     <img
-                                        style={{ border: '2px solid black' }}
+                                        style={{
+                                            border: '2px solid black',
+                                        }}
                                         src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
                                         alt={`Slide ${index}`}
                                     />
-                                )}
-                            </div>
-                        ))}
-                    </Slider>
+                                </a>
+                            ) : (
+                                <img
+                                    style={{ border: '2px solid black' }}
+                                    src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
+                                    alt={`Slide ${index}`}
+                                />
+                            )}
+                        </div>
+                            
+
+                    ))}
+                        </div>
+                        {loaded && instanceRef.current && (
+                            <>
+                                <Arrow
+                                    left
+                                    onClick={(e: any) =>
+                                        e.stopPropagation() || instanceRef.current?.prev()
+                                    }
+                                    disabled={currentSlide === 0}
+                                />
+
+                                <Arrow
+                                    onClick={(e: any) =>
+                                        e.stopPropagation() || instanceRef.current?.next()
+                                    }
+                                    disabled={
+                                        currentSlide ===
+                                        instanceRef.current.track.details.slides.length - 1
+                                    }
+                                />
+                            </>
+                        )}
+                    </div>
+                    {loaded && instanceRef.current && (
+                        <div className="dots">
+                            {[
+                                ...Array(instanceRef.current.track.details.slides.length).keys(),
+                            ].map((idx) => {
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            instanceRef.current?.moveToIdx(idx)
+                                        }}
+                                        className={"dot" + (currentSlide === idx ? " active" : "")}
+                                    ></button>
+                                )
+                            })}
+                        </div>
+                    )}
+                </>
+                )}
+
                 </div>
             </div>
 
-            <div className="mt-20">
+            <AdaptableCard className='mt-5'>
                 <h4 className="mb-4">Galeria de vídeos</h4>
                 <Slider {...settingsVideos}>
                     {videos.map(
@@ -300,20 +378,21 @@ const Inicio = () => {
                 >
                     {selectedVideoId && (
                         <>
-                        <iframe
-                        style={{ marginTop: '15px', paddingBottom: '-15px' }}
-                            width="100%"
-                            height="500px"
-                            src={`https://www.youtube.com/embed/${selectedVideoId}`}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                        </>                
-        
-                        
+                            <iframe
+                                style={{ marginTop: '15px', paddingBottom: '-15px' }}
+                                width="100%"
+                                height="500px"
+                                src={`https://www.youtube.com/embed/${selectedVideoId}`}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </>
+
+
                     )}
                 </Dialog>
-            </div>
+            </AdaptableCard>
+
         </div>
     )
 }
