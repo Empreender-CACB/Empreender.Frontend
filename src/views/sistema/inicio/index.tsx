@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom'
 import { AdaptableCard } from '@/components/shared'
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
+// import Forbidden from '@/utils/forbidden'
 
 type Noticia = {
     titulo: string
@@ -159,14 +160,6 @@ const Inicio = () => {
                 </div>
                 <UserAlerts />
             </div>
-
-            <Forbidden permissions={['direito1', 'direito2']}>
-                <div>Visível se o usuário tiver 'direito1' OU 'direito2'.</div>
-            </Forbidden>
-
-            <Forbidden permissions={['direito1', 'direito2']} logic="and">
-                <div>Visível se o usuário tiver 'direito1' E 'direito2'.</div>
-            </Forbidden>
 
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 w-full items-start">
                 <div className="lg:col-span-4 col-span-1">
