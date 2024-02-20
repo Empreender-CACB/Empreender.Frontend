@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom'
 import { AdaptableCard } from '@/components/shared'
 import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
+// import Forbidden from '@/utils/forbidden'
 
 type Noticia = {
     titulo: string
