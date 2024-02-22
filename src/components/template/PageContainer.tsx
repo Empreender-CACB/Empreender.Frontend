@@ -38,8 +38,7 @@ const PageContainer = (props: PageContainerProps) => {
     //document.body.style.transform = 'scale(0.95)';
 
     return (
-        
-        <div className="h-full flex flex-auto flex-col justify-between">
+        <>        <div className="h-full flex flex-auto flex-col justify-between">
             <main className="h-full">
                 <div
                     className={classNames(
@@ -91,6 +90,10 @@ const PageContainer = (props: PageContainerProps) => {
                 />
             )}
         </div>
+
+        </>
+        
+
     )
 }
 
