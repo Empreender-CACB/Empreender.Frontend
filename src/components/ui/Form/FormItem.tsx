@@ -113,7 +113,7 @@ const FormItem = forwardRef<HTMLDivElement, FormItemProps>((props, ref) => {
                 <AnimatePresence mode="wait">
                     {invalid && (
                         <motion.div
-                            className="form-explain"
+                            className="explain-error text-red-600"
                             initial={initialStyle}
                             animate={enterStyle}
                             exit={exitStyle}
