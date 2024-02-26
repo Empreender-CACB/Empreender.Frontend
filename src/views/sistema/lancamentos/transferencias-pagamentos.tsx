@@ -1,19 +1,20 @@
 import '@inovua/reactdatagrid-community/index.css'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import moment from 'moment'
 import Radio from '@/components/ui/Radio'
 
-import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
-import { Button } from '@/components/ui'
+import { HiOutlineReply, HiOutlinePaperClip } from 'react-icons/hi'
+import { Button } from '@/components/ui';
 import { AdaptableCard } from '@/components/shared'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
 import { TransferenciasPagamentosCard } from '@/components/shared/TableCards/TransferenciasPagamentosCard'
 import { maskMoney } from '@/utils/MaskMoney'
+import AcoesTransferencaisPagamentos from '@/components/template/AcoesTransferenciasPagamentos'
 
 moment.locale('pt-br')
 
@@ -60,18 +61,54 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
+    { 
+        name: 'stlancamento', 
+        header: 'Ações', 
+        type:'string', 
+        defaultFlex: 0.1,
+        value: '',
+        textAlign: 'center',
+        render: ({ data }: any) => (AcoesTransferencaisPagamentos(data)),
+    
+    },
     { name: 'nmcredor', header: 'Beneficiário', type:'string', defaultFlex: 0.2},
     { name: 'tpfonterec', header: 'Origem', type:'string', defaultFlex: 0.1},
+    { name: 'nucredor', header: 'Destino', type:'string', defaultFlex: 0.1},
     { 
         name: 'vllanc', 
-        header: 'Valor', 
+        header: '(R$) Valor', 
         type: 'number',
         operator: 'equals',
+        textAlign: 'end',
         defaultFlex: 0.1,
         filterEditor: NumberFilter,
-        render: ({ value } : any ) => (maskMoney(value))
+        render: ({ value } : any ) => (maskMoney(value, false))
     },
-    
+    { 
+        name: 'tplanc', 
+        header: 'Anexo',
+        textAlign: 'center', 
+        type:'string', 
+        defaultFlex: 0.05,
+        render: ({ value } : any ) => (
+            <div>
+                <Link
+                        className="block lg:inline-block md:mb-0 mb-4"
+                        to="/app/sales/product-new"
+                    >
+                        <Button
+                            block
+                            variant="solid"
+                            size="lg"
+                            color="white"
+                            title="Calendar"
+                            icon={<HiOutlinePaperClip />}
+                        >
+                        </Button>
+                </Link>
+            </div>
+        )
+    },
 ]
 
 const defaultFilterValue = [
@@ -98,17 +135,17 @@ const defaultFilterValue = [
         value: ''
     },
     {
-        name: 'stlancamento',
-        type: 'string',
-        value: ''
-    },
-    {
         name: 'nmcredor',
         type: 'string',
         value: ''
     },
     {
         name: 'tpfonterec',
+        type: 'string',
+        value: ''
+    },
+    {
+        name: 'nucredor',
         type: 'string',
         value: ''
     },
@@ -134,8 +171,13 @@ const Lancamentos = () => {
                 <span className="pr-2 font-black">Mostrar Lançamentos Pagos: </span>
                 <Radio value={'todos'}></Radio>
             </Radio.Group>
+            <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
+                <span className="pr-2 font-black">Mostrar Lançamentos Pagos: </span>
+                <Radio value={'todos'}></Radio>
+            </Radio.Group>
         </div>
     );
+
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -146,7 +188,7 @@ const Lancamentos = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/transferencias-e-pagamentos-novo`}
                         >
                             Versão antiga
                         </Link>
