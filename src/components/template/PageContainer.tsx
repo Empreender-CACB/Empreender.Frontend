@@ -6,10 +6,11 @@ import {
     PAGE_CONTAINER_GUTTER_Y,
 } from '@/constants/theme.constant'
 import Footer from '@/components/template/Footer'
+import type { FooterPageContainerType } from '@/components/template/Footer'
+import ReportButton from '@/components/template/Report/ReportButton'
 import type { CommonProps } from '@/@types/common'
 import type { Meta } from '@/@types/routes'
 import type { ElementType, ComponentPropsWithRef } from 'react'
-import type { FooterPageContainerType } from '@/components/template/Footer'
 
 export interface PageContainerProps extends CommonProps, Meta {
     contained?: boolean
@@ -82,6 +83,7 @@ const PageContainer = (props: PageContainerProps) => {
                     )}
                 </div>
             </main>
+            <ReportButton />
             {footer && (
                 <Footer
                     pageContainerType={
