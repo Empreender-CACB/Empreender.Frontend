@@ -196,7 +196,7 @@ const _Notification = ({ className }: { className?: string }) => {
         >
             <Dropdown.Item variant="header">
                 <div className="border-b border-gray-200 dark:border-gray-600 px-4 py-2 flex items-center justify-between">
-                    <h6>Notificações e alertas</h6>
+                    <h6>Notificações e avisos</h6>
 
                     {/* Marcar todas como lida */}
                     {/* <Tooltip title="Marcar todas como lida">
@@ -231,7 +231,7 @@ const _Notification = ({ className }: { className?: string }) => {
                                                 {item.target}{' '}
                                             </span>
                                         )}
-                                        <span>{item.mensagem}</span>
+                                        <span>{item.titulo}</span>
                                     </div>
                                     <span className="text-xs">{item.data_criacao}</span>
                                 </div>
