@@ -231,7 +231,7 @@ const _Notification = ({ className }: { className?: string }) => {
                                                 {item.target}{' '}
                                             </span>
                                         )}
-                                        <span>{item.mensagem}</span>
+                                        <span>{item.titulo}</span>
                                     </div>
                                     <span className="text-xs">{item.data_criacao}</span>
                                 </div>
