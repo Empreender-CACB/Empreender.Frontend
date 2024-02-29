@@ -169,23 +169,28 @@ const _Notification = ({ className }: { className?: string }) => {
         }
     }, [notificationList, setLoading])
 
-    const onMarkAllAsRead = useCallback(() => {
+    const onMarkAllAsRead = useCallback(async () => {
         const list = notificationList.map((item: NotificationList) => {
             if (!item.lida) {
                 item.lida = true
             }
             return item
         })
+        await ApiService.fetchData({
+            url: `/notifications/markAllAsRead`,
+            method: 'get'
+        });
         setNotificationList(list)
         setUnreadNotification(false)
     }, [notificationList])
 
-    const filterReadNotification = useCallback((reads: boolean) => {
-        if (reads) {
-            setNotificationList(notificationList.filter(item => !item.lida))
-        }
-        onNotificationOpen()
-    }, [notificationList])
+    // Filtrar o objeto no switcher
+    // const filterReadNotification = useCallback((reads: boolean) => {
+    //     if (reads) {
+    //         setNotificationList(notificationList.filter(item => !item.lida))
+    //     }
+    //     onNotificationOpen()
+    // }, [notificationList])
 
     const onMarkAsRead = useCallback(async (id: any) => {
         // Atualiza o estado primeiro para uma resposta rápida na UI
@@ -231,7 +236,9 @@ const _Notification = ({ className }: { className?: string }) => {
 
             <Dialog
                 isOpen={dialogIsOpen}
+                width={700}
                 onClose={() => setIsOpen(false)}
+
             >
                 <div dangerouslySetInnerHTML={{__html: currentNotification}} />
                 <div className="text-right mt-6">
@@ -277,7 +284,7 @@ const _Notification = ({ className }: { className?: string }) => {
                         {notificationList.length > 0 && (
                             (viewAll ? notificationList : notificationList.filter(item => !item.lida))
                                 .map((item, index) => (
-                                    <div key={index} onClick={() => openModalWithNotification(item.mensagem)}>
+                                    <div key={index}>
                                         <div
                                             className={`relative flex px-4 py-4 cursor-pointer hover:bg-gray-50 active:bg-gray-100 dark:hover:bg-black dark:hover:bg-opacity-20  ${!isLastChild(notificationList, index)
                                                 ? 'border-b border-gray-200 dark:border-gray-600'
@@ -285,17 +292,17 @@ const _Notification = ({ className }: { className?: string }) => {
                                                 }`}
                                             onClick={() => onMarkAsRead(item.id)}
                                         >
-                                            <div>{notificationTypeAvatar(item)}</div>
-                                            <div className="ltr:ml-3 rtl:mr-3">
+                                            <div onClick={() => openModalWithNotification(item.mensagem)}>{notificationTypeAvatar(item)}</div>
+                                            <div onClick={() => openModalWithNotification(item.mensagem)} className="ltr:ml-3 rtl:mr-3">
                                                 <div>
                                                     {item.target && (
                                                         <span className="font-semibold heading-text">
                                                             {item.target}{' '}
                                                         </span>
                                                     )}
-                                                    <span>{item.titulo}</span>
+                                                    <span onClick={() => openModalWithNotification(item.mensagem)}>{item.titulo}</span>
                                                 </div>
-                                                <span className="text-xs">{item.data_criacao}</span>
+                                                <span onClick={() => openModalWithNotification(item.mensagem)}  className="text-xs">{item.data_criacao}</span>
                                             </div>
                                             <Badge
                                                 className={`absolute top-4 ltr:right-4 rtl:left-4 mt-1.5 ${item.lida ? 'bg-gray-300' : bgTheme
