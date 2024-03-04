@@ -114,6 +114,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
     },
+    {
+        key: 'sistemaOcorrencias.ocorrencias',
+        path: `${APP_PREFIX_PATH}/ocorrencias`,
+        component: lazy(() => import('@/views/sistema/ocorrencias')),
+    }
 ]
 
 export default appsRoute
