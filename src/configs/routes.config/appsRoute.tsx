@@ -103,7 +103,7 @@ const appsRoute: Routes = [
     {
         key: 'sistema.cursoform',
         path: `${APP_PREFIX_PATH}/curso-form`,
-        component: lazy(() => import('@/views/sistema/cursoform/index')),
+        component: lazy(() => import('@/views/Inscricoes/cursoform/index')),
         meta: {
             pageContainerType: 'gutterless',
             footer: false,
@@ -115,10 +115,12 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
     },
     {
+
         key: 'sistemaOcorrencias.ocorrencias',
         path: `${APP_PREFIX_PATH}/ocorrencias`,
         component: lazy(() => import('@/views/sistema/ocorrencias')),
     }
+
 ]
 
 export default appsRoute

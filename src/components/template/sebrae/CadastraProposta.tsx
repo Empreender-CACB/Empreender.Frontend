@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Input from '@/components/ui/Input';
-import { AdaptableCard } from '@/components/shared';
-import { formataCNPJ, validaCNPJ } from './CnpjInput';
+import { validaCNPJ } from './CnpjInput';
+import { validaCPF } from './CpfInput';
 import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { CgClose as CloseIcon } from 'react-icons/cg'
-
-const sexoOptions = [
-    { value: 'M', label: 'Masculino' },
-    { value: 'F', label: 'Feminino' },
-    { value: 'PNI', label: 'Prefiro não me identificar' },
-]
 
 type PorteMapping = {
     [key: string]: string;
@@ -26,7 +20,7 @@ const porteMapping: PorteMapping = {
 
 
 
-const ErrorComponent = ({ errors }) => {
+const ErrorComponent = ({ errors }: any) => {
     console.log(errors, 'oi')
     if (!errors || errors.length === 0) {
         return null; // Não há erros, não renderiza nada
@@ -43,7 +37,7 @@ const ErrorComponent = ({ errors }) => {
                         } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
                     <div className="mt-2 text-sm text-red-700">
                         <ul role="list" className="list-disc space-y-1 pl-5">
-                            {errors.map((error, index) => (
+                            {errors.map((error: any, index: number) => (
                                 <li key={index}>{error.message}</li>
                             ))}
                         </ul>
@@ -54,17 +48,18 @@ const ErrorComponent = ({ errors }) => {
     );
 };
 function CadastraProposta() {
-    const [isValid, setIsValid] = useState(true);
     const [cnpj, setCnpj] = useState('');
-    const [empresaData, setEmpresaData] = useState(null);
+    const [cpf, setCpf] = useState('');
+    const [empresaData, setEmpresaData] = useState<any>(null);
     const [validCNPJ, setValidCNPJ] = useState(false);
+    const [validCPF, setValidCPF] = useState(false)
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
 
     const SuccessComponent = () => {
 
         if (success == false) {
-            return null; // Não há erros, não renderiza nada
+            return null; 
         }
         return (
             <div className="bg-white p-6  md:mx-auto h-full overflow-x-clip">
@@ -86,15 +81,13 @@ function CadastraProposta() {
     };
 
 
-    const handleCnpjChange = async (event) => {
+    const handleCnpjChange = async (event: any) => {
         const newCnpj = event.target.value.replace(/\D/g, '');
         const isValidCnpj = validaCNPJ(newCnpj);
         setValidCNPJ(isValidCnpj);
 
         if (isValidCnpj) {
             try {
-
-                // Usamos axios. Mudar
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`, { method: 'GET' });
                 if (response.ok) {
                     const data = await response.json();
@@ -108,6 +101,14 @@ function CadastraProposta() {
         }
         setCnpj(newCnpj);
     };
+    
+    const handleCpfChange = async (event: any) => {
+        const newCpf = event.target.value.replace(/\D/g, '');
+        const isValidCpf = validaCPF(newCpf);
+        setValidCPF(isValidCpf);
+
+        setCpf(newCpf);
+    }
 
     const toastNotification = (
         <Notification title="Falha na inscrição." type="danger">
@@ -125,7 +126,16 @@ function CadastraProposta() {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
-        const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj']
+        const isValidCpf = validaCPF(cpf);
+
+        if (!isValidCpf) {
+            console.error('CPF Inválido');
+            toast.push(toastNotification);
+            return;
+        }
+    
+
+        const fields = ['nome', 'email', 'sexo', 'ano_nascimento', 'cnpj', 'cpf']
 
         const formData = new FormData()
         for (const field of fields) {
@@ -140,6 +150,12 @@ function CadastraProposta() {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            
+            await axios.post(`${import.meta.env.VITE_API_URL}/rfb/cadastra-empresa`, {cnpj}, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             setErrors(null);
             setSuccess(true);
             toast.push(toastNotificationSucess)
@@ -147,13 +163,15 @@ function CadastraProposta() {
                 window.location.href = "https://sebrae.com.br/esg";
             }, 3000);
 
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            setErrors(error.response.data.errors);
-            toast.push(toastNotification)
-            document.getElementById('errors').scrollIntoView({
-                behavior: 'smooth'
-            });
+        } catch (error: any) {
+            setErrors(error.response?.data?.errors);
+            toast.push(toastNotification);
+            const errorsElement = document.getElementById('errors');
+            if (errorsElement) {
+                errorsElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         }
     };
 
@@ -190,12 +208,6 @@ function CadastraProposta() {
                 <div className="dark:bg-gray-800 px-10">
                     <div className="container mx-auto bg-white dark:bg-gray-800 rounded">
 
-
-
-
-                        <div>
-
-                        </div>
                         <div className="mb-10" id="errors" ><ErrorComponent errors={errors} /></div>
 
                         <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 pb-5 bg-white dark:bg-gray-800">
@@ -240,7 +252,7 @@ function CadastraProposta() {
                                     <input required type="number" id="ano_nascimento" name="ano_nascimento" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe apenas o ano de nascimento" />
                                 </div>
 
-                                <div className="flex flex-col w-full col-span-2 sm:col-span-2">
+                                <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
                                     <label htmlFor="cnpj" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
                                         CNPJ da empresa
                                     </label>
@@ -257,13 +269,30 @@ function CadastraProposta() {
                                     />
                                     {validCNPJ ? true : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
                                 </div>
+                                <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
+                                    <label htmlFor="cpf" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
+                                        CPF
+                                    </label>
+                                    {/* <input required type="text" id="cnpj" name="cnpj"  placeholder="Informe o cnpj da empresa" /> */}
+                                    <Input
+                                        required
+                                        placeholder='Infome o seu CPF'
+                                        className='focus:border-blue-700 bg-transparent placeholder-gray-500 '
+                                        type="text"
+                                        id="cpf"
+                                        name="cpf"
+                                        value={cpf}
+                                        onChange={handleCpfChange}
+                                    />
+                                    {validCPF ? true : <span style={{ color: 'red' }}>Informe um CPF válido</span>}
+                                </div>
 
                             </div>
                         </div>
 
                     </div>
 
-                    {empresaData!==null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                    {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
                         <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                             <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                                 <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
@@ -277,7 +306,7 @@ function CadastraProposta() {
                                         {porteMapping[empresaData.porte_empresa]}
                                     </span>
                                     <div className="ml-2 text-gray-600 uppercase text-xs font-semibold tracking-wider">
-                                        {empresaData.dsendereco}  &bull; {empresaData.dsbairro}
+                                        {empresaData.dsendereco}  &bull; {empresaData.dsbairro} &bull; {empresaData.nmcidade} &bull; {empresaData.ufcidade} 
                                     </div>
                                 </div>
 
@@ -292,12 +321,16 @@ function CadastraProposta() {
                     </div> : ''}
 
 
+
                     <div className="container mx-auto w-11/12 xl:w-full pt-10">
-                        <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
-                            <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
-                                Enviar
-                            </button>
-                            <span className='ml-2 flex items-center'>Ao enviar você será redirecionado para a plataforma do Sebrae.</span>
+                        <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-between">
+                            <div className='flex'>
+                                <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
+                                    Enviar
+                                </button>
+
+                                <span className='ml-2 flex items-center'>Ao enviar você será redirecionado para a plataforma do Sebrae.</span>
+                            </div>
                         </div>
                     </div>
                 </div>

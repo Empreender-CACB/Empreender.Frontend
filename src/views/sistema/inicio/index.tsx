@@ -91,9 +91,6 @@ const Inicio = () => {
     const { nmusuario } = useAppSelector(
         (state) => state.auth.user
     )
-
-    console.log(useAppSelector((state) => state.auth.user));
-
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
     // let num_noticias = '3'
@@ -336,7 +333,7 @@ const Inicio = () => {
                             titulo_carousel: string
                         }) => {
                             const videoIdMatch = video.link.match(/v=([^&]+)/)
-                            const videoId: string =
+                            const videoId =
                                 videoIdMatch && videoIdMatch[1]
                                     ? videoIdMatch[1]
                                     : ''
