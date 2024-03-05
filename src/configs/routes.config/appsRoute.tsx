@@ -115,10 +115,12 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
     },
     {
-        key: 'sistemaLancamento.transferenciasPagamentos',
-        path: `${APP_PREFIX_PATH}/lancamentos/transferencias-pagamentos`,
-        component: lazy(() => import('@/views/sistema/lancamentos/transferencias-pagamentos')),
-    },
+
+        key: 'sistemaOcorrencias.ocorrencias',
+        path: `${APP_PREFIX_PATH}/ocorrencias`,
+        component: lazy(() => import('@/views/sistema/ocorrencias')),
+    }
+
 ]
 
 export default appsRoute

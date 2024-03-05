@@ -51,6 +51,7 @@ const ReportButton = () => {
         <div className="fixed bottom-1 right-1 z-25">
 
             <Button size="xs" onClick={() => openDialog()} className="mr-2" icon={<PiBugBeetle />}>
+
                 <span>Algo deu errado?</span>
             </Button>
 
@@ -63,6 +64,7 @@ const ReportButton = () => {
                 width={1000}
             >
                 <h5 className="mb-4">Relatar um problema</h5>
+
                 <Alert showIcon className="mb-4" type="info">
                 Encontrou algum problema? Notifique o nosso time para que possamos corrigir o mais rápido possível!
                  </Alert>
