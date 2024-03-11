@@ -103,7 +103,7 @@ const appsRoute: Routes = [
     {
         key: 'sistema.cursoform',
         path: `${APP_PREFIX_PATH}/curso-form`,
-        component: lazy(() => import('@/views/sistema/cursoform/index')),
+        component: lazy(() => import('@/views/Inscricoes/cursoform/index')),
         meta: {
             pageContainerType: 'gutterless',
             footer: false,

@@ -1,6 +1,7 @@
 import { Container } from '@/components/shared';
 import CadastraEmpresa from '@/components/template/sebrae/CadastraEmpresa';
 import CadastraProposta from '@/components/template/sebrae/CadastraProposta';
+
 const styles = {
   container: {
     display: 'flex',
@@ -13,20 +14,7 @@ const styles = {
 };
 
 const CadastraEmpresaFormulario = () => {
-
-  if(1===2) {
-  
-    return (
-      <div className='flex justify-center items-center  sm:w-90'>
-        <CadastraProposta/>
-      </div>
-    
-    )
-  }
-
   return (
-
-
     <div style={styles.container}>
       {/* ?????? style direto? */}
       <style>
@@ -43,7 +31,7 @@ const CadastraEmpresaFormulario = () => {
           }
         `}
       </style>
-      <Container id="container">
+      <Container>
         <CadastraEmpresa />
       </Container>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FormItem from '@/components/ui/Form/FormItem';
 import FormContainer from '@/components/ui/Form/FormContainer';
 import Input from '@/components/ui/Input';
@@ -8,8 +8,7 @@ import Button from '@/components/ui/Button';
 import { AdaptableCard } from '@/components/shared'
 import CpfInput from './CpfInput';
 import HeaderLogo from '@/components/template/HeaderLogo';
-import useAuth from '@/utils/hooks/useAuth'
-import { setUser, signInSuccess, useAppDispatch, useAppSelector } from '@/store'
+import { useAppSelector } from '@/store'
 
 const ufOptions = [
   { value: 'AC', label: 'Acre' },
@@ -42,13 +41,12 @@ const ufOptions = [
 ];
 
 const turmaOptions = [
-  { value:'T01', label: 'Turma 01'},
-  { value:'T02', label: 'Turma 02'},
+  { value: 'T01', label: 'Turma 01' },
+  { value: 'T02', label: 'Turma 02' },
 ]
 
 
 function CursoNucleoForm() {
-  const { signIn, signUp, signOut } = useAuth();
   const user = useAppSelector((state) => state.auth.user);
   const [nome, setNome] = useState(user ? user.nmusuario : '');
   const [estadoSelecionado, setEstadoSelecionado] = useState('');
@@ -75,11 +73,11 @@ function CursoNucleoForm() {
     }
   }, [estadoSelecionado]);
 
-  const buscaCidades = async ({value,label}) => {
+  const buscaCidades = async ({ value, label }) => {
     try {
       const response = await fetch(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${value}/municipios`,
-        {method:'GET'}
+        { method: 'GET' }
       );
 
       if (!response.ok) {
@@ -94,26 +92,26 @@ function CursoNucleoForm() {
   };
 
   return (
-<AdaptableCard className="h-full" bodyClass="h-full">
-  <div className="header-container flex flex-col items-left">
-    <div className="flex items-center">
-    <div style={{ maxWidth: '200px' }}>
-        <HeaderForm />
+    <AdaptableCard className="h-full" bodyClass="h-full">
+      <div className="header-container flex flex-col items-left">
+        <div className="flex items-center">
+          <div style={{ maxWidth: '200px' }}>
+            <HeaderForm />
+          </div>
+          <div style={{ maxWidth: '200px' }}>
+            <HeaderLogo />
+          </div>
+        </div>
+        <h2 style={{ marginBottom: '20px' }}></h2>
+        <div className="text-container">
+          <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
+          <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
+        </div>
       </div>
-      <div style={{ maxWidth: '200px' }}>
-        <HeaderLogo />
-      </div>
-    </div>
-    <h2 style={{ marginBottom: '20px' }}></h2>
-    <div className="text-container">
-      <h3 style={{ marginBottom: '10px' }}>Formação de consultores de núcleos setoriais</h3>
-      <h4 style={{ marginBottom: '40px' }}>Módulo a distância</h4>
-    </div>
-  </div>
       <FormContainer layout="vertical" labelWidth={100}>
         <form>
           <FormItem label="Nome completo" asterisk htmlFor="nome" invalid>
-            <Input type="text" id="nome" name="nome" required size="sm" value={nome}/>
+            <Input type="text" id="nome" name="nome" required size="sm" value={nome} />
           </FormItem>
 
           <FormItem label="UF" asterisk htmlFor="uf" invalid>
@@ -149,9 +147,9 @@ function CursoNucleoForm() {
               size="sm"
               value={email}
               onChange={checaEmail}
-              />
-              {emailIsValid ? true : <span style={{ color: 'red' }}>Email inválido</span>}
-            </FormItem>
+            />
+            {emailIsValid ? true : <span style={{ color: 'red' }}>Email inválido</span>}
+          </FormItem>
 
           <FormItem label="CPF" asterisk htmlFor="cpf" invalid={!isValid}>
             <CpfInput isValid={isValid} setIsValid={setIsValid} />
@@ -166,7 +164,7 @@ function CursoNucleoForm() {
             />
           </FormItem>
 
-          <Button variant="solid" type="submit" size="sm" disabled = {!isValid || !emailIsValid}>
+          <Button variant="solid" type="submit" size="sm" disabled={!isValid || !emailIsValid}>
             Enviar
           </Button>
         </form>
