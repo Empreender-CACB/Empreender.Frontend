@@ -56,7 +56,7 @@ function CadastraProposta2() {
     const [validCPF, setValidCPF] = useState(false);
     const [errors, setErrors] = useState(null);
     const [cpf, setCpf] = useState('');
-    const [nome, setNome] = useState('')
+    const [nome, setNome] = useState('');
     const navigate = useNavigate();
 
     const handleCnpjChange = async (event: any) => {
@@ -90,7 +90,6 @@ function CadastraProposta2() {
         setNome('')
         const isValidCpf = validaCPF(newCpf);
         setValidCPF(isValidCpf);
-
     }
 
     const toastNotification = (
@@ -273,7 +272,6 @@ function CadastraProposta2() {
                                 />
                                 {validCNPJ ? '' : <span style={{ color: 'red' }}>Informe um CNPJ válido</span>}
                             </div>
-
 
                             {validCNPJ && validCPF ?  <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
                                 <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
