@@ -47,9 +47,9 @@ const ErrorComponent = ({ errors }: any) => {
         </div>
     );
 };
+
 function CadastraProposta2() {
     const [cnpj, setCnpj] = useState('');
-    const [token, setToken] = useState('')
     const [empresaData, setEmpresaData] = useState<any>(null);
     const [respondeu, setRespondeu] = useState(false);
     const [validCNPJ, setValidCNPJ] = useState(false);
@@ -171,11 +171,6 @@ function CadastraProposta2() {
             handleRespondeu()
         }
     }, [validCNPJ,validCPF, cpf, cnpj])
-
-    const redirectEsg = async (event: any) => {
-        event.preventDefault()
-        window.location.href = `/esg/diagnostico/${token}`
-    }
 
     const sendMailToken = async (event: any) => {
         try{
