@@ -36,10 +36,12 @@ const ErrorComponent = ({ errors }: any) => {
         </div>
     );
 };
+
 function CadastraProposta() {
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
@@ -92,6 +94,7 @@ function CadastraProposta() {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
+        setIsSubmitting(true);
 
         const fields = ['nome', 'email', 'sexo', 'cpf', 'uf', 'cidade', 'telefone']
 
@@ -140,6 +143,9 @@ function CadastraProposta() {
                 behavior: 'smooth'
             });
         }
+
+        setIsSubmitting(false);
+
     };
 
 
@@ -281,7 +287,7 @@ function CadastraProposta() {
                                                         <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
                                                             {/* Input de Upload */}
                                                             <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                <input type="file" name="files" className="w-50" />
+                                                                <input type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
                                                             </label>
 
                                                             {/* Select */}
@@ -319,9 +325,15 @@ function CadastraProposta() {
 
                         <div className="container mx-auto w-11/12 xl:w-full pt-10">
                             <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
-                                <button className="bg-blue-800 focus:outline-none transition duration-150 ease-in-out hover:bg-blue-700 rounded text-white px-8 py-2 text-sm" type="submit">
+                                <button
+                                    disabled={isSubmitting}
+                                    className={`bg-blue-800 focus:outline-none transition duration-150 ease-in-out rounded text-white px-8 py-2 text-sm ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                                    type="submit"
+                                    title={isSubmitting ? "Enviando informações..." : ""}
+                                >
                                     Enviar
                                 </button>
+
                                 <span className='ml-2 flex items-center'>Ao enviar, você concorda com a manutenção dos seus dados na Plataforma do Empreender.</span>
                             </div>
                         </div>
