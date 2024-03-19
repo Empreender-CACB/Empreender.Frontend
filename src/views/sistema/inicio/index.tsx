@@ -208,7 +208,7 @@ const Inicio = () => {
                             backgroundPosition: '-10% 9%',
                         }}
                     >
-                        <div className="text-white shadow-sm font-bold mt-4 flex-grow w-full lg:w-2/3">
+                        <div className="text-white bg-black bg-opacity-50 shadow-sm font-bold mt-4 flex-grow w-full lg:w-2/3 rounded-lg p-4">
                             <h2 className="text-white text-shadow-lg [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] mb-4">
                                 Estamos em obras!
                             </h2>
