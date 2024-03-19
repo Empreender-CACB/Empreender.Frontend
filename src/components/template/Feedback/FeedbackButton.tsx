@@ -20,6 +20,9 @@ const createIssueSchema = Yup.object().shape({
         .min(3, 'Digite 3 caracteres ou mais.')
         .max(200, 'No máximo 200 caracteres.')
         .required('Obrigatório'),
+    improvement: Yup.string()
+        .min(3, 'Digite 3 caracteres ou mais.')
+        .max(200, 'No máximo 500 caracteres.')
 });
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -44,7 +47,7 @@ const FeedbackButton = () => {
                 title='Relatado com sucesso!'
                 type='info'
             >
-               Seu relato foi recebido com sucesso. Entraremos em contato através do seu email cadastrado.
+               Sua opinião foi recebida com sucesso. Se necessário, em contato através do seu email cadastrado.
             </Notification>
         )
     }
@@ -64,15 +67,15 @@ const FeedbackButton = () => {
                 onClose={onDialogClose}
                 onRequestClose={onDialogClose}
             >
-                <h5 className="mb-4">Compartilhar um Feedback</h5>
                 <Alert showIcon className="mb-4" type="info" customIcon={<TfiCommentsSmiley />}>
-                Sua opinião é importante. Obrigado!
+                Obrigado, sua opinião é muito importante!
                  </Alert>
 
                 <Formik
                     initialValues={{
-                        title: '',
+                        improvement: '',
                         description: '',
+                        
                     }}
                     validationSchema={createIssueSchema}
                     onSubmit={(values) => {
@@ -89,7 +92,7 @@ const FeedbackButton = () => {
                                     setIsOpen(false)
                                 }
                             } catch (error) {
-                                alert('Erro ao relatar bug. Tente mais tarde.')
+                                alert('Erro ao enviar opinião. Tente mais tarde.')
                             }
                         }
                 
@@ -99,19 +102,7 @@ const FeedbackButton = () => {
                         <Form>
                             <FormContainer>
                                 <FormItem
-                                    label="Titulo"
-                                    invalid={errors.title && touched.title}
-                                    errorMessage={errors.title}
-                                >
-                                    <Field
-                                        type="text"
-                                        name="title"
-                                        placeholder="Título"
-                                        component={Input}
-                                    />
-                                </FormItem>
-                                <FormItem
-                                    label="Descrição"
+                                    label="Qual sua opinião geral sobre o novo portal?"
                                     invalid={errors.description && touched.description}
                                     errorMessage={errors.description}
                                 >
@@ -119,6 +110,18 @@ const FeedbackButton = () => {
                                         textArea
                                         name="description"
                                         placeholder="Descrição"
+                                        component={Input}
+                                    />
+                                </FormItem>
+                                <FormItem
+                                    label="O que poderia ser melhorado?"
+                                    invalid={errors.improvement && touched.improvement}
+                                    errorMessage={errors.improvement}
+                                >
+                                    <Field
+                                        textArea
+                                        name="improvement"
+                                        placeholder="Nos conte o que poderia ser melhorado."
                                         component={Input}
                                     />
                                 </FormItem>
