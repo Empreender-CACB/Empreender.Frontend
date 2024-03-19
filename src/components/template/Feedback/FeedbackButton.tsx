@@ -133,6 +133,7 @@ const FeedbackButton = () => {
                                 </FormItem>
 
                                 <FormItem
+                                    asterisk
                                     label="Qual sua opinião geral sobre o novo portal?"
                                     invalid={errors.description && touched.description}
                                     errorMessage={errors.description}
