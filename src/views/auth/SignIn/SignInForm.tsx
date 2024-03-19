@@ -24,7 +24,7 @@ type SignInFormSchema = {
 }
 
 const validationSchema = Yup.object().shape({
-    login: Yup.string().required('Insira um usuário, email ou CPF'),
+    login: Yup.string().required('Insira um código de usuário, e-mail ou CPF'),
     password: Yup.string().required('Insira uma senha'),
     rememberMe: Yup.bool(),
 })
@@ -87,7 +87,7 @@ const SignInForm = (props: SignInFormProps) => {
                     <Form>
                         <FormContainer>
                             <FormItem
-                                label="Usuário, email ou CPF"
+                                label="Código de usuário, e-mail ou CPF"
                                 invalid={
                                     (errors.login &&
                                         touched.login) as boolean
@@ -129,6 +129,10 @@ const SignInForm = (props: SignInFormProps) => {
                                     Esqueci minha senha
                                 </ActionLink>
                             </div>
+
+                            <p className='text-xs'>
+                             Se você está com dificuldades para o acesso à plataforma, por favor, confira os dados fornecidos e, se ainda for necessário, por favor, relate o fato para  empreender.portal@cacb.org.br
+                            </p>
                             <Button
                                 block
                                 loading={isSubmitting}

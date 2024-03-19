@@ -7,6 +7,7 @@ import {
 } from '@/constants/theme.constant'
 import Footer from '@/components/template/Footer'
 import type { FooterPageContainerType } from '@/components/template/Footer'
+import FeedbackButton from './Feedback/FeedbackButton'
 import ReportButton from '@/components/template/Report/ReportButton'
 import type { CommonProps } from '@/@types/common'
 import type { Meta } from '@/@types/routes'
@@ -82,8 +83,11 @@ const PageContainer = (props: PageContainerProps) => {
                         <>{children}</>
                     )}
                 </div>
+                
             </main>
             <ReportButton />
+            <FeedbackButton />
+
             {footer && (
                 <Footer
                     pageContainerType={
