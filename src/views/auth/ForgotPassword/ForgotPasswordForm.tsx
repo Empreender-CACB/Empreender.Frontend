@@ -56,17 +56,16 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
             <div className="mb-6">
                 {emailSent ? (
                     <>
-                        <h3 className="mb-1">Confira sua caixa de email</h3>
+                        <h3 className="mb-1">Confira seu correio eletrônico</h3>
                         <p>
-                        Enviamos uma instrução de recuperação de senha para o seu
-                        email
+                        Enviamos uma mensagem para a conta de correio eletrônico cadastrada com o “cpf” informado.
                         </p>
                     </>
                 ) : (
                     <>
                         <h3 className="mb-1">Esqueci minha senha</h3>
                         <p>
-                        Preencha o campo com seu CPF para receber sua nova senha:
+                        Preencha o campo com seu CPF para receber um atalho para alterar sua senha:
                         </p>
                     </>
                 )}
@@ -112,11 +111,11 @@ const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
                                 variant="solid"
                                 type="submit"
                             >
-                                {emailSent ? 'Enviar novamente' : 'Enviar email'}
+                                {emailSent ? 'Enviar novamente' : 'Enviar e-mail'}
                             </Button>
                             <div className="mt-4 text-center">
-                                <span>Voltar para </span>
-                                <ActionLink to={signInUrl}>login</ActionLink>
+                                <span>Voltar para a </span>
+                                <ActionLink to={signInUrl}>identificação</ActionLink>
                             </div>
                         </FormContainer>
                     </Form>
