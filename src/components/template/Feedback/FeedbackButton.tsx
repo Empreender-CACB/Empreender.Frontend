@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
+import Radio from '@/components/ui/Radio'
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { PiMegaphoneSimpleDuotone } from 'react-icons/pi'
@@ -22,7 +23,8 @@ const createIssueSchema = Yup.object().shape({
         .required('Obrigatório'),
     improvement: Yup.string()
         .min(3, 'Digite 3 caracteres ou mais.')
-        .max(200, 'No máximo 500 caracteres.')
+        .max(200, 'No máximo 500 caracteres.'),
+    avaliacao: Yup.string().required('Por favor, selecione uma opção'),
 });
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -44,7 +46,7 @@ const FeedbackButton = () => {
     const notify = ( ) => {
         toast.push(
             <Notification
-                title='Relatado com sucesso!'
+                title='Opinião enviada com sucesso!'
                 type='info'
             >
                Sua opinião foi recebida com sucesso. Se necessário, em contato através do seu email cadastrado.
@@ -67,7 +69,7 @@ const FeedbackButton = () => {
                 onClose={onDialogClose}
                 onRequestClose={onDialogClose}
             >
-                <Alert showIcon className="mb-4" type="info" customIcon={<TfiCommentsSmiley />}>
+                <Alert showIcon className="mb-4 mt-4" type="info" customIcon={<TfiCommentsSmiley />}>
                 Obrigado, sua opinião é muito importante!
                  </Alert>
 
@@ -75,6 +77,7 @@ const FeedbackButton = () => {
                     initialValues={{
                         improvement: '',
                         description: '',
+                        avaliacao: '',
                         
                     }}
                     validationSchema={createIssueSchema}
@@ -82,7 +85,7 @@ const FeedbackButton = () => {
                         const sendIssue = async () => {
                             try {
                                 const response: AxiosResponse = await ApiService.fetchData({
-                                    url: '/reports/issue',
+                                    url: '/reports/feedback',
                                     method: 'post',
                                     data: {...values, url: window.location.href, size:`${window.screen.width} x ${window.screen.height}`, navigator: `${window.navigator.userAgent}`}
                                 })
@@ -98,9 +101,37 @@ const FeedbackButton = () => {
                 
                         sendIssue()                    }}
                 >
-                    {({ errors, touched }) => (
+                    {({ values,errors, touched }) => (
                         <Form>
                             <FormContainer>
+
+
+                            <FormItem
+                                asterisk
+                                label="Como você avalia o nosso novo portal?"
+                                invalid={errors.avaliacao && touched.avaliacao}
+                                errorMessage={errors.avaliacao}
+                            >
+                                <Field name="avaliacao">
+                                    {({ field, form }:any) => (
+                                        <Radio.Group
+                                            value={values.avaliacao}
+                                            onChange={(val) =>
+                                                form.setFieldValue(
+                                                    field.name,
+                                                    val
+                                                )
+                                            }
+                                        >
+                                            <Radio value={'Muito Bom'}>Muito bom!</Radio>
+                                            <Radio value={'Bom'}>Bom</Radio>
+                                            <Radio value={'Mediano'}>Mediano</Radio>
+                                            <Radio value={'Precisa melhorar'}>Precisa melhorar</Radio>
+                                        </Radio.Group>
+                                    )}
+                                </Field>
+                                </FormItem>
+
                                 <FormItem
                                     label="Qual sua opinião geral sobre o novo portal?"
                                     invalid={errors.description && touched.description}
@@ -113,6 +144,9 @@ const FeedbackButton = () => {
                                         component={Input}
                                     />
                                 </FormItem>
+
+
+                                
                                 <FormItem
                                     label="O que poderia ser melhorado?"
                                     invalid={errors.improvement && touched.improvement}
