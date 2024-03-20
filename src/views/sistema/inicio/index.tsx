@@ -91,9 +91,9 @@ const Inicio = () => {
     const { nmusuario } = useAppSelector(
         (state) => state.auth.user
     )
-
-    console.log(useAppSelector((state) => state.auth.user));
-
+    const { cdsexo } = useAppSelector(
+        (state) => state.auth.user
+    )
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
     // let num_noticias = '3'
@@ -156,7 +156,7 @@ const Inicio = () => {
                         {greetingMessage()},{' '}
                         {nmusuario ? nmusuario.split(' ')[0] : ''}
                     </h3>
-                    <p>Bom trabalho !</p>
+                    <p>Bom trabalho ! {cdsexo}</p>
                 </div>
                 <UserAlerts />
             </div>
