@@ -156,7 +156,7 @@ const Inicio = () => {
                         {greetingMessage()},{' '}
                         {nmusuario ? nmusuario.split(' ')[0] : ''}
                     </h3>
-                    <p>Bom trabalho ! {cdsexo}</p>
+                    <p>Bom trabalho   ss!  {cdsexo ? cdsexo.split(' ')[0] : ''}</p>
                 </div>
                 <UserAlerts />
             </div>
