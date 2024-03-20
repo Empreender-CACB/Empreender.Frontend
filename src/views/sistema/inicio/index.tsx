@@ -24,19 +24,21 @@ type Noticia = {
     link: string
 }
 
-const greetingMessage = () => {
-    const currentHour = new Date().getHours()
+const greetingMessage = (gender: string) => {
+    const currentHour = new Date().getHours();
 
-    let greeting = ''
+    let greeting = '';
+    const welcome = gender === 'F' ? 'bem-vinda' : 'bem-vindo';
+
     if (currentHour < 12) {
-        greeting = 'Bom dia, seja muito bem vindo(a)'
+        greeting = `Bom dia, seja muito ${welcome}`;
     } else if (currentHour < 18) {
-        greeting = 'Boa tarde, seja muito bem-vindo(a)'
+        greeting = `Boa tarde, seja muito ${welcome}`;
     } else {
-        greeting = 'Boa noite, seja muito bem-vindo(a)'
+        greeting = `Boa noite, seja muito ${welcome}`;
     }
 
-    return greeting
+    return greeting;
 }
 
 const Arrow = (props: {
@@ -153,10 +155,10 @@ const Inicio = () => {
             <div className="flex justify-between items-center mb-4 w-full">
                 <div>
                     <h3>
-                        {greetingMessage()},{' '}
+                        {greetingMessage(cdsexo)},{' '}
                         {nmusuario ? nmusuario.split(' ')[0] : ''}
                     </h3>
-                    <p>Bom trabalho   ss!  {cdsexo ? cdsexo.split(' ')[0] : ''}</p>
+                    <p>Bom trabalho !</p>
                 </div>
                 <UserAlerts />
             </div>
