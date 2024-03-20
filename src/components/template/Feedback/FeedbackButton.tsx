@@ -13,15 +13,11 @@ import ApiService from '@/services/ApiService';
 import { AxiosResponse } from 'axios'
 import { Alert } from '@/components/ui';
 const createIssueSchema = Yup.object().shape({
-    title: Yup.string()
+    opiniao: Yup.string()
         .min(3, 'Digite 3 caracteres ou mais.')
         .max(200, 'No máximo 200 caracteres.')
         .required('Obrigatório'),
-    description: Yup.string()
-        .min(3, 'Digite 3 caracteres ou mais.')
-        .max(200, 'No máximo 200 caracteres.')
-        .required('Obrigatório'),
-    improvement: Yup.string()
+    sugestao: Yup.string()
         .min(3, 'Digite 3 caracteres ou mais.')
         .max(200, 'No máximo 500 caracteres.'),
     avaliacao: Yup.string().required('Por favor, selecione uma opção'),
@@ -75,8 +71,8 @@ const FeedbackButton = () => {
 
                 <Formik
                     initialValues={{
-                        improvement: '',
-                        description: '',
+                        opiniao: '',
+                        sugestao: '',
                         avaliacao: '',
                         
                     }}
@@ -135,12 +131,12 @@ const FeedbackButton = () => {
                                 <FormItem
                                     asterisk
                                     label="Qual sua opinião geral sobre o novo portal?"
-                                    invalid={errors.description && touched.description}
-                                    errorMessage={errors.description}
+                                    invalid={errors.opiniao && touched.opiniao}
+                                    errorMessage={errors.opiniao}
                                 >
                                     <Field
                                         textArea
-                                        name="description"
+                                        name="opiniao"
                                         placeholder="Descrição"
                                         component={Input}
                                     />
@@ -150,12 +146,12 @@ const FeedbackButton = () => {
                                 
                                 <FormItem
                                     label="O que poderia ser melhorado?"
-                                    invalid={errors.improvement && touched.improvement}
-                                    errorMessage={errors.improvement}
+                                    invalid={errors.sugestao && touched.sugestao}
+                                    errorMessage={errors.sugestao}
                                 >
                                     <Field
                                         textArea
-                                        name="improvement"
+                                        name="sugestao"
                                         placeholder="Nos conte o que poderia ser melhorado."
                                         component={Input}
                                     />
