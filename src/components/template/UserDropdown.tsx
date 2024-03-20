@@ -63,6 +63,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
                         nmusuario: user.nmusuario,
                         dsemail: user.dsemail,
                         perfil: user.perfil,
+                        cdsexo: user.cdsexo,
                         cod_perfil: user.cod_perfil,
                         fotouser: user.fotouser,
                         recursos: user.recursos,
