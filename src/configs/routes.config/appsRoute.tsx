@@ -94,6 +94,16 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/parametros-gerais')),
     },
     {
+        key: 'sistema.feedbacks',
+        path: `${APP_PREFIX_PATH}/feedbacks`,
+        component: lazy(() => import('@/views/sistema/feedbacks')),
+    },
+    {
+        key: 'sistema.notificacoes',
+        path: `${APP_PREFIX_PATH}/notificacoes`,
+        component: lazy(() => import('@/views/sistema/account/ActivityLog')),
+    },
+    {
         key: 'sistema.cursoform',
         path: `${APP_PREFIX_PATH}/curso-form`,
         component: lazy(() => import('@/views/sistema/cursoform/index')),
