@@ -269,7 +269,7 @@ const _Notification = ({ className }: { className?: string }) => {
                         <h6>Notificações e avisos</h6>
 
                         <div className="text-sx flex center items-center space-x-1">
-                            <p>Mostrar todas </p> <Switcher defaultChecked onChange={onSwitcherToggle} />
+                            <p>Apresentar lidas </p> <Switcher defaultChecked onChange={onSwitcherToggle} />
                         </div>
                         <Tooltip title="Marcar todas como lida">
                             <Button
