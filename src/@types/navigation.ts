@@ -28,6 +28,7 @@ export interface UserResponse {
         nucpf: string
         nmusuario: string
         dsemail: string
+        cdsexo: string
         perfil: string
         cod_perfil: number
         fotouser: string

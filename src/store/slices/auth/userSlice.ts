@@ -13,6 +13,7 @@ export type UserState = {
     nucpf?: string
     nmusuario?: string
     dsemail?: string
+    cdsexo?: string
     perfil?: string
     cod_perfil?: number
     fotouser?: string
@@ -25,6 +26,7 @@ const initialState: UserState = {
     nmusuario: '',
     dsemail: '',
     perfil: '',
+    cdsexo: '',
     cod_perfil: 0,
     fotouser: '',
     recursos: [],
@@ -38,6 +40,7 @@ const userSlice = createSlice({
         setUser(state, action: PayloadAction<UserState>) {
             state.nucpf = action.payload?.nucpf
             state.nmusuario = action.payload?.nmusuario
+            state.cdsexo = action.payload?.cdsexo
             state.dsemail = action.payload?.dsemail
             state.perfil = action.payload?.perfil
             state.fotouser = action.payload?.fotouser
