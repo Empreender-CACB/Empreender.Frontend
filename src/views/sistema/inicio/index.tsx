@@ -209,11 +209,11 @@ const Inicio = () => {
                     <div
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1602856845676-4ee32855f5c5?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('/img/others/ipe.jpg')`,
                             backgroundPosition: '-10% 9%',
                         }}
                     >
-                        <div className="text-white bg-black bg-opacity-50 shadow-sm font-bold mt-4 flex-grow w-full lg:w-2/3 rounded-lg p-4">
+                        <div className="text-white bg-black bg-opacity-20 shadow-sm font-bold mt-4 flex-grow w-full lg:w-2/3 rounded-lg p-4">
                             <h2 className="text-white text-shadow-lg [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] mb-4">
                                 Estamos em obras!
                             </h2>
