@@ -87,6 +87,14 @@ const notificationTypeAvatar = (data: {
                     icon={<HiNewspaper />}
                 />
             )
+        case 'lancamentos':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-100"
+                    icon={<HiNewspaper />}
+                />
+            )
         case 2:
             return (
                 <Avatar
@@ -195,6 +203,8 @@ const _Notification = ({ className }: { className?: string }) => {
     // }, [notificationList])
 
 
+
+
     const onMarkAsRead = useCallback(async (id: any) => {
         // Atualiza o estado primeiro para uma resposta rápida na UI
         setNotificationList(currentList => currentList.map(item => {
@@ -235,6 +245,7 @@ const _Notification = ({ className }: { className?: string }) => {
     const hasNotificationsToShow = viewAll ? notificationList.length > 0 : notificationList.some(item => !item.lida);
 
     return (
+
 
         <>
 
