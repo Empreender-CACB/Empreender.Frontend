@@ -9,7 +9,6 @@ import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import { Button } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
-import axios from 'axios'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
@@ -18,7 +17,7 @@ import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
-import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+import ApiService from '@/services/ApiService'
 
 moment.locale('pt-br')
 
@@ -37,17 +36,18 @@ const columns = [
         filterEditor: NumberFilter,
     },
     {
-        name: 'nmuf',
+        name: 'iduf',
+        columnName: 'iduf',
         header: 'UF',
-        type: 'select',
-        operator: 'eq',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            multiple: true,
-            dataSource: estadosBrasileiros.map((state) => {
-                return { id: state.nome, label: state.sigla }
-            }),
-        },
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        // filterEditorProps: {
+        //     multiple: true,
+        //     dataSource: estadosBrasileiros.map((state) => {
+        //         return { id: state.nome, label: state.sigla }
+        //     }),
+        // },
     },
     {
         name: 'nmcidade',
@@ -103,8 +103,8 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     {
-        name: 'nmramoativ',
-        header: 'Ramo',
+        name: 'st_cnae',
+        header: 'CNAE principal',
         defaultFlex: 1,
         type: 'string',
         operator: 'contains',
@@ -134,24 +134,49 @@ const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [empresaType, setEmpresaType] = useState('todas')
     const [options, setOptions] = useState([])
+    const [optionsOrigem, setOptionsOrigem] = useState([])
+
     // const [selectedOptions, setSelectedOptions] = useState([]);
 
     useEffect(() => {
-        // Fazer a solicitação à API
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/segmentos`)
-            .then((response) => {
-                // Mapear os dados da API para o formato esperado pelo Select
-                const mappedOptions = response.data.map((segmento: any) => ({
-                    value: segmento.idsegmento.toString(),
-                    label: segmento.dssegmento,
-                }))
-                // Definir as opções no estado
-                setOptions(mappedOptions)
-            })
-            .catch((error) => {
-                console.error('Erro ao buscar dados da API:', error)
-            })
+        const getSegmentos = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: '/segmentos',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((segmento: any) => ({
+                        value: segmento.idsegmento.toString(),
+                        label: segmento.dssegmento,
+                    }))
+                    setOptions(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const getOrigens = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: 'empresas/origens',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((origemItem: any) => {
+                        return ({
+                            value: origemItem.origem,
+                            label: origemItem.origem,
+                        })
+                    })
+                    setOptionsOrigem(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getSegmentos();
+        getOrigens();
     }, [])
 
     const onChangeSegmentos = (e: any) => {
@@ -176,48 +201,63 @@ const Empresas = () => {
     const nameOptions = [
         { value: 'nmfantasia', label: 'Fantasia' },
         { value: 'nurazaosocial', label: 'Razão Social' },
-
     ];
-        const radioGroup = (
+
+    const radioGroup =
+        (
             <div>
-                        <div className="pb-4 flex items-center">
+                <div className="pb-4 flex items-center">
 
-            <div className='flex items-center pr-5'>
-            <span className="pr-2 font-black">Nome: </span>
-                <Select
-                defaultValue={nameOptions[0]}
-                options={nameOptions}
-                onChange={(e:any) => setNameValue(e.value)}></Select>
-            </div>
+                    <div className='flex items-center pr-5'>
+                        <span className="pr-2 font-black">Nome: </span>
+                        <Select
+                            defaultValue={nameOptions[0]}
+                            options={nameOptions}
+                            onChange={(e: any) => setNameValue(e.value)}>
+                        </Select>
+                    </div>
 
-            <div className='pr-10 flex items-center'>
-            <span className="pr-2 font-black">Empresa: </span>
-                <Select
-                defaultValue={empresaOptions[0]}
-                options={empresaOptions}
-                onChange={onChangeEmpresa}></Select>
-            </div>
+                    <div className='pr-4 flex items-center'>
+                        <span className="pr-2 font-black">Empresa: </span>
+                        <Select
+                            defaultValue={empresaOptions[0]}
+                            options={empresaOptions}
+                            onChange={onChangeEmpresa}
+                            customWidth={'160px'}>
+                        </Select>
+                    </div>
 
-        </div>
-        {empresaType === 'somente_nucleadas' && (
-                <div>
-                    <div className="col-span-1">
-                        <span className="font-black">Segmento: </span>
-
+                    <div className='flex items-center'>
+                        <span className="pr-2 font-black">Origem: </span>
                         <Select
                             isMulti
-                            placeholder="Selecione uma opção"
-                            options={options}
-                            noOptionsMessage={() => 'Sem dados!'}
-                            loadingMessage={() => 'Carregando'}
-                            onChange={onChangeSegmentos}
-                        />
+                            defaultValue={{ value: 'PORTAL', label: 'PORTAL' }}
+                            options={optionsOrigem}
+                            onChange={onChangeEmpresa}
+                            customWidth={'160px'}>
+                        </Select>
                     </div>
-                </div>
-            )}
-            </div>
 
-    )
+                </div>
+
+                {empresaType === 'somente_nucleadas' && (
+                    <div>
+                        <div className="col-span-1">
+                            <span className="font-black">Segmento: </span>
+
+                            <Select
+                                isMulti
+                                placeholder="Selecione uma opção"
+                                options={options}
+                                noOptionsMessage={() => 'Sem dados!'}
+                                loadingMessage={() => 'Carregando'}
+                                onChange={onChangeSegmentos}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -228,9 +268,8 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${
-                                import.meta.env.VITE_PHP_URL
-                            }/sistema/empresa/`}
+                            to={`${import.meta.env.VITE_PHP_URL
+                                }/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>
@@ -260,9 +299,8 @@ const Empresas = () => {
                 filename="Empresas"
                 columns={columns}
                 //defaultFilterValue={defaultFilterValue}
-                url={`${
-                    import.meta.env.VITE_API_URL
-                }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={`${import.meta.env.VITE_API_URL
+                    }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
             />
