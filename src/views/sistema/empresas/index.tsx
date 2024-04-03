@@ -132,11 +132,13 @@ const columns = [
 
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
+    const [cnaeValue, setCnaeValue] = useState('todos')
     const [empresaType, setEmpresaType] = useState('todas')
+    const [origemType, setOrigemType] = useState<string[]>(['PORTAL']);
     const [options, setOptions] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
 
-    // const [selectedOptions, setSelectedOptions] = useState([]);
+    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&empresaType=${empresaType}&origemType=${origemType.join(',')}`;
 
     useEffect(() => {
         const getSegmentos = async () => {
@@ -183,12 +185,13 @@ const Empresas = () => {
         console.log(e)
     }
 
-    const onChange = (val: string) => {
-        setNameValue(val)
-    }
-
     const onChangeEmpresa = (option: any) => {
         return setEmpresaType(option.value)
+    }
+
+    const onChangeOrigem = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value);
+        setOrigemType(values);
     }
 
     const empresaOptions = [
@@ -203,6 +206,12 @@ const Empresas = () => {
         { value: 'nurazaosocial', label: 'Razão Social' },
     ];
 
+    const cnaeOptions = [
+        { value: 'todos', label: 'Todos' },
+        { value: 'principal', label: 'Principal' },
+        { value: 'secundario', label: 'Secundário' },
+    ];
+
     const radioGroup =
         (
             <div>
@@ -214,6 +223,15 @@ const Empresas = () => {
                             defaultValue={nameOptions[0]}
                             options={nameOptions}
                             onChange={(e: any) => setNameValue(e.value)}>
+                        </Select>
+                    </div>
+
+                    <div className='pr-4 flex items-center pr-5'>
+                        <span className="pr-2 font-black">CNAE: </span>
+                        <Select
+                            defaultValue={cnaeOptions[0]}
+                            options={cnaeOptions}
+                            onChange={(e: any) => setCnaeValue(e.value)}>
                         </Select>
                     </div>
 
@@ -231,11 +249,12 @@ const Empresas = () => {
                         <span className="pr-2 font-black">Origem: </span>
                         <Select
                             isMulti
-                            defaultValue={{ value: 'PORTAL', label: 'PORTAL' }}
+                            defaultValue={[{ value: 'PORTAL', label: 'PORTAL' }]}
                             options={optionsOrigem}
-                            onChange={onChangeEmpresa}
+                            onChange={onChangeOrigem} 
                             customWidth={'160px'}>
                         </Select>
+
                     </div>
 
                 </div>
@@ -299,8 +318,7 @@ const Empresas = () => {
                 filename="Empresas"
                 columns={columns}
                 //defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL
-                    }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={url}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
             />
