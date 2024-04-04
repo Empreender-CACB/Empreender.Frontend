@@ -47,7 +47,7 @@ const rfbValue = [
 
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
-    const [cnaeValue, setCnaeValue] = useState('todos')
+    const [cnaeValue, setCnaeValue] = useState('principal')
     const [empresaType, setEmpresaType] = useState('todas')
     const [origemType, setOrigemType] = useState<string[]>(['PORTAL']);
     const [options, setOptions] = useState([])
@@ -286,7 +286,7 @@ const Empresas = () => {
                     <div className='pr-4 flex items-center pr-5'>
                         <span className="pr-2 font-black">CNAE: </span>
                         <Select
-                            defaultValue={cnaeOptions[0]}
+                            defaultValue={cnaeOptions[1]}
                             options={cnaeOptions}
                             onChange={(e: any) => setCnaeValue(e.value)}>
                         </Select>
