@@ -80,7 +80,6 @@ const Empresas = () => {
             operator: 'contains',
             value: "",
             defaultFlex: 0.6,
-            filterEditor: NumberFilter,
         },
         {
             name: 'iduf',
