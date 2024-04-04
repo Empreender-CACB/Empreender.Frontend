@@ -3,7 +3,6 @@ import '@inovua/reactdatagrid-community/index.css'
 
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import { Button } from '@/components/ui'
@@ -18,6 +17,8 @@ import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
 import ApiService from '@/services/ApiService'
+import { useAppSelector } from '@/store'
+import formatCPFCNPJ from '@/utils/MaskService'
 
 moment.locale('pt-br')
 
@@ -26,108 +27,9 @@ const activeValue = [
     { name: 'Inativa', value: 'N' },
 ]
 
-const columns = [
-    {
-        name: 'empresa.idempresa',
-        header: 'ID',
-        columnName: 'empresa.idempresa',
-        type: 'number',
-        defaultFlex: 0.6,
-        filterEditor: NumberFilter,
-    },
-    {
-        name: 'iduf',
-        columnName: 'iduf',
-        header: 'UF',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-        // filterEditorProps: {
-        //     multiple: true,
-        //     dataSource: estadosBrasileiros.map((state) => {
-        //         return { id: state.nome, label: state.sigla }
-        //     }),
-        // },
-    },
-    {
-        name: 'nmcidade',
-        header: 'Cidade',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'nmfantasia',
-        header: 'Nome',
-        defaultFlex: 1.5,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-        render: ({ data }: any) => (
-            <div>
-                <Link to={`/sistema/empresas/${data.idempresa}`}>
-                    {data.nmfantasia}
-                </Link>
-            </div>
-        ),
-    },
-    {
-        name: 'nucnpjcpf',
-        header: 'CNPJ',
-        defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'dtultimaalteracao',
-        header: 'Última Alteração',
-        defaultFlex: 1,
-        dateFormat: 'DD-MM-YYYY',
-        type: 'date',
-        operator: 'after',
-        value: '',
-        filterEditor: DateFilter,
-        filterEditorProps: ({ index }: any) => {
-            return {
-                dateFormat: 'DD-MM-YYYY',
-                placeholder:
-                    index === 1
-                        ? 'A data é anterior à...'
-                        : 'A data é posterior à',
-            }
-        },
-        render: ({ value, cellProps: { dateFormat } }: any) =>
-            moment(value).format(dateFormat) === 'Invalid date'
-                ? '-'
-                : moment(value).format(dateFormat),
-    },
-    {
-        name: 'st_cnae',
-        header: 'CNAE principal',
-        defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'empresa.flativo',
-        header: 'Ativa',
-        type: 'select',
-        operator: 'equals',
-        value: '',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            dataSource: activeValue.map((option) => {
-                return { id: option.value, label: option.name }
-            }),
-        },
-        render: ({ value }: any) => (
-            <div className="flex items-center justify-center">
-                <TagActiveInative value={value} activeText="S" />
-            </div>
-        ),
-    },
+const restritaValue = [
+    { name: 'Restrita', value: 'true' },
+    { name: 'Não restrita', value: 'false' },
 ]
 
 const Empresas = () => {
@@ -138,7 +40,135 @@ const Empresas = () => {
     const [options, setOptions] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
 
+    const { recursos } = useAppSelector((state) => state.auth.user)
+
     const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&empresaType=${empresaType}&origemType=${origemType.join(',')}`;
+
+    let headerCnae;
+    
+    switch (cnaeValue) {
+        case 'principal':
+            headerCnae = "CNAE Principal";
+            break;
+        case 'secundario':
+            headerCnae = "CNAE Secundário";
+            break;
+        default:
+            headerCnae = "CNAE";
+    }
+
+
+    const columns = [
+        {
+            name: 'empresa.idempresa',
+            header: 'ID',
+            columnName: 'empresa.idempresa',
+            type: 'number',
+            defaultFlex: 0.6,
+            filterEditor: NumberFilter,
+        },
+        {
+            name: 'iduf',
+            columnName: 'iduf',
+            header: 'UF',
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'nmcidade',
+            header: 'Cidade',
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'nmfantasia',
+            header: 'Nome',
+            defaultFlex: 1.5,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => (
+                <div>
+                    <Link to={`/sistema/empresas/${data.idempresa}`}>
+                        {data.nmfantasia}
+                    </Link>
+                </div>
+            ),
+        },
+        {
+            name: 'nucnpjcpf',
+            header: 'CNPJ',
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const formattedValue = formatCPFCNPJ(data.nucnpjcpf);
+                return (
+                    <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
+                        {formattedValue || data.nucnpjcpf}
+                    </div>
+                );
+            },
+        },
+        {
+            name: 'st_cnae',
+            header: headerCnae,
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'empresa.flativo',
+            header: 'Ativa',
+            type: 'select',
+            operator: 'equals',
+            value: 'S',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                    <TagActiveInative value={value} activeText="S" />
+                </div>
+            ),
+        },
+    ]
+
+    if (recursos.includes('empresa_restrita')) {
+        columns.push({
+            name: 'restrita',
+            header: 'Restrita',
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: restritaValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                    <TagActiveInative 
+                        value={value} 
+                        activeText={false} 
+                        customClassTrue='bg-green-800 mr-2 text-white text-center' 
+                        customClassFalse='bg-red-800 mr-2 text-white text-center' 
+                        customLabelFalse='Restrita' 
+                        customLabelTrue='Não restrita' 
+                    />
+                </div>
+            ),
+        });
+    }
+
 
     useEffect(() => {
         const getSegmentos = async () => {
@@ -251,8 +281,7 @@ const Empresas = () => {
                             isMulti
                             defaultValue={[{ value: 'PORTAL', label: 'PORTAL' }]}
                             options={optionsOrigem}
-                            onChange={onChangeOrigem} 
-                            customWidth={'160px'}>
+                            onChange={onChangeOrigem}>
                         </Select>
 
                     </div>
@@ -287,8 +316,7 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL
-                                }/sistema/empresa/`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>
@@ -301,7 +329,7 @@ const Empresas = () => {
                     ></Link>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to="/app/sales/product-new"
+                        to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/adicionar`}
                     >
                         <Button
                             block
