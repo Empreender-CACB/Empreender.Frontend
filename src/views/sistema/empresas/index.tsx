@@ -32,6 +32,19 @@ const restritaValue = [
     { name: 'Não restrita', value: 'false' },
 ]
 
+const rfbValue = [
+    { name: 'RFB - Ativa', value: 'RFB - ATIVA' },
+    { name: 'RFB - Suspensa', value: 'RFB - SUSPENSA' },
+    { name: 'RFB - Nula', value: 'RFB - NULA' },
+    { name: 'RFB - Inapta', value: 'RFB - INAPTA' },
+    { name: 'RFB - Baixada', value: 'RFB - BAIXADA' },
+    { name: 'CPF', value: 'CPF' },
+    { name: 'CPF Inválido', value: 'CPF INVALIDO' },
+    { name: 'CNPJ Inválido', value: 'CNPJ INVALIDO' },
+    { name: 'Nenhum', value: 'NULL' },
+]
+
+
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('todos')
@@ -120,6 +133,20 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+        },
+        {
+            name: 'situacao',
+            header: 'Situação RFB',
+            defaultFlex: 1,
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: rfbValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
         },
         {
             name: 'empresa.flativo',
