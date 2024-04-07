@@ -4,13 +4,12 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button } from '@/components/ui'
+import { Avatar, Badge, Button, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
-import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
+import { HiOutlineInformationCircle, HiOutlineReply, HiOutlineUser, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
@@ -19,6 +18,7 @@ import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
 import ApiService from '@/services/ApiService'
 import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
+import { FcInfo } from 'react-icons/fc'
 
 moment.locale('pt-br')
 
@@ -44,6 +44,23 @@ const rfbValue = [
     { name: 'Nenhum', value: 'NULL' },
 ]
 
+const empresaOptions = [
+    { value: 'todas', label: 'Todas' },
+    { value: 'somente_nucleadas', label: 'Somente nucleadas' },
+    { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
+    { value: 'projetos', label: 'Projeto' },
+];
+
+const nameOptions = [
+    { value: 'nmfantasia', label: 'Fantasia' },
+    { value: 'nurazaosocial', label: 'Razão Social' },
+];
+
+const cnaeOptions = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'principal', label: 'Principal' },
+    { value: 'secundario', label: 'Secundário' },
+];
 
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
@@ -55,10 +72,11 @@ const Empresas = () => {
 
     const { recursos } = useAppSelector((state) => state.auth.user)
 
-    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&empresaType=${empresaType}&origemType=${origemType.join(',')}`;
+    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&empresaType=${empresaType}` +
+        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}`;
 
     let headerCnae;
-    
+
     switch (cnaeValue) {
         case 'principal':
             headerCnae = "CNAE Principal";
@@ -134,6 +152,21 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            render: ({ data }: any) => {
+
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {data.cd_cnae} - {data.st_cnae}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{data.st_cnae}</span>
+                    </Tooltip>
+                );
+            },
         },
         {
             name: 'situacao',
@@ -175,7 +208,7 @@ const Empresas = () => {
             header: 'Restrita',
             type: 'select',
             operator: 'equals',
-            value: '',
+            value: 'false',
             filterEditor: SelectFilter,
             filterEditorProps: {
                 dataSource: restritaValue.map((option) => {
@@ -184,13 +217,13 @@ const Empresas = () => {
             },
             render: ({ value }: any) => (
                 <div className="flex items-center justify-center">
-                    <TagActiveInative 
-                        value={value} 
-                        activeText={false} 
-                        customClassTrue='bg-green-800 mr-2 text-white text-center' 
-                        customClassFalse='bg-red-800 mr-2 text-white text-center' 
-                        customLabelFalse='Restrita' 
-                        customLabelTrue='Não restrita' 
+                    <TagActiveInative
+                        value={value}
+                        activeText={false}
+                        customClassTrue='bg-green-800 mr-2 text-white text-center'
+                        customClassFalse='bg-red-800 mr-2 text-white text-center'
+                        customLabelFalse='Restrita'
+                        customLabelTrue='Não restrita'
                     />
                 </div>
             ),
@@ -252,24 +285,6 @@ const Empresas = () => {
         setOrigemType(values);
     }
 
-    const empresaOptions = [
-        { value: 'todas', label: 'Todas' },
-        { value: 'somente_nucleadas', label: 'Somente nucleadas' },
-        { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
-        { value: 'projetos', label: 'Projeto' },
-    ];
-
-    const nameOptions = [
-        { value: 'nmfantasia', label: 'Fantasia' },
-        { value: 'nurazaosocial', label: 'Razão Social' },
-    ];
-
-    const cnaeOptions = [
-        { value: 'todos', label: 'Todos' },
-        { value: 'principal', label: 'Principal' },
-        { value: 'secundario', label: 'Secundário' },
-    ];
-
     const radioGroup =
         (
             <div>
@@ -285,7 +300,21 @@ const Empresas = () => {
                     </div>
 
                     <div className='pr-4 flex items-center pr-5'>
-                        <span className="pr-2 font-black">CNAE: </span>
+                        <span className="font-black">CNAE: </span>
+
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa)
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2'/>
+                            </Tooltip>
+                        </div>
+
                         <Select
                             defaultValue={cnaeOptions[1]}
                             options={cnaeOptions}
@@ -309,11 +338,11 @@ const Empresas = () => {
                             isMulti
                             defaultValue={[{ value: 'PORTAL', label: 'PORTAL' }]}
                             options={optionsOrigem}
-                            onChange={onChangeOrigem}>
+                            onChange={onChangeOrigem}
+                            placeholder="Todas"
+                        >
                         </Select>
-
                     </div>
-
                 </div>
 
                 {empresaType === 'somente_nucleadas' && (
@@ -328,6 +357,7 @@ const Empresas = () => {
                                 noOptionsMessage={() => 'Sem dados!'}
                                 loadingMessage={() => 'Carregando'}
                                 onChange={onChangeSegmentos}
+
                             />
                         </div>
                     </div>
