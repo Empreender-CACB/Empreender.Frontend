@@ -5,11 +5,12 @@ const SignIn = () => {
         <>
         <div className="mb-8 mt-4 flex center justify-center">
 
-        <div className="logo ml-4 w-44">
+        <div className="logo w-44">
                 <img src="/img/logo/logo-cacb.png" alt="Portal Empreender logo"/>
             </div>
-
+        <div className="ml-4">
             <img src="/img/logo/logo-empreender.png"/>
+        </div>
 
         </div>
             <div className="mb-8">
