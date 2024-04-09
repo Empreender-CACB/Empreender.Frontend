@@ -139,10 +139,7 @@ const SignInForm = (props: SignInFormProps) => {
                                 {isSubmitting ? 'Entrando ...' : 'Entrar'}
                             </Button>
                             <p className='text-xs pt-5'>
-                             Problemas em acessar a plataforma? Clique aqui.
-                            </p>
-                            <p className='text-xs pt-5'>
-                             Se você está com dificuldades para o acesso à plataforma, por favor, confira os dados fornecidos e, se ainda for necessário, por favor, relate o fato para  empreender.portal@cacb.org.br
+                             Se você está com dificuldades para o acesso à plataforma, por favor, confira os dados fornecidos e, se ainda for necessário, por favor, relate o fato para <a href="mailto:empreender.portal@cacb.org.br">empreender.portal@cacb.org.br</a>
                             </p>
                             <div className="mt-4 text-center">
                                 {/* <span>{`Ainda não possui uma conta?`} </span> */}
