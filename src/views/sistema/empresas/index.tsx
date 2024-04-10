@@ -345,12 +345,12 @@ const Empresas = () => {
                         </Select>
                     </div>
 
-                    {/* {empresaType === 'somente_nucleadas' && ( */}
+                    {empresaType === 'somente_nucleadas' && (
                         <div className='flex items-center'>
                             <span className="pr-2 font-black">Visão local: </span>
                             <Checkbox checked={checkedVisaoLocal} onChange={setCheckedVisaoLocal} />
                         </div>
-                    {/* )}                     */}
+                    )}
                 </div>
 
                 {empresaType === 'somente_nucleadas' && (
