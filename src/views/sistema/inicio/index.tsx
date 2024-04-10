@@ -49,11 +49,11 @@ const Arrow = (props: {
     const disabled = props.disabled ? " arrow--disabled" : ""
     return (
         <svg
-            onClick={props.onClick}
             className={`arrow ${props.left ? "arrow--left" : "arrow--right"
                 } ${disabled}`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
+            onClick={props.onClick}
         >
             {props.left && (
                 <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
@@ -209,11 +209,10 @@ const Inicio = () => {
                     <div
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('/img/others/ipe.jpg')`,
-                            backgroundPosition: '-10% 9%',
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('/img/others/ipe.jpg')`
                         }}
                     >
-                        <div className="text-white bg-black bg-opacity-20 shadow-sm font-bold mt-4 flex-grow w-full lg:w-2/3 rounded-lg p-4">
+                        <div className="text-white bg-black bg-opacity-10 shadow-sm font-bold mt-4 flex-grow w-full  rounded-lg p-4">
                             <h2 className="text-white text-shadow-lg [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] mb-4">
                                 Estamos em obras!
                             </h2>
@@ -227,11 +226,7 @@ const Inicio = () => {
                             </h6>
 
                             <h6 className="text-white mb-4">
-                                Bom momento para enviar críticas e sugestões{' '}
-                                <a href="#" className="underline">
-                                    (clique aqui)
-                                </a>
-                                . São muito bem-vindas.
+                                Bom momento para enviar críticas e sugestões. São muito bem-vindas.
                             </h6>
 
                             <Link to="/docs/changelog">
