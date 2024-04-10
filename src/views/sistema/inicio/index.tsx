@@ -229,7 +229,7 @@ const Inicio = () => {
                                 Bom momento para enviar críticas e sugestões. São muito bem-vindas.
                             </h6>
 
-                            <Link to="/docs/changelog">
+                            <Link target='__blank' to="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NzQzMA==">
                                 <Button
                                     className="w-full lg:w-auto"
                                     variant="solid"
