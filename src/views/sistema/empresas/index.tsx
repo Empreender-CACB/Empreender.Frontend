@@ -4,7 +4,7 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-import { Avatar, Badge, Button, Tooltip } from '@/components/ui'
+import { Avatar, Badge, Button, Checkbox, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
@@ -69,10 +69,11 @@ const Empresas = () => {
     const [origemType, setOrigemType] = useState<string[]>(['PORTAL']);
     const [options, setOptions] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
+    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
 
     const { recursos } = useAppSelector((state) => state.auth.user)
 
-    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&empresaType=${empresaType}` +
+    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}`;
 
     let headerCnae;
@@ -332,7 +333,7 @@ const Empresas = () => {
                         </Select>
                     </div>
 
-                    <div className='flex items-center'>
+                    <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Origem: </span>
                         <Select
                             isMulti
@@ -343,6 +344,13 @@ const Empresas = () => {
                         >
                         </Select>
                     </div>
+
+                    {/* {empresaType === 'somente_nucleadas' && ( */}
+                        <div className='flex items-center'>
+                            <span className="pr-2 font-black">Visão local: </span>
+                            <Checkbox checked={checkedVisaoLocal} onChange={setCheckedVisaoLocal} />
+                        </div>
+                    {/* )}                     */}
                 </div>
 
                 {empresaType === 'somente_nucleadas' && (
