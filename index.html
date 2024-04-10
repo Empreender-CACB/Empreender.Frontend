@@ -11,11 +11,16 @@
   <title>Portal Empreender - Versão 5.0</title>
 
   <script src="https://unpkg.com/cookie-notice@^1/dist/cookie.notice.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 
 
 </head>
 
 <body>
+  <script>
+    const jsConfetti = new JSConfetti()
+    jsConfetti.addConfetti()
+  </script>
   <script>
     new cookieNoticeJS({
 
