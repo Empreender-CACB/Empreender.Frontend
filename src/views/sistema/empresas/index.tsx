@@ -66,7 +66,7 @@ const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [origemType, setOrigemType] = useState<string[]>(['PORTAL']);
+    const [origemType, setOrigemType] = useState<string[]>(['PORTAL'])
     const [options, setOptions] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
@@ -230,7 +230,6 @@ const Empresas = () => {
             ),
         });
     }
-
 
     useEffect(() => {
         const getSegmentos = async () => {
@@ -415,6 +414,7 @@ const Empresas = () => {
                 url={url}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
+                autorizeExport={recursos.includes('emp_expor')}
             />
         </AdaptableCard>
     )
