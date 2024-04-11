@@ -66,15 +66,17 @@ const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [origemType, setOrigemType] = useState<string[]>(['PORTAL']);
-    const [options, setOptions] = useState([])
+    const [origemType, setOrigemType] = useState<string[]>(['PORTAL'])
+    const [segmentoType, setSegmentoType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
+    const [optionsSegmento, setOptionsSegmento] = useState([])
     const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
 
     const { recursos } = useAppSelector((state) => state.auth.user)
 
     const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
-        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}`;
+        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}`  +
+        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}`;
 
     let headerCnae;
 
@@ -124,7 +126,7 @@ const Empresas = () => {
             value: '',
             render: ({ data }: any) => (
                 <div>
-                    <Link to={`/sistema/empresas/${data.idempresa}`}>
+                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}>
                         {data.nmfantasia}
                     </Link>
                 </div>
@@ -231,7 +233,6 @@ const Empresas = () => {
         });
     }
 
-
     useEffect(() => {
         const getSegmentos = async () => {
             try {
@@ -243,7 +244,7 @@ const Empresas = () => {
                         value: segmento.idsegmento.toString(),
                         label: segmento.dssegmento,
                     }))
-                    setOptions(mappedOptions)
+                    setOptionsSegmento(mappedOptions)
                 });
             } catch (error) {
                 console.error(error);
@@ -273,8 +274,9 @@ const Empresas = () => {
         getOrigens();
     }, [])
 
-    const onChangeSegmentos = (e: any) => {
-        console.log(e)
+    const onChangeSegmentos = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value);
+        setSegmentoType(values);
     }
 
     const onChangeEmpresa = (option: any) => {
@@ -357,15 +359,13 @@ const Empresas = () => {
                     <div>
                         <div className="col-span-1">
                             <span className="font-black">Segmento: </span>
-
                             <Select
                                 isMulti
                                 placeholder="Selecione uma opção"
-                                options={options}
+                                options={optionsSegmento}
                                 noOptionsMessage={() => 'Sem dados!'}
                                 loadingMessage={() => 'Carregando'}
                                 onChange={onChangeSegmentos}
-
                             />
                         </div>
                     </div>
@@ -415,6 +415,7 @@ const Empresas = () => {
                 url={url}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
+                autorizeExport={recursos.includes('emp_expor')}
             />
         </AdaptableCard>
     )

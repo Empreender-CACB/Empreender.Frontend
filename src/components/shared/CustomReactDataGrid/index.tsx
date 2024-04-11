@@ -31,6 +31,7 @@ interface CustomReactDataGridPropsBasic {
     defaultFilterValue?: any
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    autorizeExport?: boolean;
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
@@ -87,6 +88,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
+    autorizeExport,
     onSelectedRowsChange
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
@@ -488,18 +490,21 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     ></Button>
                 </Tooltip>
 
-                <Tooltip title={'Exportar dados'}>
-                    <Button
-                        disabled={isDownloading}
-                        icon={isDownloading ? <Spinner /> : <HiDownload />}
-                        className="mx-2"
-                        variant="plain"
-                        size="sm"
-                        onClick={() => {
-                            loadData(queryParams, true)
-                        }}
-                    ></Button>
-                </Tooltip>
+                {autorizeExport === true && (
+                    <Tooltip title={'Exportar dados'}>
+                        <Button
+                            disabled={isDownloading}
+                            icon={isDownloading ? <Spinner /> : <HiDownload />}
+                            className="mx-2"
+                            variant="plain"
+                            size="sm"
+                            onClick={() => {
+                                loadData(queryParams, true)
+                            }}
+                        ></Button>
+                    </Tooltip>
+                )}
+                
             </div>
 
             <Drawer
