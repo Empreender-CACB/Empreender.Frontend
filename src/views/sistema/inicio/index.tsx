@@ -333,7 +333,7 @@ const Inicio = () => {
                             titulo_carousel: string
                         }) => {
                             const videoIdMatch = video.link.match(/v=([^&]+)/)
-                            const videoId: string =
+                            const videoId =
                                 videoIdMatch && videoIdMatch[1]
                                     ? videoIdMatch[1]
                                     : ''

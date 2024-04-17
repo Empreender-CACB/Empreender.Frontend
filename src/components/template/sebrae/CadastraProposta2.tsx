@@ -74,9 +74,11 @@ function CadastraProposta2() {
                     setEmpresaData(data);
                 } else {
                     console.error('Erro ao obter os dados da empresa:', response.statusText);
+                    setValidCNPJ(false)
                 }
             } catch (error) {
                 console.error('Erro ao obter os dados da empresa:', error);
+                setValidCNPJ(false)
             }
         }
     };
@@ -301,14 +303,14 @@ function CadastraProposta2() {
 
                 </div>
 
-                {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded px-4">
+                {empresaData !== null && validCNPJ ? <div className=" bg-white dark:bg-gray-800 mt-10 rounded">
                     <div className="xl:w-full w-11/12 border-b border-gray-300 dark:border-gray-700 py-5">
                         <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                             <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">Informações da Empresa</p>
                         </div>
                     </div>
 
-                    <div className="relative px-4 pt-2">
+                    <div className="relative pt-2">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <div className="flex items-baseline">
                                 <span className="bg-teal-200 text-teal-800 text-xs px-2 inline-block rounded-full  uppercase font-semibold tracking-wide">
@@ -343,17 +345,15 @@ function CadastraProposta2() {
                     </div>
                 </div>
             </div>
-            <div className="bg-gray-100 flex flex-col justify-between pt-5 pb-10 border-t border-gray-300 sm:flex-row">
-                <p className="text-sm text-gray-500">
+            <div className="bg-gray-100 flex flex-col justify-center items-center pt-5 pb-10 border-t border-gray-300 sm:flex-row">
+                <p className="text-sm text-gray-500 whitespace-normal text-center">
                     Ao participar, você concorda com a manutenção dos dados informados para uso interno na gestão de usuários e aplicações da CACB.
                     <br />
                     Se tiver qualquer dificuldade, por favor, avise-nos pelo <a href='mailto:empreender@cacb.org.br'>empreender@cacb.org.br</a>.
                     <br /> <br />
-                    Programa Empreender 1999-2023 - Versão 5
+                    Programa Empreender 1999-2024 - Versão 5
                 </p>
-
             </div>
-
         </form>
 
     );
