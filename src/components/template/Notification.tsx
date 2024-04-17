@@ -264,7 +264,16 @@ const _Notification = ({ className }: { className?: string }) => {
                 </div>
             </Dialog>
 
-            <Dropdown
+            <Link to="sistema/faq/blog">
+                <NotificationToggle
+                            dot={unreadNotification}
+                            className={className}
+                />
+            </Link>
+            
+                    
+            {/* <Dropdown
+            disabled= {true}
                 renderTitle={
                     <NotificationToggle
                         dot={unreadNotification}
@@ -355,8 +364,7 @@ const _Notification = ({ className }: { className?: string }) => {
                                         <h6 className="font-semibold">
                                             Sem novas notificações!
                                         </h6>
-                                        {/* <p className="mt-1">Volte depois ;)</p> */}
-
+                                        <p className="mt-1">Volte depois </p> 
                                     </div>
                                 </div>
 
@@ -375,7 +383,7 @@ const _Notification = ({ className }: { className?: string }) => {
                         </Link>
                     </div>
                 </Dropdown.Item>
-            </Dropdown>
+            </Dropdown> */}
         </>
     )
 }
