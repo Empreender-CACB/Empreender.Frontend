@@ -4,12 +4,12 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-import { Avatar, Badge, Button, Checkbox, Tooltip } from '@/components/ui'
+import { Button, Checkbox, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
-import { HiOutlineInformationCircle, HiOutlineReply, HiOutlineUser, HiPlusCircle } from 'react-icons/hi'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
@@ -72,10 +72,21 @@ const Empresas = () => {
     const [optionsSegmento, setOptionsSegmento] = useState([])
     const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
 
-    const { recursos } = useAppSelector((state) => state.auth.user)
+    const { user } = useAppSelector((state) => state.auth)
+
+    const isGestorEntidade = user.associacoes.length > 0;
+    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade;
+
+    const canExport = user.recursos.includes('empresa_restrita') ||
+        (isGestorEntidade && (
+            (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
+            empresaType !== 'nao_nucleadas' &&
+            empresaType !== 'projetos' &&
+            empresaType !== 'todas'
+        )) || (isUsuarioEntidade && checkedVisaoLocal);
 
     const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
-        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}`  +
+        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
         `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}`;
 
     let headerCnae;
@@ -90,7 +101,6 @@ const Empresas = () => {
         default:
             headerCnae = "CNAE";
     }
-
 
     const columns = [
         {
@@ -205,7 +215,7 @@ const Empresas = () => {
         },
     ]
 
-    if (recursos.includes('empresa_restrita')) {
+    if (user.recursos.includes('empresa_restrita')) {
         columns.push({
             name: 'restrita',
             header: 'Restrita',
@@ -314,7 +324,7 @@ const Empresas = () => {
                                     </div>
                                 }
                             >
-                                <FcInfo size={20} className='mt-1 ml-2'/>
+                                <FcInfo size={20} className='mt-1 ml-2' />
                             </Tooltip>
                         </div>
 
@@ -411,11 +421,10 @@ const Empresas = () => {
             <CustomReactDataGrid
                 filename="Empresas"
                 columns={columns}
-                //defaultFilterValue={defaultFilterValue}
                 url={url}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
-                autorizeExport={recursos.includes('emp_expor')}
+                autorizeExport={canExport}
             />
         </AdaptableCard>
     )

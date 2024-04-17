@@ -30,8 +30,13 @@ export interface UserResponse {
         dsemail: string
         perfil: string
         cod_perfil: number
+        idobjeto: number
         fotouser: string
         recursos: any
         preferencias: any
+        associacoes: any[]
+        empresas: any[]
+        nucleos: any[]
+        projetos: any[]
     }
 }

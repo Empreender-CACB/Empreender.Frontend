@@ -1,3 +1,5 @@
+import { Associacao, Empresa, Nucleo } from "./generalTypes";
+
 export type SignInCredential = {
     login: string
     password: string
@@ -15,9 +17,14 @@ export type SignInResponse = {
         dsemail: string;
         perfil: string;
         cod_perfil: number;
+        idobjeto: number;
         recursos: string[];
         preferencias: string[];
         fotouser?: string;
+        associacoes?: Associacao[],
+        empresas?: Empresa[]
+        nucleos?: Nucleo[],
+        projetos?: any[]
     };
 }
 

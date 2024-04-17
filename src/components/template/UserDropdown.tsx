@@ -67,6 +67,10 @@ const _UserDropdown = ({ className }: CommonProps) => {
                         fotouser: user.fotouser,
                         recursos: user.recursos,
                         preferencias: user.preferencias,
+                        associacoes: user.associacoes,
+                        empresas: user.empresas,
+                        nucleos: user.nucleos,
+                        projetos: user.projetos,
                     }
 
                     dispatch(setUser(adaptedUser))

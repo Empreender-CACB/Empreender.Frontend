@@ -39,7 +39,7 @@ function useAuth() {
             if (resp.data) {
                 const { token } = resp.data
                 dispatch(signInSuccess(token.token))
-
+                
                 if (resp.data.user) {
                     const adaptedUser = {
                         nucpf: resp.data.user.nucpf,
@@ -47,14 +47,20 @@ function useAuth() {
                         dsemail: resp.data.user.dsemail,
                         perfil: resp.data.user.perfil,
                         cod_perfil: resp.data.user.cod_perfil,
+                        idobjeto: resp.data.user.idobjeto,
                         fotouser: resp.data.user.fotouser,
                         recursos: resp.data.user.recursos,
                         preferencias: resp.data.user.preferencias,
+                        associacoes: resp.data.user.associacoes,
+                        empresas: resp.data.user.empresas,
+                        nucleos: resp.data.user.nucleos,
+                        projetos: resp.data.user.projetos,
                     }
+                    
                     localStorage.setItem('lista_geral', resp.data.user.preferencias.lista_geral);
 
-
                     localStorage.setItem('originalToken', token.token);
+
                     dispatch(setUser(adaptedUser))
                 }
 
@@ -88,9 +94,14 @@ function useAuth() {
                 dsemail: '',
                 perfil: '',
                 cod_perfil: 0,
+                idobjeto: 0,
                 fotouser: '',
                 recursos: [],
                 preferencias: [],
+                associacoes: [],
+                empresas: [],
+                nucleos: [],
+                projetos: []
             })
         )
         localStorage.removeItem('originalToken');

@@ -43,10 +43,15 @@ const Usuarios = () => {
                 nmusuario: response.data.user.nmusuario,
                 dsemail: response.data.user.dsemail,
                 perfil: response.data.user.perfil,
+                idobjeto: response.data.user.idobjeto,
                 cod_perfil: response.data.user.cod_perfil,
                 fotouser: response.data.user.fotouser,
                 recursos: response.data.user.recursos,
                 preferencias: response.data.user.preferencias,
+                associacoes: response.data.user.associacoes,
+                empresas: response.data.user.empresas,
+                nucleos: response.data.user.nucleos,
+                projetos: response.data.user.projetos,
             }
             dispatch(signInSuccess(newToken))
             dispatch(setUser(adaptedUser))
