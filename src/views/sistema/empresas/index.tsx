@@ -77,13 +77,14 @@ const Empresas = () => {
     const isGestorEntidade = user.associacoes.length > 0;
     const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade;
 
-    const canExport = user.recursos.includes('empresa_restrita') ||
+    const canExport = !!(user.recursos.includes('empresa_restrita') ||
         (isGestorEntidade && (
             (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
             empresaType !== 'nao_nucleadas' &&
             empresaType !== 'projetos' &&
             empresaType !== 'todas'
-        )) || (isUsuarioEntidade && checkedVisaoLocal);
+        )) || (isUsuarioEntidade && checkedVisaoLocal));
+
 
     const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
@@ -166,7 +167,6 @@ const Empresas = () => {
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
-
                 return (
                     <Tooltip
                         placement='left'
