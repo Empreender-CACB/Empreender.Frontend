@@ -159,7 +159,7 @@ const Empresas = () => {
             },
         },
         {
-            name: 'st_cnae',
+            name: 'cnae_combined',
             header: headerCnae,
             defaultFlex: 1,
             type: 'string',
@@ -172,11 +172,11 @@ const Empresas = () => {
                         placement='left'
                         title={
                             <div>
-                                {data.cd_cnae} - {data.st_cnae}
+                                {data.cnae_combined}
                             </div>
                         }
                     >
-                        <span className="cursor-pointer">{data.cd_cnae} - {data.st_cnae}</span>
+                        <span className="cursor-pointer">{data.cnae_combined}</span>
                     </Tooltip>
                 );
             },
