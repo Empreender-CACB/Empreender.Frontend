@@ -66,7 +66,7 @@ const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [origemType, setOrigemType] = useState<string[]>(['PORTAL'])
+    const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [optionsSegmento, setOptionsSegmento] = useState([])
@@ -176,7 +176,7 @@ const Empresas = () => {
                             </div>
                         }
                     >
-                        <span className="cursor-pointer">{data.st_cnae}</span>
+                        <span className="cursor-pointer">{data.cd_cnae} - {data.st_cnae}</span>
                     </Tooltip>
                 );
             },
@@ -349,7 +349,6 @@ const Empresas = () => {
                         <span className="pr-2 font-black">Origem: </span>
                         <Select
                             isMulti
-                            defaultValue={[{ value: 'PORTAL', label: 'PORTAL' }]}
                             options={optionsOrigem}
                             onChange={onChangeOrigem}
                             placeholder="Todas"
@@ -359,7 +358,21 @@ const Empresas = () => {
 
                     {empresaType === 'somente_nucleadas' && (
                         <div className='flex items-center'>
-                            <span className="pr-2 font-black">Visão local: </span>
+                            <span className="font-black">Visão local: </span>
+
+                            <div className='mr-2'>
+                                <Tooltip
+                                    placement='top'
+                                    title={
+                                        <div>
+                                            Apresenta apenas as empresas ligadas à entidade do usuário.
+                                        </div>
+                                    }
+                                >
+                                    <FcInfo size={20} className='mt-1 ml-2' />
+                                </Tooltip>
+                            </div>
+
                             <Checkbox checked={checkedVisaoLocal} onChange={setCheckedVisaoLocal} />
                         </div>
                     )}
