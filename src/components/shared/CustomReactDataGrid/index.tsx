@@ -474,7 +474,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         className="mx-2 "
                         onClick={() => {
                             gridRef.current.clearAllFilters()
-                            gridRef.current.setFilterValue(defaultFilterValue)
+                            defaultFilterValue?gridRef.current.setFilterValue(defaultFilterValue):''
                         }}
                     ></Button>
                 </Tooltip>
