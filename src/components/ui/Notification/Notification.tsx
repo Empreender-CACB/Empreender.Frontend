@@ -24,7 +24,7 @@ const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             children,
             closable = false,
             customIcon,
-            duration = 3000,
+            duration = 3005,
             onClose,
             style,
             title,

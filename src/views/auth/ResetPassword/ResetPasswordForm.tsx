@@ -75,9 +75,9 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
             <div className="mb-6">
                 {resetComplete ? (
                     <>
-                    #{tokenParams.get("token")}
-                        <h3 className="mb-1">Senha atualizada com sucesso</h3>
-                        <p>Agora você já pode realizar login na plataforma.</p>
+                    {/* #{tokenParams.get("token")} */}
+                        <h3 className="mb-1">Senha atualizada com sucesso !</h3>
+                        <p>Agora você já pode se identificar na plataforma.</p>
                     </>
                 ) : (
                     <>
@@ -163,10 +163,10 @@ const ResetPasswordForm = (props: ResetPasswordFormProps) => {
                                 </Button>
                             )}
 
-                            <div className="mt-4 text-center">
+                            {/* <div className="mt-4 text-center">
                                 <span>Voltar para o </span>
                                 <ActionLink to={signInUrl}>login</ActionLink>
-                            </div>
+                            </div> */}
                         </FormContainer>
                     </Form>
                 )}
