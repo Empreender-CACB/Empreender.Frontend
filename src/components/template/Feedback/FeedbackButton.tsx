@@ -44,8 +44,9 @@ const FeedbackButton = () => {
             <Notification
                 title='Opinião enviada com sucesso!'
                 type='info'
+                //duration={4000}
             >
-               Sua opinião foi recebida com sucesso. Se necessário, em contato através do seu email cadastrado.
+               Sua opinião foi recebida com sucesso. Obrigado.
             </Notification>
         )
     }
