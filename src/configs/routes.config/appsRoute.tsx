@@ -24,6 +24,16 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/nucleos')),
     },
     {
+        key: 'Projetos.lista',
+        path: `${APP_PREFIX_PATH}/projetos/`,
+        component: lazy(() => import('@/views/sistema/projetos')),
+    },
+    {
+        key: 'Entidades.lista',
+        path: `${APP_PREFIX_PATH}/entidades/`,
+        component: lazy(() => import('@/views/sistema/entidades')),
+    },
+    {
         key: 'sistemaPreferencias.index',
         path: `${APP_PREFIX_PATH}/preferencias`,
         component: lazy(() => import('@/views/sistema/preferencias')),
