@@ -76,6 +76,15 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'pesquisa_cesar',
+        path: `/pesquisa`,
+        component: lazy(() => import('@/views/Pesquisa')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
