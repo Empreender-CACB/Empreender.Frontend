@@ -195,9 +195,6 @@ function RankingDiagnostico() {
                       </div>
                     </Th>
                   ))}
-
-
-
                 </Tr>
               </THead>
               <TBody>
@@ -207,7 +204,7 @@ function RankingDiagnostico() {
                     <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
                     <Td className="whitespace-nowrap"><strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong></Td>
                     {Object.keys(diagnostico.areas).map(areaId => (
-                      <Td className="whitespace-nowrap" key={areaId}>{diagnostico.notasPorArea[areaId]}</Td>
+                      <Td className="text-center whitespace-nowrap" key={areaId}>{diagnostico.notasPorArea[areaId]}</Td>
                     ))}
                   </Tr>
                 ))}
