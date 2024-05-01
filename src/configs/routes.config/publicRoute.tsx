@@ -78,7 +78,7 @@ const publicRoute: Routes = [
     },
     {
         key: 'pesquisa_cesar',
-        path: `/pesquisa`,
+        path: `/pesquisa/:token`,
         component: lazy(() => import('@/views/Pesquisa')),
         meta: {
             layout: 'blank',
