@@ -1,11 +1,11 @@
-import { Table, Tooltip } from '@/components/ui';
+import { Table } from '@/components/ui';
 import TBody from '@/components/ui/Table/TBody';
 import THead from '@/components/ui/Table/THead';
 import Td from '@/components/ui/Table/Td';
 import Th from '@/components/ui/Table/Th';
 import Tr from '@/components/ui/Table/Tr';
 import ApiService from '@/services/ApiService';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { RiTeamLine } from "react-icons/ri";
 import { BsFillHouseGearFill } from "react-icons/bs";
@@ -38,45 +38,92 @@ interface Diagnostico {
 interface State {
   diagnosticos: Diagnostico[];
   isLoading: boolean;
+  ufs: any[];
   error: string | null;
+  filtroUf: string;
 }
 
 function RankingDiagnostico() {
-
   const [state, setState] = useState<State>({
     diagnosticos: [],
+    ufs: [],
     isLoading: true,
-    error: null
+    error: null,
+    filtroUf: ''
   });
 
+  const [sortKey, setSortKey] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
+
+
   useEffect(() => {
-    const getDados = async () => {
+    const fetchData = async () => {
       try {
-        const response = await ApiService.fetchData({
+        const response: any = await ApiService.fetchData({
           url: 'ranking/diagnostico',
           method: 'GET'
         });
-
         if (response.status === 200) {
+          const uniqueUfs = Array.from(new Set(response.data.map((item: any) => item.uf))).sort();
           setState({
             diagnosticos: response.data as Diagnostico[],
+            ufs: uniqueUfs,
             isLoading: false,
-            error: null
+            error: null,
+            filtroUf: '',
           });
         } else {
           throw new Error('Falha ao buscar dados');
         }
       } catch (error: any) {
-        setState({
-          diagnosticos: [],
+        console.error(error);
+        setState(prevState => ({
+          ...prevState,
           isLoading: false,
           error: error.message || 'Erro desconhecido'
-        });
+        }));
       }
     };
 
-    getDados();
+    fetchData();
   }, []);
+
+  // Função para alterar a ordenação
+  const changeSort = (newSortKey: any) => {
+    if (sortKey === newSortKey) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(newSortKey);
+      setSortDirection('asc');
+    }
+  };
+
+  // Função combinada de filtro e ordenação
+  const getFilteredAndSortedDiagnosticos = () => {
+    let filtered = [...state.diagnosticos];
+
+    if (state.filtroUf) {
+      filtered = filtered.filter(diagnostico => diagnostico.uf === state.filtroUf);
+    }
+
+    return filtered.sort((a, b) => {
+      let aValue, bValue;
+      if (sortKey === 'total') {
+        aValue = a.somaTotalNotas;
+        bValue = b.somaTotalNotas;
+      } else {
+        const aRating = a.notasPorArea[sortKey];
+        const bRating = b.notasPorArea[sortKey];
+        aValue = aRating ? parseInt(aRating.split('º - ')[0], 10) : Number.MAX_SAFE_INTEGER;
+        bValue = bRating ? parseInt(bRating.split('º - ')[0], 10) : Number.MAX_SAFE_INTEGER;
+      }
+
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    });
+  };
+
+
+  const sortedAndFilteredDiagnosticos = getFilteredAndSortedDiagnosticos();
 
   function renderPodium(diagnostico: any) {
     let heightClass = '';
@@ -144,15 +191,12 @@ function RankingDiagnostico() {
             <h1 className="text-white text-5xl font-bold tracking-tight">Ranking de Entidades 2024</h1>
             <div className="w-64 h-1 bg-white mt-8"></div>
           </div>
-          {/* Espaço reservado para ícones ou outros elementos do lado direito */}
           <div>
             <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-cacb-mini-novo.png" alt="CACB" />
-
           </div>
         </div>
       </div>
 
-      {/* Podium Component */}
       <div className='max-w-screen-xl'>
         <h2 className="mt-10 text-3xl mb-4 font-semibold">Top 3 Entidades</h2>
         <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
@@ -176,41 +220,54 @@ function RankingDiagnostico() {
           </div>
         </div>
 
-        {/* Placeholder for Future Table */}
         <div className="my-10">
-          <div className="flex flex-col items-center">
-            <Table>
-              <THead>
-                <Tr>
-                  <Th>Entidade</Th>
-                  <Th>Cidade/UF</Th>
-                  <Th>Total</Th>
-                  {state.diagnosticos[0] && Object.entries(state.diagnosticos[0].areas).map(([key, name]) => (
-                    <Th key={key} >
-                      <div className='flex flex-col items-center justify-center py-1'>
-                        <div className={`rounded-full p-2 ${colorMapping[name]} flex justify-center items-center`}>
-                          {iconMapping[name]}
-                        </div>
-                        <span className="mt-2" style={{fontSize: '10px', textAlign: 'center'}}>{name}</span>
+          <div className="self-start mb-4">
+            <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Filtrar por UF:</label>
+            <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              value={state.filtroUf}
+              onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
+              <option value="">Selecione uma UF</option>
+              {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).map(uf => (
+                <option key={uf} value={uf}>{uf}</option>
+              ))}
+            </select>
+          </div>
+          <Table>
+            <THead>
+              <Tr>
+                <Th>Entidade</Th>
+                <Th>Cidade/UF</Th>
+                <Th className="cursor-pointer" onClick={() => changeSort('total')}>Total</Th>
+                {state.diagnosticos[0] && Object.entries(state.diagnosticos[0].areas).map(([key, name]) => (
+                  <Th key={key} onClick={() => changeSort(key)} className="cursor-pointer">
+                    <div className='flex flex-col items-center justify-center py-1'>
+                      <div className={`rounded-full p-2 ${colorMapping[name]} flex justify-center items-center cursor-pointer`}>
+                        {iconMapping[name]}
                       </div>
-                    </Th>
+                      <span className="mt-2" style={{ fontSize: '10px', textAlign: 'center' }}>{name}</span>
+                    </div>
+                  </Th>
+                ))}
+              </Tr>
+            </THead>
+            <TBody>
+              {sortedAndFilteredDiagnosticos.map((diagnostico, index) => (
+                <Tr key={index}>
+                  <Td>{diagnostico.entidade}</Td>
+                  <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
+                  <Td className="whitespace-nowrap">
+                    {sortKey === 'total' ? <strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong> : `${diagnostico.rankingGeral} - ${diagnostico.notaGeral}`}
+                  </Td>
+                  {Object.keys(diagnostico.areas).map(areaId => (
+                    <Td className="text-center whitespace-nowrap" key={areaId}>
+                      {sortKey === areaId ? <strong>{diagnostico.notasPorArea[areaId]}</strong> : diagnostico.notasPorArea[areaId]}
+                    </Td>
                   ))}
                 </Tr>
-              </THead>
-              <TBody>
-                {state.diagnosticos.map((diagnostico, index) => (
-                  <Tr key={index}>
-                    <Td>{diagnostico.entidade}</Td>
-                    <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
-                    <Td className="whitespace-nowrap"><strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong></Td>
-                    {Object.keys(diagnostico.areas).map(areaId => (
-                      <Td className="text-center whitespace-nowrap" key={areaId}>{diagnostico.notasPorArea[areaId]}</Td>
-                    ))}
-                  </Tr>
-                ))}
-              </TBody>
-            </Table>
-          </div>
+              ))}
+            </TBody>
+          </Table>
+
         </div>
       </div>
     </div>
