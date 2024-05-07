@@ -37,7 +37,7 @@ const handleVersionButtonClick = async () => {
         console.error('Erro ao obter a versão da RFB:', error)
         toast.push(toastErrorNotification)
     }
-};
+}
 
 const HorizontalMenuDropdownItem = ({ nav }: HorizontalMenuItemProps) => {
     const { title, translateKey, path, key } = nav
