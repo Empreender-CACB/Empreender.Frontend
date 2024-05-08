@@ -20,12 +20,13 @@ function Pesquisa() {
     useEffect(() => {
         const requisitaForm = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/forms?token=${token}`)
-                
-                if (response.ok) {
-                    const formsData = await response.json()
-                    console.log("Dados do formulário:", formsData)
-                    setForms(formsData)
+                const response: any = await ApiService.fetchData({
+                    url: `forms/pesquisa2048/checkStatus/${token}`,
+                    method: 'get',
+                });        
+                console.log("Response:", response)        
+                if (response.status === 200) {
+                    setForms(response.data)
                 } else {
                     console.error('Erro ao obter formulário:', response.statusText)
                 }
@@ -61,9 +62,7 @@ function Pesquisa() {
     }
     
     const SuccessComponent = () => {
-        if (forms?.status === 0) {
-            return null
-        }
+
         return (
             <div className="bg-white p-6 md:mx-auto h-full overflow-x-clip">
                 <svg viewBox="0 0 24 24" className="text-green-600 w-16 h-16 mx-auto my-6">
@@ -129,7 +128,7 @@ function Pesquisa() {
                         <Form>
                             <FormContainer className='mx-auto bg-white sm:w-full lg:w-9/12'>
                 <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
-                    <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts mb-16 mt-2 ml-8">Documentos da Pesquisa</h1>
+                    <h1 className="text-4xl text-gray-800 dark:text-gray-100 font-bold texts mb-8 mt-8 ml-8">Validação de pesquisa - Projeto 2048</h1>
                 </div>                    
                                 {forms.documents.map((document, index) => (
                                     <div key={index} className="mb-4 ml-8 mr-8">
