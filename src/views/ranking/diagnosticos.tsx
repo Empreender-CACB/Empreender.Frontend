@@ -88,7 +88,29 @@ function RankingDiagnostico() {
     fetchData();
   }, []);
 
-  // Função para alterar a ordenação
+  const iconStyles = "text-white text-2xl";
+
+  const iconMapping: any = {
+    "Pessoas": <RiTeamLine className={iconStyles} />,
+    "Processos internos": <BsFillHouseGearFill className={iconStyles} />,
+    "Finanças": <TbPigMoney className={iconStyles} />,
+    "Clientes": <FaUsers className={iconStyles} />,
+    "Cultura associativista": <FaHandshakeSimple className={iconStyles} />,
+    "Desenvolvimento local": <GiProgression className={iconStyles} />,
+    "Benefícios": <FaHandHoldingUsd className={iconStyles} />
+  };
+
+  const colorMapping: any = {
+    "Pessoas": "bg-red-500",
+    "Processos internos": "bg-blue-500",
+    "Finanças": "bg-green-500",
+    "Clientes": "bg-yellow-500",
+    "Cultura associativista": "bg-pink-500",
+    "Desenvolvimento local": "bg-purple-500",
+    "Benefícios": "bg-indigo-500"
+  };
+
+  // Função para alterar a ordenação da lista
   const changeSort = (newSortKey: any) => {
     if (sortKey === newSortKey) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -125,62 +147,103 @@ function RankingDiagnostico() {
 
   const sortedAndFilteredDiagnosticos = getFilteredAndSortedDiagnosticos();
 
-  function renderPodium(diagnostico: any) {
-    let heightClass = '';
-    switch (diagnostico.rankingGeral) {
-      case "1º":
-        heightClass = 'h-52';
+  if (state.isLoading) return <p>Carregando...</p>;
+  if (state.error) return <p>Erro: {state.error}</p>;
+
+  const topTresDiagnosticos = sortedAndFilteredDiagnosticos.slice(0, 3);
+
+  const getPodiumDiagnosticos = (diagnosticos: any[]) => {
+    let podiumArray = [];
+
+    switch (diagnosticos.length) {
+      case 1:
+        // Apenas um diagnóstico: mostrar apenas o primeiro lugar
+        podiumArray = [{ ...diagnosticos[0], ranking: '1º' }];
         break;
-      case "2º":
-        heightClass = 'h-40';
-        break;
-      case "3º":
-        heightClass = 'h-32';
+      case 2:
+        // Dois diagnósticos: mostrar primeiro e segundo lugar
+        podiumArray = [
+          { ...diagnosticos[1], ranking: '2º' },
+          { ...diagnosticos[0], ranking: '1º' }
+        ];
         break;
       default:
-        heightClass = 'h-32';
+        // Três ou mais diagnósticos: mostrar segundo, primeiro e terceiro lugar
+        podiumArray = [
+          { ...diagnosticos[1], ranking: '2º' },
+          { ...diagnosticos[0], ranking: '1º' },
+          { ...diagnosticos[2], ranking: '3º' }
+        ];
+        break;
     }
 
+    return podiumArray;
+  };
+
+  const podiumDiagnosticos = getPodiumDiagnosticos(topTresDiagnosticos);
+
+  const renderPodium = (diagnostico: any, rankingLabel: string) => {
+    let style = {};
+    let heightClass = '';
+    let paddingClass = '';
+  
+    switch (rankingLabel) {
+      case '1º':
+        style = {
+          background: 'linear-gradient(to bottom, #ffd700, #e6c200)',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        };
+        heightClass = 'h-52';
+        paddingClass = 'pb-16';
+        break;
+      case '2º':
+        style = {
+          background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        };
+        heightClass = 'h-40';
+        paddingClass = 'pb-10';
+        break;
+      case '3º':
+        style = {
+          background: 'linear-gradient(to bottom, #cd7f32, #b76e29)',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        };
+        heightClass = 'h-32';
+        paddingClass = 'pb-8';
+        break;
+      default:
+        style = {
+          background: 'linear-gradient(to bottom, #76a030, #609023)',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        };
+        heightClass = 'h-32';
+        paddingClass = 'pb-8';
+    }
+  
     return (
       <div key={diagnostico.id} className="text-center">
         <p className="mb-2 font-bold">{diagnostico.cidade}</p>
-        <div className={`bg-green-800 w-36 ${heightClass} flex justify-center items-end pb-2 rounded`}>
-          <span className="text-white text-6xl font-semibold pb-8">{diagnostico.rankingGeral}</span>
+        <div
+          style={{
+            ...style,
+            width: '9rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'end',
+            borderRadius: '0.5rem',
+          }}
+          className={`${heightClass} flex justify-center items-end ${paddingClass}`}
+        >
+          <span className="text-white text-6xl font-semibold">{rankingLabel}</span>
         </div>
         <p className="mt-2">{parseFloat(diagnostico.notaGeral).toFixed(2)}</p>
       </div>
     );
-  }
-
-
-  const iconStyles = "text-white text-2xl";
-
-  const iconMapping: any = {
-    "Pessoas": <RiTeamLine className={iconStyles} />,
-    "Processos internos": <BsFillHouseGearFill className={iconStyles} />,
-    "Finanças": <TbPigMoney className={iconStyles} />,
-    "Clientes": <FaUsers className={iconStyles} />,
-    "Cultura associativista": <FaHandshakeSimple className={iconStyles} />,
-    "Desenvolvimento local": <GiProgression className={iconStyles} />,
-    "Benefícios": <FaHandHoldingUsd className={iconStyles} />
   };
+  
 
-  const colorMapping: any = {
-    "Pessoas": "bg-red-500",
-    "Processos internos": "bg-blue-500",
-    "Finanças": "bg-green-500",
-    "Clientes": "bg-yellow-500",
-    "Cultura associativista": "bg-pink-500",
-    "Desenvolvimento local": "bg-purple-500",
-    "Benefícios": "bg-indigo-500"
-  };
 
-  if (state.isLoading) return <p>Carregando...</p>;
-  if (state.error) return <p>Erro: {state.error}</p>;
-
-  const topTresDiagnosticos = state.diagnosticos
-    .sort((a, b) => parseInt(a.rankingGeral) - parseInt(b.rankingGeral))
-    .slice(0, 3);
 
   return (
     <div className="flex flex-col items-center">
@@ -198,32 +261,11 @@ function RankingDiagnostico() {
       </div>
 
       <div className='max-w-screen-xl'>
-        <h2 className="mt-10 text-3xl mb-4 font-semibold">Top 3 Entidades</h2>
-        <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
-          relatório e o seu resultado é um instrumento de avaliação voltado para gestores públicos e organizações de apoio interessadas em
-          gerar impactos na economia de seu município a partir do fomento à atividade empreendedora, assim como para empreendedores que
-          queiram expandir seus negócios e para a mídia, que busca análises e dados qualificados.</p>
-
-        <div className="flex justify-center w-full">
-          <div className="flex justify-center items-end mt-5 gap-8">
-            {topTresDiagnosticos
-              .filter((diagnostico) => diagnostico.rankingGeral === "2º")
-              .map((diagnostico) => renderPodium(diagnostico))}
-
-            {topTresDiagnosticos
-              .filter((diagnostico) => diagnostico.rankingGeral === "1º")
-              .map((diagnostico) => renderPodium(diagnostico))}
-
-            {topTresDiagnosticos
-              .filter((diagnostico) => diagnostico.rankingGeral === "3º")
-              .map((diagnostico) => renderPodium(diagnostico))}
-          </div>
-        </div>
-
-        <div className="my-10">
-          <div className="self-start mb-4">
+        <div className='flex justify-between items-center my-12'>
+          <h2 className="text-3xl mb-4 font-semibold">Top 3 Entidades</h2>
+          <div>
             <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Filtrar por UF:</label>
-            <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
               value={state.filtroUf}
               onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
               <option value="">Selecione uma UF</option>
@@ -232,6 +274,38 @@ function RankingDiagnostico() {
               ))}
             </select>
           </div>
+        </div>
+
+        <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
+          relatório e o seu resultado é um instrumento de avaliação voltado para gestores públicos e organizações de apoio interessadas em
+          gerar impactos na economia de seu município a partir do fomento à atividade empreendedora, assim como para empreendedores que
+          queiram expandir seus negócios e para a mídia, que busca análises e dados qualificados.</p>
+
+        <div className="flex justify-center w-full">
+          <div className="flex justify-center items-end mt-5 gap-8">
+            {podiumDiagnosticos.map((diagnostico) => {
+              let heightClass = '';
+
+              switch (diagnostico.ranking) {
+                case '1º':
+                  heightClass = 'h-52';
+                  break;
+                case '2º':
+                  heightClass = 'h-40';
+                  break;
+                case '3º':
+                  heightClass = 'h-32';
+                  break;
+                default:
+                  heightClass = 'h-32';
+              }
+
+              return renderPodium(diagnostico, diagnostico.ranking);
+            })}
+          </div>
+        </div>
+
+        <div className="my-10">
           <Table>
             <THead>
               <Tr>
