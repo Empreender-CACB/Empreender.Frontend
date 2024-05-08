@@ -76,6 +76,15 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'ranking.diag',
+        path: `/ranking/diagnosticos`,
+        component: lazy(() => import('@/views/ranking/diagnosticos')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
