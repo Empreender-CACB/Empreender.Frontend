@@ -186,7 +186,7 @@ function RankingDiagnostico() {
     let style = {};
     let heightClass = '';
     let paddingClass = '';
-  
+
     switch (rankingLabel) {
       case '1º':
         style = {
@@ -220,7 +220,7 @@ function RankingDiagnostico() {
         heightClass = 'h-32';
         paddingClass = 'pb-8';
     }
-  
+
     return (
       <div key={diagnostico.id} className="text-center">
         <p className="mb-2 font-bold">{diagnostico.cidade}</p>
@@ -241,21 +241,31 @@ function RankingDiagnostico() {
       </div>
     );
   };
-  
+
 
 
 
   return (
     <div className="flex flex-col items-center">
-
       <div className="w-full py-16 flex items-center" style={{ background: '#76A030' }}>
-        <div className="max-w-screen-xl mx-auto w-full flex justify-between items-center">
-          <div>
-            <h1 className="text-white text-5xl font-bold tracking-tight">Ranking de Entidades 2024</h1>
-            <div className="w-64 h-1 bg-white mt-8"></div>
+        <div className="max-w-screen-xl mx-auto w-full flex flex-wrap justify-between items-center px-4 md:px-8">
+          <div className="mb-6 md:mb-0 flex-1">
+            <h1 className="text-white text-3xl md:text-5xl font-bold tracking-tight">
+              Ranking de Entidades 2024
+            </h1>
+            <div className="w-24 md:w-64 h-1 bg-white mt-4 md:mt-8"></div>
           </div>
-          <div>
-            <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-cacb-mini-novo.png" alt="CACB" />
+          <div className="flex flex-col items-center md:items-end space-y-4 md:space-y-0">
+            <img
+              className="h-12 md:h-20 mb-6"
+              src="/img/logo/logo-cacb-vertical-branco.png"
+              alt="CACB"
+            />
+            <img
+              className="h-12 md:h-16"
+              src="/img/logo/logo-empreender-unir-para-crescer-branco.png"
+              alt="Empreender"
+            />
           </div>
         </div>
       </div>
