@@ -54,7 +54,7 @@ function RankingDiagnostico() {
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-
+  const [selectedCity, setSelectedCity] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +87,11 @@ function RankingDiagnostico() {
 
     fetchData();
   }, []);
+
+  // Limpa filtro de cidade ao mudar a UF
+  useEffect(() => {
+    setSelectedCity('');
+  }, [state.filtroUf]);
 
   const iconStyles = "text-white text-2xl";
 
@@ -126,6 +131,9 @@ function RankingDiagnostico() {
 
     if (state.filtroUf) {
       filtered = filtered.filter(diagnostico => diagnostico.uf === state.filtroUf);
+    }
+    if (selectedCity) {
+      filtered = filtered.filter(diagnostico => diagnostico.cidade === selectedCity);
     }
 
     return filtered.sort((a, b) => {
@@ -223,7 +231,7 @@ function RankingDiagnostico() {
 
     return (
       <div key={diagnostico.id} className="text-center">
-        <p className="mb-2 font-bold">{diagnostico.cidade}</p>
+        <p className="mb-2 font-bold">{diagnostico.cidade} - {diagnostico.uf}</p>
         <div
           style={{
             ...style,
@@ -242,48 +250,83 @@ function RankingDiagnostico() {
     );
   };
 
-
-
-
   return (
     <div className="flex flex-col items-center">
-      <div className="w-full py-16 flex items-center" style={{ background: '#76A030' }}>
-        <div className="max-w-screen-xl mx-auto w-full flex flex-wrap justify-between items-center px-4 md:px-8">
+      <div className="w-full py-8 flex items-center" style={{ background: '#76A030' }}>
+        <div className="max-w-screen-xl mx-auto w-full flex flex-wrap justify-between items-center">
           <div className="mb-6 md:mb-0 flex-1">
-            <h1 className="text-white text-3xl md:text-5xl font-bold tracking-tight">
-              Ranking de Entidades 2024
+            <h1 className="text-white text-3xl md:text-3xl font-bold tracking-tight">
+              Projeto Empreender 2022
             </h1>
-            <div className="w-24 md:w-64 h-1 bg-white mt-4 md:mt-8"></div>
+            <h1 className="text-white text-5xl md:text-6xl mt-2 font-bold tracking-tight">
+              Eixo Representatividade
+            </h1>
+            <div className="w-48 md:w-64 h-1 bg-white mt-4 md:mt-8"></div>
           </div>
-          <div className="flex flex-col items-center md:items-end space-y-4 md:space-y-0">
+          <div className="flex flex-col justify-center mx-auto items-center md:items-end space-y-4 md:space-y-0">
             <img
               className="h-12 md:h-20 mb-6"
               src="/img/logo/logo-cacb-vertical-branco.png"
               alt="CACB"
             />
             <img
-              className="h-12 md:h-16"
+              className="h-12 md:h-16 mb-2"
               src="/img/logo/logo-empreender-unir-para-crescer-branco.png"
               alt="Empreender"
             />
+            <div className='w-full flex justify-center'>
+              <img
+                className="h-12 md:h-16 mt-4"
+                src="/img/logo/sebrae-branco.svg"
+                alt="Sebrae"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       <div className='max-w-screen-xl'>
         <div className='flex justify-between items-center my-12'>
-          <h2 className="text-3xl mb-4 font-semibold">Top 3 Entidades</h2>
-          <div>
-            <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Filtrar por UF:</label>
-            <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              value={state.filtroUf}
-              onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
-              <option value="">Selecione uma UF</option>
-              {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
-              ))}
-            </select>
-          </div>
+          <h2 className="text-3xl mb-4 font-semibold">Classificação das entidades participantes</h2>
+          <div className='flex gap-4'>
+            <div>
+              <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Estado</label>
+              <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                value={state.filtroUf}
+                onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
+                <option value="">Todas</option>
+                {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).sort().map(uf => (
+                  <option key={uf} value={uf}>{uf}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Cidade</label>
+              <select
+                className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                <option value="">Todas</option>
+                {state.diagnosticos
+                  .filter(diag => diag.uf === state.filtroUf)
+                  .map(diag => diag.cidade)
+                  .filter((city, index, self) => self.indexOf(city) === index) // Remove duplicações
+                  .sort()
+                  .map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Ranking</label>
+              <select
+                className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              >
+                <option value="1" selected>Ranking 1</option>
+              </select>
+            </div>
+          </div>          
         </div>
 
         <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
@@ -294,22 +337,6 @@ function RankingDiagnostico() {
         <div className="flex justify-center w-full">
           <div className="flex justify-center items-end mt-5 gap-8">
             {podiumDiagnosticos.map((diagnostico) => {
-              let heightClass = '';
-
-              switch (diagnostico.ranking) {
-                case '1º':
-                  heightClass = 'h-52';
-                  break;
-                case '2º':
-                  heightClass = 'h-40';
-                  break;
-                case '3º':
-                  heightClass = 'h-32';
-                  break;
-                default:
-                  heightClass = 'h-32';
-              }
-
               return renderPodium(diagnostico, diagnostico.ranking);
             })}
           </div>
@@ -319,6 +346,7 @@ function RankingDiagnostico() {
           <Table>
             <THead>
               <Tr>
+                <Th>#</Th>
                 <Th>Entidade</Th>
                 <Th>Cidade/UF</Th>
                 <Th className="cursor-pointer" onClick={() => changeSort('total')}>Total</Th>
@@ -337,6 +365,7 @@ function RankingDiagnostico() {
             <TBody>
               {sortedAndFilteredDiagnosticos.map((diagnostico, index) => (
                 <Tr key={index}>
+                  <Td>{index + 1}</Td>
                   <Td>{diagnostico.entidade}</Td>
                   <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
                   <Td className="whitespace-nowrap">
