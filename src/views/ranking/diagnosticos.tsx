@@ -162,6 +162,8 @@ function RankingDiagnostico() {
 
   const getPodiumDiagnosticos = (diagnosticos: any[]) => {
     let podiumArray = [];
+    let sortedDiagnosticos = diagnosticos.sort((a, b) => parseFloat(a.rankingGeral.replace('º', '')) - parseFloat(b.rankingGeral.replace('º', '')));
+
 
     switch (diagnosticos.length) {
       case 1:
@@ -286,53 +288,58 @@ function RankingDiagnostico() {
       </div>
 
       <div className='max-w-screen-xl'>
-        <div className='flex justify-between items-center my-12'>
-          <h2 className="text-3xl mb-4 font-semibold">Classificação das entidades participantes</h2>
-          <div className='flex gap-4'>
-            <div>
-              <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Estado</label>
-              <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                value={state.filtroUf}
-                onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
-                <option value="">Todas</option>
-                {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).sort().map(uf => (
-                  <option key={uf} value={uf}>{uf}</option>
-                ))}
-              </select>
+        <div className='flex flex-col my-12 w-full'>
+          <div className='flex justify-between items-start'>
+            <div className="flex flex-col">
+              <h2 className="text-3xl mt-6 mb-12 font-semibold">Classificação das entidades participantes</h2>
+              <p className="w-full text-left">O Ranking de Entidades classifica as entidades participantes segundo o diagnóstico de avaliação.
+                O “Ranking 1” em função da situação no início da participação no Empreender 2022.
+                Assim é possível ver a situação relativa em geral e em cada estado.
+                A classificação pode ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico).</p>
             </div>
-            <div>
-              <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Cidade</label>
-              <select
-                className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
-                <option value="">Todas</option>
-                {state.diagnosticos
-                  .filter(diag => diag.uf === state.filtroUf)
-                  .map(diag => diag.cidade)
-                  .filter((city, index, self) => self.indexOf(city) === index) // Remove duplicações
-                  .sort()
-                  .map(city => (
-                    <option key={city} value={city}>{city}</option>
+            <div className='flex gap-4'>
+              <div>
+                <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Estado</label>
+                <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  value={state.filtroUf}
+                  onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
+                  <option value="">Todas</option>
+                  {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).sort().map(uf => (
+                    <option key={uf} value={uf}>{uf}</option>
                   ))}
-              </select>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Cidade</label>
+                <select
+                  className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                >
+                  <option value="">Todas</option>
+                  {state.diagnosticos
+                    .filter(diag => diag.uf === state.filtroUf)
+                    .map(diag => diag.cidade)
+                    .filter((city, index, self) => self.indexOf(city) === index) // Remove duplicações
+                    .sort()
+                    .map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Ranking</label>
+                <select
+                  className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  <option value="1" selected>Ranking 1</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Ranking</label>
-              <select
-                className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              >
-                <option value="1" selected>Ranking 1</option>
-              </select>
-            </div>
-          </div>          
+          </div>
         </div>
 
-        <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
-          relatório e o seu resultado é um instrumento de avaliação voltado para gestores públicos e organizações de apoio interessadas em
-          gerar impactos na economia de seu município a partir do fomento à atividade empreendedora, assim como para empreendedores que
-          queiram expandir seus negócios e para a mídia, que busca análises e dados qualificados.</p>
+
 
         <div className="flex justify-center w-full">
           <div className="flex justify-center items-end mt-5 gap-8">
