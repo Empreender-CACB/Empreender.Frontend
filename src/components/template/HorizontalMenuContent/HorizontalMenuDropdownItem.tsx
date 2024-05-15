@@ -22,7 +22,7 @@ const handleVersionButtonClick = async () => {
         const rfbVersion = await fetchRfbVersion()
         const toastNotification = (
 
-            <Notification>
+            <Notification duration={3000}>
                 {rfbVersion}
             </Notification>
         )
