@@ -19,10 +19,6 @@ interface NotaPorArea {
   [key: string]: string;
 }
 
-interface AreaNames {
-  [key: string]: string;
-}
-
 interface Diagnostico {
   id: number;
   entidade: string;
@@ -32,20 +28,29 @@ interface Diagnostico {
   somaTotalNotas: number;
   rankingGeral: string;
   notaGeral: string;
-  areas: AreaNames;
 }
 
 interface State {
   diagnosticos: Diagnostico[];
+  areas: { [key: string]: string };
   isLoading: boolean;
-  ufs: any[];
+  ufs: string[];
   error: string | null;
   filtroUf: string;
+}
+
+interface ApiResponse {
+  status: number;
+  data: {
+    ranking: Diagnostico[];
+    areas: { [key: string]: string };
+  };
 }
 
 function RankingDiagnostico() {
   const [state, setState] = useState<State>({
     diagnosticos: [],
+    areas: {},
     ufs: [],
     isLoading: true,
     error: null,
@@ -59,14 +64,12 @@ function RankingDiagnostico() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: any = await ApiService.fetchData({
-          url: 'ranking/diagnostico',
-          method: 'GET'
-        });
+        const response = await ApiService.fetchData({ url: 'ranking/diagnostico', method: 'GET' }) as ApiResponse;
         if (response.status === 200) {
-          const uniqueUfs = Array.from(new Set(response.data.map((item: any) => item.uf))).sort();
+          const uniqueUfs = Array.from(new Set(response.data.ranking.map(diag => diag.uf))).sort();
           setState({
-            diagnosticos: response.data as Diagnostico[],
+            diagnosticos: response.data.ranking,
+            areas: response.data.areas,
             ufs: uniqueUfs,
             isLoading: false,
             error: null,
@@ -162,8 +165,6 @@ function RankingDiagnostico() {
 
   const getPodiumDiagnosticos = (diagnosticos: any[]) => {
     let podiumArray = [];
-    let sortedDiagnosticos = diagnosticos.sort((a, b) => parseFloat(a.rankingGeral.replace('º', '')) - parseFloat(b.rankingGeral.replace('º', '')));
-
 
     switch (diagnosticos.length) {
       case 1:
@@ -357,7 +358,7 @@ function RankingDiagnostico() {
                 <Th>Entidade</Th>
                 <Th>Cidade/UF</Th>
                 <Th className="cursor-pointer" onClick={() => changeSort('total')}>Total</Th>
-                {state.diagnosticos[0] && Object.entries(state.diagnosticos[0].areas).map(([key, name]) => (
+                {state.diagnosticos[0] && Object.entries(state.areas).map(([key, name]) => (
                   <Th key={key} onClick={() => changeSort(key)} className="cursor-pointer">
                     <div className='flex flex-col items-center justify-center py-1'>
                       <div className={`rounded-full p-2 ${colorMapping[name]} flex justify-center items-center cursor-pointer`}>
@@ -378,7 +379,7 @@ function RankingDiagnostico() {
                   <Td className="whitespace-nowrap">
                     {sortKey === 'total' ? <strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong> : `${diagnostico.rankingGeral} - ${diagnostico.notaGeral}`}
                   </Td>
-                  {Object.keys(diagnostico.areas).map(areaId => (
+                  {Object.keys(state.areas).map(areaId => (
                     <Td className="text-center whitespace-nowrap" key={areaId}>
                       {sortKey === areaId ? <strong>{diagnostico.notasPorArea[areaId]}</strong> : diagnostico.notasPorArea[areaId]}
                     </Td>
