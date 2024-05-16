@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 import { RiTeamLine } from "react-icons/ri";
 import { BsFillHouseGearFill } from "react-icons/bs";
 import { TbPigMoney } from "react-icons/tb";
-import { FaCity, FaMapMarkedAlt, FaUsers } from "react-icons/fa";
+import { FaCity, FaUsers } from "react-icons/fa";
 import { FaHandshakeSimple } from "react-icons/fa6";
-import { GiProgression } from "react-icons/gi";
+import { GiBrazil, GiProgression } from "react-icons/gi";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { MdOutlineAnalytics } from 'react-icons/md';
 
@@ -319,7 +319,7 @@ function RankingDiagnostico() {
             {renderPodiumLayout()}
             <div>
               <Alert title={`${state.diagnosticos.length} diagnosticos`} showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>+8 esse mês</Alert>
-              <Alert showIcon type="info" customIcon={<FaMapMarkedAlt />} className='mb-4'>{state.ufs.length} estados</Alert>
+              <Alert showIcon type="info" customIcon={<GiBrazil />} className='mb-4'>{state.ufs.length} estados</Alert>
               <Alert showIcon type='danger' customIcon={<FaCity />} >95 cidades</Alert>
             </div>
           </div>
