@@ -1,4 +1,4 @@
-import { Table } from '@/components/ui';
+import { Alert, Table } from '@/components/ui';
 import TBody from '@/components/ui/Table/TBody';
 import THead from '@/components/ui/Table/THead';
 import Td from '@/components/ui/Table/Td';
@@ -10,10 +10,11 @@ import { useEffect, useState } from 'react';
 import { RiTeamLine } from "react-icons/ri";
 import { BsFillHouseGearFill } from "react-icons/bs";
 import { TbPigMoney } from "react-icons/tb";
-import { FaUsers } from "react-icons/fa";
+import { FaCity, FaMapMarkedAlt, FaUsers } from "react-icons/fa";
 import { FaHandshakeSimple } from "react-icons/fa6";
 import { GiProgression } from "react-icons/gi";
 import { FaHandHoldingUsd } from "react-icons/fa";
+import { MdOutlineAnalytics } from 'react-icons/md';
 
 interface NotaPorArea {
   [key: string]: string;
@@ -22,6 +23,7 @@ interface NotaPorArea {
 interface Diagnostico {
   id: number;
   entidade: string;
+  sigla_entidade?: string;
   cidade: string;
   uf: string;
   notasPorArea: NotaPorArea;
@@ -163,92 +165,63 @@ function RankingDiagnostico() {
 
   const topTresDiagnosticos = sortedAndFilteredDiagnosticos.slice(0, 3);
 
-  const getPodiumDiagnosticos = (diagnosticos: any[]) => {
-    let podiumArray = [];
-
-    switch (diagnosticos.length) {
-      case 1:
-        // Apenas um diagnóstico: mostrar apenas o primeiro lugar
-        podiumArray = [{ ...diagnosticos[0], ranking: '1º' }];
-        break;
-      case 2:
-        // Dois diagnósticos: mostrar primeiro e segundo lugar
-        podiumArray = [
-          { ...diagnosticos[1], ranking: '2º' },
-          { ...diagnosticos[0], ranking: '1º' }
-        ];
-        break;
-      default:
-        // Três ou mais diagnósticos: mostrar segundo, primeiro e terceiro lugar
-        podiumArray = [
-          { ...diagnosticos[1], ranking: '2º' },
-          { ...diagnosticos[0], ranking: '1º' },
-          { ...diagnosticos[2], ranking: '3º' }
-        ];
-        break;
-    }
-
-    return podiumArray;
-  };
-
-  const podiumDiagnosticos = getPodiumDiagnosticos(topTresDiagnosticos);
-
-  const renderPodium = (diagnostico: any, rankingLabel: string) => {
+  const renderPodium = (diagnostico: any, isCenter: boolean) => {
     let style = {};
     let heightClass = '';
     let paddingClass = '';
-
-    switch (rankingLabel) {
+    let widthClass = 'w-36';
+  
+    switch (diagnostico.rankingGeral) {
       case '1º':
-        style = {
-          background: 'linear-gradient(to bottom, #ffd700, #e6c200)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-52';
         paddingClass = 'pb-16';
         break;
       case '2º':
-        style = {
-          background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-40';
         paddingClass = 'pb-10';
         break;
       case '3º':
-        style = {
-          background: 'linear-gradient(to bottom, #cd7f32, #b76e29)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #cd7f32, #b76e29)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
         break;
       default:
-        style = {
-          background: 'linear-gradient(to bottom, #76a030, #609023)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #76a030, #609023)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
     }
-
+  
+    if (isCenter) {
+      heightClass = 'h-48'; 
+      widthClass = 'w-40'; 
+    }
+  
     return (
       <div key={diagnostico.id} className="text-center">
         <p className="mb-2 font-bold">{diagnostico.cidade} - {diagnostico.uf}</p>
         <div
-          style={{
-            ...style,
-            width: '9rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'end',
-            borderRadius: '0.5rem',
-          }}
-          className={`${heightClass} flex justify-center items-end ${paddingClass}`}
-        >
-          <span className="text-white text-6xl font-semibold">{rankingLabel}</span>
+          style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'end', borderRadius: '0.5rem' }}
+          className={`${heightClass} ${widthClass} flex justify-center items-end ${paddingClass}`}>
+          <span className={`text-white text-6xl font-semibold`}>{diagnostico.rankingGeral}</span>
         </div>
         <p className="mt-2">{parseFloat(diagnostico.notaGeral).toFixed(2)}</p>
+      </div>
+    );
+  };
+  
+  const renderPodiumLayout = () => {
+    const firstPlaceIndex = topTresDiagnosticos.findIndex(diag => parseInt(diag.rankingGeral.split('º')[0]) === 1);
+    if (firstPlaceIndex !== -1 && firstPlaceIndex !== 1) {
+      const middleElement = topTresDiagnosticos[1]; 
+      topTresDiagnosticos[1] = topTresDiagnosticos[firstPlaceIndex];
+      topTresDiagnosticos[firstPlaceIndex] = middleElement;
+    }
+  
+    return (
+      <div className="flex justify-center items-end mt-5 gap-8">
+        {topTresDiagnosticos.map((diagnostico, index) => renderPodium(diagnostico, index === 1))}
       </div>
     );
   };
@@ -341,12 +314,14 @@ function RankingDiagnostico() {
         </div>
 
 
-
-        <div className="flex justify-center w-full">
-          <div className="flex justify-center items-end mt-5 gap-8">
-            {podiumDiagnosticos.map((diagnostico) => {
-              return renderPodium(diagnostico, diagnostico.ranking);
-            })}
+        <div className="flex w-full">
+          <div className="flex justify-evenly items-center mt-5 gap-8 w-full">
+            {renderPodiumLayout()}
+            <div>
+              <Alert title={`${state.diagnosticos.length} diagnosticos`} showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>+8 esse mês</Alert>
+              <Alert showIcon type="info" customIcon={<FaMapMarkedAlt />} className='mb-4'>{state.ufs.length} estados</Alert>
+              <Alert showIcon type='danger' customIcon={<FaCity />} >95 cidades</Alert>
+            </div>
           </div>
         </div>
 
@@ -374,7 +349,7 @@ function RankingDiagnostico() {
               {sortedAndFilteredDiagnosticos.map((diagnostico, index) => (
                 <Tr key={index}>
                   <Td>{index + 1}</Td>
-                  <Td>{diagnostico.entidade}</Td>
+                  <Td>{diagnostico.entidade} {diagnostico.sigla_entidade ? `- ${diagnostico.sigla_entidade}` : ''}</Td>
                   <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
                   <Td className="whitespace-nowrap">
                     {sortKey === 'total' ? <strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong> : `${diagnostico.rankingGeral} - ${diagnostico.notaGeral}`}
