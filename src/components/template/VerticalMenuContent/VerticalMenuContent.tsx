@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom'
 import VerticalMenuIcon from './VerticalMenuIcon'
 import { NavMode } from '@/@types/theme'
 import { CollapsedItem } from './VerticalCollapsedMenuItem'
+import { toast } from '@/components/ui'
+import Notification from '@/components/ui/Notification'
+import { fetchRfbVersion } from '@/views/sistema/adminutils/outros/versao-rfb'
 
 interface MenuItemProps {
     nav: NavigationTree;
@@ -14,20 +17,78 @@ interface MenuItemProps {
     sideCollapsed: boolean;
 }
 
+const handleVersionButtonClick = async () => {
+  try {
+      const rfbVersion = await fetchRfbVersion()
+      const toastNotification = (
+
+          <Notification duration={3000}>
+              {rfbVersion}
+          </Notification>
+      )
+      toast.push(toastNotification)
+  } catch (error) {
+      const toastErrorNotification = (
+
+          <Notification>
+              Não foi possível completar a operação. Por favor, tente novamente.
+          </Notification>
+      )
+      console.error('Erro ao obter a versão da RFB:', error)
+      toast.push(toastErrorNotification)
+  }
+}
+
 const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick, sideCollapsed }) => {
-    if (nav.subMenu && nav.subMenu.length > 0) {
-      return sideCollapsed ? (
-        <CollapsedItem
-          nav={nav}
-          direction={'ltr'}
-          onLinkClick={onLinkClick}
-        />
-      ) : (
-        <Menu.MenuCollapse
-          key={nav.key}
-          label={
-            <>
-              <VerticalMenuIcon icon={nav.icon} />
+  if (nav.subMenu && nav.subMenu.length > 0) {
+    return sideCollapsed ? (
+      <CollapsedItem
+        nav={nav}
+        direction={'ltr'}
+        onLinkClick={onLinkClick}
+      />
+    ) : (
+      <Menu.MenuCollapse
+        key={nav.key}
+        label={
+          <>
+            <VerticalMenuIcon icon={nav.icon} />
+            <span
+              style={{
+                whiteSpace: 'normal',
+                wordWrap: 'break-word',
+                maxWidth: '150px',
+              }}
+            >
+              {nav.title}
+            </span>
+          </>
+        }
+        eventKey={nav.key}
+        expanded={false}
+        className="mb-2"
+      >
+        {nav.subMenu.map((subNav) => (
+          <MenuItem
+            key={subNav.key}
+            nav={subNav}
+            sideCollapsed={sideCollapsed}
+            onLinkClick={onLinkClick}
+          />
+        ))}
+      </Menu.MenuCollapse>
+    );
+  } else {
+    return (
+      <Menu.MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
+        {nav.path ?
+          <Link
+            to={nav.path}
+            className="flex items-center h-full w-full"
+            onClick={onLinkClick}
+          >
+            <VerticalMenuIcon icon={nav.icon} />
+            {(nav.type !== 'item' || !sideCollapsed) && (
               <span
                 style={{
                   whiteSpace: 'normal',
@@ -37,47 +98,17 @@ const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick, sideCollapsed }) 
               >
                 {nav.title}
               </span>
-            </>
-          }
-          eventKey={nav.key}
-          expanded={false}
-          className="mb-2"
-        >
-          {nav.subMenu.map((subNav) => (
-            <MenuItem
-              key={subNav.key}
-              nav={subNav}
-              sideCollapsed={sideCollapsed}
-              onLinkClick={onLinkClick}
-            />
-          ))}
-        </Menu.MenuCollapse>
-      );
-    } else {
-        return (
-          <Menu.MenuItem key={nav.key} eventKey={nav.key} className="mb-2">
-            <Link
-              to={nav.path}
-              className="flex items-center h-full w-full"
-              onClick={onLinkClick}
-            >
-              <VerticalMenuIcon icon={nav.icon} />
-              {(nav.type !== 'item' || !sideCollapsed) && (
-                <span
-                  style={{
-                    whiteSpace: 'normal',
-                    wordWrap: 'break-word',
-                    maxWidth: '150px',
-                  }}
-                >
-                  {nav.title}
-                </span>
-              )}
-            </Link>
-          </Menu.MenuItem>
-        );
-      }
-  };
+            )}
+          </Link>
+          :
+          <>
+            {nav.key == 'appVersaoRfb' ? <span onClick={handleVersionButtonClick}>{nav.title}</span> : <span>{nav.title} hahaha</span>}
+          </>
+        }
+      </Menu.MenuItem>
+    );
+  }
+};
 
 interface VerticalMenuContentProps {
     navMode: NavMode
