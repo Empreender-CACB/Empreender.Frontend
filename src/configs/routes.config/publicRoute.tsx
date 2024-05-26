@@ -77,6 +77,15 @@ const publicRoute: Routes = [
         },
     },
     {
+        key: 'substituicao_arquivos_evidencias',
+        path: `/diagnosticos/substituicao/:idEntidade`,
+        component: lazy(() => import('@/views/diagnosticos/substituicao')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
+    {
         key: 'ranking.diag',
         path: `/ranking/diagnosticos`,
         component: lazy(() => import('@/views/ranking/diagnosticos')),
