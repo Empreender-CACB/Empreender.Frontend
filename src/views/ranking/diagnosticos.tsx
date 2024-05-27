@@ -1,4 +1,4 @@
-import { Table } from '@/components/ui';
+import { Alert, Table } from '@/components/ui';
 import TBody from '@/components/ui/Table/TBody';
 import THead from '@/components/ui/Table/THead';
 import Td from '@/components/ui/Table/Td';
@@ -10,42 +10,49 @@ import { useEffect, useState } from 'react';
 import { RiTeamLine } from "react-icons/ri";
 import { BsFillHouseGearFill } from "react-icons/bs";
 import { TbPigMoney } from "react-icons/tb";
-import { FaUsers } from "react-icons/fa";
+import { FaCity, FaUsers } from "react-icons/fa";
 import { FaHandshakeSimple } from "react-icons/fa6";
-import { GiProgression } from "react-icons/gi";
+import { GiBrazil, GiProgression } from "react-icons/gi";
 import { FaHandHoldingUsd } from "react-icons/fa";
+import { MdOutlineAnalytics } from 'react-icons/md';
 
 interface NotaPorArea {
-  [key: string]: string;
-}
-
-interface AreaNames {
   [key: string]: string;
 }
 
 interface Diagnostico {
   id: number;
   entidade: string;
+  sigla_entidade?: string;
   cidade: string;
   uf: string;
   notasPorArea: NotaPorArea;
   somaTotalNotas: number;
   rankingGeral: string;
   notaGeral: string;
-  areas: AreaNames;
 }
 
 interface State {
   diagnosticos: Diagnostico[];
+  areas: { [key: string]: string };
   isLoading: boolean;
-  ufs: any[];
+  ufs: string[];
   error: string | null;
   filtroUf: string;
+}
+
+interface ApiResponse {
+  status: number;
+  data: {
+    ranking: Diagnostico[];
+    areas: { [key: string]: string };
+  };
 }
 
 function RankingDiagnostico() {
   const [state, setState] = useState<State>({
     diagnosticos: [],
+    areas: {},
     ufs: [],
     isLoading: true,
     error: null,
@@ -54,19 +61,17 @@ function RankingDiagnostico() {
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-
+  const [selectedCity, setSelectedCity] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: any = await ApiService.fetchData({
-          url: 'ranking/diagnostico',
-          method: 'GET'
-        });
+        const response = await ApiService.fetchData({ url: 'ranking/diagnostico', method: 'GET' }) as ApiResponse;
         if (response.status === 200) {
-          const uniqueUfs = Array.from(new Set(response.data.map((item: any) => item.uf))).sort();
+          const uniqueUfs = Array.from(new Set(response.data.ranking.map(diag => diag.uf))).sort();
           setState({
-            diagnosticos: response.data as Diagnostico[],
+            diagnosticos: response.data.ranking,
+            areas: response.data.areas,
             ufs: uniqueUfs,
             isLoading: false,
             error: null,
@@ -87,6 +92,11 @@ function RankingDiagnostico() {
 
     fetchData();
   }, []);
+
+  // Limpa filtro de cidade ao mudar a UF
+  useEffect(() => {
+    setSelectedCity('');
+  }, [state.filtroUf]);
 
   const iconStyles = "text-white text-2xl";
 
@@ -127,6 +137,9 @@ function RankingDiagnostico() {
     if (state.filtroUf) {
       filtered = filtered.filter(diagnostico => diagnostico.uf === state.filtroUf);
     }
+    if (selectedCity) {
+      filtered = filtered.filter(diagnostico => diagnostico.cidade === selectedCity);
+    }
 
     return filtered.sort((a, b) => {
       let aValue, bValue;
@@ -152,166 +165,163 @@ function RankingDiagnostico() {
 
   const topTresDiagnosticos = sortedAndFilteredDiagnosticos.slice(0, 3);
 
-  const getPodiumDiagnosticos = (diagnosticos: any[]) => {
-    let podiumArray = [];
-
-    switch (diagnosticos.length) {
-      case 1:
-        // Apenas um diagnóstico: mostrar apenas o primeiro lugar
-        podiumArray = [{ ...diagnosticos[0], ranking: '1º' }];
-        break;
-      case 2:
-        // Dois diagnósticos: mostrar primeiro e segundo lugar
-        podiumArray = [
-          { ...diagnosticos[1], ranking: '2º' },
-          { ...diagnosticos[0], ranking: '1º' }
-        ];
-        break;
-      default:
-        // Três ou mais diagnósticos: mostrar segundo, primeiro e terceiro lugar
-        podiumArray = [
-          { ...diagnosticos[1], ranking: '2º' },
-          { ...diagnosticos[0], ranking: '1º' },
-          { ...diagnosticos[2], ranking: '3º' }
-        ];
-        break;
-    }
-
-    return podiumArray;
-  };
-
-  const podiumDiagnosticos = getPodiumDiagnosticos(topTresDiagnosticos);
-
-  const renderPodium = (diagnostico: any, rankingLabel: string) => {
+  const renderPodium = (diagnostico: any, isCenter: boolean) => {
     let style = {};
     let heightClass = '';
     let paddingClass = '';
-
-    switch (rankingLabel) {
+    let widthClass = 'w-36';
+  
+    switch (diagnostico.rankingGeral) {
       case '1º':
-        style = {
-          background: 'linear-gradient(to bottom, #ffd700, #e6c200)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-52';
         paddingClass = 'pb-16';
         break;
       case '2º':
-        style = {
-          background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-40';
         paddingClass = 'pb-10';
         break;
       case '3º':
-        style = {
-          background: 'linear-gradient(to bottom, #cd7f32, #b76e29)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #cd7f32, #b76e29)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
         break;
       default:
-        style = {
-          background: 'linear-gradient(to bottom, #76a030, #609023)',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        };
+        style = { background: 'linear-gradient(to bottom, #76a030, #609023)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
     }
-
+  
+    if (isCenter) {
+      heightClass = 'h-48'; 
+      widthClass = 'w-40'; 
+    }
+  
     return (
       <div key={diagnostico.id} className="text-center">
-        <p className="mb-2 font-bold">{diagnostico.cidade}</p>
+        <p className="mb-2 font-bold">{diagnostico.cidade} - {diagnostico.uf}</p>
         <div
-          style={{
-            ...style,
-            width: '9rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'end',
-            borderRadius: '0.5rem',
-          }}
-          className={`${heightClass} flex justify-center items-end ${paddingClass}`}
-        >
-          <span className="text-white text-6xl font-semibold">{rankingLabel}</span>
+          style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'end', borderRadius: '0.5rem' }}
+          className={`${heightClass} ${widthClass} flex justify-center items-end ${paddingClass}`}>
+          <span className={`text-white text-6xl font-semibold`}>{diagnostico.rankingGeral}</span>
         </div>
         <p className="mt-2">{parseFloat(diagnostico.notaGeral).toFixed(2)}</p>
       </div>
     );
   };
-
-
-
+  
+  const renderPodiumLayout = () => {
+    const firstPlaceIndex = topTresDiagnosticos.findIndex(diag => parseInt(diag.rankingGeral.split('º')[0]) === 1);
+    if (firstPlaceIndex !== -1 && firstPlaceIndex !== 1) {
+      const middleElement = topTresDiagnosticos[1]; 
+      topTresDiagnosticos[1] = topTresDiagnosticos[firstPlaceIndex];
+      topTresDiagnosticos[firstPlaceIndex] = middleElement;
+    }
+  
+    return (
+      <div className="flex justify-center items-end mt-5 gap-8">
+        {topTresDiagnosticos.map((diagnostico, index) => renderPodium(diagnostico, index === 1))}
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-full py-16 flex items-center" style={{ background: '#76A030' }}>
-        <div className="max-w-screen-xl mx-auto w-full flex flex-wrap justify-between items-center px-4 md:px-8">
+      <div className="w-full py-8 flex items-center" style={{ background: '#76A030' }}>
+        <div className="max-w-screen-xl mx-auto w-full flex flex-wrap justify-between items-center">
           <div className="mb-6 md:mb-0 flex-1">
-            <h1 className="text-white text-3xl md:text-5xl font-bold tracking-tight">
-              Ranking de Entidades 2024
+            <h1 className="text-white text-3xl md:text-3xl font-bold tracking-tight">
+              Projeto Empreender 2022
             </h1>
-            <div className="w-24 md:w-64 h-1 bg-white mt-4 md:mt-8"></div>
+            <h1 className="text-white text-5xl md:text-6xl mt-2 font-bold tracking-tight">
+              Eixo Representatividade
+            </h1>
+            <div className="w-48 md:w-64 h-1 bg-white mt-4 md:mt-8"></div>
           </div>
-          <div className="flex flex-col items-center md:items-end space-y-4 md:space-y-0">
+          <div className="flex flex-col justify-center mx-auto items-center md:items-end space-y-4 md:space-y-0">
             <img
               className="h-12 md:h-20 mb-6"
               src="/img/logo/logo-cacb-vertical-branco.png"
               alt="CACB"
             />
             <img
-              className="h-12 md:h-16"
+              className="h-12 md:h-16 mb-2"
               src="/img/logo/logo-empreender-unir-para-crescer-branco.png"
               alt="Empreender"
             />
+            <div className='w-full flex justify-center'>
+              <img
+                className="h-12 md:h-16 mt-4"
+                src="/img/logo/sebrae-branco.svg"
+                alt="Sebrae"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       <div className='max-w-screen-xl'>
-        <div className='flex justify-between items-center my-12'>
-          <h2 className="text-3xl mb-4 font-semibold">Top 3 Entidades</h2>
-          <div>
-            <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Filtrar por UF:</label>
-            <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              value={state.filtroUf}
-              onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
-              <option value="">Selecione uma UF</option>
-              {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).map(uf => (
-                <option key={uf} value={uf}>{uf}</option>
-              ))}
-            </select>
+        <div className='flex flex-col my-12 w-full'>
+          <div className='flex justify-between items-start'>
+            <div className="flex flex-col">
+              <h2 className="text-3xl mt-6 mb-12 font-semibold">Classificação das entidades participantes</h2>
+              <p className="w-full text-left">O Ranking de Entidades classifica as entidades participantes segundo o diagnóstico de avaliação.
+                O “Ranking 1” em função da situação no início da participação no Empreender 2022.
+                Assim é possível ver a situação relativa em geral e em cada estado.
+                A classificação pode ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico).</p>
+            </div>
+            <div className='flex gap-4'>
+              <div>
+                <label htmlFor="ufFilter" className="block text-sm font-medium text-gray-700">Estado</label>
+                <select className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  value={state.filtroUf}
+                  onChange={(e) => setState({ ...state, filtroUf: e.target.value })}>
+                  <option value="">Todas</option>
+                  {Array.from(new Set(state.diagnosticos.map(diag => diag.uf))).sort().map(uf => (
+                    <option key={uf} value={uf}>{uf}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Cidade</label>
+                <select
+                  className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                >
+                  <option value="">Todas</option>
+                  {state.diagnosticos
+                    .filter(diag => diag.uf === state.filtroUf)
+                    .map(diag => diag.cidade)
+                    .filter((city, index, self) => self.indexOf(city) === index) // Remove duplicações
+                    .sort()
+                    .map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700">Ranking</label>
+                <select
+                  className="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                >
+                  <option value="1" selected>Ranking 1</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        <p>O ranking geral do Índice de Cidades Empreendedoras (ICE) 2023 leva em consideração cada um dos sete determinantes apresentados no
-          relatório e o seu resultado é um instrumento de avaliação voltado para gestores públicos e organizações de apoio interessadas em
-          gerar impactos na economia de seu município a partir do fomento à atividade empreendedora, assim como para empreendedores que
-          queiram expandir seus negócios e para a mídia, que busca análises e dados qualificados.</p>
 
-        <div className="flex justify-center w-full">
-          <div className="flex justify-center items-end mt-5 gap-8">
-            {podiumDiagnosticos.map((diagnostico) => {
-              let heightClass = '';
-
-              switch (diagnostico.ranking) {
-                case '1º':
-                  heightClass = 'h-52';
-                  break;
-                case '2º':
-                  heightClass = 'h-40';
-                  break;
-                case '3º':
-                  heightClass = 'h-32';
-                  break;
-                default:
-                  heightClass = 'h-32';
-              }
-
-              return renderPodium(diagnostico, diagnostico.ranking);
-            })}
+        <div className="flex w-full">
+          <div className="flex justify-evenly items-center mt-5 gap-8 w-full">
+            {renderPodiumLayout()}
+            <div>
+              <Alert title={`${state.diagnosticos.length} diagnosticos`} showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>+8 esse mês</Alert>
+              <Alert showIcon type="info" customIcon={<GiBrazil />} className='mb-4'>{state.ufs.length} estados</Alert>
+              <Alert showIcon type='danger' customIcon={<FaCity />} >95 cidades</Alert>
+            </div>
           </div>
         </div>
 
@@ -319,10 +329,11 @@ function RankingDiagnostico() {
           <Table>
             <THead>
               <Tr>
+                <Th>#</Th>
                 <Th>Entidade</Th>
                 <Th>Cidade/UF</Th>
                 <Th className="cursor-pointer" onClick={() => changeSort('total')}>Total</Th>
-                {state.diagnosticos[0] && Object.entries(state.diagnosticos[0].areas).map(([key, name]) => (
+                {state.diagnosticos[0] && Object.entries(state.areas).map(([key, name]) => (
                   <Th key={key} onClick={() => changeSort(key)} className="cursor-pointer">
                     <div className='flex flex-col items-center justify-center py-1'>
                       <div className={`rounded-full p-2 ${colorMapping[name]} flex justify-center items-center cursor-pointer`}>
@@ -337,12 +348,13 @@ function RankingDiagnostico() {
             <TBody>
               {sortedAndFilteredDiagnosticos.map((diagnostico, index) => (
                 <Tr key={index}>
-                  <Td>{diagnostico.entidade}</Td>
+                  <Td>{index + 1}</Td>
+                  <Td>{diagnostico.entidade} {diagnostico.sigla_entidade ? `- ${diagnostico.sigla_entidade}` : ''}</Td>
                   <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
                   <Td className="whitespace-nowrap">
                     {sortKey === 'total' ? <strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong> : `${diagnostico.rankingGeral} - ${diagnostico.notaGeral}`}
                   </Td>
-                  {Object.keys(diagnostico.areas).map(areaId => (
+                  {Object.keys(state.areas).map(areaId => (
                     <Td className="text-center whitespace-nowrap" key={areaId}>
                       {sortKey === areaId ? <strong>{diagnostico.notasPorArea[areaId]}</strong> : diagnostico.notasPorArea[areaId]}
                     </Td>
