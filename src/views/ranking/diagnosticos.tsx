@@ -212,20 +212,49 @@ function RankingDiagnostico() {
   };
   
   const renderPodiumLayout = () => {
-    const firstPlaceIndex = topTresDiagnosticos.findIndex(diag => parseInt(diag.rankingGeral.split('º')[0]) === 1);
-    if (firstPlaceIndex !== -1 && firstPlaceIndex !== 1) {
-      const middleElement = topTresDiagnosticos[1]; 
-      topTresDiagnosticos[1] = topTresDiagnosticos[firstPlaceIndex];
-      topTresDiagnosticos[firstPlaceIndex] = middleElement;
+    if (topTresDiagnosticos.length < 1) return null;
+  
+    topTresDiagnosticos.sort((a, b) => parseInt(a.rankingGeral.split('º')[0]) - parseInt(b.rankingGeral.split('º')[0]));
+  
+    let orderedPodium;
+    switch (topTresDiagnosticos.length) {
+      case 1:
+        orderedPodium = [topTresDiagnosticos[0]];
+        break;
+      case 2:
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0]];
+        break;
+      case 3:
+        orderedPodium = [
+          topTresDiagnosticos[1], 
+          topTresDiagnosticos[0],
+          topTresDiagnosticos[2] 
+        ];
+        break;
+      default:
+        orderedPodium = [
+          topTresDiagnosticos[1], 
+          topTresDiagnosticos[0], 
+          topTresDiagnosticos[2] 
+        ];
+        break;
     }
   
     return (
       <div className="flex justify-center items-end mt-5 gap-8">
-        {topTresDiagnosticos.map((diagnostico, index) => renderPodium(diagnostico, index === 1))}
+        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index === 1))}
       </div>
     );
   };
 
+  const getTotalUniqueCities = (diagnosticos: any) => {
+    const uniqueCities = new Set(); 
+    diagnosticos.forEach((diag: any) => uniqueCities.add(diag.cidade));
+    return uniqueCities.size; 
+  };
+  
+  const totalCities = getTotalUniqueCities(state.diagnosticos);
+  
   return (
     <div className="flex flex-col items-center">
       <div className="w-full py-8 flex items-center" style={{ background: '#76A030' }}>
@@ -320,7 +349,7 @@ function RankingDiagnostico() {
             <div>
               <Alert title={`${state.diagnosticos.length} diagnosticos`} showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>+8 esse mês</Alert>
               <Alert showIcon type="info" customIcon={<GiBrazil />} className='mb-4'>{state.ufs.length} estados</Alert>
-              <Alert showIcon type='danger' customIcon={<FaCity />} >95 cidades</Alert>
+              <Alert showIcon type='danger' customIcon={<FaCity />} >{totalCities ?? 0} cidades</Alert>
             </div>
           </div>
         </div>
