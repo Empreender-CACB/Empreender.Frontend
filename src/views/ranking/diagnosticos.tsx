@@ -95,7 +95,7 @@ function RankingDiagnostico() {
         }
       }
     }
-    desc += ` | Ordenação: ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
+    desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
     setFilterDescription(desc);
   };
 
