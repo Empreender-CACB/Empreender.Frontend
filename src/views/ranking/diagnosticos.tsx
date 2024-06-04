@@ -61,7 +61,48 @@ function RankingDiagnostico() {
 
   const [sortKey, setSortKey] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
+  const [filterDescription, setFilterDescription] = useState('Geral');
   const [selectedCity, setSelectedCity] = useState('');
+
+  const updateFilterDescription = () => {
+    let desc = 'Geral';
+    if (state.filtroUf) {
+      desc += ` em ${state.filtroUf}`;
+    }
+    if (selectedCity) {
+      desc += `, ${selectedCity}`;
+    }
+    if (sortKey) {
+      const areaName = state.areas[sortKey] || 'Total';
+      if (areaName === 'Total') {
+        desc = 'Geral';
+        if (state.filtroUf) {
+          desc += ` em ${state.filtroUf}`;
+          if (selectedCity) {
+            desc += `, ${selectedCity}`;
+          }
+        }
+      } else {
+        desc = `Área de ${areaName}`;
+        if (state.filtroUf || selectedCity) {
+          desc += ' -';
+          if (state.filtroUf) {
+            desc += ` ${state.filtroUf}`;
+          }
+          if (selectedCity) {
+            desc += `, ${selectedCity}`;
+          }
+        }
+      }
+    }
+    desc += ` | Ordenação: ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
+    setFilterDescription(desc);
+  };
+
+  useEffect(() => {
+    updateFilterDescription();
+  }, [state.filtroUf, selectedCity, sortKey, sortDirection, state.areas]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,7 +162,7 @@ function RankingDiagnostico() {
   };
 
   // Função para alterar a ordenação da lista
-  const changeSort = (newSortKey: any) => {
+  const changeSort = (newSortKey: string) => {
     if (sortKey === newSortKey) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -165,96 +206,78 @@ function RankingDiagnostico() {
 
   const topTresDiagnosticos = sortedAndFilteredDiagnosticos.slice(0, 3);
 
-  const renderPodium = (diagnostico: any, isCenter: boolean) => {
+  const renderPodium = (diagnostico: any, podiumPosition: number) => {
     let style = {};
     let heightClass = '';
     let paddingClass = '';
     let widthClass = 'w-36';
+    let rankingDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[0] : diagnostico.rankingGeral;
+    let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
   
-    switch (diagnostico.rankingGeral) {
-      case '1º':
+    // Atribui estilos baseado na posição visual no pódio
+    switch (podiumPosition) {
+      case 1: // Centro
         style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-52';
         paddingClass = 'pb-16';
+        widthClass = 'w-40';
         break;
-      case '2º':
+      case 0: // Esquerda
         style = { background: 'linear-gradient(to bottom, #c0c0c0, #a8a8a8)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-40';
         paddingClass = 'pb-10';
         break;
-      case '3º':
+      case 2: // Direita
         style = { background: 'linear-gradient(to bottom, #cd7f32, #b76e29)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
         break;
-      default:
-        style = { background: 'linear-gradient(to bottom, #76a030, #609023)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
-        heightClass = 'h-32';
-        paddingClass = 'pb-8';
-    }
-  
-    if (isCenter) {
-      heightClass = 'h-48'; 
-      widthClass = 'w-40'; 
     }
   
     return (
-      <div key={diagnostico.id} className="text-center">
+      <div key={diagnostico.id} className="text-center flex flex-col items-center">
         <p className="mb-2 font-bold">{diagnostico.cidade} - {diagnostico.uf}</p>
         <div
           style={{ ...style, display: 'flex', justifyContent: 'center', alignItems: 'end', borderRadius: '0.5rem' }}
           className={`${heightClass} ${widthClass} flex justify-center items-end ${paddingClass}`}>
-          <span className={`text-white text-6xl font-semibold`}>{diagnostico.rankingGeral}</span>
+          <span className={`text-white text-6xl font-semibold`}>{rankingDisplay}</span>
         </div>
-        <p className="mt-2">{parseFloat(diagnostico.notaGeral).toFixed(2)}</p>
+        <p className="mt-2">{parseFloat(notaDisplay).toFixed(2)}</p>
       </div>
     );
   };
+  
   
   const renderPodiumLayout = () => {
     if (topTresDiagnosticos.length < 1) return null;
   
-    topTresDiagnosticos.sort((a, b) => parseInt(a.rankingGeral.split('º')[0]) - parseInt(b.rankingGeral.split('º')[0]));
+    topTresDiagnosticos.sort((a, b) => {
+      const getRank = (diag: any) => parseInt((sortKey && sortKey !== 'total' ? diag.notasPorArea[sortKey].split(' - ')[0] : diag.rankingGeral).split('º')[0]);
+      return getRank(a) - getRank(b);
+    });
   
-    let orderedPodium;
-    switch (topTresDiagnosticos.length) {
-      case 1:
-        orderedPodium = [topTresDiagnosticos[0]];
-        break;
-      case 2:
-        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0]];
-        break;
-      case 3:
-        orderedPodium = [
-          topTresDiagnosticos[1], 
-          topTresDiagnosticos[0],
-          topTresDiagnosticos[2] 
-        ];
-        break;
-      default:
-        orderedPodium = [
-          topTresDiagnosticos[1], 
-          topTresDiagnosticos[0], 
-          topTresDiagnosticos[2] 
-        ];
-        break;
-    }
+    let orderedPodium = [
+      topTresDiagnosticos[1] || null, // Centro
+      topTresDiagnosticos[0] || null, // Esquerda
+      topTresDiagnosticos[2] || null  // Direita
+    ].filter(diag => diag !== null); // Remove null positions if there are less than three diagnostics
   
     return (
       <div className="flex justify-center items-end mt-5 gap-8">
-        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index === 1))}
+        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index))}
       </div>
     );
   };
 
+
   const getTotalUniqueCities = (diagnosticos: any) => {
-    const uniqueCities = new Set(); 
+    const uniqueCities = new Set();
     diagnosticos.forEach((diag: any) => uniqueCities.add(diag.cidade));
-    return uniqueCities.size; 
+    return uniqueCities.size;
   };
-  
+
   const totalCities = getTotalUniqueCities(state.diagnosticos);
-  
+
   return (
     <div className="flex flex-col items-center">
       <div className="w-full py-8 flex items-center" style={{ background: '#76A030' }}>
@@ -345,9 +368,14 @@ function RankingDiagnostico() {
 
         <div className="flex w-full">
           <div className="flex justify-evenly items-center mt-5 gap-8 w-full">
-            {renderPodiumLayout()}
             <div>
-              <Alert title={`${state.diagnosticos.length} diagnosticos`} showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>+8 esse mês</Alert>
+              <div className="text-center mt-4">
+                <h2 className="text-xl font-bold">{filterDescription}</h2>
+              </div>
+              {renderPodiumLayout()}
+            </div>
+            <div>
+              <Alert showIcon type="success" customIcon={<MdOutlineAnalytics />} className='mb-4 w-full'>{state.diagnosticos.length} diagnosticos</Alert>
               <Alert showIcon type="info" customIcon={<GiBrazil />} className='mb-4'>{state.ufs.length} estados</Alert>
               <Alert showIcon type='danger' customIcon={<FaCity />} >{totalCities ?? 0} cidades</Alert>
             </div>
@@ -361,14 +389,14 @@ function RankingDiagnostico() {
                 <Th>#</Th>
                 <Th>Entidade</Th>
                 <Th>Cidade/UF</Th>
-                <Th className="cursor-pointer" onClick={() => changeSort('total')}>Total</Th>
+                <Th style={{ textAlign: 'center' }} className={`cursor-pointer ${sortKey === 'total' ? 'font-bold border-b-4 border-indigo-500' : ''}`} onClick={() => changeSort('total')}>Geral</Th>
                 {state.diagnosticos[0] && Object.entries(state.areas).map(([key, name]) => (
-                  <Th key={key} onClick={() => changeSort(key)} className="cursor-pointer">
-                    <div className='flex flex-col items-center justify-center py-1'>
+                  <Th key={key} onClick={() => changeSort(key)} className={`cursor-pointer ${sortKey === key ? 'font-bold border-b-4 border-indigo-500' : ''}`}>
+                    <div className='flex flex-col items-center justify-center py-1' style={{ width: '100px' }}> {/* Adicionado width fixo */}
                       <div className={`rounded-full p-2 ${colorMapping[name]} flex justify-center items-center cursor-pointer`}>
                         {iconMapping[name]}
                       </div>
-                      <span className="mt-2" style={{ fontSize: '10px', textAlign: 'center' }}>{name}</span>
+                      <span className={`mt-2 text-center ${sortKey === key ? 'font-bold' : ''}`} style={{ fontSize: '10px' }}>{name}</span>
                     </div>
                   </Th>
                 ))}
