@@ -72,8 +72,9 @@ function RankingDiagnostico() {
     if (selectedCity) {
       desc += `, ${selectedCity}`;
     }
+
+    const areaName = state.areas[sortKey] || 'Total';
     if (sortKey) {
-      const areaName = state.areas[sortKey] || 'Total';
       if (areaName === 'Total') {
         desc = 'Geral';
         if (state.filtroUf) {
@@ -82,6 +83,8 @@ function RankingDiagnostico() {
             desc += `, ${selectedCity}`;
           }
         }
+        // Garantir que o texto para ordenação seja o oposto do estado atual apenas para 'Total'
+        desc += ` | Ordenação: ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
       } else {
         desc = `Área de ${areaName}`;
         if (state.filtroUf || selectedCity) {
@@ -93,15 +96,19 @@ function RankingDiagnostico() {
             desc += `, ${selectedCity}`;
           }
         }
+        desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
       }
+    } else {
+      desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
     }
-    desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+
     setFilterDescription(desc);
   };
 
   useEffect(() => {
     updateFilterDescription();
   }, [state.filtroUf, selectedCity, sortKey, sortDirection, state.areas]);
+
 
 
   useEffect(() => {
@@ -213,7 +220,7 @@ function RankingDiagnostico() {
     let widthClass = 'w-36';
     let rankingDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[0] : diagnostico.rankingGeral;
     let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
-  
+
     // Atribui estilos baseado na posição visual no pódio
     switch (podiumPosition) {
       case 1: // Centro
@@ -233,7 +240,7 @@ function RankingDiagnostico() {
         paddingClass = 'pb-8';
         break;
     }
-  
+
     return (
       <div key={diagnostico.id} className="text-center flex flex-col items-center">
         <p className="mb-2 font-bold">{diagnostico.cidade} - {diagnostico.uf}</p>
@@ -246,22 +253,22 @@ function RankingDiagnostico() {
       </div>
     );
   };
-  
-  
+
+
   const renderPodiumLayout = () => {
     if (topTresDiagnosticos.length < 1) return null;
-  
+
     topTresDiagnosticos.sort((a, b) => {
       const getRank = (diag: any) => parseInt((sortKey && sortKey !== 'total' ? diag.notasPorArea[sortKey].split(' - ')[0] : diag.rankingGeral).split('º')[0]);
       return getRank(a) - getRank(b);
     });
-  
+
     let orderedPodium = [
       topTresDiagnosticos[1] || null, // Centro
       topTresDiagnosticos[0] || null, // Esquerda
       topTresDiagnosticos[2] || null  // Direita
     ].filter(diag => diag !== null); // Remove null positions if there are less than three diagnostics
-  
+
     return (
       <div className="flex justify-center items-end mt-5 gap-8">
         {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index))}
