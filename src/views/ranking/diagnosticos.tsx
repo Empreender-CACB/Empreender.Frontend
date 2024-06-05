@@ -238,7 +238,7 @@ function RankingDiagnostico() {
       if (sortKey === 'total') {
         orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]]; 
       } else {
-        orderedPodium = [topTresDiagnosticos[2], topTresDiagnosticos[0], topTresDiagnosticos[1]]; 
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]]; 
       }
     }
 
