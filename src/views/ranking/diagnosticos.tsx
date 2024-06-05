@@ -86,9 +86,9 @@ function RankingDiagnostico() {
         // Garantir que o texto para ordenação seja o oposto do estado atual apenas para 'Total'
         desc += ` | Ordenação: ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
       } else {
-        desc = `Área de ${areaName}`;
+        desc = `${areaName}`;
         if (state.filtroUf || selectedCity) {
-          desc += ' -';
+          desc += ' |';
           if (state.filtroUf) {
             desc += ` ${state.filtroUf}`;
           }
@@ -168,7 +168,6 @@ function RankingDiagnostico() {
     "Benefícios": "bg-indigo-500"
   };
 
-  // Função para alterar a ordenação da lista
   const changeSort = (newSortKey: string) => {
     if (sortKey === newSortKey) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -178,7 +177,6 @@ function RankingDiagnostico() {
     }
   };
 
-  // Função combinada de filtro e ordenação
   const getFilteredAndSortedDiagnosticos = () => {
     let filtered = [...state.diagnosticos];
 
@@ -213,6 +211,46 @@ function RankingDiagnostico() {
 
   const topTresDiagnosticos = sortedAndFilteredDiagnosticos.slice(0, 3);
 
+  const renderPodiumLayout = () => {
+    if (topTresDiagnosticos.length < 1) return null;
+
+    topTresDiagnosticos.sort((a, b) => {
+      const getRank = (diag: any) => {
+        if (sortKey === 'total') {
+          console.log(parseInt(diag.rankingGeral.split('º')[0]))
+          return parseInt(diag.rankingGeral.split('º')[0]);
+        } else {
+          const areaInfo = diag.notasPorArea[sortKey];
+          return areaInfo ? parseInt(areaInfo.split(' - ')[0].split('º')[0]) : Number.MAX_SAFE_INTEGER;
+        }
+      };
+      return sortDirection === 'asc' ? getRank(a) - getRank(b) : getRank(b) - getRank(a);
+    });
+
+    let orderedPodium = [];
+
+    if (sortDirection === 'desc') {
+      orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]];
+      if (sortKey === 'total') {
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
+      }
+    } else {
+      if (sortKey === 'total') {
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]]; 
+      } else {
+        orderedPodium = [topTresDiagnosticos[2], topTresDiagnosticos[0], topTresDiagnosticos[1]]; 
+      }
+    }
+
+    return (
+      <div className="flex justify-center items-end mt-5 gap-8">
+        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index))}
+      </div>
+    );
+  };
+
+
+
   const renderPodium = (diagnostico: any, podiumPosition: number) => {
     let style = {};
     let heightClass = '';
@@ -221,7 +259,6 @@ function RankingDiagnostico() {
     let rankingDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[0] : diagnostico.rankingGeral;
     let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
 
-    // Atribui estilos baseado na posição visual no pódio
     switch (podiumPosition) {
       case 1: // Centro
         style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
@@ -253,29 +290,6 @@ function RankingDiagnostico() {
       </div>
     );
   };
-
-
-  const renderPodiumLayout = () => {
-    if (topTresDiagnosticos.length < 1) return null;
-
-    topTresDiagnosticos.sort((a, b) => {
-      const getRank = (diag: any) => parseInt((sortKey && sortKey !== 'total' ? diag.notasPorArea[sortKey].split(' - ')[0] : diag.rankingGeral).split('º')[0]);
-      return getRank(a) - getRank(b);
-    });
-
-    let orderedPodium = [
-      topTresDiagnosticos[1] || null, // Centro
-      topTresDiagnosticos[0] || null, // Esquerda
-      topTresDiagnosticos[2] || null  // Direita
-    ].filter(diag => diag !== null); // Remove null positions if there are less than three diagnostics
-
-    return (
-      <div className="flex justify-center items-end mt-5 gap-8">
-        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index))}
-      </div>
-    );
-  };
-
 
   const getTotalUniqueCities = (diagnosticos: any) => {
     const uniqueCities = new Set();
@@ -395,7 +409,7 @@ function RankingDiagnostico() {
               <Tr>
                 <Th>#</Th>
                 <Th>Entidade</Th>
-                <Th>Cidade/UF</Th>
+                <Th>Cidade - UF</Th>
                 <Th style={{ textAlign: 'center' }} className={`cursor-pointer ${sortKey === 'total' ? 'font-bold border-b-4 border-indigo-500' : ''}`} onClick={() => changeSort('total')}>Geral</Th>
                 {state.diagnosticos[0] && Object.entries(state.areas).map(([key, name]) => (
                   <Th key={key} onClick={() => changeSort(key)} className={`cursor-pointer ${sortKey === key ? 'font-bold border-b-4 border-indigo-500' : ''}`}>
