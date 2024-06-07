@@ -68,7 +68,7 @@ function RankingDiagnostico() {
   const updateFilterDescription = () => {
     let desc = 'Geral';
     if (state.filtroUf) {
-      desc += ` em ${state.filtroUf}`;
+      desc += ` | ${state.filtroUf}`;
     }
     if (selectedCity) {
       desc += `, ${selectedCity}`;
@@ -79,13 +79,13 @@ function RankingDiagnostico() {
       if (areaName === 'Total') {
         desc = 'Geral';
         if (state.filtroUf) {
-          desc += ` em ${state.filtroUf}`;
+          desc += ` | ${state.filtroUf}`;
           if (selectedCity) {
             desc += `, ${selectedCity}`;
           }
         }
         // Garantir que o texto para ordenação seja o oposto do estado atual apenas para 'Total'
-        desc += ` | Ordenação: ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
+        desc += ` | ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
       } else {
         desc = `${areaName}`;
         if (state.filtroUf || selectedCity) {
@@ -97,10 +97,10 @@ function RankingDiagnostico() {
             desc += `, ${selectedCity}`;
           }
         }
-        desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+        desc += ` | ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
       }
     } else {
-      desc += ` | Ordenação: ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+      desc += ` | ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
     }
 
     setFilterDescription(desc);
@@ -218,7 +218,6 @@ function RankingDiagnostico() {
     topTresDiagnosticos.sort((a, b) => {
       const getRank = (diag: any) => {
         if (sortKey === 'total') {
-          console.log(parseInt(diag.rankingGeral.split('º')[0]))
           return parseInt(diag.rankingGeral.split('º')[0]);
         } else {
           const areaInfo = diag.notasPorArea[sortKey];
@@ -230,22 +229,34 @@ function RankingDiagnostico() {
 
     let orderedPodium = [];
 
-    if (sortDirection === 'desc') {
-      orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]];
-      if (sortKey === 'total') {
-        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
+    if (topTresDiagnosticos.length === 1) {
+      orderedPodium = [null, topTresDiagnosticos[0], null];
+    } else if (topTresDiagnosticos.length === 2) {
+      if (sortDirection === 'desc' || sortKey === 'total') {
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], null];
+      } else {
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], null];
       }
     } else {
-      if (sortKey === 'total') {
-        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
-      } else {
+      if (sortDirection === 'desc') {
         orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]];
+        if (sortKey === 'total') {
+          orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
+        }
+      } else {
+        if (sortKey === 'total') {
+          orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
+        } else {
+          orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]];
+        }
       }
     }
 
     return (
       <div className="flex justify-center items-end mt-5 gap-8">
-        {orderedPodium.map((diagnostico, index) => renderPodium(diagnostico, index))}
+        {orderedPodium.map((diagnostico, index) => {
+          return diagnostico ? renderPodium(diagnostico, index) : <div key={index} className="w-36 h-52" />;
+        })}
       </div>
     );
   };
@@ -257,8 +268,11 @@ function RankingDiagnostico() {
     let heightClass = '';
     let paddingClass = '';
     let widthClass = 'w-36';
+
     let rankingDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[0] : diagnostico.rankingGeral;
     let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
+
+    console.log(podiumPosition);
 
     switch (podiumPosition) {
       case 1: // Centro
