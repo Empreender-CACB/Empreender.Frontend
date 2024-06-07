@@ -271,6 +271,7 @@ function RankingDiagnostico() {
 
     let rankingDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[0] : diagnostico.rankingGeral;
     let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
+    let pontosDisplay = sortKey && sortKey !== 'total' ? diagnostico.pontosPorArea[sortKey] : diagnostico.somaTotalNotas;
 
     console.log(podiumPosition);
 
@@ -302,6 +303,9 @@ function RankingDiagnostico() {
           <span className={`text-white text-6xl font-semibold`}>{rankingDisplay}</span>
         </div>
         <p className="mt-2">{parseFloat(notaDisplay).toFixed(2)}%</p>
+        <div className="text-xs" style={{ marginTop: '4px' }}>
+          {`(${pontosDisplay} pts)`}
+        </div>
       </div>
     );
   };
