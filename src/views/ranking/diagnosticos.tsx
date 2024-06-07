@@ -28,6 +28,7 @@ interface Diagnostico {
   uf: string;
   notasPorArea: NotaPorArea;
   somaTotalNotas: number;
+  pontosPorArea: any;
   rankingGeral: string;
   notaGeral: string;
 }
@@ -236,9 +237,9 @@ function RankingDiagnostico() {
       }
     } else {
       if (sortKey === 'total') {
-        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]]; 
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[2], topTresDiagnosticos[0]];
       } else {
-        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]]; 
+        orderedPodium = [topTresDiagnosticos[1], topTresDiagnosticos[0], topTresDiagnosticos[2]];
       }
     }
 
@@ -286,7 +287,7 @@ function RankingDiagnostico() {
           className={`${heightClass} ${widthClass} flex justify-center items-end ${paddingClass}`}>
           <span className={`text-white text-6xl font-semibold`}>{rankingDisplay}</span>
         </div>
-        <p className="mt-2">{parseFloat(notaDisplay).toFixed(2)}</p>
+        <p className="mt-2">{parseFloat(notaDisplay).toFixed(2)}%</p>
       </div>
     );
   };
@@ -339,10 +340,12 @@ function RankingDiagnostico() {
           <div className='flex justify-between items-start'>
             <div className="flex flex-col">
               <h2 className="text-3xl mt-6 mb-12 font-semibold">Classificação das entidades participantes</h2>
-              <p className="w-full text-left">O Ranking de Entidades classifica as entidades participantes segundo o diagnóstico de avaliação.
-                O “Ranking 1” em função da situação no início da participação no Empreender 2022.
-                Assim é possível ver a situação relativa em geral e em cada estado.
-                A classificação pode ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico).</p>
+              <p className="w-full text-left">O Ranking de Entidades classifica as entidades participantes
+                do Projeto Empreender 2022-Representatividade segundo o diagnóstico de
+                auto-avaliação. O “Ranking 1”, considera a situação incial que serve de
+                base para o planejamento estratégico das entidades. Assim é possível
+                ver a situação relativa em geral e em cada estado. A classificação pode
+                ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico).</p>
             </div>
             <div className='flex gap-4'>
               <div>
@@ -430,11 +433,34 @@ function RankingDiagnostico() {
                   <Td>{diagnostico.entidade} {diagnostico.sigla_entidade ? `- ${diagnostico.sigla_entidade}` : ''}</Td>
                   <Td>{diagnostico.cidade} - {diagnostico.uf}</Td>
                   <Td className="whitespace-nowrap">
-                    {sortKey === 'total' ? <strong>{diagnostico.rankingGeral} - {diagnostico.notaGeral}</strong> : `${diagnostico.rankingGeral} - ${diagnostico.notaGeral}`}
+                    <div className="flex flex-col">
+                      <div>
+                        {sortKey === 'total' ?
+                          <strong>{diagnostico.rankingGeral} - {parseFloat(diagnostico.notaGeral).toFixed(2)}%</strong> :
+                          `${diagnostico.rankingGeral} - ${parseFloat(diagnostico.notaGeral).toFixed(2)}%`
+                        }
+                      </div>
+                      <div className="text-xs text-center" style={{ marginTop: '4px' }}>
+                        {`(${diagnostico.somaTotalNotas} pts)`}
+                      </div>
+                    </div>
                   </Td>
+
                   {Object.keys(state.areas).map(areaId => (
                     <Td className="text-center whitespace-nowrap" key={areaId}>
-                      {sortKey === areaId ? <strong>{diagnostico.notasPorArea[areaId]}</strong> : diagnostico.notasPorArea[areaId]}
+                      <div className="flex flex-col">
+                        <div>
+                          {sortKey === areaId ?
+                            <strong>
+                              {diagnostico.notasPorArea[areaId].split(' - ')[0]} - {parseFloat(diagnostico.notasPorArea[areaId].split(' - ')[1]).toFixed(2)}%
+                            </strong> :
+                            `${diagnostico.notasPorArea[areaId].split(' - ')[0]} - ${parseFloat(diagnostico.notasPorArea[areaId].split(' - ')[1]).toFixed(2)}%`
+                          }
+                        </div>
+                        <div className="text-xs" style={{ marginTop: '4px' }}>
+                          {`(${diagnostico.pontosPorArea[areaId]} pts)`}
+                        </div>
+                      </div>
                     </Td>
                   ))}
                 </Tr>
