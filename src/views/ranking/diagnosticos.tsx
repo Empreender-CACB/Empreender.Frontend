@@ -15,6 +15,7 @@ import { FaHandshakeSimple } from "react-icons/fa6";
 import { GiBrazil, GiProgression } from "react-icons/gi";
 import { FaHandHoldingUsd } from "react-icons/fa";
 import { MdOutlineAnalytics } from 'react-icons/md';
+import { useAppSelector } from '@/store';
 
 interface NotaPorArea {
   [key: string]: string;
@@ -51,6 +52,8 @@ interface ApiResponse {
 }
 
 function RankingDiagnostico() {
+  const { recursos } = useAppSelector(state => state.auth.user);
+
   const [state, setState] = useState<State>({
     diagnosticos: [],
     areas: {},
@@ -61,7 +64,7 @@ function RankingDiagnostico() {
   });
 
   const [sortKey, setSortKey] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortDirection, setSortDirection] = useState('desc');
   const [filterDescription, setFilterDescription] = useState('Geral');
   const [selectedCity, setSelectedCity] = useState('');
 
@@ -84,8 +87,9 @@ function RankingDiagnostico() {
             desc += `, ${selectedCity}`;
           }
         }
-        // Garantir que o texto para ordenação seja o oposto do estado atual apenas para 'Total'
-        desc += ` | ${sortDirection !== 'asc' ? 'Crescente' : 'Decrescente'}`;
+        if (recursos?.includes('ordenacao_ranking_e2022')) {
+          desc += ` | ${sortDirection === 'asc' ? 'Decrescente' : 'Crescente'}`;
+        }
       } else {
         desc = `${areaName}`;
         if (state.filtroUf || selectedCity) {
@@ -97,10 +101,14 @@ function RankingDiagnostico() {
             desc += `, ${selectedCity}`;
           }
         }
-        desc += ` | ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+        if (recursos?.includes('ordenacao_ranking_e2022')) {
+          desc += ` | ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+        }
       }
     } else {
-      desc += ` | ${sortDirection === 'asc' ? 'Crescente' : 'Decrescente'}`;
+      if (recursos?.includes('ordenacao_ranking_e2022')) {
+        desc += ` | ${sortDirection === 'asc' ? 'Decrescente' : 'Crescente'}`;
+      }
     }
 
     setFilterDescription(desc);
@@ -170,11 +178,20 @@ function RankingDiagnostico() {
   };
 
   const changeSort = (newSortKey: string) => {
-    if (sortKey === newSortKey) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    if (recursos?.includes('ordenacao_ranking_e2022')) {
+      if (sortKey === newSortKey) {
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortKey(newSortKey);
+        setSortDirection('asc');
+      }
     } else {
       setSortKey(newSortKey);
-      setSortDirection('asc');
+      if (newSortKey == 'total') {
+        setSortDirection('desc');
+      } else {
+        setSortDirection('asc');
+      }
     }
   };
 
@@ -273,8 +290,6 @@ function RankingDiagnostico() {
     let notaDisplay = sortKey && sortKey !== 'total' ? diagnostico.notasPorArea[sortKey].split(' - ')[1] : diagnostico.notaGeral;
     let pontosDisplay = sortKey && sortKey !== 'total' ? diagnostico.pontosPorArea[sortKey] : diagnostico.somaTotalNotas;
 
-    console.log(podiumPosition);
-
     switch (podiumPosition) {
       case 1: // Centro
         style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
@@ -291,6 +306,12 @@ function RankingDiagnostico() {
         style = { background: 'linear-gradient(to bottom, #cd7f32, #b76e29)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
         heightClass = 'h-32';
         paddingClass = 'pb-8';
+        break;
+      default:
+        style = { background: 'linear-gradient(to bottom, #ffd700, #e6c200)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' };
+        heightClass = 'h-52';
+        paddingClass = 'pb-16';
+        widthClass = 'w-40';
         break;
     }
 
