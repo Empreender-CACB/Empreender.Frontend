@@ -139,8 +139,16 @@ const appsRoute: Routes = [
         key: 'sistemaOcorrencias.ocorrencias',
         path: `${APP_PREFIX_PATH}/ocorrencias`,
         component: lazy(() => import('@/views/sistema/ocorrencias')),
-    }
+    },
+    {
 
+        key: 'ranking.diag',
+        path: `/ranking/diagnosticos`,
+        component: lazy(() => import('@/views/ranking/diagnosticos')),
+        meta: {
+            pageContainerType: 'gutterless',
+        },
+    },
 ]
 
 export default appsRoute
