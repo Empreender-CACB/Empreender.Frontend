@@ -123,14 +123,14 @@ const columns = [
         header: 'Data',
         columnName: 'prlancamento.dtlanc',
         defaultFlex: 1,
-        dateFormat: 'YYYY-MM-DD',
+        dateFormat: 'DD-MM-YYYY',
         type: 'date',
         operator: 'after',
         value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'DD-MM-YYYY',
+                dateFormat: 'YYYY-MM-DD',
                 placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
             }
         },
