@@ -65,18 +65,16 @@ const columns = [
     {
         name: 'idlanc',
         header: 'ID Lancamento',
-        columnName: 'prlancamento.idlanc',
+        columnName: 'idlanc',
         type: 'string',
         defaultFlex: 0.6,
-        filterEditor: NumberFilter,
     },
     {
         name: 'idprojeto',
         header: 'ID Projeto',
-        columnName: 'prlancamento.idprojeto',
+        columnName: 'idprojeto',
         type: 'string',
         defaultFlex: 0.6,
-        filterEditor: NumberFilter,
     },
     {
         name: 'nmprojeto',
