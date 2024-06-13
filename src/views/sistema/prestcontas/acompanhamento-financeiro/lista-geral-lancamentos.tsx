@@ -123,7 +123,7 @@ const columns = [
         header: 'Data',
         columnName: 'prlancamento.dtlanc',
         defaultFlex: 1,
-        dateFormat: 'DD-MM-YYYY',
+        dateFormat: 'YYYY-MM-DD',
         type: 'date',
         operator: 'after',
         value: '',
