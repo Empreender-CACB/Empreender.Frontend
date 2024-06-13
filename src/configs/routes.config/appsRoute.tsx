@@ -132,6 +132,11 @@ const appsRoute: Routes = [
             pageContainerType: 'gutterless',
         },
     },
+    {
+        key: 'sistemaPrestcontas.listaGeralLancamentos',
+        path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
+        component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
+    },
 ]
 
 export default appsRoute
