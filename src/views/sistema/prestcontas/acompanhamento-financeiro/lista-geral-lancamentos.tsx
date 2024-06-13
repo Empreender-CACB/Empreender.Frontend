@@ -43,6 +43,27 @@ const lancamentoStatusStyles: any = {
     'rea': { label: 'Reanálise', class: 'bg-red-400 text-white' },
 }
 
+
+const projetoStatusValue = [
+    { name: 'Cadastrado', value: 'cadas' },
+    { name: 'Iniciado', value: 'inici' },
+    { name: 'Em Andamento', value: 'andam' },
+    { name: 'Concluído', value: 'concl' },
+    { name: 'Cancelado', value: 'cance' },
+    { name: 'Descartado', value: 'desco' },
+    { name: 'Bloqueado', value: 'bloqu' },
+]
+
+const lancamentoStatusValue = [
+    { name: 'Novo', value: 'nov' },
+    { name: 'Liberado', value: 'lib' },
+    { name: 'Aprovado', value: 'apr' },
+    { name: 'Pago', value: 'pag' },
+    { name: 'Pendente', value: 'pen' },
+    { name: 'Análise', value: 'ana' },
+    { name: 'Reanálise', value: 'rea' },
+]
+
 const StatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
     const statusInfo = statusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
     return (
@@ -61,22 +82,21 @@ const LancamentoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => 
     )
 }
 
+
 const columns = [
     {
         name: 'idlanc',
         header: 'ID Lancamento',
-        columnName: 'prlancamento.idlanc',
+        columnName: 'idlanc',
         type: 'string',
         defaultFlex: 0.6,
-        filterEditor: NumberFilter,
     },
     {
         name: 'idprojeto',
         header: 'ID Projeto',
-        columnName: 'prlancamento.idprojeto',
+        columnName: 'idprojeto',
         type: 'string',
         defaultFlex: 0.6,
-        filterEditor: NumberFilter,
     },
     {
         name: 'nmprojeto',
@@ -126,11 +146,19 @@ const columns = [
 
     },
     {
-        name: 'stlancamento',
+        name: 'prlancamento.stlancamento',
         header: 'Status Lançamento',
         columnName: 'prlancamento.stlancamento',
         defaultFlex: 1,
-        type: 'string',
+        type: 'select',
+        operator: 'equals',
+        value: '',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: lancamentoStatusValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
         render: ({ data }: any) => <LancamentoStatusTag statusKey={data.stlancamento} />,
     },
     {
@@ -165,11 +193,19 @@ const columns = [
         value: '',
     },
     {
-        name: 'flstatus',
+        name: 'prprojeto.flstatus',
         header: 'Status Projeto',
         columnName: 'prprojeto.flstatus',
         defaultFlex: 1,
-        type: 'string',
+        type: 'select',
+        operator: 'equals',
+        value: '',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: projetoStatusValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
         render: ({ data }: any) => <StatusTag statusKey={data.flstatus} />,
     },
 ]
