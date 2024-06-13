@@ -35,6 +35,7 @@ interface CustomReactDataGridPropsBasic {
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
+    defaultSortInfo?: any
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
@@ -89,8 +90,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     CardLayout,
     isSelectable,
     autorizeExport,
-    onSelectedRowsChange
+    onSelectedRowsChange,
+    defaultSortInfo
 }) => {
+
+
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const valorLocalStorage = Number(localStorage.getItem('lista_geral'))
@@ -548,6 +552,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 wrapMultiple={false}
                 idProperty="id"
                 defaultFilterValue={defaultFilterValue || columns}
+                defaultSortInfo={defaultSortInfo}
                 columns={columns}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}
