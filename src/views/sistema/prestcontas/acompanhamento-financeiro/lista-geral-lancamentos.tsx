@@ -37,7 +37,7 @@ const lancamentoStatusStyles: any = {
     'nov': { label: 'Novo', class: 'bg-blue-400 text-white' },
     'lib': { label: 'Liberado', class: 'bg-green-400 text-white' },
     'apr': { label: 'Aprovado', class: 'bg-purple-400 text-white' },
-    'pag': { label: 'Pago', class: 'bg-green-500 text-white' },
+    'pag': { label: 'Encerrado', class: 'bg-green-500 text-white' },
     'pen': { label: 'Pendente', class: 'bg-yellow-400 text-white' },
     'ana': { label: 'Análise', class: 'bg-orange-400 text-white' },
     'rea': { label: 'Reanálise', class: 'bg-red-400 text-white' },
@@ -58,7 +58,7 @@ const lancamentoStatusValue = [
     { name: 'Novo', value: 'nov' },
     { name: 'Liberado', value: 'lib' },
     { name: 'Aprovado', value: 'apr' },
-    { name: 'Pago', value: 'pag' },
+    { name: 'Encerrado', value: 'pag' },
     { name: 'Pendente', value: 'pen' },
     { name: 'Análise', value: 'ana' },
     { name: 'Reanálise', value: 'rea' },
@@ -130,7 +130,7 @@ const columns = [
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'YYYY-MM-DD',
+                dateFormat: 'DD-MM-YYYY',
                 placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
             }
         },
@@ -177,10 +177,11 @@ const columns = [
         style: { textAlign: 'right' },
         render: ({ data }: any) => {
             const formattedValue = new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
             }).format(data.vllanc);
-            return <div style={{ textAlign: 'right' }}>{formattedValue}</div>;
+            const color = data.vllanc < 0 ? 'red' : 'black';
+            return <div style={{ textAlign: 'right', color }}>{formattedValue}</div>;
         },
     },
     {
@@ -239,6 +240,7 @@ const Empresas = () => {
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/prestcontas/lista-geral-lancamentos`}
                 CardLayout={EmpresasCard}
+                defaultSortInfo={{ "dir": -1, "id": "idlanc", "name": "idlanc", "columnName": "idlanc", "type": "string" }}
             />
         </AdaptableCard>
     )
