@@ -109,6 +109,16 @@ const columns = [
         type: 'string',
         operator: 'contains',
         value: '',
+        render: ({ data }: any) => {
+            const idProjeto = data['prlancamento.idprojeto'];
+            return (
+                <div>
+                    <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/projeto-detalhe/pid/${btoa(String(idProjeto))}`}>
+                        {data.nmprojeto}
+                    </Link>
+                </div>
+            )
+        },
     },
     {
         name: 'nmacao',
