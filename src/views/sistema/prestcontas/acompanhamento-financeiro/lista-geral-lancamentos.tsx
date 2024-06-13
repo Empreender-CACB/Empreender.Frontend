@@ -90,13 +90,17 @@ const columns = [
         columnName: 'idlanc',
         type: 'string',
         defaultFlex: 0.6,
+        operator: 'contains',
+        value: "",
     },
     {
-        name: 'idprojeto',
+        name: 'prlancamento.idprojeto',
         header: 'ID Projeto',
-        columnName: 'idprojeto',
+        columnName: 'prlancamento.idprojeto',
         type: 'string',
         defaultFlex: 0.6,
+        operator: 'contains',
+        value: "",
     },
     {
         name: 'nmprojeto',
@@ -162,11 +166,22 @@ const columns = [
         render: ({ data }: any) => <LancamentoStatusTag statusKey={data.stlancamento} />,
     },
     {
-        name: 'vllanc',
+        name: 'prlancamento.vllanc',
         header: 'Valor',
         columnName: 'prlancamento.vllanc',
-        type: 'string',
+        type: 'number',
         defaultFlex: 1,
+        operator: 'contains',
+        value: '',
+        filterEditor: NumberFilter,
+        style: { textAlign: 'right' },
+        render: ({ data }: any) => {
+            const formattedValue = new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+            }).format(data.vllanc);
+            return <div style={{ textAlign: 'right' }}>{formattedValue}</div>;
+        },
     },
     {
         name: 'flecofin',
@@ -183,6 +198,8 @@ const columns = [
         columnName: 'prprojeto.id_projeto_base',
         type: 'string',
         defaultFlex: 0.6,
+        operator: 'contains',
+        value: "",
     },
     {
         name: 'tipo_projeto',
