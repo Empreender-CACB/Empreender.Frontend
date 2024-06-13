@@ -171,7 +171,7 @@ const columns = [
         columnName: 'prlancamento.vllanc',
         type: 'number',
         defaultFlex: 1,
-        operator: 'contains',
+        operator: 'eq',
         value: '',
         filterEditor: NumberFilter,
         style: { textAlign: 'right' },
