@@ -64,6 +64,11 @@ const lancamentoStatusValue = [
     { name: 'Reanálise', value: 'rea' },
 ]
 
+const tipoLancValue = [
+    { name: 'Receita', value: 'recei' },
+    { name: 'Despesa', value: 'despe' }
+]
+
 const StatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
     const statusInfo = statusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
     return (
@@ -92,6 +97,29 @@ const columns = [
         defaultFlex: 0.6,
         operator: 'contains',
         value: "",
+        render: ({ data }: any) => {
+            const idLanc = data['prlancamento.idlanc'];
+            const idProjeto = data['prlancamento.idprojeto'];
+
+            if (data['prlancamento.tplanc'] == 'recei') {
+                return (
+                    <div>
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/lancamento-receita-detalhe/pid/${btoa(String(idProjeto))}/lid/${btoa(String(idLanc))}`}>
+                            {data.idlanc}
+                        </Link>
+                    </div>
+                )
+            } else {
+                return (
+                    <div>
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/lancamento-despesa-detalhe/pid/${btoa(String(idProjeto))}/lid/${btoa(String(idLanc))}`}>
+                            {data.idlanc}
+                        </Link>
+                    </div>
+                )
+            }
+           
+        },
     },
     {
         name: 'prlancamento.idprojeto',
@@ -101,6 +129,16 @@ const columns = [
         defaultFlex: 0.6,
         operator: 'contains',
         value: "",
+        render: ({ data }: any) => {
+            const idProjeto = data['prlancamento.idprojeto'];
+            return (
+                <div>
+                    <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/projeto-detalhe/pid/${btoa(String(idProjeto))}`}>
+                        {idProjeto}
+                    </Link>
+                </div>
+            )
+        },
     },
     {
         name: 'nmprojeto',
@@ -153,10 +191,16 @@ const columns = [
         name: 'tplanc',
         header: 'Tipo',
         columnName: 'prlancamento.tplanc',
-        type: 'string',
-        operator: 'contains',
+        type: 'select',
+        operator: 'equals',
         value: '',
-        render: ({ data }: any) => data == 'recei' ? "Receita" : "Despesa",
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: tipoLancValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ data }: any) => data['tplanc'] == 'recei' ? "Receita" : "Despesa",
 
     },
     {
