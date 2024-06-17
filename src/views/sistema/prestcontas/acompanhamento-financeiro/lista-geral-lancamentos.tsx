@@ -98,9 +98,9 @@ const columns = [
         operator: 'contains',
         value: "",
         render: ({ data }: any) => {
-            const idLanc = data['prlancamento.idlanc'];
+            const idLanc = data.idlanc;
             const idProjeto = data['prlancamento.idprojeto'];
-
+            
             if (data['prlancamento.tplanc'] == 'recei') {
                 return (
                     <div>
