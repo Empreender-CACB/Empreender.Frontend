@@ -32,6 +32,7 @@ interface Diagnostico {
   pontosPorArea: any;
   rankingGeral: string;
   notaGeral: string;
+  numArquivosEvidencia: number;
 }
 
 interface State {
@@ -384,7 +385,8 @@ function RankingDiagnostico() {
                 auto-avaliação. O “Ranking 1”, considera a situação incial que serve de
                 base para o planejamento estratégico das entidades. Assim é possível
                 ver a situação relativa em geral e em cada estado. A classificação pode
-                ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico).</p>
+                ser Geral ou segundo qualquer das áreas de análise (clique no ícone específico). 
+                Caso as pontuações sejam iguais, utilizamos o número de evidências enviadas como criterio de desempate.</p>
             </div>
             <div className='flex gap-4'>
               <div>
