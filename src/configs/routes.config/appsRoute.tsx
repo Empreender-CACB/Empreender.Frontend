@@ -141,15 +141,6 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/ocorrencias')),
     },
     {
-
-        key: 'ranking.diag',
-        path: `/ranking/diagnosticos`,
-        component: lazy(() => import('@/views/ranking/diagnosticos')),
-        meta: {
-            pageContainerType: 'gutterless',
-        },
-    },
-    {
         key: 'sistemaPrestcontas.listaGeralLancamentos',
         path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
         component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
