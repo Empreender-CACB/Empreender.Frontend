@@ -124,14 +124,7 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
     },
-    {
-        key: 'ranking.diag',
-        path: `/ranking/diagnosticos`,
-        component: lazy(() => import('@/views/ranking/diagnosticos')),
-        meta: {
-            pageContainerType: 'gutterless',
-        },
-    },
+    
 ]
 
 export default appsRoute
