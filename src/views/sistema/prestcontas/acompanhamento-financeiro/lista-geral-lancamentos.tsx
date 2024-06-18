@@ -6,48 +6,41 @@ import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
+import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 
 moment.locale('pt-br')
 
-
-const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
-]
-
 const statusStyles: any = {
-    'cadas': { label: 'Cadastrado', class: 'bg-yellow-400 text-white' },
-    'inici': { label: 'Iniciado', class: 'bg-purple-500 text-white' },
-    'andam': { label: 'Em Andamento', class: 'bg-blue-500 text-white' },
+    'inici': { label: 'A iniciar', class: 'bg-purple-500 text-white' },
+    'cadas': { label: 'Em cadastramento', class: 'bg-yellow-400 text-white', style: {backgroundColor: '#990099'} },
+    'andam': { label: 'Em andamento', class: 'bg-blue-500 text-white' },
     'concl': { label: 'Concluído', class: 'bg-green-500 text-white' },
     'cance': { label: 'Cancelado', class: 'bg-red-500 text-white' },
     'desco': { label: 'Descartado', class: 'bg-gray-400 text-white' },
     'bloqu': { label: 'Bloqueado', class: 'bg-gray-500 text-white' },
     'nselc': { label: 'Não Selecionado', class: 'bg-gray-300 text-white' },
-}
+};
 
 const lancamentoStatusStyles: any = {
-    'nov': { label: 'Novo', class: 'bg-blue-400 text-white' },
-    'lib': { label: 'Liberado', class: 'bg-green-400 text-white' },
-    'apr': { label: 'Aprovado', class: 'bg-purple-400 text-white' },
-    'pag': { label: 'Encerrado', class: 'bg-green-500 text-white' },
-    'pen': { label: 'Pendente', class: 'bg-yellow-400 text-white' },
-    'ana': { label: 'Análise', class: 'bg-orange-400 text-white' },
-    'rea': { label: 'Reanálise', class: 'bg-red-400 text-white' },
-}
+    'apr': { label: 'Aprovado', class: 'bg-teal-500 text-white' },
+    'nov': { label: 'Novo', class: 'text-white', style: {backgroundColor: '#990099'}},
+    'pen': { label: 'Pendente', class: 'bg-gray-500 text-white' },
+    'ana': { label: 'Análise', class: 'text-white', style: {backgroundColor: '#3072B1'} },
+    'rea': { label: 'Reanálise', class: 'text-white', style: {backgroundColor: '#3072B1'} },
+    'lib': { label: 'Liberado', class: 'text-white', style: {backgroundColor: '#FF9900'} },
+    'pag': { label: 'Encerrado', class: 'text-white', style: {backgroundColor: '#009B56'}}
+};
 
 
 const projetoStatusValue = [
-    { name: 'Cadastrado', value: 'cadas' },
-    { name: 'Iniciado', value: 'inici' },
-    { name: 'Em Andamento', value: 'andam' },
+    { name: 'A iniciar', value: 'inici' },
+    { name: 'Em cadastramento', value: 'cadas' },
+    { name: 'Em andamento', value: 'andam' },
     { name: 'Concluído', value: 'concl' },
     { name: 'Cancelado', value: 'cance' },
     { name: 'Descartado', value: 'desco' },
@@ -69,19 +62,29 @@ const tipoLancValue = [
     { name: 'Despesa', value: 'despe' }
 ]
 
+const tipoProjetoValue = [
+    { name: 'Apoiado', value: 'APOIADO' },
+    { name: 'Base', value: 'BASE' }
+]
+
+const tipoEcoFinValue = [
+    { name: 'Econômico', value: 'eco' },
+    { name: 'Financeiro', value: 'fin' }
+]
+
 const StatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
     const statusInfo = statusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
     return (
-        <div className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
+        <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
             {statusInfo.label}
         </div>
     )
 }
 
-const LancamentoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
+export const LancamentoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
     const statusInfo = lancamentoStatusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
     return (
-        <div className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
+        <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
             {statusInfo.label}
         </div>
     )
@@ -243,9 +246,15 @@ const columns = [
         header: 'E/F',
         columnName: 'prlancamento.flecofin',
         type: 'string',
-        operator: 'contains',
+        operator: 'equals',
         value: '',
-        render: ({ data }: any) => data == 'fin' ? "Financeiro" : "Econômico",
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: tipoEcoFinValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ data }: any) => data.flecofin == 'fin' ? "Financeiro" : "Econômico",
     },
     {
         name: 'idprojeto_projeto_base',
@@ -260,9 +269,15 @@ const columns = [
         name: 'tipo_projeto',
         header: 'Tipo Projeto',
         columnName: 'prprojeto.tipo_projeto',
-        type: 'string',
-        operator: 'contains',
+        type: 'select',
+        operator: 'equals',
         value: '',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: tipoProjetoValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },        
     },
     {
         name: 'prprojeto.flstatus',
@@ -293,7 +308,7 @@ const Empresas = () => {
                 filename="Lançamentos"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/prestcontas/lista-geral-lancamentos`}
-                CardLayout={EmpresasCard}
+                CardLayout={LancamentosCard}
                 defaultSortInfo={{ "dir": -1, "id": "idlanc", "name": "idlanc", "columnName": "idlanc", "type": "string" }}
             />
         </AdaptableCard>
