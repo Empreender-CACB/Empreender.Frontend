@@ -136,6 +136,9 @@ const appsRoute: Routes = [
         key: 'sistemaPrestcontas.listaGeralLancamentos',
         path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
         component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
+        meta: {
+            pageContainerType: 'gutterless',
+        },
     },
 ]
 
