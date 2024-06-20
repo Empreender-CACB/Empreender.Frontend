@@ -104,7 +104,7 @@ const columns = [
             const idLanc = data.idlanc;
             const idProjeto = data['prlancamento.idprojeto'];
             
-            if (data['prlancamento.tplanc'] == 'recei') {
+            if (data['tplanc'] == 'recei') {
                 return (
                     <div>
                         <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/lancamento-receita-detalhe/pid/${btoa(String(idProjeto))}/lid/${btoa(String(idLanc))}`}>
