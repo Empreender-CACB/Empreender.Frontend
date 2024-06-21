@@ -15,16 +15,16 @@ import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 
 moment.locale('pt-br')
 
-const statusStyles: any = {
-    'inici': { label: 'A iniciar', class: 'bg-purple-500 text-white' },
-    'cadas': { label: 'Em cadastramento', class: 'bg-yellow-400 text-white', style: {backgroundColor: '#990099'} },
-    'andam': { label: 'Em andamento', class: 'bg-blue-500 text-white' },
-    'concl': { label: 'Concluído', class: 'bg-green-500 text-white' },
-    'cance': { label: 'Cancelado', class: 'bg-red-500 text-white' },
-    'desco': { label: 'Descartado', class: 'bg-gray-400 text-white' },
-    'bloqu': { label: 'Bloqueado', class: 'bg-gray-500 text-white' },
-    'nselc': { label: 'Não Selecionado', class: 'bg-gray-300 text-white' },
-};
+// const statusStyles: any = {
+//     'inici': { label: 'A iniciar', class: 'bg-purple-500 text-white' },
+//     'cadas': { label: 'Em cadastramento', class: 'bg-yellow-400 text-white', style: {backgroundColor: '#990099'} },
+//     'andam': { label: 'Em andamento', class: 'bg-blue-500 text-white' },
+//     'concl': { label: 'Concluído', class: 'bg-green-500 text-white' },
+//     'cance': { label: 'Cancelado', class: 'bg-red-500 text-white' },
+//     'desco': { label: 'Descartado', class: 'bg-gray-400 text-white' },
+//     'bloqu': { label: 'Bloqueado', class: 'bg-gray-500 text-white' },
+//     'nselc': { label: 'Não Selecionado', class: 'bg-gray-300 text-white' },
+// };
 
 const lancamentoStatusStyles: any = {
     'apr': { label: 'Aprovado', class: 'bg-teal-500 text-white' },
@@ -96,9 +96,9 @@ const columns = [
         name: 'idlanc',
         header: 'ID Lanc.',
         columnName: 'idlanc',
-        type: 'string',
+        type: 'number',
         defaultFlex: 0.4,
-        operator: 'contains',
+        operator: 'eq',
         value: "",
         render: ({ data }: any) => {
             const idLanc = data.idlanc;
@@ -265,9 +265,9 @@ const columns = [
         name: 'idprojeto_projeto_base',
         header: 'PJ Base',
         columnName: 'prprojeto.id_projeto_base',
-        type: 'string',
+        type: 'number',
         defaultFlex: 0.4,
-        operator: 'contains',
+        operator: 'eq',
         value: "",
     },
     // {
