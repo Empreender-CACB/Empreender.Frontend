@@ -15,16 +15,16 @@ import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 
 moment.locale('pt-br')
 
-const statusStyles: any = {
-    'inici': { label: 'A iniciar', class: 'bg-purple-500 text-white' },
-    'cadas': { label: 'Em cadastramento', class: 'bg-yellow-400 text-white', style: {backgroundColor: '#990099'} },
-    'andam': { label: 'Em andamento', class: 'bg-blue-500 text-white' },
-    'concl': { label: 'Concluído', class: 'bg-green-500 text-white' },
-    'cance': { label: 'Cancelado', class: 'bg-red-500 text-white' },
-    'desco': { label: 'Descartado', class: 'bg-gray-400 text-white' },
-    'bloqu': { label: 'Bloqueado', class: 'bg-gray-500 text-white' },
-    'nselc': { label: 'Não Selecionado', class: 'bg-gray-300 text-white' },
-};
+// const statusStyles: any = {
+//     'inici': { label: 'A iniciar', class: 'bg-purple-500 text-white' },
+//     'cadas': { label: 'Em cadastramento', class: 'bg-yellow-400 text-white', style: {backgroundColor: '#990099'} },
+//     'andam': { label: 'Em andamento', class: 'bg-blue-500 text-white' },
+//     'concl': { label: 'Concluído', class: 'bg-green-500 text-white' },
+//     'cance': { label: 'Cancelado', class: 'bg-red-500 text-white' },
+//     'desco': { label: 'Descartado', class: 'bg-gray-400 text-white' },
+//     'bloqu': { label: 'Bloqueado', class: 'bg-gray-500 text-white' },
+//     'nselc': { label: 'Não Selecionado', class: 'bg-gray-300 text-white' },
+// };
 
 const lancamentoStatusStyles: any = {
     'apr': { label: 'Aprovado', class: 'bg-teal-500 text-white' },
@@ -37,15 +37,15 @@ const lancamentoStatusStyles: any = {
 };
 
 
-const projetoStatusValue = [
-    { name: 'A iniciar', value: 'inici' },
-    { name: 'Em cadastramento', value: 'cadas' },
-    { name: 'Em andamento', value: 'andam' },
-    { name: 'Concluído', value: 'concl' },
-    { name: 'Cancelado', value: 'cance' },
-    { name: 'Descartado', value: 'desco' },
-    { name: 'Bloqueado', value: 'bloqu' },
-]
+// const projetoStatusValue = [
+//     { name: 'A iniciar', value: 'inici' },
+//     { name: 'Em cadastramento', value: 'cadas' },
+//     { name: 'Em andamento', value: 'andam' },
+//     { name: 'Concluído', value: 'concl' },
+//     { name: 'Cancelado', value: 'cance' },
+//     { name: 'Descartado', value: 'desco' },
+//     { name: 'Bloqueado', value: 'bloqu' },
+// ]
 
 const lancamentoStatusValue = [
     { name: 'Novo', value: 'nov' },
@@ -62,24 +62,24 @@ const tipoLancValue = [
     { name: 'Despesa', value: 'despe' }
 ]
 
-const tipoProjetoValue = [
-    { name: 'Apoiado', value: 'APOIADO' },
-    { name: 'Base', value: 'BASE' }
-]
+// const tipoProjetoValue = [
+//     { name: 'Apoiado', value: 'APOIADO' },
+//     { name: 'Base', value: 'BASE' }
+// ]
 
 const tipoEcoFinValue = [
     { name: 'Econômico', value: 'eco' },
     { name: 'Financeiro', value: 'fin' }
 ]
 
-const StatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
-    const statusInfo = statusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
-    return (
-        <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
-            {statusInfo.label}
-        </div>
-    )
-}
+// const StatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
+//     const statusInfo = statusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
+//     return (
+//         <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
+//             {statusInfo.label}
+//         </div>
+//     )
+// }
 
 export const LancamentoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
     const statusInfo = lancamentoStatusStyles[statusKey] || { label: 'Indefinido', class: 'bg-gray-200 text-black' }
@@ -94,17 +94,17 @@ export const LancamentoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey
 const columns = [
     {
         name: 'idlanc',
-        header: 'ID Lancamento',
+        header: 'ID Lanc.',
         columnName: 'idlanc',
-        type: 'string',
-        defaultFlex: 0.6,
-        operator: 'contains',
+        type: 'number',
+        defaultFlex: 0.4,
+        operator: 'eq',
         value: "",
         render: ({ data }: any) => {
             const idLanc = data.idlanc;
             const idProjeto = data['prlancamento.idprojeto'];
             
-            if (data['prlancamento.tplanc'] == 'recei') {
+            if (data.tplanc == 'recei') {
                 return (
                     <div>
                         <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/lancamento-receita-detalhe/pid/${btoa(String(idProjeto))}/lid/${btoa(String(idLanc))}`}>
@@ -126,10 +126,10 @@ const columns = [
     },
     {
         name: 'prlancamento.idprojeto',
-        header: 'ID Projeto',
+        header: 'ID Proj.',
         columnName: 'prlancamento.idprojeto',
         type: 'string',
-        defaultFlex: 0.6,
+        defaultFlex: 0.4,
         operator: 'contains',
         value: "",
         render: ({ data }: any) => {
@@ -148,6 +148,8 @@ const columns = [
         header: 'Projeto',
         columnName: 'prprojeto.nmprojeto',
         type: 'string',
+        defaultFlex: 1,
+
         operator: 'contains',
         value: '',
         render: ({ data }: any) => {
@@ -165,6 +167,7 @@ const columns = [
         name: 'nmacao',
         header: 'Ação',
         columnName: 'pracao.nmacao',
+        defaultFlex: 1,
         type: 'string',
         operator: 'contains',
         value: '',
@@ -173,7 +176,7 @@ const columns = [
         name: 'dtlanc',
         header: 'Data',
         columnName: 'prlancamento.dtlanc',
-        defaultFlex: 1,
+        defaultFlex: 0.4,
         dateFormat: 'DD-MM-YYYY',
         type: 'date',
         operator: 'after',
@@ -196,6 +199,7 @@ const columns = [
         columnName: 'prlancamento.tplanc',
         type: 'select',
         operator: 'equals',
+        defaultFlex: 0.4,
         value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
@@ -210,7 +214,7 @@ const columns = [
         name: 'prlancamento.stlancamento',
         header: 'Status Lançamento',
         columnName: 'prlancamento.stlancamento',
-        defaultFlex: 1,
+        defaultFlex: 0.4,
         type: 'select',
         operator: 'equals',
         value: '',
@@ -227,7 +231,7 @@ const columns = [
         header: 'Valor',
         columnName: 'prlancamento.vllanc',
         type: 'number',
-        defaultFlex: 1,
+        defaultFlex: 0.4,
         operator: 'eq',
         value: '',
         filterEditor: NumberFilter,
@@ -247,6 +251,7 @@ const columns = [
         columnName: 'prlancamento.flecofin',
         type: 'string',
         operator: 'equals',
+        defaultFlex: 0.4,
         value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
@@ -260,41 +265,41 @@ const columns = [
         name: 'idprojeto_projeto_base',
         header: 'PJ Base',
         columnName: 'prprojeto.id_projeto_base',
-        type: 'string',
-        defaultFlex: 0.6,
-        operator: 'contains',
+        type: 'number',
+        defaultFlex: 0.4,
+        operator: 'eq',
         value: "",
     },
-    {
-        name: 'tipo_projeto',
-        header: 'Tipo Projeto',
-        columnName: 'prprojeto.tipo_projeto',
-        type: 'select',
-        operator: 'equals',
-        value: '',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            dataSource: tipoProjetoValue.map((option) => {
-                return { id: option.value, label: option.name }
-            }),
-        },        
-    },
-    {
-        name: 'prprojeto.flstatus',
-        header: 'Status Projeto',
-        columnName: 'prprojeto.flstatus',
-        defaultFlex: 1,
-        type: 'select',
-        operator: 'equals',
-        value: '',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            dataSource: projetoStatusValue.map((option) => {
-                return { id: option.value, label: option.name }
-            }),
-        },
-        render: ({ data }: any) => <StatusTag statusKey={data.flstatus} />,
-    },
+    // {
+    //     name: 'tipo_projeto',
+    //     header: 'Tipo Projeto',
+    //     columnName: 'prprojeto.tipo_projeto',
+    //     type: 'select',
+    //     operator: 'equals',
+    //     value: '',
+    //     filterEditor: SelectFilter,
+    //     filterEditorProps: {
+    //         dataSource: tipoProjetoValue.map((option) => {
+    //             return { id: option.value, label: option.name }
+    //         }),
+    //     },        
+    // },
+    // {
+    //     name: 'prprojeto.flstatus',
+    //     header: 'Status Projeto',
+    //     columnName: 'prprojeto.flstatus',
+    //     defaultFlex: 1,
+    //     type: 'select',
+    //     operator: 'equals',
+    //     value: '',
+    //     filterEditor: SelectFilter,
+    //     filterEditorProps: {
+    //         dataSource: projetoStatusValue.map((option) => {
+    //             return { id: option.value, label: option.name }
+    //         }),
+    //     },
+    //     render: ({ data }: any) => <StatusTag statusKey={data.flstatus} />,
+    // },
 ]
 
 const Empresas = () => {
