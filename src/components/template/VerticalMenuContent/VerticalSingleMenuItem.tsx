@@ -48,6 +48,7 @@ const DefaultItem = (props: DefaultItemProps) => {
                         path: nav.path,
                     })
                 }
+                target={nav.target}
             >
                 <VerticalMenuIcon icon={nav.icon} />
                 {!sideCollapsed && (

@@ -8,6 +8,7 @@ export interface NavigationTree {
     type: 'title' | 'collapse' | 'item'
     authority: string[]
     subMenu: NavigationTree[]
+    target?: string
 }
 
 export interface Documento {
