@@ -5,12 +5,14 @@ import type { PropsWithChildren } from 'react'
 export type HorizontalMenuNavLinkProps = PropsWithChildren<{
     path: string
     className?: string
+    target?: string
 }>
 
 const HorizontalMenuNavLink = ({
     path,
     children,
-    className
+    className,
+    target
 }: HorizontalMenuNavLinkProps) => {
     return (
         <Link 
@@ -20,6 +22,7 @@ const HorizontalMenuNavLink = ({
                     className
                 )} 
             to={path}
+            target={target}
         >
             <span>{children}</span>
         </Link>

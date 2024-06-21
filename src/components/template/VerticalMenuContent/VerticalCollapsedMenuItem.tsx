@@ -35,6 +35,7 @@ const RenderItem = ({ subNav, onLinkClick }: { subNav: NavigationTree, onLinkCli
                     path: subNav.path,
                 })
             }
+            target={subNav.target}
         >
             <span>
                 <Trans

@@ -14,6 +14,7 @@ export type HorizontalMenuItemProps = {
         translateKey?: string
         icon: string
         path: string
+        target?: string
     }
 }
 
@@ -40,7 +41,7 @@ const handleVersionButtonClick = async () => {
 }
 
 const HorizontalMenuDropdownItem = ({ nav }: HorizontalMenuItemProps) => {
-    const { title, translateKey, path, key } = nav
+    const { title, translateKey, path, key, target } = nav
 
     const { t } = useTranslation()
 
@@ -63,6 +64,7 @@ const HorizontalMenuDropdownItem = ({ nav }: HorizontalMenuItemProps) => {
                             path && 'px-2'
                         )
                     }
+                    target={target}
                 >
                     {itemTitle}
                 </HorizontalMenuNavLink>

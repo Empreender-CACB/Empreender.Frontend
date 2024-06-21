@@ -86,6 +86,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick, sideCollapsed }) 
             to={nav.path}
             className="flex items-center h-full w-full"
             onClick={onLinkClick}
+            target={nav.target}
           >
             <VerticalMenuIcon icon={nav.icon} />
             {(nav.type !== 'item' || !sideCollapsed) && (
