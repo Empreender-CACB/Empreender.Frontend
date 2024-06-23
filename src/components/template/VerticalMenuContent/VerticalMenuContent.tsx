@@ -103,7 +103,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ nav, onLinkClick, sideCollapsed }) 
           </Link>
           :
           <>
-            {nav.key == 'appVersaoRfb' ? <span onClick={handleVersionButtonClick}>{nav.title}</span> : <span>{nav.title} hahaha</span>}
+            {nav.key == 'appVersaoRfb' ? <span onClick={handleVersionButtonClick}>{nav.title}</span> : <span>{nav.title}</span>}
           </>
         }
       </Menu.MenuItem>

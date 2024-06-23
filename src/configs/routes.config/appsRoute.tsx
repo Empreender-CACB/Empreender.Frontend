@@ -130,15 +130,18 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'sistema.insertExcel',
+        path: `${APP_PREFIX_PATH}/insert-excel`,
+        component: lazy(() => import('@/views/sistema/empresas/insert-excel')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'sistema.selecao',
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
-    },
-    {
-
-        key: 'sistemaOcorrencias.ocorrencias',
-        path: `${APP_PREFIX_PATH}/ocorrencias`,
-        component: lazy(() => import('@/views/sistema/ocorrencias')),
     },
     {
         key: 'sistemaPrestcontas.listaGeralLancamentos',
