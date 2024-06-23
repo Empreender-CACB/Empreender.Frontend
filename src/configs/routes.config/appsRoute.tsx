@@ -120,7 +120,7 @@ const appsRoute: Routes = [
         },
     },
     {
-        key: 'sistema.cursoform',
+        key: 'sistema.insertExcel',
         path: `${APP_PREFIX_PATH}/insert-excel`,
         component: lazy(() => import('@/views/sistema/empresas/insert-excel')),
         meta: {
