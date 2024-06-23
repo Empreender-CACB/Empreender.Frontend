@@ -34,16 +34,13 @@ const ExcelPreview = () => {
       const sheetName = workbook.SheetNames[0]
       const sheet = workbook.Sheets[sheetName]
 
-      // Array to hold the data
       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
 
-      // Create columns based on the first row (header)
       const columnDefs = jsonData[0].map((header, index) => ({
         header: header,
         accessorKey: header,
       }))
 
-      // Format the data to fit the column definitions
       const rowData = jsonData.slice(1).map((row) =>
         row.reduce((acc, cell, index) => {
           acc[jsonData[0][index]] = cell
@@ -60,7 +57,6 @@ const ExcelPreview = () => {
   }
 
   const handleSubmit = async () => {
-    // Check if all required columns are present
     const requiredColumns = ['cnpj', 'nmcontato', 'telefone', 'email', 'idassociacao']
     const missingColumns = requiredColumns.filter(column => !columns.some(col => col.accessorKey === column))
 
