@@ -265,7 +265,7 @@ const columns = [
         name: 'idprojeto_projeto_base',
         header: 'PJ Base',
         columnName: 'prprojeto.id_projeto_base',
-        type: 'number',
+        type: 'numeric',
         defaultFlex: 0.4,
         operator: 'eq',
         value: "",
