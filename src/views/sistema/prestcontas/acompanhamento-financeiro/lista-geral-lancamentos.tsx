@@ -12,6 +12,7 @@ import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
+import { locale } from 'dayjs'
 
 moment.locale('pt-br')
 
@@ -234,7 +235,13 @@ const columns = [
         defaultFlex: 0.4,
         operator: 'eq',
         value: '',
-        filterEditor: NumberFilter,
+        filterEditorProps: {
+            step: 1,
+            format: 'currency',
+            allowFloat: true,
+            decimalDelimiter:'-',
+            currencyPosition: 'start',
+          },
         style: { textAlign: 'right' },
         render: ({ data }: any) => {
             const formattedValue = new Intl.NumberFormat('pt-BR', {
@@ -265,7 +272,7 @@ const columns = [
         name: 'idprojeto_projeto_base',
         header: 'PJ Base',
         columnName: 'prprojeto.id_projeto_base',
-        type: 'currency',
+        type: 'number',
         numbersOnly: false,
         defaultFlex: 0.4,
         operator: 'eq',
