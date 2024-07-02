@@ -139,6 +139,15 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'sistema.showExcel',
+        path: `${APP_PREFIX_PATH}/show-excel`,
+        component: lazy(() => import('@/views/sistema/empresas/insert-excel2')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'sistema.selecao',
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
