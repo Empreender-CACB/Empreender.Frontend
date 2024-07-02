@@ -22,7 +22,6 @@ const ExcelPreview = () => {
   const [excelData, setExcelData] = useState([])
   const [columns, setColumns] = useState([])
   const [loading, setLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
   const navigate = useNavigate()
 
   const handleFileUpload = (event) => {
@@ -74,32 +73,25 @@ const ExcelPreview = () => {
       return
     }    
 
-    const totalRows = excelData.length
-    let completedRows = 0
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(excelData),
+      })
 
-  //  for (const row of excelData) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/empresas/excel/cadastro`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(excelData),
-        })
-
-        if (!response.ok) {
-          throw new Error('Erro ao enviar dados para a API')
-        }
-
-        const result = await response.json()
-        console.log('Dados enviados com sucesso:', result)
-
-        completedRows++
-        setProgress((completedRows / totalRows) * 100)
-      } catch (error) {
-        console.error('Erro:', error)
+      if (!response.ok) {
+        throw new Error('Erro ao enviar dados para a API')
       }
-    //}
+
+      const result = await response.json()
+      console.log('Dados enviados com sucesso:', result)
+
+    } catch (error) {
+      console.error('Erro:', error)
+    }
 
     navigate('/sistema/show-excel')
   }
@@ -153,12 +145,7 @@ const ExcelPreview = () => {
             </Button>
           )}
         </div>
-        {progress > 0 && (
-          <div className="mb-4">
-            <Progress percent={parseFloat(progress).toFixed(2)} />
-          </div>
-        )}
-        <p style={{ color: 'red', marginTop: '10px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, nmcontato, telefone, email, idassociacao.</p>
+        <p style={{ color: 'red', marginTop: '10px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, nmcontato, telefone, email, idassociacao. Caso deseje reenviar um arquivo corrigido, mantenha o ID.</p>
       </Container>
       {excelData.length > 0 && (
         <div className="w-full sm:w-auto mb-4">
