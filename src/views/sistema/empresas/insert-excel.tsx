@@ -14,6 +14,7 @@ import {
     flexRender,
 } from '@tanstack/react-table'
 import Container from '@/components/shared/Container'
+import { useNavigate } from 'react-router-dom'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
@@ -22,6 +23,7 @@ const ExcelPreview = () => {
   const [columns, setColumns] = useState([])
   const [loading, setLoading] = useState(false)
   const [progress, setProgress] = useState(0)
+  const navigate = useNavigate()
 
   const handleFileUpload = (event) => {
     setLoading(true)
@@ -75,14 +77,14 @@ const ExcelPreview = () => {
     const totalRows = excelData.length
     let completedRows = 0
 
-    for (const row of excelData) {
+  //  for (const row of excelData) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/cadastra-cef`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/empresas/excel/cadastro`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(row),
+          body: JSON.stringify(excelData),
         })
 
         if (!response.ok) {
@@ -93,11 +95,13 @@ const ExcelPreview = () => {
         console.log('Dados enviados com sucesso:', result)
 
         completedRows++
-          setProgress((completedRows / totalRows) * 100)
+        setProgress((completedRows / totalRows) * 100)
       } catch (error) {
         console.error('Erro:', error)
       }
-    }
+    //}
+
+    navigate('/sistema/show-excel')
   }
 
   const table = useReactTable({
