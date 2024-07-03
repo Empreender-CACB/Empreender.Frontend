@@ -59,7 +59,9 @@ const lancamentoStatusValue = [
 
 const tipoLancValue = [
     { name: 'Receita', value: 'recei' },
-    { name: 'Despesa', value: 'despe' }
+    { name: 'Despesa', value: 'despe' },
+    { name: 'Especial', value: 'espec' },
+    { name: 'Orçamentário', value: 'orcam' }
 ]
 
 // const tipoProjetoValue = [
