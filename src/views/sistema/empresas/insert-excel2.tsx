@@ -2,11 +2,12 @@ import '@inovua/reactdatagrid-community/index.css'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { AdaptableCard } from '@/components/shared'
-import { Button } from '@/components/ui'
+import { Button, Input } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import { EmpresaExcelCard } from '@/components/shared/TableCards/EmpresaExcelCard'
 import { HiPlusCircle } from 'react-icons/hi'
 import Select from '@/components/ui/Select'
+import Modal from 'react-modal'
 
 // Colunas da tabela
 const columns = [
@@ -43,6 +44,8 @@ const InsertExcel = () => {
     const [loading, setLoading] = useState(false)
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [selectedOrigens, setSelectedOrigens] = useState(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [newOrigem, setNewOrigem] = useState('')
 
     const onChange = (val) => {
         setNameValue(val)
@@ -80,7 +83,7 @@ const InsertExcel = () => {
             const payload = excelData.map(empresa => ({
                 ...empresa,
                 origem: selectedOrigens.value
-            }));
+            }))
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/cadastra-cef`, {
                 method: 'POST',
@@ -102,6 +105,39 @@ const InsertExcel = () => {
         window.location.reload()
     }
 
+    const handleOpenModal = () => {
+        console.log('Opening modal')
+        setIsModalOpen(true)
+    }
+
+    const handleCloseModal = () => {
+        console.log('Closing modal')
+        setIsModalOpen(false)
+        setNewOrigem('')
+    }
+
+    const handleSaveOrigem = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/origem/cadastro`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ origem: newOrigem })
+            })
+
+            if (!response.ok) {
+                console.error('Error saving origem:', response.statusText)
+            } else {
+                fetchOrigens()
+                handleCloseModal()
+            }
+
+        } catch (error) {
+            console.error('Error saving origem:', error)
+        }
+    }
+
     const radioGroup = (
         <div className='pr-4 flex items-center'>
             <span className="pr-2 font-black">Origem: </span>
@@ -111,6 +147,14 @@ const InsertExcel = () => {
                 onChange={setSelectedOrigens}
                 placeholder="Origem"
             />
+            <Button
+                variant="outline"
+                size="sm"
+                className="ml-2"
+                onClick={handleOpenModal}
+            >
+                Cadastrar Nova Origem
+            </Button>
         </div>
     )
 
@@ -140,6 +184,28 @@ const InsertExcel = () => {
                 options={radioGroup}
                 CardLayout={EmpresaExcelCard}
             />
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={handleCloseModal}
+                contentLabel="Nova Origem"
+                ariaHideApp={false}
+                className="fixed inset-0 flex items-center justify-center z-50"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+            >
+                <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto">
+                    <h2 className="text-lg font-bold mb-4">Cadastrar nova Origem</h2>
+                    <Input
+                        value={newOrigem}
+                        onChange={(e) => setNewOrigem(e.target.value)}
+                        placeholder="Digite a nova origem"
+                        className="mb-4 w-full"
+                    />
+                    <div className="flex justify-end space-x-4">
+                        <Button variant="outline" onClick={handleCloseModal}>Cancelar</Button>
+                        <Button variant="solid" onClick={handleSaveOrigem}>Salvar</Button>
+                    </div>
+                </div>
+            </Modal>
         </AdaptableCard>
     )
 }
