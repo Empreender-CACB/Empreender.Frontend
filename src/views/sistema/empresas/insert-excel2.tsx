@@ -20,8 +20,18 @@ const columns = [
     { name: 'nmrazao', header: 'Nome da Entidade', type: 'string', value: '', defaultFlex: 0.3 },
     { name: 'nmcidade', header: 'Cidade', type: 'string', value: '', defaultFlex: 0.3 },
     { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'excessao', header: 'Excessão de envio', type: 'string', value: '', defaultFlex: 0.3 }
-]
+    {
+        name: 'excessao',
+        header: 'Excessão de envio',
+        type: 'string',
+        value: '',
+        defaultFlex: 0.3,
+        render: ({ data }) => (
+            <div style={{ color: data.excessao ? 'red' : 'inherit' }}>
+                {data.excessao}
+            </div>
+        )
+    }]
 
 // Valores padrão dos filtros
 const defaultFilterValue = [
