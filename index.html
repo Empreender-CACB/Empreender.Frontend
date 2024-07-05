@@ -7,15 +7,20 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Portal Empreender - Beta" />
+  <meta name="description" content="Portal Empreender - V5" />
   <title>Portal Empreender - Versão 5.0</title>
 
   <script src="https://unpkg.com/cookie-notice@^1/dist/cookie.notice.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script> -->
 
 
 </head>
 
 <body>
+  <!-- <script>
+    const jsConfetti = new JSConfetti()
+    jsConfetti.addConfetti()
+  </script> -->
   <script>
     new cookieNoticeJS({
 
@@ -64,6 +69,22 @@
       'debug': false
     });
   </script>
+
+<script>
+  window.onload = function() {
+    if (window.location.hostname === 'beta.cacbempreenderapp.org.br') {
+      var banner = document.createElement('div');
+          banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+          banner.textContent = 'Navegando pela versão de testes.';
+          document.body.prepend(banner);
+
+          var spacer = document.createElement('div');
+          spacer.style.height = '2rem';
+          document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
+    }
+  }
+</script>
+
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>

@@ -6,10 +6,12 @@ import {
     PAGE_CONTAINER_GUTTER_Y,
 } from '@/constants/theme.constant'
 import Footer from '@/components/template/Footer'
+import type { FooterPageContainerType } from '@/components/template/Footer'
+import FeedbackButton from './Feedback/FeedbackButton'
+import ReportButton from '@/components/template/Report/ReportButton'
 import type { CommonProps } from '@/@types/common'
 import type { Meta } from '@/@types/routes'
 import type { ElementType, ComponentPropsWithRef } from 'react'
-import type { FooterPageContainerType } from '@/components/template/Footer'
 
 export interface PageContainerProps extends CommonProps, Meta {
     contained?: boolean
@@ -38,8 +40,7 @@ const PageContainer = (props: PageContainerProps) => {
     //document.body.style.transform = 'scale(0.95)';
 
     return (
-        
-        <div className="h-full flex flex-auto flex-col justify-between">
+        <>        <div className="h-full flex flex-auto flex-col justify-between">
             <main className="h-full">
                 <div
                     className={classNames(
@@ -82,7 +83,11 @@ const PageContainer = (props: PageContainerProps) => {
                         <>{children}</>
                     )}
                 </div>
+                
             </main>
+            <ReportButton />
+            <FeedbackButton />
+
             {footer && (
                 <Footer
                     pageContainerType={
@@ -91,6 +96,10 @@ const PageContainer = (props: PageContainerProps) => {
                 />
             )}
         </div>
+
+        </>
+        
+
     )
 }
 

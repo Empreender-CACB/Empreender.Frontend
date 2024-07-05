@@ -89,9 +89,31 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/adminutils/acompanhamento-geral/quadro')),
     },
     {
+        key: 'sistema.parametros-gerais',
+        path: `${APP_PREFIX_PATH}/parametros-gerais`,
+        component: lazy(() => import('@/views/sistema/parametros-gerais')),
+    },
+
+    {
+        key: 'sistema.faq.blog',
+        path: `${APP_PREFIX_PATH}/faq/blog`,
+        component: lazy(() => import('@/views/sistema/faq/blog')),
+    },
+
+    {
+        key: 'sistema.feedbacks',
+        path: `${APP_PREFIX_PATH}/feedbacks`,
+        component: lazy(() => import('@/views/sistema/feedbacks')),
+    },
+    {
+        key: 'sistema.notificacoes',
+        path: `${APP_PREFIX_PATH}/notificacoes`,
+        component: lazy(() => import('@/views/sistema/account/ActivityLog')),
+    },
+    {
         key: 'sistema.cursoform',
         path: `${APP_PREFIX_PATH}/curso-form`,
-        component: lazy(() => import('@/views/sistema/cursoform/index')),
+        component: lazy(() => import('@/views/Inscricoes/cursoform/index')),
         meta: {
             pageContainerType: 'gutterless',
             footer: false,
@@ -101,6 +123,14 @@ const appsRoute: Routes = [
         key: 'sistema.selecao',
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
+    },
+    {
+        key: 'sistemaPrestcontas.listaGeralLancamentos',
+        path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
+        component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
+        meta: {
+            pageContainerType: 'gutterless',
+        },
     },
     {
         key: 'sistemaLancamento.transferenciasPagamentos',

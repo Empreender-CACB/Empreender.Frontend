@@ -34,6 +34,7 @@ interface CustomReactDataGridPropsBasic {
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
+    defaultSortInfo?: any
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
@@ -87,17 +88,20 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
-    onSelectedRowsChange
+    onSelectedRowsChange,
+    defaultSortInfo
 }) => {
+
+
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const valorLocalStorage = localStorage.getItem('lista_geral')
+    const valorLocalStorage = Number(localStorage.getItem('lista_geral'))
     const [isDark] = useDarkMode()
     const [view, setView] = useState('list')
     const [dialogIsOpen, setIsOpen] = useState(false)
     const [listaGeral, setListaGeral] = useState(
-        valorLocalStorage ? Number(valorLocalStorage) : 25
-    )
+        !isNaN(valorLocalStorage) ? valorLocalStorage : 25
+    );
     const [gridRef, setGridRef] = useState(null)
     const [loadedData, setLoadedData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -397,23 +401,24 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     const [selected, setSelected] = useState({});
 
     const handleSelectionChange = useCallback(({ selected, data }) => {
-        let selectedRows;
-    
-        if (selected === true) {
-            // Todas as linhas estão selecionadas
-            selectedRows = data.map(item => item.id);
-        } else {
-            // Apenas linhas específicas estão selecionadas
-            selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
-        }
-    
-        setSelected(selected);
-        if (onSelectedRowsChange) {
-            onSelectedRowsChange(selectedRows);
+
+        if (isSelectable) {
+            let selectedRows;
+            if (selected === true) {
+                // Todas as linhas estão selecionadas
+                selectedRows = data.map(item => item.id);
+            } else {
+                // Apenas linhas específicas estão selecionadas
+                selectedRows = Object.keys(selected).filter(key => selected[key]).map(Number);
+            }
+        
+            setSelected(selected);
+            if (onSelectedRowsChange) {
+                onSelectedRowsChange(selectedRows);
+            }
         }
     }, [onSelectedRowsChange]);
-    
-    
+        
 
     return (
         <div>
@@ -473,7 +478,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         className="mx-2 "
                         onClick={() => {
                             gridRef.current.clearAllFilters()
-                            gridRef.current.setFilterValue(defaultFilterValue)
+                            defaultFilterValue?gridRef.current.setFilterValue(defaultFilterValue):''
                         }}
                     ></Button>
                 </Tooltip>
@@ -542,6 +547,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 wrapMultiple={false}
                 idProperty="id"
                 defaultFilterValue={defaultFilterValue || columns}
+                defaultSortInfo={defaultSortInfo}
                 columns={columns}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}

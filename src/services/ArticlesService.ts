@@ -1,11 +1,5 @@
 import ApiService from './ApiService';
 
-interface Article {
-    id: number;
-    title: string;
-    content: string;
-    category: string;
-}
 const ArticleService = {
     async listArticles<T>() {
         return ApiService.fetchData<T>({

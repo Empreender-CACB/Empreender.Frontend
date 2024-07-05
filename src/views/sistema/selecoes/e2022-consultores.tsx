@@ -15,7 +15,7 @@ import { useState } from 'react'
 import ApiService from '@/services/ApiService'
 import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
-
+import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
 
 // const toastNotification = (
@@ -101,9 +101,9 @@ const E2022Consultores = () => {
             method: 'post',
             data: { candidaturaIds: selectedRows }
         }).then((data: any) => {
-            window.open( import.meta.env.VITE_API_URL + data.data.url )
+            window.open(import.meta.env.VITE_API_URL + data.data.url)
             toast.push(
-                <Notification title="Download feito com sucesso!" type="info" />
+                <Notification title="O download será iniciado em instantes." type="info" />
             )
         }).catch((error: any) => {
             toast.push(
@@ -128,17 +128,20 @@ const E2022Consultores = () => {
                             Versão antiga
                         </Link>
                     </Button>
-
-                    <Button
-                        block
-                        variant="solid"
-                        size="sm"
-                        icon={<HiPlusCircle />}
-                        onClick={handleExportDocuments}
-                        disabled={selectedRows.length === 0}
-                    >
-                        Exportar Documentos
-                    </Button>
+                    <Tooltip title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}>
+                        <span>
+                            <Button
+                                block
+                                variant="solid"
+                                size="sm"
+                                icon={<HiPlusCircle />}
+                                onClick={handleExportDocuments}
+                                disabled={selectedRows.length === 0}
+                            >
+                                Exportar Documentos
+                            </Button>
+                        </span>
+                    </Tooltip>
                 </div>
             </div>
             <CustomReactDataGrid
