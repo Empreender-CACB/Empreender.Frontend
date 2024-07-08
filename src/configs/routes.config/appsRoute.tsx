@@ -160,6 +160,11 @@ const appsRoute: Routes = [
             pageContainerType: 'gutterless',
         },
     },
+    {
+        key: 'sistemaLancamento.transferenciasPagamentos',
+        path: `${APP_PREFIX_PATH}/lancamentos/transferencias-pagamentos`,
+        component: lazy(() => import('@/views/sistema/lancamentos/transferencias-pagamentos')),
+    },
 ]
 
 export default appsRoute
