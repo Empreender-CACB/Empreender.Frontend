@@ -8,11 +8,28 @@ import { EmpresaExcelCard } from '@/components/shared/TableCards/EmpresaExcelCar
 import { HiPlusCircle } from 'react-icons/hi'
 import Select from '@/components/ui/Select'
 import Modal from 'react-modal'
+import { useAppSelector } from '@/store'
+import formatCPFCNPJ from '@/utils/MaskService'
 
-// Colunas da tabela
+
+
 const columns = [
     { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.3 },
-    { name: 'cnpj', header: 'CNPJ', type: 'string', value: '', defaultFlex: 0.3 },
+    { name: 'cnpj',          
+        header: 'CNPJ',
+        defaultFlex: 1,
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        render: ({ data }: any) => {
+            const formattedValue = formatCPFCNPJ(data.cnpj);
+            return (
+                <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
+                    {formattedValue || data.cnpj}
+                </div>
+            );
+        },
+    },
     { name: 'nmcontato', header: 'Contato', type: 'string', value: '', defaultFlex: 0.3 },
     { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.3 },
     { name: 'email', header: 'E-mail', type: 'string', value: '', defaultFlex: 0.3 },
@@ -22,18 +39,17 @@ const columns = [
     { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.3 },
     {
         name: 'excessao',
-        header: 'Excessão de envio',
+        header: 'Situação',
         type: 'string',
         value: '',
         defaultFlex: 0.3,
-        render: ({ data }) => (
-            <div style={{ color: data.excessao ? 'red' : 'inherit' }}>
+        render: ({ data }: any) => (
+            <div style={{ color: data.excessao === 'Cadastrada com Sucesso' ? 'green' : 'red' }}>
                 {data.excessao}
             </div>
         )
     }]
 
-// Valores padrão dos filtros
 const defaultFilterValue = [
     { name: 'id', value: '', operator: 'contains' },
     { name: 'cnpj', value: '', operator: 'contains' },
@@ -56,6 +72,8 @@ const InsertExcel = () => {
     const [selectedOrigens, setSelectedOrigens] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newOrigem, setNewOrigem] = useState('')
+    const user = useAppSelector((state) => state.auth.user)
+    const [cpf, setCPF] = useState(user ? user.nucpf : '')
 
     const onChange = (val) => {
         setNameValue(val)
@@ -63,8 +81,9 @@ const InsertExcel = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}`)
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}&cpf=${cpf}`)
             const data = await response.json()
+            console.log(cpf)
             setExcelData(data)
         } catch (error) {
             console.error('Error fetching data:', error)
@@ -84,7 +103,7 @@ const InsertExcel = () => {
     useEffect(() => {
         fetchData()
         fetchOrigens()
-    }, [nameValue, empresaType])
+    }, [cpf])
 
     const handleInsertClick = async () => {
         setLoading(true)
@@ -158,12 +177,27 @@ const InsertExcel = () => {
                 placeholder="Origem"
             />
             <Button
-                variant="outline"
-                size="sm"
-                className="ml-2"
+                variant="default"
+                className="ml-4"
                 onClick={handleOpenModal}
             >
                 Cadastrar Nova Origem
+            </Button>
+            <Button
+                variant="default"
+                className="ml-4"
+                onClick={() => {
+                    window.location.href = '/sistema/insert-excel'
+
+                    fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/${cpf}`, {
+                        method: 'DELETE'
+                    }).then(() => {
+                    }).catch(error => {
+                        console.error('Error deleting data:', error)
+                    })
+                }}
+            >
+                Realizar nova inserção
             </Button>
         </div>
     )
@@ -190,9 +224,10 @@ const InsertExcel = () => {
                 filename='Excel'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}&cpf=${cpf}`}
                 options={radioGroup}
                 CardLayout={EmpresaExcelCard}
+                
             />
             <Modal
                 isOpen={isModalOpen}
