@@ -31,6 +31,7 @@ interface CustomReactDataGridPropsBasic {
     defaultFilterValue?: any
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    autorizeExport?: boolean
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
@@ -88,6 +89,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
+    autorizeExport = true,
     onSelectedRowsChange,
     defaultSortInfo
 }) => {
