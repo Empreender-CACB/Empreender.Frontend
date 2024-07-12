@@ -131,7 +131,7 @@ const appsRoute: Routes = [
     {
         key: 'sistema.showExcel',
         path: `${APP_PREFIX_PATH}/show-excel`,
-        component: lazy(() => import('@/views/sistema/empresas/insert-excel2')),
+        component: lazy(() => import('@/views/sistema/empresas/show-excel')),
         meta: {
             pageContainerType: 'gutterless',
             footer: false,

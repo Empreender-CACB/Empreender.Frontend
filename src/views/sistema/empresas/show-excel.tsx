@@ -10,33 +10,37 @@ import Select from '@/components/ui/Select'
 import Modal from 'react-modal'
 import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
-
-
+import ApiService from '@/services/ApiService'
+import Breadcrumb from '@/components/breadCrumbs/breadCrumb'
+import { TiInfoLarge } from "react-icons/ti"
+import Tooltip from '@/components/ui/Tooltip'
+import { useNavigate } from 'react-router-dom'
 
 const columns = [
-    { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.3 },
-    { name: 'cnpj',          
+    { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.1 },
+    {
+        name: 'cnpj',
         header: 'CNPJ',
-        defaultFlex: 1,
+        defaultFlex: 0.22,
         type: 'string',
         operator: 'contains',
         value: '',
         render: ({ data }: any) => {
-            const formattedValue = formatCPFCNPJ(data.cnpj);
+            const formattedValue = formatCPFCNPJ(data.cnpj)
             return (
                 <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
                     {formattedValue || data.cnpj}
                 </div>
-            );
+            )
         },
     },
     { name: 'nmcontato', header: 'Contato', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.3 },
+    { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.2 },
     { name: 'email', header: 'E-mail', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'idassociacao', header: 'ID da Entidade', type: 'number', value: '', defaultFlex: 0.3, filterEditor: NumberFilter },
-    { name: 'nmrazao', header: 'Nome da Entidade', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.3 },
+    { name: 'idassociacao', header: 'ID da Entidade', type: 'number', value: '', defaultFlex: 0.18, filterEditor: NumberFilter },
+    { name: 'nmrazao', header: 'Nome da Entidade', type: 'string', value: '', defaultFlex: 0.6 },
+    { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.1 },
+    { name: 'nmcidade', header: 'Cidade', type: 'string', value: '', defaultFlex: 0.2 },
     {
         name: 'excessao',
         header: 'Situação',
@@ -48,7 +52,8 @@ const columns = [
                 {data.excessao}
             </div>
         )
-    }]
+    }
+]
 
 const defaultFilterValue = [
     { name: 'id', value: '', operator: 'contains' },
@@ -57,8 +62,8 @@ const defaultFilterValue = [
     { name: 'telefone', value: '', operator: 'contains' },
     { name: 'email', value: '', operator: 'contains' },
     { name: 'idassociacao', value: '', operator: 'contains' },
-    { name: 'nmcidade', value: '', operator: 'contains' },
     { name: 'iduf', value: '', operator: 'contains' },
+    { name: 'nmcidade', value: '', operator: 'contains' },
     { name: 'nmrazao', value: '', operator: 'contains' },
     { name: 'excessao', value: '', operator: 'contains' }
 ]
@@ -69,22 +74,30 @@ const InsertExcel = () => {
     const [excelData, setExcelData] = useState([])
     const [loading, setLoading] = useState(false)
     const [optionsOrigem, setOptionsOrigem] = useState([])
+    const [origemType, setOrigemType] = useState<string[]>([])
     const [selectedOrigens, setSelectedOrigens] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newOrigem, setNewOrigem] = useState('')
     const user = useAppSelector((state) => state.auth.user)
     const [cpf, setCPF] = useState(user ? user.nucpf : '')
 
+    const navigate = useNavigate()
+
     const onChange = (val) => {
         setNameValue(val)
     }
 
+    const onChangeOrigem = (selectedOption: any) => {
+        setSelectedOrigens(selectedOption)
+    }
+
     const fetchData = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}&cpf=${cpf}`)
-            const data = await response.json()
-            console.log(cpf)
-            setExcelData(data)
+            const response = await ApiService.fetchData({
+                url: `/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}&cpf=${cpf}`,
+                method: 'get'
+            })
+            setExcelData(response.data)
         } catch (error) {
             console.error('Error fetching data:', error)
         }
@@ -92,11 +105,19 @@ const InsertExcel = () => {
 
     const fetchOrigens = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/origens/group`)
-            const data = await response.json()
-            setOptionsOrigem(data)
+            const response = await ApiService.fetchData({
+                url: 'empresas/origens',
+                method: 'get',
+            })
+            const mappedOptions = response.data.map((origemItem: any) => {
+                return ({
+                    value: origemItem.origem,
+                    label: origemItem.origem,
+                })
+            })
+            setOptionsOrigem(mappedOptions)
         } catch (error) {
-            console.error('Error fetching origens:', error)
+            console.error(error)
         }
     }
 
@@ -114,12 +135,10 @@ const InsertExcel = () => {
                 origem: selectedOrigens.value
             }))
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/cadastra-cef`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
+            const response = await ApiService.fetchData({
+                url: '/rfb/cadastra-cef',
+                method: 'post',
+                data: payload
             })
 
             if (!response.ok) {
@@ -145,35 +164,20 @@ const InsertExcel = () => {
         setNewOrigem('')
     }
 
-    const handleSaveOrigem = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/origem/cadastro`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ origem: newOrigem })
-            })
-
-            if (!response.ok) {
-                console.error('Error saving origem:', response.statusText)
-            } else {
-                fetchOrigens()
-                handleCloseModal()
-            }
-
-        } catch (error) {
-            console.error('Error saving origem:', error)
-        }
+    const handleSaveOrigem = () => {
+        const newOption = { value: newOrigem, label: newOrigem }
+        setOptionsOrigem((prevOptions) => [...prevOptions, newOption])
+        setSelectedOrigens(newOption)
+        handleCloseModal()
     }
 
     const radioGroup = (
         <div className='pr-4 flex items-center'>
             <span className="pr-2 font-black">Origem: </span>
             <Select
-                options={optionsOrigem.map(option => ({ value: option.origem, label: option.origem }))}
+                options={optionsOrigem}
                 value={selectedOrigens}
-                onChange={setSelectedOrigens}
+                onChange={onChangeOrigem}
                 placeholder="Origem"
             />
             <Button
@@ -187,25 +191,31 @@ const InsertExcel = () => {
                 variant="default"
                 className="ml-4"
                 onClick={() => {
-                    window.location.href = '/sistema/insert-excel'
-
-                    fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/${cpf}`, {
-                        method: 'DELETE'
-                    }).then(() => {
-                    }).catch(error => {
-                        console.error('Error deleting data:', error)
-                    })
+                    navigate('/sistema/insert-excel')
                 }}
             >
                 Realizar nova inserção
             </Button>
+            <Tooltip title="Para saber mais sobre como é feita a importação de empresas em lote clique aqui" placement='right-end'>
+                <Button shape="circle" size='xs' icon={<TiInfoLarge />} className='ml-12'
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE2OTg=')
+                    }}
+                /> 
+            </Tooltip> 
         </div>
     )
+
+    const breadcrumbItems = [
+        { label: 'Home', link: '/' },
+        { label: 'Inserir novo Lote', link: '/sistema/insert-excel' },
+        { label: 'Verificar Lote em Andamento', link: '/sistema/show-excel' },
+    ]
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Empresas no Excel</h3>
+                <h3 className="mb-4 lg:mb-3">Inclusão de Empresas em Lote</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Button
                         block
@@ -220,6 +230,7 @@ const InsertExcel = () => {
                     </Button>
                 </div>
             </div>
+            <Breadcrumb items={breadcrumbItems} /> 
             <CustomReactDataGrid
                 filename='Excel'
                 columns={columns}
@@ -227,7 +238,6 @@ const InsertExcel = () => {
                 url={`${import.meta.env.VITE_API_URL}/empresa-excel?nameValue=${nameValue}&empresaType=${empresaType}&cpf=${cpf}`}
                 options={radioGroup}
                 CardLayout={EmpresaExcelCard}
-                
             />
             <Modal
                 isOpen={isModalOpen}
@@ -246,7 +256,7 @@ const InsertExcel = () => {
                         className="mb-4 w-full"
                     />
                     <div className="flex justify-end space-x-4">
-                        <Button variant="outline" onClick={handleCloseModal}>Cancelar</Button>
+                        <Button variant="default" onClick={handleCloseModal}>Cancelar</Button>
                         <Button variant="solid" onClick={handleSaveOrigem}>Salvar</Button>
                     </div>
                 </div>
