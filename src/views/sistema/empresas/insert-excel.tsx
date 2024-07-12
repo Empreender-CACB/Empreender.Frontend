@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import * as XLSX from 'xlsx'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import Container from '@/components/shared/Container'
 import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '@/store'
+import ApiService from '@/services/ApiService'
 
 const ExcelUpload = () => {
   const [loading, setLoading] = useState(false)
@@ -50,24 +51,17 @@ const ExcelUpload = () => {
         }
 
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/${cpf}`, {
+            await ApiService.fetchData({
+                url: `/empresa-excel/${cpf}`,
                 method: 'DELETE'
             })
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/empresa-excel/`, {
+            await ApiService.fetchData({
+                url: '/empresa-excel/',
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(modifiedData)
+                data: modifiedData
             })
 
-            if (!response.ok) {
-                throw new Error('Erro ao enviar dados para a API')
-            }
-
-            const result = await response.json()
-            console.log('Dados enviados com sucesso:', result)
         } catch (error) {
             console.error('Erro:', error)
             toast.push(
@@ -82,8 +76,7 @@ const ExcelUpload = () => {
     }
 
     reader.readAsArrayBuffer(file)
-}
-
+  }
 
   return (
     <div className='p-4'>
@@ -103,7 +96,7 @@ const ExcelUpload = () => {
             {loading ? 'Carregando...' : 'Selecionar Arquivo'}
           </Button>
         </div>
-        <p style={{ color: 'red', marginTop: '10px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, nmcontato, telefone, email, idassociacao.</p>
+        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
       </Container>
     </div>
   )
