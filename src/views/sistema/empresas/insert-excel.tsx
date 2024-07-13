@@ -108,7 +108,7 @@ const ExcelUpload = () => {
           > Visualizar Lote Atual
           </Button>
         </div>
-        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
+        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel (Extensão .xlsx) contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
         <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Atenção, a inserção de um novo arquivo irá apagar informações de uma importação anterior, caso precise dos dados, exporte a tabela previamente.</p>
       </Container>
     </div>
