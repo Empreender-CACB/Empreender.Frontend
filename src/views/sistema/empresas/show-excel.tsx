@@ -12,7 +12,7 @@ import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
 import ApiService from '@/services/ApiService'
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb'
-import { TiInfoLarge } from "react-icons/ti"
+import { FaQuestion } from "react-icons/fa"
 import Tooltip from '@/components/ui/Tooltip'
 import { useNavigate } from 'react-router-dom'
 
@@ -197,7 +197,7 @@ const InsertExcel = () => {
                 Realizar nova inserção
             </Button>
             <Tooltip title="Para saber mais sobre como é feita a importação de empresas em lote clique aqui" placement='right-end'>
-                <Button shape="circle" size='xs' icon={<TiInfoLarge />} className='ml-12'
+                <Button shape="circle" size='xs' icon={<FaQuestion />} className='ml-12'
                     onClick={() => {
                         window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE2OTg=')
                     }}
@@ -207,16 +207,19 @@ const InsertExcel = () => {
     )
 
     const breadcrumbItems = [
-        { label: 'Home', link: '/' },
+        { label: 'Início', link: '/' },
         { label: 'Inserir novo Lote', link: '/sistema/insert-excel' },
         { label: 'Verificar Lote em Andamento', link: '/sistema/show-excel' },
     ]
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="lg:flex items-center justify-between mb-4">
+            <Breadcrumb items={breadcrumbItems} /> 
+             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-3">Inclusão de Empresas em Lote</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
+                <Tooltip title="Antes de realizar a inserção dos dados é necessário selecionar uma origem" placement='left-end' isOpen={selectedOrigens}>
+
                     <Button
                         block
                         variant="solid"
@@ -228,9 +231,9 @@ const InsertExcel = () => {
                     >
                         {loading ? 'Inserindo...' : 'Inserir empresas no banco de dados'}
                     </Button>
+                    </Tooltip> 
                 </div>
             </div>
-            <Breadcrumb items={breadcrumbItems} /> 
             <CustomReactDataGrid
                 filename='Excel'
                 columns={columns}
