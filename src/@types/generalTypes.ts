@@ -142,3 +142,41 @@ export type Gestor = {
     dtultimaalteracao: string
     cod_perfil: number
 }
+
+export type Usuario = {
+    nucpf: string;
+    nmusuario: string;
+    nmlogin: string;
+    dssenha: string;
+    nurg?: string;
+    dsorgaoexpedidor?: string;
+    dtexpedicao?: string;
+    idcidadenaturalidade?: number;
+    cdsexo?: string;
+    dtnascimento?: string;
+    idcidade: number;
+    idcep?: number;
+    nunumero?: string;
+    nucomplemento?: string;
+    nufone?: string;
+    nucelular?: string;
+    dsemail?: string;
+    dtultimaalteracao?: string;
+    flativo: string;
+    flescrita?: string;
+    dtultimologin?: string;
+    tmultimologin?: string;
+    idperfil?: string;
+    idobjeto?: number;
+    dsendereco?: string;
+    dsbairro?: string;
+    tem_novidade?: boolean;
+    transf_pgto: boolean;
+    faceb?: boolean;
+    idpreferencias?: string;
+    fotouser?: string;
+    cod_perfil?: number;
+    tipo_objeto?: string;
+    primeiro_acesso?: boolean;
+    idusuario: number;
+};
