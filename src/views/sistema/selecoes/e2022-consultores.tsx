@@ -133,7 +133,7 @@ const E2022Consultores = () => {
                             className="menu-item-link"
                             to={`/sistema/selecoes/painel-inscricoes`}
                         >
-                            Versão antiga
+                            Painel de inscrições
                         </Link>
                     </Button>
                     
