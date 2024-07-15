@@ -122,12 +122,21 @@ const E2022Consultores = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL
-                                }/sistema/selecoes/e2022-consultores`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/selecoes/e2022-consultores`}
                         >
                             Versão antiga
                         </Link>
                     </Button>
+
+                    <Button size="sm" variant='solid'>
+                        <Link
+                            className="menu-item-link"
+                            to={`/sistema/selecoes/painel-inscricoes`}
+                        >
+                            Versão antiga
+                        </Link>
+                    </Button>
+                    
                     <Tooltip title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}>
                         <span>
                             <Button

@@ -132,6 +132,11 @@ const appsRoute: Routes = [
             pageContainerType: 'gutterless',
         },
     },
+    {
+        key: 'sistema.selecaoPainel',
+        path: `${APP_PREFIX_PATH}/selecoes/painel-inscricoes`,
+        component: lazy(() => import('@/views/sistema/selecoes/painel-inscricoes'))
+    },
 ]
 
 export default appsRoute
