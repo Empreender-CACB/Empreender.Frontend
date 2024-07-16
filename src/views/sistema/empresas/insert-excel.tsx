@@ -7,6 +7,7 @@ import Container from '@/components/shared/Container'
 import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '@/store'
 import ApiService from '@/services/ApiService'
+import Breadcrumb from '@/components/breadCrumbs/breadCrumb'
 
 const ExcelUpload = () => {
   const [loading, setLoading] = useState(false)
@@ -78,6 +79,11 @@ const ExcelUpload = () => {
     reader.readAsArrayBuffer(file)
   }
 
+  const breadcrumbItems = [
+    { label: 'Início', link: '/' },
+    { label: 'Inserir novo Lote', link: '/sistema/insert-excel' },
+  ]
+
   return (
     <div className='p-4'>
       <input
@@ -87,6 +93,7 @@ const ExcelUpload = () => {
         onChange={handleFileUpload}
       />
       <Container>
+      <Breadcrumb items={breadcrumbItems} /> 
         <div className="flex justify-between items-center mb-4">
           <Button
             variant='solid'
@@ -95,8 +102,14 @@ const ExcelUpload = () => {
           >
             {loading ? 'Carregando...' : 'Selecionar Arquivo'}
           </Button>
+          <Button
+            variant='solid'
+            onClick={() => navigate('/sistema/show-excel')}
+          > Visualizar Lote Atual
+          </Button>
         </div>
-        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
+        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel (Extensão .xlsx) contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
+        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Atenção, a inserção de um novo arquivo irá apagar informações de uma importação anterior, caso precise dos dados, exporte a tabela previamente.</p>
       </Container>
     </div>
   )
