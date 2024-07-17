@@ -132,7 +132,8 @@ const InsertExcel = () => {
         try {
             const payload = excelData.map(empresa => ({
                 ...empresa,
-                origem: selectedOrigens.value
+                origem: selectedOrigens.value,
+                cpf: cpf
             }))
 
             const response = await ApiService.fetchData({
@@ -173,7 +174,6 @@ const InsertExcel = () => {
 
     const radioGroup = (
         <div className='pr-4 flex items-center'>
-            <span className="pr-2 font-black">Origem: </span>
             <Select
                 options={optionsOrigem}
                 value={selectedOrigens}
