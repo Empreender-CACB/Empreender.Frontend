@@ -94,22 +94,43 @@ const ExcelUpload = () => {
       />
       <Container>
       <Breadcrumb items={breadcrumbItems} /> 
-        <div className="flex justify-between items-center mb-4">
-          <Button
-            variant='solid'
-            onClick={() => document.getElementById('file-upload').click()}
-            loading={loading}
+      <h3 className="mb-4 lg:mb-3">Inserir Novo Lote</h3>
+      <div className="flex justify-end items-center space-x-4 mb-4">
+      <div className="flex-grow flex flex-col items-start">
+        <p className="text-red-500 text-lg text-left">
+          1 - Por favor, assegure-se de que o arquivo Excel (Extensão .xlsx) contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.
+        </p>
+        <p className="text-red-500 mt-2 text-lg text-left">
+          2 - Atenção, a inserção de um novo arquivo apaga informações de uma importação anterior. Caso precise dos dados, exporte a tabela previamente.
+        </p>
+        <p className="text-red-500 mt-2 text-lg text-left">
+          3 - Caso precise de um molde de arquivo ".xlsx",{' '}
+          <a
+            href="#"
+            className="text-blue-500 underline"
+            onClick={() => window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTIwMzQ=')}
           >
-            {loading ? 'Carregando...' : 'Selecionar Arquivo'}
-          </Button>
-          <Button
-            variant='solid'
-            onClick={() => navigate('/sistema/show-excel')}
-          > Visualizar Lote Atual
-          </Button>
-        </div>
-        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Por favor, assegure-se de que o arquivo Excel (Extensão .xlsx) contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.</p>
-        <p style={{ color: 'red', marginTop: '10px', fontSize: '16px' }}>Atenção, a inserção de um novo arquivo apaga informações de uma importação anterior. Caso precise dos dados, exporte a tabela previamente.</p>
+            clique aqui
+          </a>
+          {' '}para baixar.
+        </p>
+
+      </div>
+      <Button
+        variant='solid'
+        onClick={() => document.getElementById('file-upload').click()}
+        loading={loading}
+      >
+        {loading ? 'Carregando...' : 'Selecionar Arquivo'}
+      </Button>
+      <Button
+        variant='solid'
+        onClick={() => navigate('/sistema/show-excel')}
+      >
+        Visualizar Lote Atual
+      </Button>
+    </div>
+
       </Container>
     </div>
   )
