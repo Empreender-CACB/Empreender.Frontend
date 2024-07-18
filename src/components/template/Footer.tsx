@@ -113,32 +113,32 @@ export default function Footer({
         >
             {pageContainerType === 'contained' ? (
                 <div className='mx-full bg-white'>
-                    
                     <div className='border border-gray-300 mb-5'>
-                    <div className=" mx-auto container py-6 lg:px-8 ">
-                    <div className="grid grid-cols-2 gap-7 md:grid-cols-5 lg:grid-cols-5">
-                        <div className="col-span-1 justify-end md:col-span- lg:col-span-1">
-                            <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-cacb-mini-novo.png" alt="CACB" />
+                        <div className="mx-auto container py-6 lg:px-8">
+                            <div className="grid grid-cols-2 gap-5 md:grid-cols-5 lg:grid-cols-6">
+                                <div className="col-span-1 flex justify-center items-center">
+                                    <img className="h-11" src="/img/logo/GLOBALGATEWAY.png" alt="GlobalGateway" />
+                                </div>
+                                <div className="col-span-1 flex justify-center items-center">
+                                    <img className="h-11" src="/img/logo/ALINVEST.png" alt="AL Invest" />
+                                </div>
+                                <div className="pl-8 col-span-1 flex justify-center items-center">
+                                    <img className="h-14" src="/img/logo/UNIAOEUROPEIA.png" alt="União Europeia" />
+                                </div>
+                                <div className="col-span-1 flex justify-center items-center">
+                                    <img className="h-12" src="/img/logo/SEBRAE.png" alt="SEBRAE" />
+                                </div>
+                                <div className="col-span-2 flex justify-center items-center">
+                                    <img className="h-11" src="/img/logo/EMPREENDER+CACB.png" alt="Empreender e CACB" />
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-span-1 justify-end flex md:col-span-2 lg:col-span-1">
-                            <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-empreender-mini.png" alt="Empreender" />
-                        </div>
-                        <div className="col-span-1 justify-end flex md:col-span-2 lg:col-span-1">
-                            <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-alinvest-mini.png" alt="Al-invest" />
-                        </div>
-                        <div className="col-span-1 justify-end flex md:col-span-2 lg:col-span-1">
-                            <img className="h-16" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-cmec.png" alt="CMEC" />
-                        </div>
-                        <div className="col-span-1 justify-end flex md:col-span-2 lg:col-span-1">
-                            <img className="h-11" src="https://www.empreender.org.br/css/sistema/novo_css/img/logo-sebrae-mini.png" alt="SEBRAE" />
-                        </div>
+                    </div>
 
-                    </div>
-                </div>
-                    </div>
+
 
                     <div className='mx-auto container'>
-                        
+
                         <FooterContent />
 
                     </div>
