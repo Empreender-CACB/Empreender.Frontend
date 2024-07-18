@@ -187,15 +187,6 @@ const InsertExcel = () => {
             >
                 Cadastrar Nova Origem
             </Button>
-            <Button
-                variant="default"
-                className="ml-4"
-                onClick={() => {
-                    navigate('/sistema/insert-excel')
-                }}
-            >
-                Realizar nova inserção
-            </Button>
             <Tooltip title="Para saber mais sobre como é feita a importação de empresas em lote clique aqui" placement='right-end'>
                 <Button shape="circle" size='xs' icon={<FaQuestion />} className='ml-12'
                     onClick={() => {
@@ -218,12 +209,20 @@ const InsertExcel = () => {
              <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-3">Inclusão de Empresas em Lote</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
-                <Tooltip title="Antes de realizar a inserção dos dados é necessário selecionar uma origem" placement='left-end' isOpen={selectedOrigens}>
-
+                    <Button
+                        variant="solid"
+                        icon={<HiPlusCircle />}
+                        className="mr-4"
+                        onClick={() => {
+                            navigate('/sistema/insert-excel')
+                        }}
+                    >
+                        Realizar nova inserção
+                    </Button>
+                <Tooltip title="Antes de realizar a inserção dos dados é necessário selecionar uma origem" placement='top-end' isOpen={selectedOrigens}>
                     <Button
                         block
                         variant="solid"
-                        size="sm"
                         icon={<HiPlusCircle />}
                         onClick={handleInsertClick}
                         loading={loading}
