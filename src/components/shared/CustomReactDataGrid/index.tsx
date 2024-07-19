@@ -456,7 +456,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     justifyContent: 'end',
                 }}
             >
-                <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
+                {/* <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -470,7 +470,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         }
                         onClick={() => onViewToggle()}
                     />
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip title={'Limpar filtros'}>
                     <Button
@@ -485,14 +485,14 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     ></Button>
                 </Tooltip>
 
-                <Tooltip title={'Filtrar dados'}>
+                {/* <Tooltip title={'Filtrar dados'}>
                     <Button
                         icon={<MdFilterAlt />}
                         size="sm"
                         variant="plain"
                         onClick={() => openDrawer()}
                     ></Button>
-                </Tooltip>
+                </Tooltip> */}
 
                 {autorizeExport === true && (
                     <Tooltip title={'Exportar dados'}>
