@@ -52,7 +52,7 @@ const ExcelUpload = () => {
         }
 
         try {
-            await ApiService.fetchData({
+            await ApiService.fetchData({ // não precisa dessa requisição - fazer na própria requisição de post a exclusão
                 url: `/empresa-excel/${cpf}`,
                 method: 'DELETE'
             })

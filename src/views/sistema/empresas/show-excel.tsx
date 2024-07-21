@@ -48,9 +48,9 @@ const columns = [
         value: '',
         defaultFlex: 0.3,
         render: ({ data }: any) => (
-            <div style={{ color: data.excessao === 'Cadastrada com Sucesso' ? 'green' : 'red' }}>
-                {data.excessao}
-            </div>
+        <div style={{ color: data.excessao && data.excessao.startsWith('Erro') ? 'red' : 'green' }}>
+            {data.excessao}
+        </div>
         )
     }
 ]
@@ -137,7 +137,7 @@ const InsertExcel = () => {
             }))
 
             const response = await ApiService.fetchData({
-                url: '/rfb/cadastra-cef',
+                url: '/rfb/cadastra-excel',
                 method: 'post',
                 data: payload
             })
