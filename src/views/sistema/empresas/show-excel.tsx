@@ -137,7 +137,7 @@ const InsertExcel = () => {
             }))
 
             const response = await ApiService.fetchData({
-                url: '/rfb/cadastra-cef',
+                url: '/rfb/cadastra-excel',
                 method: 'post',
                 data: payload
             })
