@@ -48,7 +48,7 @@ const columns = [
         value: '',
         defaultFlex: 0.3,
         render: ({ data }: any) => (
-            <div style={{ color: data.excessao === 'Cadastrada com Sucesso' ? 'green' : 'red' }}>
+            <div style={{ color: data.excessao.startsWith('Erro') ? 'red' : 'green' }}>
                 {data.excessao}
             </div>
         )
