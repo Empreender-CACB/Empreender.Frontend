@@ -23,118 +23,255 @@ import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 moment.locale('pt-br')
 
 const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
+    { name: 'Ativo', value: 'S' },
+    { name: 'Inativo', value: 'N' },
 ]
 
-const columns = [
-    {
-        name: 'empresa.idempresa',
-        header: 'ID',
-        columnName: 'empresa.idempresa',
-        type: 'number',
-        defaultFlex: 0.6,
-        filterEditor: NumberFilter,
-    },
-    {
-        name: 'nmuf',
-        header: 'UF',
-        type: 'select',
-        operator: 'eq',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            multiple: true,
-            dataSource: estadosBrasileiros.map((state) => {
-                return { id: state.nome, label: state.sigla }
-            }),
-        },
-    },
-    {
-        name: 'nmcidade',
-        header: 'Cidade',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'nmfantasia',
-        header: 'Nome',
-        defaultFlex: 1.5,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-        render: ({ data }: any) => (
-            <div>
-                <Link to={`/sistema/empresas/${data.idempresa}`}>
-                    {data.nmfantasia}
-                </Link>
-            </div>
-        ),
-    },
-    {
-        name: 'nucnpjcpf',
-        header: 'CNPJ',
-        defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'dtultimaalteracao',
-        header: 'Última Alteração',
-        defaultFlex: 1,
-        dateFormat: 'DD-MM-YYYY',
-        type: 'date',
-        operator: 'after',
-        value: '',
-        filterEditor: DateFilter,
-        filterEditorProps: ({ index }: any) => {
-            return {
-                dateFormat: 'DD-MM-YYYY',
-                placeholder:
-                    index === 1
-                        ? 'A data é anterior à...'
-                        : 'A data é posterior à',
-            }
-        },
-        render: ({ value, cellProps: { dateFormat } }: any) =>
-            moment(value).format(dateFormat) === 'Invalid date'
-                ? '-'
-                : moment(value).format(dateFormat),
-    },
-    {
-        name: 'nmramoativ',
-        header: 'Ramo',
-        defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'empresa.flativo',
-        header: 'Ativa',
-        type: 'select',
-        operator: 'equals',
-        value: '',
-        filterEditor: SelectFilter,
-        filterEditorProps: {
-            dataSource: activeValue.map((option) => {
-                return { id: option.value, label: option.name }
-            }),
-        },
-        render: ({ value }: any) => (
-            <div className="flex items-center justify-center">
-                <TagActiveInative value={value} activeText="S" />
-            </div>
-        ),
-    },
+const restritaValue = [
+    { name: 'Restrito', value: 'true' },
+    { name: 'Não restrito', value: 'false' },
 ]
+
+const rfbValue = [
+    { name: 'RFB - Ativa', value: 'RFB - ATIVA' },
+    { name: 'RFB - Suspensa', value: 'RFB - SUSPENSA' },
+    { name: 'RFB - Nula', value: 'RFB - NULA' },
+    { name: 'RFB - Inapta', value: 'RFB - INAPTA' },
+    { name: 'RFB - Baixada', value: 'RFB - BAIXADA' },
+    { name: 'CPF', value: 'CPF' },
+    { name: 'CPF Inválido', value: 'CPF INVALIDO' },
+    { name: 'CNPJ Inválido', value: 'CNPJ INVALIDO' },
+    { name: 'Nenhum', value: 'NULL' },
+]
+
+const empresaOptions = [
+    { value: 'todas', label: 'Todas' },
+    { value: 'somente_nucleadas', label: 'Somente nucleadas' },
+    { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
+    { value: 'projetos', label: 'Projeto' },
+];
+
+const nameOptions = [
+    { value: 'nmfantasia', label: 'Nome Fantasia' },
+    { value: 'nurazaosocial', label: 'Razão Social' },
+];
+
+const cnaeOptions = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'principal', label: 'Principal' },
+    { value: 'secundario', label: 'Secundário' },
+];
 
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
+    const [cnaeValue, setCnaeValue] = useState('principal')
     const [empresaType, setEmpresaType] = useState('todas')
-    const [options, setOptions] = useState([])
-    // const [selectedOptions, setSelectedOptions] = useState([]);
+    const [origemType, setOrigemType] = useState<string[]>([])
+    const [segmentoType, setSegmentoType] = useState([])
+    const [optionsOrigem, setOptionsOrigem] = useState([])
+    const [optionsSegmento, setOptionsSegmento] = useState([])
+    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
+
+    const { user } = useAppSelector((state) => state.auth)
+
+    const isGestorEntidade = user.associacoes.length > 0;
+    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade;
+
+    const canExport = !!(user.recursos.includes('empresa_restrita') ||
+        (isGestorEntidade && (
+            (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
+            empresaType !== 'nao_nucleadas' &&
+            empresaType !== 'projetos' &&
+            empresaType !== 'todas'
+        )) || (isUsuarioEntidade && checkedVisaoLocal));
+
+
+    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
+        `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
+        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}`;
+
+    let headerCnae;
+
+    const parseCnae = (cnae_combined: string) => {
+        const [code, ...textParts] = cnae_combined.split(' - ')
+        const text = textParts.join(' - ')
+        return { code, text }
+    }
+
+    switch (cnaeValue) {
+        case 'principal':
+            headerCnae = "CNAE Principal";
+            break;
+        case 'secundario':
+            headerCnae = "CNAE Secundário";
+            break;
+        default:
+            headerCnae = "CNAE";
+    }
+
+    const columns = [
+        {
+            name: 'empresa.idempresa',
+            header: 'ID',
+            columnName: 'empresa.idempresa',
+            type: 'string',
+            operator: 'contains',
+            value: "",
+            defaultFlex: 0.6,
+        },
+        {
+            name: 'iduf',
+            columnName: 'iduf',
+            header: 'UF',
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'nmcidade',
+            header: 'Cidade',
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'nmfantasia',
+            header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
+            defaultFlex: 1.5,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => (
+                <div>
+                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}>
+                        {data.nmfantasia}
+                    </Link>
+                </div>
+            ),
+        },
+        {
+            name: 'nucnpjcpf',
+            header: 'CNPJ',
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const formattedValue = formatCPFCNPJ(data.nucnpjcpf);
+                return (
+                    <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
+                        {formattedValue || data.nucnpjcpf}
+                    </div>
+                );
+            },
+        },
+        {
+            name: 'cnae_code',
+            header: 'Código do CNAE',
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const { code } = parseCnae(data.cnae_combined)
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {code}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{code}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            name: 'cnae_text',
+            header: 'Descrição do CNAE',
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const { text } = parseCnae(data.cnae_combined)
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            name: 'situacao',
+            header: 'Situação RFB',
+            defaultFlex: 1,
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: rfbValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+        },
+        {
+            name: 'empresa.flativo',
+            header: 'Status',
+            type: 'select',
+            operator: 'equals',
+            value: 'S',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                    <TagActiveInative value={value} activeText="S" />
+                </div>
+            ),
+        },
+    ]
+
+    if (user.recursos.includes('empresa_restrita')) {
+        columns.splice(columns.length - 1, 0, {
+            name: 'restrita',
+            header: 'Restrito',
+            type: 'select',
+            operator: 'equals',
+            value: 'false',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: restritaValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                    <TagActiveInative
+                        value={value}
+                        activeText={false}
+                        customClassTrue='bg-green-800 mr-2 text-white text-center'
+                        customClassFalse='bg-red-800 mr-2 text-white text-center'
+                        customLabelFalse='Restrito'
+                        customLabelTrue='Não restrito'
+                    />
+                </div>
+            ),
+        });
+    }
 
     useEffect(() => {
         // Fazer a solicitação à API
