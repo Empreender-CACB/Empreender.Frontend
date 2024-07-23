@@ -3,13 +3,10 @@ import '@inovua/reactdatagrid-community/index.css'
 
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button } from '@/components/ui'
+import { Button, Checkbox, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
-import axios from 'axios'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
@@ -18,18 +15,21 @@ import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
-import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+import ApiService from '@/services/ApiService'
+import { useAppSelector } from '@/store'
+import formatCPFCNPJ from '@/utils/MaskService'
+import { FcInfo } from 'react-icons/fc'
 
 moment.locale('pt-br')
 
 const activeValue = [
-    { name: 'Ativo', value: 'S' },
-    { name: 'Inativo', value: 'N' },
+    { name: 'Ativa', value: 'S' },
+    { name: 'Inativa', value: 'N' },
 ]
 
 const restritaValue = [
-    { name: 'Restrito', value: 'true' },
-    { name: 'Não restrito', value: 'false' },
+    { name: 'Restrita', value: 'true' },
+    { name: 'Não restrita', value: 'false' },
 ]
 
 const rfbValue = [
@@ -52,7 +52,7 @@ const empresaOptions = [
 ];
 
 const nameOptions = [
-    { value: 'nmfantasia', label: 'Nome Fantasia' },
+    { value: 'nmfantasia', label: 'Fantasia' },
     { value: 'nurazaosocial', label: 'Razão Social' },
 ];
 
@@ -92,12 +92,6 @@ const Empresas = () => {
 
     let headerCnae;
 
-    const parseCnae = (cnae_combined: string) => {
-        const [code, ...textParts] = cnae_combined.split(' - ')
-        const text = textParts.join(' - ')
-        return { code, text }
-    }
-
     switch (cnaeValue) {
         case 'principal':
             headerCnae = "CNAE Principal";
@@ -136,7 +130,7 @@ const Empresas = () => {
         },
         {
             name: 'nmfantasia',
-            header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
+            header: 'Nome',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
@@ -166,47 +160,23 @@ const Empresas = () => {
             },
         },
         {
-            name: 'cnae_code',
-            header: 'Código do CNAE',
+            name: 'cnae_combined',
+            header: headerCnae,
             defaultFlex: 1,
             type: 'string',
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
-                const { code } = parseCnae(data.cnae_combined)
                 return (
                     <Tooltip
                         placement='left'
                         title={
                             <div>
-                                {code}
+                                {data.cnae_combined}
                             </div>
                         }
                     >
-                        <span className="cursor-pointer">{code}</span>
-                    </Tooltip>
-                );
-            },
-        },
-        {
-            name: 'cnae_text',
-            header: 'Descrição do CNAE',
-            defaultFlex: 1,
-            type: 'string',
-            operator: 'contains',
-            value: '',
-            render: ({ data }: any) => {
-                const { text } = parseCnae(data.cnae_combined)
-                return (
-                    <Tooltip
-                        placement='left'
-                        title={
-                            <div>
-                                {text}
-                            </div>
-                        }
-                    >
-                        <span className="cursor-pointer">{text}</span>
+                        <span className="cursor-pointer">{data.cnae_combined}</span>
                     </Tooltip>
                 );
             },
@@ -227,7 +197,7 @@ const Empresas = () => {
         },
         {
             name: 'empresa.flativo',
-            header: 'Status',
+            header: 'Ativa',
             type: 'select',
             operator: 'equals',
             value: 'S',
@@ -246,9 +216,9 @@ const Empresas = () => {
     ]
 
     if (user.recursos.includes('empresa_restrita')) {
-        columns.splice(columns.length - 1, 0, {
+        columns.push({
             name: 'restrita',
-            header: 'Restrito',
+            header: 'Restrita',
             type: 'select',
             operator: 'equals',
             value: 'false',
@@ -265,8 +235,8 @@ const Empresas = () => {
                         activeText={false}
                         customClassTrue='bg-green-800 mr-2 text-white text-center'
                         customClassFalse='bg-red-800 mr-2 text-white text-center'
-                        customLabelFalse='Restrito'
-                        customLabelTrue='Não restrito'
+                        customLabelFalse='Restrita'
+                        customLabelTrue='Não restrita'
                     />
                 </div>
             ),
@@ -274,87 +244,157 @@ const Empresas = () => {
     }
 
     useEffect(() => {
-        // Fazer a solicitação à API
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/segmentos`)
-            .then((response) => {
-                // Mapear os dados da API para o formato esperado pelo Select
-                const mappedOptions = response.data.map((segmento: any) => ({
-                    value: segmento.idsegmento.toString(),
-                    label: segmento.dssegmento,
-                }))
-                // Definir as opções no estado
-                setOptions(mappedOptions)
-            })
-            .catch((error) => {
-                console.error('Erro ao buscar dados da API:', error)
-            })
+        const getSegmentos = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: '/segmentos',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((segmento: any) => ({
+                        value: segmento.idsegmento.toString(),
+                        label: segmento.dssegmento,
+                    }))
+                    setOptionsSegmento(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const getOrigens = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: 'empresas/origens',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((origemItem: any) => {
+                        return ({
+                            value: origemItem.origem,
+                            label: origemItem.origem,
+                        })
+                    })
+                    setOptionsOrigem(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getSegmentos();
+        getOrigens();
     }, [])
 
-    const onChangeSegmentos = (e: any) => {
-        console.log(e)
-    }
-
-    const onChange = (val: string) => {
-        setNameValue(val)
+    const onChangeSegmentos = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value);
+        setSegmentoType(values);
     }
 
     const onChangeEmpresa = (option: any) => {
         return setEmpresaType(option.value)
     }
 
-    const empresaOptions = [
-        { value: 'todas', label: 'Todas' },
-        { value: 'somente_nucleadas', label: 'Somente nucleadas' },
-        { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
-        { value: 'projetos', label: 'Projeto' },
-    ];
+    const onChangeOrigem = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value);
+        setOrigemType(values);
+    }
 
-    const nameOptions = [
-        { value: 'nmfantasia', label: 'Fantasia' },
-        { value: 'nurazaosocial', label: 'Razão Social' },
-
-    ];
-        const radioGroup = (
+    const radioGroup =
+        (
             <div>
-                        <div className="pb-4 flex items-center">
+                <div className="pb-4 flex items-center">
 
-            <div className='flex items-center pr-5'>
-            <span className="pr-2 font-black">Nome: </span>
-                <Select
-                defaultValue={nameOptions[0]}
-                options={nameOptions}
-                onChange={(e:any) => setNameValue(e.value)}></Select>
-            </div>
+                    <div className='flex items-center pr-5'>
+                        <span className="pr-2 font-black">Nome: </span>
+                        <Select
+                            defaultValue={nameOptions[0]}
+                            options={nameOptions}
+                            onChange={(e: any) => setNameValue(e.value)}>
+                        </Select>
+                    </div>
 
-            <div className='pr-10 flex items-center'>
-            <span className="pr-2 font-black">Empresa: </span>
-                <Select
-                defaultValue={empresaOptions[0]}
-                options={empresaOptions}
-                onChange={onChangeEmpresa}></Select>
-            </div>
+                    <div className='pr-4 flex items-center pr-5'>
+                        <span className="font-black">CNAE: </span>
 
-        </div>
-        {empresaType === 'somente_nucleadas' && (
-                <div>
-                    <div className="col-span-1">
-                        <span className="font-black">Segmento: </span>
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa)
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2' />
+                            </Tooltip>
+                        </div>
 
                         <Select
-                            isMulti
-                            placeholder="Selecione uma opção"
-                            options={options}
-                            noOptionsMessage={() => 'Sem dados!'}
-                            loadingMessage={() => 'Carregando'}
-                            onChange={onChangeSegmentos}
-                        />
+                            defaultValue={cnaeOptions[1]}
+                            options={cnaeOptions}
+                            onChange={(e: any) => setCnaeValue(e.value)}>
+                        </Select>
                     </div>
-                </div>
-            )}
-            </div>
 
-    )
+                    <div className='pr-4 flex items-center'>
+                        <span className="pr-2 font-black">Empresa: </span>
+                        <Select
+                            defaultValue={empresaOptions[0]}
+                            options={empresaOptions}
+                            onChange={onChangeEmpresa}
+                            customWidth={'160px'}>
+                        </Select>
+                    </div>
+
+                    <div className='pr-4 flex items-center'>
+                        <span className="pr-2 font-black">Origem: </span>
+                        <Select
+                            isMulti
+                            options={optionsOrigem}
+                            onChange={onChangeOrigem}
+                            placeholder="Todas"
+                        >
+                        </Select>
+                    </div>
+
+                    {empresaType === 'somente_nucleadas' && (
+                        <div className='flex items-center'>
+                            <span className="font-black">Visão local: </span>
+
+                            <div className='mr-2'>
+                                <Tooltip
+                                    placement='top'
+                                    title={
+                                        <div>
+                                            Apresenta apenas as empresas ligadas à entidade do usuário.
+                                        </div>
+                                    }
+                                >
+                                    <FcInfo size={20} className='mt-1 ml-2' />
+                                </Tooltip>
+                            </div>
+
+                            <Checkbox checked={checkedVisaoLocal} onChange={setCheckedVisaoLocal} />
+                        </div>
+                    )}
+                </div>
+
+                {empresaType === 'somente_nucleadas' && (
+                    <div>
+                        <div className="col-span-1">
+                            <span className="font-black">Segmento: </span>
+                            <Select
+                                isMulti
+                                placeholder="Selecione uma opção"
+                                options={optionsSegmento}
+                                noOptionsMessage={() => 'Sem dados!'}
+                                loadingMessage={() => 'Carregando'}
+                                onChange={onChangeSegmentos}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -365,9 +405,7 @@ const Empresas = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${
-                                import.meta.env.VITE_PHP_URL
-                            }/sistema/empresa/`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/`}
                         >
                             Versão antiga
                         </Link>
@@ -380,7 +418,7 @@ const Empresas = () => {
                     ></Link>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to="/app/sales/product-new"
+                        to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/adicionar`}
                     >
                         <Button
                             block
@@ -396,12 +434,10 @@ const Empresas = () => {
             <CustomReactDataGrid
                 filename="Empresas"
                 columns={columns}
-                //defaultFilterValue={defaultFilterValue}
-                url={`${
-                    import.meta.env.VITE_API_URL
-                }/empresas?nameValue=${nameValue}&empresaType=${empresaType}`}
+                url={url}
                 options={radioGroup}
                 CardLayout={EmpresasCard}
+                autorizeExport={canExport}
             />
         </AdaptableCard>
     )
