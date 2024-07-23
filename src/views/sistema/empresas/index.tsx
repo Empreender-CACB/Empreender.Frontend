@@ -23,13 +23,13 @@ import { FcInfo } from 'react-icons/fc'
 moment.locale('pt-br')
 
 const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
+    { name: 'Ativo', value: 'S' },
+    { name: 'Inativo', value: 'N' },
 ]
 
 const restritaValue = [
-    { name: 'Restrita', value: 'true' },
-    { name: 'Não restrita', value: 'false' },
+    { name: 'Restrito', value: 'true' },
+    { name: 'Não restrito', value: 'false' },
 ]
 
 const rfbValue = [
@@ -52,7 +52,7 @@ const empresaOptions = [
 ];
 
 const nameOptions = [
-    { value: 'nmfantasia', label: 'Fantasia' },
+    { value: 'nmfantasia', label: 'Nome Fantasia' },
     { value: 'nurazaosocial', label: 'Razão Social' },
 ];
 
@@ -92,6 +92,12 @@ const Empresas = () => {
 
     let headerCnae;
 
+    const parseCnae = (cnae_combined: string) => {
+        const [code, ...textParts] = cnae_combined.split(' - ')
+        const text = textParts.join(' - ')
+        return { code, text }
+    }
+
     switch (cnaeValue) {
         case 'principal':
             headerCnae = "CNAE Principal";
@@ -130,7 +136,7 @@ const Empresas = () => {
         },
         {
             name: 'nmfantasia',
-            header: 'Nome',
+            header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
@@ -160,23 +166,47 @@ const Empresas = () => {
             },
         },
         {
-            name: 'cnae_combined',
-            header: headerCnae,
+            name: 'cnae_code',
+            header: 'Código do CNAE',
             defaultFlex: 1,
             type: 'string',
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
+                const { code } = parseCnae(data.cnae_combined)
                 return (
                     <Tooltip
                         placement='left'
                         title={
                             <div>
-                                {data.cnae_combined}
+                                {code}
                             </div>
                         }
                     >
-                        <span className="cursor-pointer">{data.cnae_combined}</span>
+                        <span className="cursor-pointer">{code}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            name: 'cnae_text',
+            header: 'Descrição do CNAE',
+            defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const { text } = parseCnae(data.cnae_combined)
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
                     </Tooltip>
                 );
             },
@@ -197,7 +227,7 @@ const Empresas = () => {
         },
         {
             name: 'empresa.flativo',
-            header: 'Ativa',
+            header: 'Status',
             type: 'select',
             operator: 'equals',
             value: 'S',
@@ -216,9 +246,9 @@ const Empresas = () => {
     ]
 
     if (user.recursos.includes('empresa_restrita')) {
-        columns.push({
+        columns.splice(columns.length - 1, 0, {
             name: 'restrita',
-            header: 'Restrita',
+            header: 'Restrito',
             type: 'select',
             operator: 'equals',
             value: 'false',
@@ -235,8 +265,8 @@ const Empresas = () => {
                         activeText={false}
                         customClassTrue='bg-green-800 mr-2 text-white text-center'
                         customClassFalse='bg-red-800 mr-2 text-white text-center'
-                        customLabelFalse='Restrita'
-                        customLabelTrue='Não restrita'
+                        customLabelFalse='Restrito'
+                        customLabelTrue='Não restrito'
                     />
                 </div>
             ),
