@@ -176,7 +176,7 @@ function CadastraProposta() {
 
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10">
                     <h1 className="text-4xl text-center text-gray-800 dark:text-gray-100 font-bold">
-                        Inscrições Encerradas
+                        Inscrições encerradas
                     </h1>
                     </div>
 
