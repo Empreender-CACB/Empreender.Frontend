@@ -40,8 +40,9 @@ const ErrorComponent = ({ errors }: any) => {
 function CadastraProposta() {
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
-    const [inputs, setInputs] = useState([{}]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [inputs, setInputs] = useState([{}])
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
 
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
@@ -151,6 +152,47 @@ function CadastraProposta() {
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
+        {isRegistrationClosed && (
+            <div className="flex justify-center items-center tracking-tight sm:w-90 min-h-screen bg-gray-100">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 sm:w-full lg:w-9/12">
+                    <div className="flex items-center space-x-4">
+                    <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
+                        <div className="grid grid-cols-4 gap-8">
+                        <div className="col-span-2 flex justify-center sm:col-span-1">
+                            <img className="img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/logo-cacb.png" alt="Logo CACB" />
+                        </div>
+                        <div className="col-span-2 flex justify-center sm:col-span-1">
+                            <img className="w-11/12 img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/logo-empreender.png" alt="Logo Empreender" />
+                        </div>
+                        <div className="col-span-2 flex justify-center sm:col-span-1">
+                            <img className="img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" alt="Logo AL Invest" />
+                        </div>
+                        <div className="col-span-2 flex justify-center sm:col-span-1">
+                            <img className="img object-contain sm:h-12" src="https://empreender.cacbempreenderapp.org.br/img/logo/sebrae.svg" alt="Logo Sebrae" />
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
+                            <h1 className="text-3xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10">
+                    <h1 className="text-2xl text-center text-gray-800 dark:text-gray-100 font-bold">
+                        Inscrições encerradas
+                    </h1>
+                    </div>
+
+                    <div className="bg-white flex flex-col justify-between pt-5 pb-10 border-t border-gray-300 sm:flex-row">
+                    <p className="pl-4 text-sm text-gray-500">
+                        Programa Empreender 1999-2023 - Versão 5
+                    </p>
+                    </div>
+                </div>
+                </div>
+
+        )}
+        {!isRegistrationClosed && (
             <form className=' bg-white sm:w-full lg:w-9/12' id="login" onSubmit={handleSubmit}>
                 <div className="flex items-center space-x-4">
                     <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
@@ -345,9 +387,10 @@ function CadastraProposta() {
                     </p>
                 </div>
             </form>
+            )}
         </div>
 
-    );
+    )
 }
 
 export default CadastraProposta;
