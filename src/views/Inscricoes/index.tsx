@@ -173,9 +173,12 @@ function CadastraProposta() {
                         </div>
                     </div>
                     </div>
+                    <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
+                            <h1 className="text-3xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
+                    </div>
 
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10">
-                    <h1 className="text-4xl text-center text-gray-800 dark:text-gray-100 font-bold">
+                    <h1 className="text-2xl text-center text-gray-800 dark:text-gray-100 font-bold">
                         Inscrições encerradas
                     </h1>
                     </div>
