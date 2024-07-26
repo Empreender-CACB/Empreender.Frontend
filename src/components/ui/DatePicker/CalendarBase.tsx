@@ -78,7 +78,8 @@ const CalendarBase = forwardRef<HTMLDivElement, CalendarBaseProps>(
 
         const [selectionState, setSelectionState] = useState(defaultView)
 
-        const finalLocale = locale || themeLocale
+        // const finalLocale = locale || themeLocale
+        const finalLocale = 'pt-br'
 
         const daysRefs = useRef<HTMLButtonElement[][][]>(
             Array(dateViewCount)
