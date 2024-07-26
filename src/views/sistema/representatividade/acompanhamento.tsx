@@ -85,23 +85,7 @@ const AcompanhamentoMarcosCriticos = () => {
             defaultFlex: 1,
             operator: 'contains',
             value: '',
-        },
-        {
-            name: 'status',
-            header: 'Status',
-            columnName: 'status',
-            defaultFlex: 0.6,
-            type: 'select',
-            operator: 'equals',
-            value: '',
-            filterEditor: SelectFilter,
-            filterEditorProps: {
-                dataSource: tarefaStatusValue.map((option) => {
-                    return { id: option.value, label: option.name }
-                }),
-            },
-            render: ({ data }: any) => <TarefaStatusTag statusKey={data.status} />,
-        },
+        },        
         {
             name: 'data_prevista',
             header: 'Data Prevista',
@@ -164,6 +148,22 @@ const AcompanhamentoMarcosCriticos = () => {
                 moment(value).format(dateFormat) === 'Invalid date'
                     ? '-'
                     : moment(value).format(dateFormat),
+        },
+        {
+            name: 'status',
+            header: 'Status',
+            columnName: 'status',
+            defaultFlex: 0.6,
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: tarefaStatusValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ data }: any) => <TarefaStatusTag statusKey={data.status} />,
         },
         {
             name: 'actions',
@@ -230,7 +230,6 @@ const AcompanhamentoMarcosCriticos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        console.log(data);
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
