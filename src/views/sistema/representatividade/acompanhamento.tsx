@@ -229,42 +229,46 @@ const AcompanhamentoMarcosCriticos = () => {
     const handleCloseHistoricoModal = () => setIsHistoricoModalOpen(false);
 
     // Função para renderizar os botões
-    const renderButtons = (data: any) => (
-        <div className="flex space-x-2">
-            <Tooltip title="Ver">
-                <Button
-                    variant="solid"
-                    size="xs"
-                    icon={<FaEye />}
-                    onClick={() => handleOpenEditModal(data.id)}
-                />
-            </Tooltip>
-            <Tooltip title="Analisar">
-                <Button
-                    variant="solid"
-                    size="xs"
-                    icon={<FaFileSignature />}
-                    onClick={() => handleStatusChange(data.id, 'Em análise')}
-                />
-            </Tooltip>
-            <Tooltip title="Anexar/retirar documentos">
-                <Button
-                    variant="solid"
-                    size="xs"
-                    icon={<FaPaperclip />}
-                    onClick={() => handleOpenAnexoModal(data.id)}
-                />
-            </Tooltip>
-            <Tooltip title="Histórico">
-                <Button
-                    variant="solid"
-                    size="xs"
-                    icon={<FaHistory />}
-                    onClick={() => handleOpenHistoricoModal(data.id)}
-                />
-            </Tooltip>
-        </div>
-    );
+    const renderButtons = (data: any) => {
+        console.log(data);
+        return (
+            <div className="flex space-x-2">
+                <Tooltip title="Ver">
+                    <Button
+                        variant="solid"
+                        size="xs"
+                        icon={<FaEye />}
+                        onClick={() => handleOpenEditModal(data.id)}
+                    />
+                </Tooltip>
+                <Tooltip title="Analisar">
+                    <Button
+                        variant="solid"
+                        size="xs"
+                        icon={<FaFileSignature />}
+                        onClick={() => handleStatusChange(data.id, 'Em análise')}
+                    />
+                </Tooltip>
+                <Tooltip title="Anexar/retirar documentos">
+                    <Button
+                        variant="solid"
+                        size="xs"
+                        icon={<FaPaperclip />}
+                        onClick={() => handleOpenAnexoModal(data.id)}
+                        disabled={data.congelado}
+                    />
+                </Tooltip>
+                <Tooltip title="Histórico">
+                    <Button
+                        variant="solid"
+                        size="xs"
+                        icon={<FaHistory />}
+                        onClick={() => handleOpenHistoricoModal(data.id)}
+                    />
+                </Tooltip>
+            </div>
+        )
+    };
 
     // Funções de handler para os botões
     const handleStatusChange = (id: any, status: string) => {
@@ -314,7 +318,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 <NewMarcoCriticoForm entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
             </Dialog>
             <Dialog isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal}>
-                <FreezeMarcosCriticosModal isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
+                <FreezeMarcosCriticosModal entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
             </Dialog>
             {selectedMarcoId && (
                 <>
