@@ -303,7 +303,7 @@ const AcompanhamentoMarcosCriticos = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div>
                     <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
-                    <h5>{associacaoDetails?.nmrazao}</h5>
+                    <h5>{associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}</h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                     <Button
