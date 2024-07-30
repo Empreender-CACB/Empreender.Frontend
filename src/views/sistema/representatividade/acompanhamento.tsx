@@ -325,7 +325,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/${id}?reload=${reload}`}
                 CardLayout={LancamentosCard}
-                defaultSortInfo={{ dir: -1, id: 'data_prevista', name: 'data_prevista', columnName: 'data_prevista', type: 'date' }}
+                defaultSortInfo={{ dir: -1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
             <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>
                 <NewMarcoCriticoForm entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
