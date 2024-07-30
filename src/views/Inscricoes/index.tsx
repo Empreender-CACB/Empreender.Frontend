@@ -173,13 +173,17 @@ function CadastraProposta() {
                         </div>
                     </div>
                     </div>
-                    <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
-                            <h1 className="text-3xl text-gray-800 dark:text-gray-100 font-bold texts">Seleção de consultores de núcleos setoriais</h1>
+                    <div className="flex justify-center w-11/12 mx-auto xl:w-full xl:mx-0">
+                        <h1 className="text-3xl text-gray-800 dark:text-gray-100 font-bold">
+                            Seleção de consultores de núcleos setoriais
+                        </h1>
                     </div>
-
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10">
-                    <h1 className="text-2xl text-center text-gray-800 dark:text-gray-100 font-bold">
-                        Inscrições encerradas
+                    <div className="bg-white dark:bg-gray-800 p-10">
+                    <h1 className="text-xl text-center text-gray-800 dark:text-gray-100 font-bold">
+                    Inscrições encerradas. Para acessar o resultado,
+                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY=" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
+                        clique aqui
+                        </a>.
                     </h1>
                     </div>
 
