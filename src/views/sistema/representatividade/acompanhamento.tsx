@@ -13,7 +13,7 @@ import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 import { HiPlusCircle } from 'react-icons/hi'
 import { Button, Dialog, Tooltip } from '@/components/ui'
 import NewMarcoCriticoForm from './newMarcoCriticoForm'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
 import { GiIceCube } from "react-icons/gi";
 import ApiService from '@/services/ApiService'
@@ -22,6 +22,7 @@ import AnexoMarcoCriticoForm from './anexoMarcoCriticoForm'
 import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import FreezeMarcosCriticosModal from './freezeMarcosCriticosModal'
+import { Associacao } from '@/@types/generalTypes'
 
 moment.locale('pt-br')
 
@@ -88,7 +89,7 @@ const AcompanhamentoMarcosCriticos = () => {
         },        
         {
             name: 'data_prevista',
-            header: 'Data Prevista',
+            header: 'Previsão',
             columnName: 'data_prevista',
             defaultFlex: 0.6,
             dateFormat: 'DD-MM-YYYY',
@@ -98,7 +99,7 @@ const AcompanhamentoMarcosCriticos = () => {
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD-MM-YYYY',
+                    dateFormat: 'DD/MM/YYYY',
                     placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
                 }
             },
@@ -109,7 +110,7 @@ const AcompanhamentoMarcosCriticos = () => {
         },
         {
             name: 'nova_data_prevista',
-            header: 'Nova Data Prevista',
+            header: 'Nova Previsão',
             columnName: 'nova_data_prevista',
             defaultFlex: 0.6,
             dateFormat: 'DD-MM-YYYY',
@@ -119,7 +120,7 @@ const AcompanhamentoMarcosCriticos = () => {
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD-MM-YYYY',
+                    dateFormat: 'DD/MM/YYYY',
                     placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
                 }
             },
@@ -130,7 +131,7 @@ const AcompanhamentoMarcosCriticos = () => {
         },
         {
             name: 'data_encerramento',
-            header: 'Data de Encerramento',
+            header: 'Término',
             columnName: 'data_encerramento',
             defaultFlex: 0.6,
             dateFormat: 'DD-MM-YYYY',
@@ -140,7 +141,7 @@ const AcompanhamentoMarcosCriticos = () => {
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD-MM-YYYY',
+                    dateFormat: 'DD/MM/YYYY',
                     placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
                 }
             },
@@ -183,6 +184,8 @@ const AcompanhamentoMarcosCriticos = () => {
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isFreezeModalOpen, setIsFreezeModalOpen] = useState(false);
+    const [associacaoDetails, setAssociacaoDetails] = useState<Associacao>();
+    const [isCongelado, setIsCongelado] = useState(false);
 
     const [reload, setReload] = useState(false);
 
@@ -206,6 +209,25 @@ const AcompanhamentoMarcosCriticos = () => {
     };
 
     const handleCloseAnexoModal = () => setIsAnexoModalOpen(false);
+    
+    const fetchAssociacaoDetails = async () => {
+        try {
+            const response:any = await ApiService.fetchData({
+                url: `/representatividade/detalhes-associacao/${id}`,
+                method: 'get'
+            });
+            if (response.data) {
+                setAssociacaoDetails(response.data);
+                setIsCongelado(response.data.congelado);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar detalhes da associação:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAssociacaoDetails();
+    }, [id]);
 
     const handleSaveStatusChange = async (status: string, comentario: string) => {
         try {
@@ -248,13 +270,20 @@ const AcompanhamentoMarcosCriticos = () => {
                         onClick={() => handleStatusChange(data.id, 'Em análise')}
                     />
                 </Tooltip>
+                <Tooltip title="Remeter para análise">
+                    <Button
+                        variant="solid"
+                        size="xs"
+                        icon={<FaFileSignature />}
+                        onClick={() => handleStatusChange(data.id, 'Em análise')}
+                    />
+                </Tooltip>
                 <Tooltip title="Anexar/retirar documentos">
                     <Button
                         variant="solid"
                         size="xs"
                         icon={<FaPaperclip />}
                         onClick={() => handleOpenAnexoModal(data.id)}
-                        disabled={data.congelado}
                     />
                 </Tooltip>
                 <Tooltip title="Histórico">
@@ -277,12 +306,16 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const handleUpdate = () => {
         setReload(!reload);
+        fetchAssociacaoDetails();
     };
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
+                <div>
+                    <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
+                    <h5>{associacaoDetails?.nmrazao}</h5>
+                </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                     <Button
                         block
@@ -298,11 +331,10 @@ const AcompanhamentoMarcosCriticos = () => {
                         variant="solid"
                         size="sm"
                         color="blue-600"
-                        title='Ao congelar os marcos críticos, eles não poderão ser editados.'
                         icon={<GiIceCube />}
                         onClick={handleOpenFreezeModal}
                     >
-                        Congelar marcos críticos
+                        {isCongelado ? "Descongelar" : "Congelar"} marcos críticos
                     </Button>
                 </div>
             </div>
@@ -317,7 +349,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 <NewMarcoCriticoForm entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
             </Dialog>
             <Dialog isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal}>
-                <FreezeMarcosCriticosModal entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
+                <FreezeMarcosCriticosModal isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
             </Dialog>
             {selectedMarcoId && (
                 <>

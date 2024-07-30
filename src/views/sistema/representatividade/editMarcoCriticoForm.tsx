@@ -32,7 +32,6 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
         dataPrevista: null,
         novaDataPrevista: null,
         dataEncerramento: null,
-        novaDataEncerramento: null,
         entidadeId: '',
     });
 
@@ -53,12 +52,7 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
             .min(
                 Yup.ref('dataPrevista'),
                 'A data de encerramento não pode ser anterior à data prevista'
-            ),
-        novaDataEncerramento: Yup.date().nullable()
-            .min(
-                Yup.ref('dataEncerramento'),
-                'A nova data de encerramento não pode ser anterior à data de encerramento inicial'
-            ),
+            )
     });
 
 
@@ -126,7 +120,6 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                         dataPrevista: response.data.data_prevista,
                         novaDataPrevista: response.data.nova_data_prevista,
                         dataEncerramento: response.data.data_encerramento,
-                        novaDataEncerramento: response.data.nova_data_encerramento,
                         entidadeId: response.data.relacao_2,
                     });
 
@@ -161,22 +154,22 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
 
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
+        console.log('entrou aqui')
         try {
             await ApiService.fetchData({
                 url: `/representatividade/atualizar-marco-critico/${marcoId}`,
                 method: 'put',
                 data: values
             });
-            // toast.push(SuccessNotification);
             onClose();
             onUpdate();
         } catch (error) {
-            // toast.push(ErrorNotification);
             console.error('Erro ao atualizar marco crítico:', error);
         } finally {
             setSubmitting(false);
         }
     };
+
 
     const toggleEdit = () => setIsEditing(!isEditing);
 
@@ -353,31 +346,13 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                                     <div>{values.dataEncerramento ? moment(values.dataEncerramento).format('DD/MM/YYYY') : '-'}</div>
                                 )}
                             </FormItem>
-
-                            <FormItem
-                                label="Nova Data de Encerramento"
-                                invalid={errors.novaDataEncerramento && touched.novaDataEncerramento}
-                                errorMessage={errors.novaDataEncerramento}
-                            >
-                                {isEditing ? (
-                                    <Field
-                                        name="novaDataEncerramento"
-                                        component={DatePicker}
-                                        placeholder="Nova Data de Encerramento"
-                                        onChange={(date: Date) => setFieldValue('novaDataEncerramento', date)}
-                                        value={values.novaDataEncerramento ? moment(values.novaDataEncerramento).toDate() : null}
-                                    />
-                                ) : (
-                                    <div>{values.novaDataEncerramento ? moment(values.novaDataEncerramento).format('DD/MM/YYYY') : '-'}</div>
-                                )}
-                            </FormItem>
                         </div>
-                        {/* </div> */}
+                        
                         <Field name="entidadeId" type="hidden" />
 
                         {!isEditing &&
                             <div className="my-4">
-                                <h6 className="mb-2">Anexos Existentes</h6>
+                                <h6 className="mb-2">Documentos</h6>
                                 <ul>
                                     {anexosExistentes.map(anexo => (
                                         <li key={anexo.id} className="mb-2">
@@ -394,15 +369,25 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                             <Button type="button" onClick={onClose} className="mt-4 mr-2">
                                 Cancelar
                             </Button>
-                            <Button
-                                type={isEditing ? "submit" : "button"}
-                                onClick={isEditing ? undefined : toggleEdit}
-                                className="mt-4"
-                                variant='solid'
-                                disabled={marcoCongelado}
-                            >
-                                {isEditing ? 'Salvar' : 'Editar'}
-                            </Button>
+                            {isEditing ? (
+                                <Button
+                                    type="submit"
+                                    className="mt-4"
+                                    variant="solid"
+                                    disabled={marcoCongelado}
+                                >
+                                    Salvar
+                                </Button>
+                            ) : (
+                                <div
+                                    onClick={toggleEdit}
+                                    className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${marcoCongelado ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    Editar
+                                </div>
+                            )}
+
+
                         </div>
                     </FormContainer>
                 </Form>

@@ -17,6 +17,8 @@ interface Historico {
     data: string;
     comentario: string;
     nome_usuario: string;
+    acao: string;
+    nome_anexo?: string;
 }
 
 const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose, marcoId }) => {
@@ -43,15 +45,25 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div>
-                <h5 className="mb-4">Histórico do Marco Crítico</h5>
+                <h5 className="mb-4">Histórico</h5>
                 <div className="overflow-y-auto max-h-96">
                     {historico.length > 0 ? (
                         historico.map((entry) => (
                             <div key={entry.id} className="mb-4 border-b pb-2">
-                                <p><strong>Status:</strong> {entry.status}</p>
+                                {entry.acao === 'anexo' ? (
+                                    <>
+                                        <p><strong>Ação:</strong> Adição de Anexo</p>
+                                        <p><strong>Anexo:</strong> {entry.nome_anexo}</p>
+                                        <p><strong>Descrição:</strong> {entry.comentario || '-'}</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p><strong>Status:</strong> {entry.status}</p>
+                                        <p><strong>Comentário:</strong> {entry.comentario || '-'}</p>
+                                    </>
+                                )}
                                 <p><strong>Usuário:</strong> {entry.nome_usuario}</p>
                                 <p><strong>Data/Hora:</strong> {format(new Date(entry.data), 'dd/MM/yyyy HH:mm')}</p>
-                                <p><strong>Comentário:</strong> {entry.comentario || '-'}</p>
                             </div>
                         ))
                     ) : (
