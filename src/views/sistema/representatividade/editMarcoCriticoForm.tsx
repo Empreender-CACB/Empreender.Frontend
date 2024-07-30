@@ -350,7 +350,7 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                         
                         <Field name="entidadeId" type="hidden" />
 
-                        {!isEditing &&
+                        {!isEditing && anexosExistentes.length > 0 &&
                             <div className="my-4">
                                 <h6 className="mb-2">Documentos</h6>
                                 <ul>

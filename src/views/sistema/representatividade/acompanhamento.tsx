@@ -14,7 +14,7 @@ import { HiPlusCircle } from 'react-icons/hi'
 import { Button, Dialog, Tooltip } from '@/components/ui'
 import NewMarcoCriticoForm from './newMarcoCriticoForm'
 import { useEffect, useState } from 'react'
-import { FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
+import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
 import { GiIceCube } from "react-icons/gi";
 import ApiService from '@/services/ApiService'
 import EditMarcoCriticoForm from './editMarcoCriticoForm'
@@ -23,6 +23,7 @@ import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import FreezeMarcosCriticosModal from './freezeMarcosCriticosModal'
 import { Associacao } from '@/@types/generalTypes'
+import AnalysisModal from './analysisMarcoCriticoModal'
 
 moment.locale('pt-br')
 
@@ -52,15 +53,6 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const columns = [
         {
-            name: 'sigla',
-            header: 'Entidade',
-            columnName: 'sigla',
-            type: 'string',
-            defaultFlex: 0.6,
-            operator: 'contains',
-            value: '',
-        },
-        {
             name: 'marco_nome',
             header: 'Nome',
             columnName: 'marco_nome',
@@ -68,31 +60,13 @@ const AcompanhamentoMarcosCriticos = () => {
             defaultFlex: 1.5,
             operator: 'contains',
             value: '',
-        },
-        {
-            name: 'marco_descricao',
-            header: 'Descrição do Marco',
-            columnName: 'marco_descricao',
-            type: 'string',
-            defaultFlex: 1.5,
-            operator: 'contains',
-            value: '',
-        },
-        {
-            name: 'nmusuario',
-            header: 'Responsável',
-            columnName: 'nmusuario',
-            type: 'string',
-            defaultFlex: 1,
-            operator: 'contains',
-            value: '',
-        },        
+        },       
         {
             name: 'data_prevista',
             header: 'Previsão',
             columnName: 'data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD-MM-YYYY',
+            dateFormat: 'DD/MM/YYYY',
             type: 'date',
             operator: 'after',
             value: '',
@@ -113,7 +87,7 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Nova Previsão',
             columnName: 'nova_data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD-MM-YYYY',
+            dateFormat: 'DD/MM/YYYY',
             type: 'date',
             operator: 'after',
             value: '',
@@ -134,7 +108,7 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Término',
             columnName: 'data_encerramento',
             defaultFlex: 0.6,
-            dateFormat: 'DD-MM-YYYY',
+            dateFormat: 'DD/MM/YYYY',
             type: 'date',
             operator: 'after',
             value: '',
@@ -169,7 +143,7 @@ const AcompanhamentoMarcosCriticos = () => {
         {
             name: 'actions',
             header: 'Ações',
-            defaultFlex: 1,
+            defaultFlex: 0.5,
             columnName: 'actions',
             type: 'string',
             render: ({ data }: any) => renderButtons(data),
@@ -184,6 +158,7 @@ const AcompanhamentoMarcosCriticos = () => {
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isFreezeModalOpen, setIsFreezeModalOpen] = useState(false);
+    const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [associacaoDetails, setAssociacaoDetails] = useState<Associacao>();
     const [isCongelado, setIsCongelado] = useState(false);
 
@@ -196,6 +171,13 @@ const AcompanhamentoMarcosCriticos = () => {
         setSelectedMarcoId(marcoId);
         setIsEditModalOpen(true);
     };
+
+    const handleOpenAnalysisModal = (marcoId: any) => {
+        setSelectedMarcoId(marcoId);
+        setIsAnalysisModalOpen(true);
+    };
+
+    const handleCloseAnalysisModal = () => setIsAnalysisModalOpen(false);
 
     const handleCloseEditModal = () => setIsEditModalOpen(false);
     const handleCloseStatusModal = () => setIsStatusModalOpen(false);
@@ -267,15 +249,15 @@ const AcompanhamentoMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaFileSignature />}
-                        onClick={() => handleStatusChange(data.id, 'Em análise')}
+                        onClick={() => handleStatusChange(data.id)}
                     />
                 </Tooltip>
                 <Tooltip title="Remeter para análise">
                     <Button
                         variant="solid"
                         size="xs"
-                        icon={<FaFileSignature />}
-                        onClick={() => handleStatusChange(data.id, 'Em análise')}
+                        icon={<FaClipboardCheck />}
+                        onClick={() => handleOpenAnalysisModal(data.id)}
                     />
                 </Tooltip>
                 <Tooltip title="Anexar/retirar documentos">
@@ -299,7 +281,7 @@ const AcompanhamentoMarcosCriticos = () => {
     };
 
     // Funções de handler para os botões
-    const handleStatusChange = (id: any, status: string) => {
+    const handleStatusChange = (id: any) => {
         setSelectedMarcoId(id);
         setIsStatusModalOpen(true);
     };
@@ -343,7 +325,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/${id}?reload=${reload}`}
                 CardLayout={LancamentosCard}
-                defaultSortInfo={{ dir: -1, id: 'id', name: 'id', columnName: 'id', type: 'string' }}
+                defaultSortInfo={{ dir: -1, id: 'data_prevista', name: 'data_prevista', columnName: 'data_prevista', type: 'date' }}
             />
             <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>
                 <NewMarcoCriticoForm entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
@@ -355,6 +337,9 @@ const AcompanhamentoMarcosCriticos = () => {
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal}>
                         <EditMarcoCriticoForm entidadeId={id ?? ''} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                    </Dialog>
+                    <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal}>
+                        <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal}>
                         <AnexoMarcoCriticoForm marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />

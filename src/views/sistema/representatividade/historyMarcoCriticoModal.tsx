@@ -53,7 +53,6 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                                 {entry.acao === 'anexo' ? (
                                     <>
                                         <p><strong>Ação:</strong> Adição de Anexo</p>
-                                        <p><strong>Anexo:</strong> {entry.nome_anexo}</p>
                                         <p><strong>Descrição:</strong> {entry.comentario || '-'}</p>
                                     </>
                                 ) : (

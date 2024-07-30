@@ -136,9 +136,6 @@ const appsRoute: Routes = [
         key: 'representatividade.marcosCriticos',
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento/:id`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento')),
-        meta: {
-            pageContainerType: 'gutterless',
-        },
     },
 ]
 
