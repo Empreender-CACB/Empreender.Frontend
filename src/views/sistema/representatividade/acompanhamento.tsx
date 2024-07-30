@@ -244,14 +244,18 @@ const AcompanhamentoMarcosCriticos = () => {
                         onClick={() => handleOpenEditModal(data.id)}
                     />
                 </Tooltip>
-                <Tooltip title="Analisar">
-                    <Button
-                        variant="solid"
-                        size="xs"
-                        icon={<FaFileSignature />}
-                        onClick={() => handleStatusChange(data.id)}
-                    />
-                </Tooltip>
+                
+                {data.status == "Em análise" &&
+                    <Tooltip title="Analisar">
+                        <Button
+                            variant="solid"
+                            size="xs"
+                            icon={<FaFileSignature />}
+                            onClick={() => handleStatusChange(data.id)}
+                        />
+                    </Tooltip>
+                }
+
                 <Tooltip title="Remeter para análise">
                     <Button
                         variant="solid"
