@@ -60,7 +60,7 @@ const AcompanhamentoMarcosCriticos = () => {
             defaultFlex: 1.5,
             operator: 'contains',
             value: '',
-        },       
+        },
         {
             name: 'data_prevista',
             header: 'Previsão',
@@ -191,10 +191,10 @@ const AcompanhamentoMarcosCriticos = () => {
     };
 
     const handleCloseAnexoModal = () => setIsAnexoModalOpen(false);
-    
+
     const fetchAssociacaoDetails = async () => {
         try {
-            const response:any = await ApiService.fetchData({
+            const response: any = await ApiService.fetchData({
                 url: `/representatividade/detalhes-associacao/${id}`,
                 method: 'get'
             });
@@ -244,7 +244,7 @@ const AcompanhamentoMarcosCriticos = () => {
                         onClick={() => handleOpenEditModal(data.id)}
                     />
                 </Tooltip>
-                
+
                 {data.status == "Em análise" &&
                     <Tooltip title="Analisar">
                         <Button
@@ -256,14 +256,17 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                <Tooltip title="Remeter para análise">
-                    <Button
-                        variant="solid"
-                        size="xs"
-                        icon={<FaClipboardCheck />}
-                        onClick={() => handleOpenAnalysisModal(data.id)}
-                    />
-                </Tooltip>
+                {data.status == "Não atingido" &&
+                    <Tooltip title="Remeter para análise">
+                        <Button
+                            variant="solid"
+                            size="xs"
+                            icon={<FaClipboardCheck />}
+                            onClick={() => handleOpenAnalysisModal(data.id)}
+                        />
+                    </Tooltip>
+                }
+                
                 <Tooltip title="Anexar/retirar documentos">
                     <Button
                         variant="solid"
