@@ -304,6 +304,7 @@ const AcompanhamentoMarcosCriticos = () => {
                         variant="solid"
                         size="sm"
                         icon={<HiPlusCircle />}
+                        disabled={isCongelado}
                         onClick={handleOpenModal}
                     >
                         Adicionar Marco Crítico
