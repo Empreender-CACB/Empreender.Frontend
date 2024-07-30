@@ -170,6 +170,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/selecoes/painel-inscricoes`,
         component: lazy(() => import('@/views/sistema/selecoes/painel-inscricoes'))
     },
+    {
+        key: 'representatividade.marcosCriticos',
+        path: `${APP_PREFIX_PATH}/representatividade/acompanhamento/:id`,
+        component: lazy(() => import('@/views/sistema/representatividade/acompanhamento')),
+    },
 ]
 
 export default appsRoute
