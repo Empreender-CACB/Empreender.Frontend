@@ -15,11 +15,13 @@ const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText, 
 
   const statusMapping: Record<string, { label: string; class: string }> = {
     Ativo: {
+      label: customLabelTrue ?? 'Ativo',
+      class: customClassTrue ?? 'bg-sky-800 mr-2 text-white text-center',
       label: customLabelTrue ?? 'Ativa',
       class: customClassTrue ?? 'bg-sky-800 mr-2 text-white text-center',
     },
     Inativo: {
-      label: customLabelFalse ?? 'Inativa',
+      label: customLabelFalse ?? 'Inativo',
       class: customClassFalse ?? 'bg-orange-500 mr-2 text-white',
     },
   };
