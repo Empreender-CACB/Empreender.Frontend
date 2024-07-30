@@ -28,8 +28,8 @@ const activeValue = [
 ]
 
 const restritaValue = [
-    { name: 'Restrito', value: 'true' },
-    { name: 'Não restrito', value: 'false' },
+    { name: 'Restrita', value: 'true' },
+    { name: 'Não restrita', value: 'false' },
 ]
 
 const rfbValue = [
@@ -46,9 +46,10 @@ const rfbValue = [
 
 const empresaOptions = [
     { value: 'todas', label: 'Todas' },
-    { value: 'somente_nucleadas', label: 'Somente nucleadas' },
-    { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
+    { value: 'somente_nucleadas', label: 'Nucleadas' },
+    { value: 'nao_nucleadas', label: 'Não nucleadas' },
     { value: 'projetos', label: 'Projeto' },
+    { value: 'vinculadas_entidades', label: 'Entidades' },
 ];
 
 const nameOptions = [
@@ -68,14 +69,16 @@ const Empresas = () => {
     const [empresaType, setEmpresaType] = useState('todas')
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
+    const [entidadeType, setEntidadeType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [optionsSegmento, setOptionsSegmento] = useState([])
+    const [optionsEntidade, setOptionsEntidade] = useState([])
     const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
 
     const { user } = useAppSelector((state) => state.auth)
 
-    const isGestorEntidade = user.associacoes.length > 0;
-    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade;
+    const isGestorEntidade = user && Array.isArray(user.associacoes) && user.associacoes.length > 0
+    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade
 
     const canExport = !!(user.recursos.includes('empresa_restrita') ||
         (isGestorEntidade && (
@@ -83,30 +86,25 @@ const Empresas = () => {
             empresaType !== 'nao_nucleadas' &&
             empresaType !== 'projetos' &&
             empresaType !== 'todas'
-        )) || (isUsuarioEntidade && checkedVisaoLocal));
+        )) || (isUsuarioEntidade && checkedVisaoLocal))
 
 
     const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
-        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}`;
+        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
+        `${entidadeType ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
 
-    let headerCnae;
-
-    const parseCnae = (cnae_combined: string) => {
-        const [code, ...textParts] = cnae_combined.split(' - ')
-        const text = textParts.join(' - ')
-        return { code, text }
-    }
+    let headerCnae
 
     switch (cnaeValue) {
         case 'principal':
-            headerCnae = "CNAE Principal";
+            headerCnae = "CNAE Principal"
             break;
         case 'secundario':
-            headerCnae = "CNAE Secundário";
+            headerCnae = "CNAE Secundário"
             break;
         default:
-            headerCnae = "CNAE";
+            headerCnae = "CNAE"
     }
 
     const columns = [
@@ -166,14 +164,14 @@ const Empresas = () => {
             },
         },
         {
-            name: 'cnae_code',
-            header: 'Código do CNAE',
+            name: 'cd_cnae',
+            header: 'CNAE',
             defaultFlex: 1,
             type: 'string',
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
-                const { code } = parseCnae(data.cnae_combined)
+                const code = (data.cd_cnae)
                 return (
                     <Tooltip
                         placement='left'
@@ -189,14 +187,14 @@ const Empresas = () => {
             },
         },
         {
-            name: 'cnae_text',
+            name: 'st_cnae',
             header: 'Descrição do CNAE',
             defaultFlex: 1,
             type: 'string',
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
-                const { text } = parseCnae(data.cnae_combined)
+                const text = data.st_cnae
                 return (
                     <Tooltip
                         placement='left'
@@ -248,7 +246,7 @@ const Empresas = () => {
     if (user.recursos.includes('empresa_restrita')) {
         columns.splice(columns.length - 1, 0, {
             name: 'restrita',
-            header: 'Restrito',
+            header: 'Restrita',
             type: 'select',
             operator: 'equals',
             value: 'false',
@@ -265,12 +263,12 @@ const Empresas = () => {
                         activeText={false}
                         customClassTrue='bg-green-800 mr-2 text-white text-center'
                         customClassFalse='bg-red-800 mr-2 text-white text-center'
-                        customLabelFalse='Restrito'
-                        customLabelTrue='Não restrito'
+                        customLabelFalse='Restrita'
+                        customLabelTrue='Não restrita'
                     />
                 </div>
             ),
-        });
+        })
     }
 
     useEffect(() => {
@@ -285,11 +283,11 @@ const Empresas = () => {
                         label: segmento.dssegmento,
                     }))
                     setOptionsSegmento(mappedOptions)
-                });
+                })
             } catch (error) {
                 console.error(error);
             }
-        };
+        }
 
         const getOrigens = async () => {
             try {
@@ -308,10 +306,30 @@ const Empresas = () => {
             } catch (error) {
                 console.error(error);
             }
-        };
+        }
 
-        getSegmentos();
-        getOrigens();
+        const getEntidades = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: 'entidades/empresas',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((origemItem: any) => {
+                        return ({
+                            value: origemItem.idassociacao,
+                            label: origemItem.nmrazao,
+                        })
+                    })
+                    setOptionsEntidade(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getEntidades()
+        getSegmentos()
+        getOrigens()
     }, [])
 
     const onChangeSegmentos = (selectedOptions: any) => {
@@ -325,7 +343,12 @@ const Empresas = () => {
 
     const onChangeOrigem = (selectedOptions: any) => {
         const values = selectedOptions.map((option: { value: string }) => option.value);
-        setOrigemType(values);
+        setOrigemType(values)
+    }
+
+    const onChangeEntidade = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value);
+        setEntidadeType(values)
     }
 
     const radioGroup =
@@ -366,7 +389,7 @@ const Empresas = () => {
                     </div>
 
                     <div className='pr-4 flex items-center'>
-                        <span className="pr-2 font-black">Empresa: </span>
+                        <span className="pr-2 font-black">Vínculo: </span>
                         <Select
                             defaultValue={empresaOptions[0]}
                             options={empresaOptions}
@@ -419,6 +442,22 @@ const Empresas = () => {
                                 noOptionsMessage={() => 'Sem dados!'}
                                 loadingMessage={() => 'Carregando'}
                                 onChange={onChangeSegmentos}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {empresaType === 'vinculadas_entidades' && (
+                    <div>
+                        <div className="col-span-1">
+                            <span className="font-black">Entidade: </span>
+                            <Select
+                                isMulti
+                                placeholder="Selecione uma opção"
+                                options={optionsEntidade}
+                                noOptionsMessage={() => 'Sem dados!'}
+                                loadingMessage={() => 'Carregando'}
+                                onChange={onChangeEntidade}
                             />
                         </div>
                     </div>
