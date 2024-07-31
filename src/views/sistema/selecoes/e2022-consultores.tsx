@@ -128,6 +128,15 @@ const E2022Consultores = () => {
                         </Link>
                     </Button>
 
+                    <Button size="sm" variant="solid">
+                        <a
+                            href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY="
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Resultado
+                        </a>
+                    </Button>
                     <Button size="sm" variant='solid'>
                         <Link
                             className="menu-item-link"
