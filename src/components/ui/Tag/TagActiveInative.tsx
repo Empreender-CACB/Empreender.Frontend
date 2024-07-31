@@ -17,8 +17,6 @@ const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText, 
     Ativo: {
       label: customLabelTrue ?? 'Ativo',
       class: customClassTrue ?? 'bg-sky-800 mr-2 text-white text-center',
-      label: customLabelTrue ?? 'Ativa',
-      class: customClassTrue ?? 'bg-sky-800 mr-2 text-white text-center',
     },
     Inativo: {
       label: customLabelFalse ?? 'Inativo',
