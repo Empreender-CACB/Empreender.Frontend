@@ -51,6 +51,7 @@ function useAuth() {
                         cdsexo: resp.data.user.cdsexo,
                         recursos: resp.data.user.recursos,
                         preferencias: resp.data.user.preferencias,
+                        associacoes: resp.data.user.associacoes,
                     }
                     localStorage.setItem('lista_geral', resp.data.user.preferencias.lista_geral);
 
@@ -92,6 +93,7 @@ function useAuth() {
                 fotouser: '',
                 recursos: [],
                 preferencias: [],
+                associacoes: []
             })
         )
         localStorage.removeItem('originalToken');

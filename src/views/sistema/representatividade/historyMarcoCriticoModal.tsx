@@ -43,7 +43,7 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
     }, [isOpen, marcoId]);
 
     return (
-        <Dialog isOpen={isOpen} onClose={onClose}>
+        <Dialog isOpen={isOpen} onClose={onClose} width={1000}>
             <div>
                 <h5 className="mb-4">Histórico</h5>
                 <div className="overflow-y-auto max-h-96">

@@ -29,9 +29,18 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
         descricao: Yup.string().nullable(),
         responsavel: Yup.string().required('Selecione um usuário responsável'),
         dataPrevista: Yup.date().nullable(),
-        novaDataPrevista: Yup.date().nullable(),
+        novaDataPrevista: Yup.date().nullable()
+            .min(
+                Yup.ref('dataPrevista'),
+                'A nova data prevista não pode ser anterior à data prevista inicial'
+            ),
         dataEncerramento: Yup.date().nullable()
+            .test('is-greater', 'A data de encerramento não pode ser anterior à data prevista', function(value) {
+                const { dataPrevista } = this.parent;
+                return !value || !dataPrevista || value >= dataPrevista;
+            })
     });
+
 
     const [usuarios, setUsuarios] = useState<{ value: string, label: string }[]>([]);
     const [marcosCriticos, setMarcosCriticos] = useState<{ value: string, label: string }[]>([]);

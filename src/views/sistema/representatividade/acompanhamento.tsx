@@ -24,6 +24,7 @@ import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import FreezeMarcosCriticosModal from './freezeMarcosCriticosModal'
 import { Associacao } from '@/@types/generalTypes'
 import AnalysisModal from './analysisMarcoCriticoModal'
+import { useAppSelector } from '@/store'
 
 moment.locale('pt-br')
 
@@ -161,6 +162,11 @@ const AcompanhamentoMarcosCriticos = () => {
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [associacaoDetails, setAssociacaoDetails] = useState<Associacao>();
     const [isCongelado, setIsCongelado] = useState(false);
+    const [isConsultor, setIsConsultor] = useState(false);
+
+
+    const user = useAppSelector((state) => state.auth.user);
+    const isGestor = associacaoDetails && user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === associacaoDetails.idassociacao);
 
     const [reload, setReload] = useState(false);
 
@@ -207,8 +213,23 @@ const AcompanhamentoMarcosCriticos = () => {
         }
     };
 
+    const fetchIsConsultor = async () => {
+        try {
+            const response: any = await ApiService.fetchData({
+                url: `/get-consultor-entidade/${id}`,
+                method: 'get'
+            });
+            if (response.data) {
+                setIsConsultor(response.data.isConsultor);
+            }
+        } catch (error) {
+            console.error('Erro ao verificar vínculo do usuário:', error);
+        }
+    };
+
     useEffect(() => {
         fetchAssociacaoDetails();
+        fetchIsConsultor();
     }, [id]);
 
     const handleSaveStatusChange = async (status: string, comentario: string) => {
@@ -245,7 +266,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" &&
+                {data.status == "Em análise" && isConsultor &&
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -256,7 +277,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {data.status == "Não atingido" &&
+                {data.status == "Não atingido" && isGestor &&
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -266,15 +287,18 @@ const AcompanhamentoMarcosCriticos = () => {
                         />
                     </Tooltip>
                 }
-                
-                <Tooltip title="Anexar/retirar documentos">
-                    <Button
-                        variant="solid"
-                        size="xs"
-                        icon={<FaPaperclip />}
-                        onClick={() => handleOpenAnexoModal(data.id)}
-                    />
-                </Tooltip>
+
+                {isGestor && 
+                    <Tooltip title="Anexar/retirar documentos">
+                        <Button
+                            variant="solid"
+                            size="xs"
+                            icon={<FaPaperclip />}
+                            onClick={() => handleOpenAnexoModal(data.id)}
+                        />
+                    </Tooltip>
+                }
+
                 <Tooltip title="Histórico">
                     <Button
                         variant="solid"
@@ -306,26 +330,30 @@ const AcompanhamentoMarcosCriticos = () => {
                     <h5>{associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}</h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                    <Button
-                        block
-                        variant="solid"
-                        size="sm"
-                        icon={<HiPlusCircle />}
-                        disabled={isCongelado}
-                        onClick={handleOpenModal}
-                    >
-                        Adicionar Marco Crítico
-                    </Button>
-                    <Button
-                        block
-                        variant="solid"
-                        size="sm"
-                        color="blue-600"
-                        icon={<GiIceCube />}
-                        onClick={handleOpenFreezeModal}
-                    >
-                        {isCongelado ? "Descongelar" : "Congelar"} marcos críticos
-                    </Button>
+                    {isGestor &&
+                        <>
+                            <Button
+                                block
+                                variant="solid"
+                                size="sm"
+                                icon={<HiPlusCircle />}
+                                disabled={isCongelado}
+                                onClick={handleOpenModal}
+                            >
+                                Adicionar Marco Crítico
+                            </Button>
+                            <Button
+                                block
+                                variant="solid"
+                                size="sm"
+                                color="blue-600"
+                                icon={<GiIceCube />}
+                                onClick={handleOpenFreezeModal}
+                            >
+                                {isCongelado ? "Descongelar" : "Congelar"} marcos críticos
+                            </Button>
+                        </>
+                    }
                 </div>
             </div>
             <CustomReactDataGrid
@@ -343,13 +371,13 @@ const AcompanhamentoMarcosCriticos = () => {
             </Dialog>
             {selectedMarcoId && (
                 <>
-                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal}>
-                        <EditMarcoCriticoForm entidadeId={id ?? ''} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={1000}>
+                        <EditMarcoCriticoForm isGestor={isGestor} entidadeId={id ?? ''} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
-                    <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal}>
+                    <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />
                     </Dialog>
-                    <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal}>
+                    <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
                         <AnexoMarcoCriticoForm marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal

@@ -35,5 +35,6 @@ export interface UserResponse {
         fotouser: string
         recursos: any
         preferencias: any
+        associacoes: any
     }
 }

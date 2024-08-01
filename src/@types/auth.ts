@@ -18,6 +18,7 @@ export type SignInResponse = {
         cod_perfil: number;
         recursos: string[];
         preferencias: string[];
+        associacoes: any[];
         fotouser?: string;
     };
 }
