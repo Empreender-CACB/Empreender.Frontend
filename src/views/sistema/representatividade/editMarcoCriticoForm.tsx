@@ -23,7 +23,7 @@ interface AnexoDisplay {
     descricao: string;
 }
 
-const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onClose: () => void, marcoId: number, entidadeId: string, onUpdate: () => void }) => {
+const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate }: { isGestor: boolean | undefined, onClose: () => void, marcoId: number, entidadeId: string, onUpdate: () => void }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -55,12 +55,16 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
             )
     });
 
-
     const [usuarios, setUsuarios] = useState<{ value: string, label: string }[]>([]);
     const [marcosCriticos, setMarcosCriticos] = useState<{ value: string, label: string }[]>([]);
     const [showNomeMarcoCritico, setShowNomeMarcoCritico] = useState(false);
     const [anexosExistentes, setAnexosExistentes] = useState<AnexoDisplay[]>([]);
     const [marcoCongelado, setMarcoCongelado] = useState(false);
+    const [anexosParaRemover, setAnexosParaRemover] = useState<number[]>([]);
+
+    const handleRemoveAnexo = (anexoId: number) => {
+        setAnexosParaRemover((prev) => [...prev, anexoId]);
+    };
 
     useEffect(() => {
         const fetchUsuarios = async () => {
@@ -154,12 +158,14 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
 
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
-        console.log('entrou aqui')
         try {
             await ApiService.fetchData({
                 url: `/representatividade/atualizar-marco-critico/${marcoId}`,
                 method: 'put',
-                data: values
+                data: {
+                    ...values,
+                    anexosParaRemover
+                }
             });
             onClose();
             onUpdate();
@@ -169,7 +175,6 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
             setSubmitting(false);
         }
     };
-
 
     const toggleEdit = () => setIsEditing(!isEditing);
 
@@ -184,7 +189,6 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                 <Form>
                     <h5 className="mb-4">{isEditing ? "Editar" : "Visualizar"} marco crítico</h5>
                     <FormContainer>
-                        {/* <div className="max-h-96 overflow-y-auto"> */}
 
                         <div className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
 
@@ -347,18 +351,28 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                                 )}
                             </FormItem>
                         </div>
-                        
+
                         <Field name="entidadeId" type="hidden" />
 
-                        {!isEditing && anexosExistentes.length > 0 &&
+                        {anexosExistentes.length > 0 &&
                             <div className="my-4">
                                 <h6 className="mb-2">Documentos</h6>
                                 <ul>
                                     {anexosExistentes.map(anexo => (
-                                        <li key={anexo.id} className="mb-2">
-                                            <a href={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(anexo.id))}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                {anexo.nome_arquivo}
-                                            </a> - {anexo.descricao}
+                                        <li key={anexo.id} className="mb-2 flex justify-between items-center">
+                                            <div>
+                                                <a href={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(anexo.id))}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                    {anexo.nome_arquivo}
+                                                </a> - {anexo.descricao}
+                                            </div>
+                                            {isEditing && !anexosParaRemover.includes(anexo.id) && (
+                                                <Button type="button" onClick={() => handleRemoveAnexo(anexo.id)} variant="solid" color="red-600">
+                                                    Remover
+                                                </Button>
+                                            )}
+                                            {anexosParaRemover.includes(anexo.id) && (
+                                                <div className="text-red-500 ml-2">Será removido</div>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
@@ -380,14 +394,12 @@ const EditMarcoCriticoForm = ({ onClose, marcoId, entidadeId, onUpdate }: { onCl
                                 </Button>
                             ) : (
                                 <div
-                                    onClick={toggleEdit}
-                                    className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${marcoCongelado ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    onClick={isGestor ? toggleEdit : () => {}}
+                                    className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${marcoCongelado || !isGestor ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     Editar
                                 </div>
                             )}
-
-
                         </div>
                     </FormContainer>
                 </Form>

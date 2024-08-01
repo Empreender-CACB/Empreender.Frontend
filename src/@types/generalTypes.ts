@@ -175,6 +175,7 @@ export type Usuario = {
     faceb?: boolean;
     idpreferencias?: string;
     fotouser?: string;
+    associacoes?: any[]
     cod_perfil?: number;
     tipo_objeto?: string;
     primeiro_acesso?: boolean;

@@ -21,10 +21,10 @@ export type UserState = {
     fotouser?: string
     recursos: string[]
     preferencias?: Preferencias
-    associacoes: Associacao[]
-    empresas: Empresa[]
-    nucleos: Nucleo[]
-    projetos: any[]
+    associacoes?: Associacao[]
+    empresas?: Empresa[]
+    nucleos?: Nucleo[]
+    projetos?: any[]
 }
 
 const initialState: UserState = {
@@ -37,8 +37,8 @@ const initialState: UserState = {
     idobjeto: 0,
     fotouser: '',
     recursos: [],
-    preferencias: {},
     associacoes: [],
+    preferencias: {},
     empresas: [],
     nucleos: [],
     projetos: [],
