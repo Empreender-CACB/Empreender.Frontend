@@ -228,9 +228,18 @@ const AcompanhamentoMarcosCriticos = () => {
     };
 
     useEffect(() => {
-        fetchAssociacaoDetails();
-        fetchIsConsultor();
+        const fetchData = async () => {
+            await fetchAssociacaoDetails();
+            await fetchIsConsultor();
+        };
+    
+        fetchData();
     }, [id]);
+
+    const handleUpdate = async () => {
+        setReload(!reload);
+        await fetchAssociacaoDetails();
+    };
 
     const handleSaveStatusChange = async (status: string, comentario: string) => {
         try {
@@ -315,11 +324,6 @@ const AcompanhamentoMarcosCriticos = () => {
     const handleStatusChange = (id: any) => {
         setSelectedMarcoId(id);
         setIsStatusModalOpen(true);
-    };
-
-    const handleUpdate = () => {
-        setReload(!reload);
-        fetchAssociacaoDetails();
     };
 
     return (
