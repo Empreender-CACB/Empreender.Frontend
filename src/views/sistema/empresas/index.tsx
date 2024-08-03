@@ -49,7 +49,7 @@ const empresaOptions = [
     { value: 'somente_nucleadas', label: 'Nucleadas' },
     { value: 'nao_nucleadas', label: 'Não nucleadas' },
     { value: 'projetos', label: 'Projeto' },
-    { value: 'vinculadas_entidades', label: 'Entidades' },
+    { value: 'vinculadas_entidades', label: 'Entidade' },
 ];
 
 const nameOptions = [
@@ -115,7 +115,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: "",
-            defaultFlex: 0.6,
+            defaultFlex: 0.4,
         },
         {
             name: 'iduf',
@@ -124,6 +124,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.32,
         },
         {
             name: 'nmcidade',
@@ -131,26 +132,54 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.7,
+            render: ({ data }: any) => {
+                const text = data.nmcidade
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
+                    </Tooltip>
+                );
+            },
         },
         {
-            name: 'nmfantasia',
+            name: 'nome',
             header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
             value: '',
-            render: ({ data }: any) => (
-                <div>
-                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}>
-                        {data.nmfantasia}
-                    </Link>
-                </div>
-            ),
-        },
+            render: ({ data }: any) => {
+                const text = data.nmfantasia
+                const tooltipText = data.nmfantasia
+        
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+                
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        },                    
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
-            defaultFlex: 1,
+            defaultFlex: 0.7,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -166,30 +195,15 @@ const Empresas = () => {
         {
             name: 'cd_cnae',
             header: 'CNAE',
-            defaultFlex: 1,
+            defaultFlex: 0.4,
             type: 'string',
             operator: 'contains',
             value: '',
-            render: ({ data }: any) => {
-                const code = (data.cd_cnae)
-                return (
-                    <Tooltip
-                        placement='left'
-                        title={
-                            <div>
-                                {code}
-                            </div>
-                        }
-                    >
-                        <span className="cursor-pointer">{code}</span>
-                    </Tooltip>
-                );
-            },
         },
         {
             name: 'st_cnae',
             header: 'Descrição do CNAE',
-            defaultFlex: 1,
+            defaultFlex: 1.7,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -212,7 +226,7 @@ const Empresas = () => {
         {
             name: 'situacao',
             header: 'Situação RFB',
-            defaultFlex: 1,
+            defaultFlex: 0.615,
             type: 'select',
             operator: 'equals',
             value: '',
@@ -391,6 +405,7 @@ const Empresas = () => {
                     <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Vínculo: </span>
                         <Select
+                            isMulti
                             defaultValue={empresaOptions[0]}
                             options={empresaOptions}
                             onChange={onChangeEmpresa}
