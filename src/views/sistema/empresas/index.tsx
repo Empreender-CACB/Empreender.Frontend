@@ -45,7 +45,6 @@ const rfbValue = [
 ]
 
 const empresaOptions = [
-    { value: 'todas', label: 'Todas' },
     { value: 'somente_nucleadas', label: 'Nucleadas' },
     { value: 'nao_nucleadas', label: 'Não nucleadas' },
     { value: 'projetos', label: 'Projeto' },
@@ -66,7 +65,7 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState('todas')
+    const [empresaType, setEmpresaType] = useState<string[]>([]) 
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [entidadeType, setEntidadeType] = useState([])
@@ -82,17 +81,18 @@ const Empresas = () => {
 
     const canExport = !!(user.recursos.includes('empresa_restrita') ||
         (isGestorEntidade && (
-            (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
-            empresaType !== 'nao_nucleadas' &&
-            empresaType !== 'projetos' &&
-            empresaType !== 'todas'
+            (checkedVisaoLocal && !empresaType.includes('nao_nucleadas')) &&
+            !empresaType.includes('nao_nucleadas') &&
+            !empresaType.includes('projetos') &&
+            !empresaType.includes('todas')
         )) || (isUsuarioEntidade && checkedVisaoLocal))
 
 
-    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
+        const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType.join(',')}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
-        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
-        `${entidadeType ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
+        `${segmentoType.length > 0 ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
+        `${entidadeType.length > 0 ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
+
 
     let headerCnae
 
@@ -347,21 +347,22 @@ const Empresas = () => {
     }, [])
 
     const onChangeSegmentos = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
-        setSegmentoType(values);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setSegmentoType(values)
     }
 
-    const onChangeEmpresa = (option: any) => {
-        return setEmpresaType(option.value)
+    const onChangeEmpresa = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setEmpresaType(values)
     }
 
     const onChangeOrigem = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
         setOrigemType(values)
     }
 
     const onChangeEntidade = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
         setEntidadeType(values)
     }
 
@@ -406,10 +407,10 @@ const Empresas = () => {
                         <span className="pr-2 font-black">Vínculo: </span>
                         <Select
                             isMulti
-                            defaultValue={empresaOptions[0]}
                             options={empresaOptions}
                             onChange={onChangeEmpresa}
-                            customWidth={'160px'}>
+                            placeholder="Todos"
+                            >
                         </Select>
                     </div>
 
@@ -424,7 +425,7 @@ const Empresas = () => {
                         </Select>
                     </div>
 
-                    {empresaType === 'somente_nucleadas' && (
+                    {empresaType.includes('somente_nucleadas') && (
                         <div className='flex items-center'>
                             <span className="font-black">Visão local: </span>
 
@@ -446,9 +447,9 @@ const Empresas = () => {
                     )}
                 </div>
 
-                {empresaType === 'somente_nucleadas' && (
-                    <div>
-                        <div className="col-span-1">
+                <div className="flex flex-wrap">
+                    {empresaType.includes('somente_nucleadas') && (
+                        <div className={`flex-1 ${empresaType.includes('vinculadas_entidades') ? 'w-1/2 pr-2' : 'w-full'}`}>
                             <span className="font-black">Segmento: </span>
                             <Select
                                 isMulti
@@ -459,12 +460,10 @@ const Empresas = () => {
                                 onChange={onChangeSegmentos}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {empresaType === 'vinculadas_entidades' && (
-                    <div>
-                        <div className="col-span-1">
+                    {empresaType.includes('vinculadas_entidades') && (
+                        <div className={`flex-1 ${empresaType.includes('somente_nucleadas') ? 'w-1/2 pl-2' : 'w-full'}`}>
                             <span className="font-black">Entidade: </span>
                             <Select
                                 isMulti
@@ -475,8 +474,9 @@ const Empresas = () => {
                                 onChange={onChangeEntidade}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
+
             </div>
         );
 
