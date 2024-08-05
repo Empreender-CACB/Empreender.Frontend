@@ -10,7 +10,7 @@ import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { IMaskInput } from 'react-imask';
 import { BsFilePdf, BsFileWord } from 'react-icons/bs'
 import ParametrosGeraisService from '@/services/ParametrosGeraisService'
-
+import Alert from '@/components/ui/Alert'
 const ErrorComponent = ({ errors }: any) => {
     if (!errors || errors.length === 0) {
         return null; // Não há erros, não renderiza nada
@@ -54,7 +54,7 @@ function CadastraProposta() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await ParametrosGeraisService.show(2);
+                const response = await ParametrosGeraisService.show(46);
                 setParametro(response.data.data);
             } catch (error) {
                 console.error('Erro ao buscar parâmetros gerais:', error);
@@ -292,8 +292,8 @@ function CadastraProposta() {
                                 </a>.
                             </span>
                         </div>
-                        {success && (<SuccessComponent />)}
-                        {!success&& (
+                        
+
                     <>
                         <div className='center text-center pb-5'>
                             {/* <h3 className='mb-2'>Complementar dados</h3> */}
@@ -306,7 +306,7 @@ function CadastraProposta() {
                             />
 
                             {inapto === true && (
-                                    <p className="text-red-500 mt-2 mb-2">CPF não encontrado ou inapto. Por favor, verifique e tente novamente.</p>
+                                    <p className="text-red-500 mt-2 mb-2">CPF não encontrado ou considerado inapto. Por favor, verifique e tente novamente.</p>
                             )}
                         </div>
 
@@ -340,6 +340,11 @@ function CadastraProposta() {
                                     </div>
                                 <div>
                                 <ErrorComponent errors={errors} />
+                                {success && (<>
+                                    <Alert showIcon className="mb-4" type="success">
+                Arquivos atualizados com sucesso.
+            </Alert>
+                                </>)}
 
                                     <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
                                         <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -402,7 +407,7 @@ function CadastraProposta() {
                             </p>
                         </div>
                         </>
-                        )}
+                        
                     </div>
                 </div>
 
