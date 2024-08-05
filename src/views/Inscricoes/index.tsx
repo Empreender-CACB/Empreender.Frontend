@@ -48,6 +48,7 @@ function CadastraProposta() {
     const [cpf, setCpf] = useState('');
     const [apto, setApto] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [anexos, setAnexos] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,9 +78,9 @@ function CadastraProposta() {
     };
 
     const SuccessComponent = () => {
-        if (success == false) {
-            return null; // Não há erros, não renderiza nada
-        }
+        // if (success == false) {
+        //     return null; // Não há erros, não renderiza nada
+        // }
 
         return (
             <div className="bg-indigo-700">
@@ -221,20 +222,24 @@ function CadastraProposta() {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}`);
                 if (response.status === 200) {
                     setApto(true); // If status is 200, set apto to true
-                    setUserData(response.data);
+                    setUserData(response.data.candidato);
+                    setAnexos(response.data.anexos);
                 } else {
                     setApto(false); // Otherwise, set apto to false
                     setUserData(null);
+                    setAnexos(null);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setApto(false); // In case of an error, also set apto to false
                 setUserData(null);
+                setAnexos(null);
             }
         }
         else {
             setApto(false);
             setUserData(null);
+            setAnexos(null);
         }
     };
 
@@ -269,9 +274,8 @@ function CadastraProposta() {
                             </h1>
                         </div>
 
-                        {!success && (<SuccessComponent />)}
-                {!success && (
-                    <>
+                        
+
                         <div className="bg-white dark:bg-gray-800 p-10 center text-center">
                             <span className="text-xl text-gray-800 dark:text-gray-100 font-bold">
                                 Inscrições encerradas. Para acessar o resultado,&nbsp;
@@ -280,7 +284,9 @@ function CadastraProposta() {
                                 </a>.
                             </span>
                         </div>
-
+                        {success && (<SuccessComponent />)}
+                        {!success&& (
+                    <>
                         <div className='center text-center pb-5'>
                             {/* <h3 className='mb-2'>Complementar dados</h3> */}
                             <IMaskInput
@@ -304,6 +310,22 @@ function CadastraProposta() {
                                     <p><strong>Telefone:</strong> {userData.telefone}</p>
                                     <p><strong>Email:</strong> {userData.email}</p>
                                 </div>
+                                <div className="bg-white shadow-md rounded-lg p-4">
+                                    <h3 className="text-lg font-semibold mb-4">Lista de Anexos já enviados</h3>
+                                    <ul className="divide-y divide-gray-200">
+                                        {anexos.map((anexo) => (
+                                        <li key={anexo.id} className="py-2 flex justify-between items-center">
+                                            <span className="text-sm text-gray-700">{anexo.nome_arquivo}</span>
+                                            <button
+                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                                            onClick={() => alert(`Download de ${anexo.nome_arquivo}`)} // Substitua pela lógica de download real
+                                            >
+                                            Baixar
+                                            </button>
+                                        </li>
+                                        ))}
+                                    </ul>
+                                    </div>
                                 <div>
                                 <ErrorComponent errors={errors} />
 
