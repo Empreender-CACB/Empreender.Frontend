@@ -49,6 +49,7 @@ function CadastraProposta() {
     const [apto, setApto] = useState(false);
     const [userData, setUserData] = useState(null);
     const [anexos, setAnexos] = useState(null);
+    const [inapto, setInapto] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -224,22 +225,29 @@ function CadastraProposta() {
                     setApto(true); // If status is 200, set apto to true
                     setUserData(response.data.candidato);
                     setAnexos(response.data.anexos);
+                    setInapto(false);
                 } else {
+                    console.log('to aqui')
                     setApto(false); // Otherwise, set apto to false
                     setUserData(null);
                     setAnexos(null);
+                    setInapto(true);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setApto(false); // In case of an error, also set apto to false
                 setUserData(null);
                 setAnexos(null);
+                setInapto(false);
+                setInapto(true);
             }
         }
         else {
             setApto(false);
             setUserData(null);
             setAnexos(null);
+            setInapto(false);
+
         }
     };
 
@@ -296,6 +304,10 @@ function CadastraProposta() {
                                 placeholder='Informe o seu CPF'
                                 onAccept={verifyCPF}
                             />
+
+                            {inapto === true && (
+                                    <p className="text-red-500 mt-2 mb-2">CPF não encontrado ou inapto. Por favor, verifique e tente novamente.</p>
+                            )}
                         </div>
 
                         {apto && userData && (
