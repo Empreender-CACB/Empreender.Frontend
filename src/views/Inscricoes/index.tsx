@@ -50,6 +50,8 @@ function CadastraProposta() {
     const [userData, setUserData] = useState(null);
     const [anexos, setAnexos] = useState(null);
     const [inapto, setInapto] = useState(false);
+    const [message, setMessage] = useState('');
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -146,17 +148,25 @@ function CadastraProposta() {
             });
             setErrors(null);
             setSuccess(true);
+            document.getElementById("formData").reset();
             toast.push(toastNotificationSucess)
+            document.getElementById('success').scrollIntoView({
+                behavior: 'smooth'
+            });
 
         } catch (error) {
             console.error('Error submitting form:', error);
             setErrors(error.response.data.errors);
+            setSuccess(false);
+            setIsSubmitting(false);
             toast.push(toastNotification)
             document.getElementById('errors').scrollIntoView({
                 behavior: 'smooth'
             });
         }
+        
 
+        await verifyCPF(cpf);
         setIsSubmitting(false);
 
     };
@@ -217,39 +227,43 @@ function CadastraProposta() {
 
     // };
     const verifyCPF = async (value: any) => {
-        console.log(value)
+        setCpf(value);
         if (value.length === 14) {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}`);
+    
                 if (response.status === 200) {
-                    setApto(true); // If status is 200, set apto to true
+                    console.log('CPF está na base e apto.');
+                    setApto(true); // Se o status for 200, apto é true
                     setUserData(response.data.candidato);
                     setAnexos(response.data.anexos);
                     setInapto(false);
-                } else {
-                    console.log('to aqui')
-                    setApto(false); // Otherwise, set apto to false
-                    setUserData(null);
-                    setAnexos(null);
-                    setInapto(true);
-                }
+                } 
             } catch (error) {
-                console.error('Error fetching data:', error);
-                setApto(false); // In case of an error, also set apto to false
+                if (axios.isAxiosError(error) && error.response) {
+                    if (error.response.status === 404) {
+                        setMessage('O CPF informado não está na lista de inscrição.')
+                    } else if (error.response.status === 403) {
+                        setMessage('No momento, o CPF informado não está selecionado para prosseguir na seleção.')
+                    } else {
+                        console.error('Erro desconhecido:', error.message);
+                    }
+                } else {
+                    console.error('Erro ao buscar dados:', error);
+                }
+                setApto(false); // Em caso de erro, também defina apto como false
                 setUserData(null);
                 setAnexos(null);
-                setInapto(false);
                 setInapto(true);
             }
-        }
-        else {
+        } else {
             setApto(false);
             setUserData(null);
             setAnexos(null);
             setInapto(false);
-
         }
     };
+    
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
@@ -306,7 +320,9 @@ function CadastraProposta() {
                             />
 
                             {inapto === true && (
-                                    <p className="text-red-500 mt-2 mb-2">CPF não encontrado ou considerado inapto. Por favor, verifique e tente novamente.</p>
+                                            <Alert showIcon className="mb-4">
+                                               {message}
+                                            </Alert>
                             )}
                         </div>
 
@@ -314,7 +330,17 @@ function CadastraProposta() {
 
                             <>
 
-                            <form onSubmit={handleSubmit}>
+                                <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
+                                <div id="success">
+                                {success && 
+                                (<div className='pt-2 pb-2'>
+                                    <Alert showIcon className="mb-4" type="success">
+                                        Arquivos atualizados com sucesso.
+                                    </Alert>
+                                </div>)}
+                                </div>
+
+                            <form  id="formData" onSubmit={handleSubmit}>
                                 <div className="p-4 bg-white shadow-md rounded-lg mb-10">
                                     <h2 className="text-lg font-bold mb-2">Informações do candidato</h2>
                                     <p><strong>Nome:</strong> {userData.nome}</p>
@@ -323,28 +349,17 @@ function CadastraProposta() {
                                     <p><strong>Email:</strong> {userData.email}</p>
                                 </div>
                                 <div className="bg-white shadow-md rounded-lg p-4">
-                                    <h3 className="text-lg font-semibold mb-4">Lista de Anexos já enviados</h3>
+                                    <h3 className="text-lg font-semibold mb-4">Lista de arquivos enviados</h3>
                                     <ul className="divide-y divide-gray-200">
                                         {anexos.map((anexo) => (
                                         <li key={anexo.id} className="py-2 flex justify-between items-center">
                                             <span className="text-sm text-gray-700">{anexo.nome_arquivo}</span>
-                                            <button
-                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                                            onClick={() => alert(`Download de ${anexo.nome_arquivo}`)} // Substitua pela lógica de download real
-                                            >
-                                            Baixar
-                                            </button>
                                         </li>
                                         ))}
                                     </ul>
                                     </div>
                                 <div>
-                                <ErrorComponent errors={errors} />
-                                {success && (<>
-                                    <Alert showIcon className="mb-4" type="success">
-                Arquivos atualizados com sucesso.
-            </Alert>
-                                </>)}
+
 
                                     <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
                                         <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -393,7 +408,9 @@ function CadastraProposta() {
 
                                 <div className="center text-center ">
                                
-                                <Button disabled={!apto} variant="solid">Complementar dados</Button>
+                                <Button
+                                disabled={isSubmitting}
+                                title={isSubmitting ? "Enviando informações..." : ""} variant="solid">Complementar dados</Button>
 
                                 </div>
                             </form>
