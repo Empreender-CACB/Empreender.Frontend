@@ -122,7 +122,7 @@ function CadastraProposta() {
 
         const fileInputs = event.target.querySelectorAll('[name="files"]');
 
-        fileInputs.forEach((fileInput:any) => {
+        fileInputs.forEach((fileInput: any) => {
             const files = fileInput.files;
             for (let i = 0; i < files.length; i++) {
                 formData.append('files', files[i]);
@@ -131,7 +131,7 @@ function CadastraProposta() {
 
         const selectElements = event.target.querySelectorAll('[name="type_document"]');
 
-        selectElements.forEach((selectElement:any) => {
+        selectElements.forEach((selectElement: any) => {
             for (let i = 0; i < selectElement.options.length; i++) {
                 if (selectElement.options[i].selected) {
                     formData.append('selectValues', selectElement.options[i].value);
@@ -164,7 +164,7 @@ function CadastraProposta() {
                 behavior: 'smooth'
             });
         }
-        
+
 
         await verifyCPF(cpf);
         setIsSubmitting(false);
@@ -231,20 +231,20 @@ function CadastraProposta() {
         if (value.length === 14) {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}`);
-    
+
                 if (response.status === 200) {
                     console.log('CPF está na base e apto.');
                     setApto(true); // Se o status for 200, apto é true
                     setUserData(response.data.candidato);
                     setAnexos(response.data.anexos);
                     setInapto(false);
-                } 
+                }
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response) {
                     if (error.response.status === 404) {
                         setMessage('O CPF informado não está na lista de inscrição.')
                     } else if (error.response.status === 403) {
-                        setMessage('No momento, o CPF informado não está selecionado para prosseguir na seleção.')
+                        setMessage('O CPF informado não foi selecionado para prosseguir na seleção.')
                     } else {
                         console.error('Erro desconhecido:', error.message);
                     }
@@ -263,7 +263,7 @@ function CadastraProposta() {
             setInapto(false);
         }
     };
-    
+
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
@@ -296,135 +296,201 @@ function CadastraProposta() {
                             </h1>
                         </div>
 
-                        
+
 
                         <div className="bg-white dark:bg-gray-800 p-10 center text-center">
                             <span className="text-xl text-gray-800 dark:text-gray-100 font-bold">
                                 Inscrições encerradas. Para acessar o resultado,&nbsp;
                                 <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY=" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
                                     clique aqui
-                                </a>.
+                                </a> ou informe o CPF.
                             </span>
                         </div>
-                        
 
-                    <>
-                        <div className='center text-center pb-5'>
-                            {/* <h3 className='mb-2'>Complementar dados</h3> */}
-                            <IMaskInput
-                                className='input input-md h-11 focus:ring-sky-900 focus-within:ring-sky-900 focus-within:border-sky-900 focus:border-sky-900 mb-2'
-                                mask={'000.000.000-00'}
-                                name='cpf'
-                                placeholder='Informe o seu CPF'
-                                onAccept={verifyCPF}
-                            />
 
-                            {inapto === true && (
-                                            <Alert showIcon className="mb-4">
-                                               {message}
-                                            </Alert>
-                            )}
-                        </div>
+                        <>
+                            <div className='center text-center pb-5'>
+                                {/* <h3 className='mb-2'>Complementar dados</h3> */}
+                                <IMaskInput
+                                    className='input input-md h-11 focus:ring-sky-900 focus-within:ring-sky-900 focus-within:border-sky-900 focus:border-sky-900 mb-2'
+                                    mask={'000.000.000-00'}
+                                    name='cpf'
+                                    placeholder='Informe o seu CPF'
+                                    onAccept={verifyCPF}
+                                />
 
-                        {apto && userData && (
-
-                            <>
-
-                                <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
-                                <div id="success">
-                                {success && 
-                                (<div className='pt-2 pb-2'>
-                                    <Alert showIcon className="mb-4" type="success">
-                                        Arquivos atualizados com sucesso.
+                                {inapto === true && (
+                                    <Alert showIcon className="mb-4">
+                                        {message}
                                     </Alert>
-                                </div>)}
-                                </div>
-
-                            <form  id="formData" onSubmit={handleSubmit}>
-                                <div className="p-4 bg-white shadow-md rounded-lg mb-10">
-                                    <h2 className="text-lg font-bold mb-2">Informações do candidato</h2>
-                                    <p><strong>Nome:</strong> {userData.nome}</p>
-                                    <p><strong>CPF:</strong> {userData.cpf}</p>
-                                    <p><strong>Telefone:</strong> {userData.telefone}</p>
-                                    <p><strong>Email:</strong> {userData.email}</p>
-                                </div>
-                                <div className="bg-white shadow-md rounded-lg p-4">
-                                    <h3 className="text-lg font-semibold mb-4">Lista de arquivos enviados</h3>
-                                    <ul className="divide-y divide-gray-200">
-                                        {anexos.map((anexo) => (
-                                        <li key={anexo.id} className="py-2 flex justify-between items-center">
-                                            <span className="text-sm text-gray-700">{anexo.nome_arquivo}</span>
-                                        </li>
-                                        ))}
-                                    </ul>
-                                    </div>
-                                <div>
+                                )}
+                            </div>
 
 
-                                    <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
-                                        <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-                                            Documentos
-                                        </label>
-                                        <div className="mt-2">
-                                            <div className="container">
-                                                {inputs.map((item, index) => (
-                                                    <div className="input_container" key={index}>
-                                                        <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
-                                                            {/* Input de Upload */}
-                                                            <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
-                                                            </label>
+                            {apto && userData && (
 
-                                                            {/* Select */}
-                                                            <div className='flex items-center space-x-2'>
-                                                                <select name="type_document" className="border p-2 rounded-md">
-                                                                    <option value="Currículo profissional">Currículo Profissional</option>
-                                                                    <option value="Formação acadêmica">Formação acadêmica</option>
-                                                                    <option value="Experiência profissional">Experiência profissional</option>
-                                                                    <option value="Cursos realizados">Cursos realizados</option>
-                                                                </select>
-                                                                {inputs.length > 1 && (
+                                <>
 
-                                                                    <span onClick={() => handleDeleteInput(index)}>
-                                                                        <CloseIcon />
-                                                                    </span>
-                                                                )}
-                                                            </div>
+<div className="p-4 bg-white shadow-md  border-2 rounded-lg mt-2 mb-10">
+                                            <h2 className="text-lg font-bold mb-2">Informações do candidato</h2>
+                                            <p><strong>Nome:</strong> {userData.nome}</p>
+                                            <p><strong>CPF:</strong> {userData.cpf}</p>
+                                            <p><strong>Telefone:</strong> {userData.telefone}</p>
+                                            <p><strong>Email:</strong> {userData.email}</p>
+                                        </div>
+                                    <div className="">
+                                        <div className="p-4 bg-white shadow-md rounded-lg mb-10 bg-white shadow-lg  border-2 rounded-lg mt-2">
 
+                                            <h3 className="text-gray-700 mb-4">
+                                                Para seguir com o processo de seleção:
+                                            </h3>
+                                            <ol className="list-bullet list-inside text-gray-700 mb-4">
 
+                                                <li>
+                                                    Verifique se a documentação inserida na sua inscrição está em
+                                                    conformidade com a lista de documentos exigidos no{" "}
+                                                    <span className="font-semibold">
+                                                        <a target='_blank' href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==">Termo de Referência (TR0236/24)</a>
 
-                                                        </div>
-                                                        {index === inputs.length - 1 && (
-                                                            <Button onClick={() => handleAddInput()} variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />}>
-                                                                <span>Adicionar mais arquivos</span>
-                                                            </Button>)}
-                                                    </div>
-                                                ))}
-
-                                            </div>
+                                                    </span>{" "}
+                                                    em anexo e realize os ajustes necessários até o dia{" "}
+                                                    <span className="font-semibold">09/08/2024 (sexta-feira)</span>:
+                                                </li>
+                                            </ol>
+                                            <ul className="list-disc list-inside text-gray-700 mb-4 ml-5">
+                                                <li>
+                                                    Documento de identificação onde conste o número de
+                                                    inscrição no CPF.
+                                                </li>
+                                                <li>
+                                                    Documentos comprobatórios da participação em cursos de graduação e
+                                                    pós-graduação (lato sensu e stricto sensu) informados no currículo.
+                                                </li>
+                                                <li>
+                                                    Documentos comprobatórios de cursos de especialização e extensão
+                                                    informados no currículo.
+                                                </li>
+                                                <li>
+                                                    Documentos comprobatórios da experiência profissional informada no
+                                                    currículo.
+                                                </li>
+                                            </ul>
+                                            <p className="text-gray-700 mb-4">
+                                                Caso seja constatada a ausência de alguma documentação, o candidato
+                                                poderá ser considerado{" "}
+                                                <span className="text-red-600 font-semibold">INAPTO</span>.
+                                            </p>
+                                            <p className="text-gray-700 mb-4">
+                                                A classificação do candidato como{" "}
+                                                <span className="text-green-600 font-semibold">APTO</span> e sua
+                                                posição no ranking gera apenas expectativa de contratação, não se
+                                                constituindo em obrigação da CACB. A eventual efetivação da
+                                                contratação observará as disposições legais e o interesse e
+                                                conveniência da CACB e da Associação Comercial local.
+                                            </p>
+                                            <p className="text-gray-700">
+                                                Ressalta-se que há o limite de até duas ACEs por consultor. Será
+                                                levada em conta, também, a disponibilidade adequada de tempo para
+                                                atender às necessidades e a distância entre os Municípios para a
+                                                realização dos trabalhos.
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="center text-center ">
-                               
-                                <Button
-                                disabled={isSubmitting}
-                                title={isSubmitting ? "Enviando informações..." : ""} variant="solid">Complementar dados</Button>
+                                    <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
+                                    <div id="success">
+                                        {success &&
+                                            (<div className='pt-2 pb-2'>
+                                                <Alert showIcon className="mb-4" type="success">
+                                                    Arquivos atualizados com sucesso.
+                                                </Alert>
+                                            </div>)}
+                                    </div>
 
-                                </div>
-                            </form>
-                            </>
+                                    <form id="formData" onSubmit={handleSubmit}>
 
-                        )}
+                                        <div className="bg-white shadow-md border-2 rounded-lg mt-2 p-4">
+                                            <h3 className="text-lg font-semibold mb-4">Lista de arquivos enviados</h3>
+                                            <ul className="divide-y divide-gray-200">
+                                                {anexos.map((anexo) => (
+                                                    <li key={anexo.id} className="py-2 flex justify-between items-center">
+                                                        <span className="text-sm text-gray-700">{anexo.nome_arquivo}</span>
+                                                        
+                                                        <Button size='xs' className='mr-4' variant="solid">  <a href={`${import.meta.env.VITE_API_URL}/anexo/${anexo.id}/download/` } target="_blank" rel="noopener noreferrer">ver documento</a>  </Button>
+                                                      
+                                                    </li>
+                                                    
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div>
 
-                        <div className="mt-8 md:order-1 md:mt-0">
-                            <p className="text-center leading-5 text-gray-500">
-                                <span className="font-semibold">{parametro.valor}</span><br />
-                            </p>
-                        </div>
+
+                                            <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
+                                                <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
+                                                    Documentos
+                                                </label>
+                                                <div className="mt-2">
+                                                    <div className="container">
+                                                        {inputs.map((item, index) => (
+                                                            <div className="input_container" key={index}>
+                                                                <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
+                                                                    {/* Input de Upload */}
+                                                                    <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
+                                                                        <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
+                                                                    </label>
+
+                                                                    {/* Select */}
+                                                                    <div className='flex items-center space-x-2'>
+                                                                        <select name="type_document" className="border p-2 rounded-md">
+                                                                            <option value="Currículo profissional">Currículo Profissional</option>
+                                                                            <option value="Formação acadêmica">Formação acadêmica</option>
+                                                                            <option value="Experiência profissional">Experiência profissional</option>
+                                                                            <option value="Cursos realizados">Cursos realizados</option>
+                                                                            <option value="Documento de identificação">Documento de identificação</option>
+                                                                        </select>
+                                                                        {inputs.length > 1 && (
+
+                                                                            <span onClick={() => handleDeleteInput(index)}>
+                                                                                <CloseIcon />
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                {index === inputs.length - 1 && (
+                                                                    <Button onClick={() => handleAddInput()} variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />}>
+                                                                        <span>Adicionar mais arquivos</span>
+                                                                    </Button>)}
+                                                            </div>
+                                                        ))}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="center text-center ">
+
+                                            <Button
+                                                disabled={isSubmitting}
+                                                title={isSubmitting ? "Enviando informações..." : ""} variant="solid">Complementar dados</Button>
+
+                                        </div>
+                                    </form>
+                                </>
+
+                            )}
+
+                            <div className="mt-8 md:order-1 md:mt-0">
+                                <p className="text-center leading-5 text-gray-500">
+                                    <span className="font-semibold">{parametro.valor}</span><br />
+                                </p>
+                            </div>
                         </>
-                        
+
                     </div>
                 </div>
 
