@@ -31,6 +31,29 @@ import toast from '@/components/ui/toast'
 // )
 
 const E2022Consultores = () => {
+
+    // const defaultFilterValue = [
+    //     {
+    //         name: 'id',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'nome',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'cpf',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'uf',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'cidade',
+    //         operator: 'eq',
+    //     },
+    // ]
     const columns = [
         {
             name: 'id',
@@ -154,7 +177,7 @@ const E2022Consultores = () => {
                 </div>
             </div>
             <CustomReactDataGrid
-                filename="Empresas"
+                filename="Inscrições de Consultores"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL
                     }/selecoes/e2022-consultores`}
