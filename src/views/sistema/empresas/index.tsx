@@ -45,11 +45,10 @@ const rfbValue = [
 ]
 
 const empresaOptions = [
-    { value: 'todas', label: 'Todas' },
     { value: 'somente_nucleadas', label: 'Nucleadas' },
     { value: 'nao_nucleadas', label: 'Não nucleadas' },
     { value: 'projetos', label: 'Projeto' },
-    { value: 'vinculadas_entidades', label: 'Entidades' },
+    { value: 'vinculadas_entidades', label: 'Entidade' },
 ];
 
 const nameOptions = [
@@ -66,7 +65,7 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState('todas')
+    const [empresaType, setEmpresaType] = useState<string[]>([]) 
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [entidadeType, setEntidadeType] = useState([])
@@ -82,17 +81,18 @@ const Empresas = () => {
 
     const canExport = !!(user.recursos.includes('empresa_restrita') ||
         (isGestorEntidade && (
-            (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
-            empresaType !== 'nao_nucleadas' &&
-            empresaType !== 'projetos' &&
-            empresaType !== 'todas'
+            (checkedVisaoLocal && !empresaType.includes('nao_nucleadas')) &&
+            !empresaType.includes('nao_nucleadas') &&
+            !empresaType.includes('projetos') &&
+            !empresaType.includes('todas')
         )) || (isUsuarioEntidade && checkedVisaoLocal))
 
 
-    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
+        const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType.join(',')}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
-        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
-        `${entidadeType ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
+        `${segmentoType.length > 0 ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
+        `${entidadeType.length > 0 ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
+
 
     let headerCnae
 
@@ -115,7 +115,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: "",
-            defaultFlex: 0.6,
+            defaultFlex: 0.4,
         },
         {
             name: 'iduf',
@@ -124,6 +124,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.32,
         },
         {
             name: 'nmcidade',
@@ -131,26 +132,80 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.7,
+            render: ({ data }: any) => {
+                const text = data.nmcidade
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
+                    </Tooltip>
+                );
+            },
         },
-        {
+        ...(nameValue === 'nmfantasia' ? [{
             name: 'nmfantasia',
-            header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
+            header: 'Nome Fantasia',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
             value: '',
-            render: ({ data }: any) => (
-                <div>
-                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}>
-                        {data.nmfantasia}
-                    </Link>
-                </div>
-            ),
-        },
+            render: ({ data }: any) => {
+                const text = data.nmfantasia
+                const tooltipText = data.nmfantasia
+
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        }] : [{
+            name: 'nurazaosocial',
+            header: 'Razão Social',
+            defaultFlex: 1.5,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const text = data.nurazaosocial
+                const tooltipText = data.nurazaosocial
+
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        }]),               
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
-            defaultFlex: 1,
+            defaultFlex: 0.7,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -166,30 +221,15 @@ const Empresas = () => {
         {
             name: 'cd_cnae',
             header: 'CNAE',
-            defaultFlex: 1,
+            defaultFlex: 0.4,
             type: 'string',
             operator: 'contains',
             value: '',
-            render: ({ data }: any) => {
-                const code = (data.cd_cnae)
-                return (
-                    <Tooltip
-                        placement='left'
-                        title={
-                            <div>
-                                {code}
-                            </div>
-                        }
-                    >
-                        <span className="cursor-pointer">{code}</span>
-                    </Tooltip>
-                );
-            },
         },
         {
             name: 'st_cnae',
             header: 'Descrição do CNAE',
-            defaultFlex: 1,
+            defaultFlex: 1.7,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -212,7 +252,7 @@ const Empresas = () => {
         {
             name: 'situacao',
             header: 'Situação RFB',
-            defaultFlex: 1,
+            defaultFlex: 0.615,
             type: 'select',
             operator: 'equals',
             value: '',
@@ -333,21 +373,22 @@ const Empresas = () => {
     }, [])
 
     const onChangeSegmentos = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
-        setSegmentoType(values);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setSegmentoType(values)
     }
 
-    const onChangeEmpresa = (option: any) => {
-        return setEmpresaType(option.value)
+    const onChangeEmpresa = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setEmpresaType(values)
     }
 
     const onChangeOrigem = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
         setOrigemType(values)
     }
 
     const onChangeEntidade = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
         setEntidadeType(values)
     }
 
@@ -391,10 +432,11 @@ const Empresas = () => {
                     <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Vínculo: </span>
                         <Select
-                            defaultValue={empresaOptions[0]}
+                            isMulti
                             options={empresaOptions}
                             onChange={onChangeEmpresa}
-                            customWidth={'160px'}>
+                            placeholder="Todos"
+                            >
                         </Select>
                     </div>
 
@@ -409,7 +451,7 @@ const Empresas = () => {
                         </Select>
                     </div>
 
-                    {empresaType === 'somente_nucleadas' && (
+                    {empresaType.includes('somente_nucleadas') && (
                         <div className='flex items-center'>
                             <span className="font-black">Visão local: </span>
 
@@ -431,9 +473,9 @@ const Empresas = () => {
                     )}
                 </div>
 
-                {empresaType === 'somente_nucleadas' && (
-                    <div>
-                        <div className="col-span-1">
+                <div className="flex flex-wrap">
+                    {empresaType.includes('somente_nucleadas') && (
+                        <div className={`flex-1 ${empresaType.includes('vinculadas_entidades') ? 'w-1/2 pr-2' : 'w-full'}`}>
                             <span className="font-black">Segmento: </span>
                             <Select
                                 isMulti
@@ -444,12 +486,10 @@ const Empresas = () => {
                                 onChange={onChangeSegmentos}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {empresaType === 'vinculadas_entidades' && (
-                    <div>
-                        <div className="col-span-1">
+                    {empresaType.includes('vinculadas_entidades') && (
+                        <div className={`flex-1 ${empresaType.includes('somente_nucleadas') ? 'w-1/2 pl-2' : 'w-full'}`}>
                             <span className="font-black">Entidade: </span>
                             <Select
                                 isMulti
@@ -460,8 +500,9 @@ const Empresas = () => {
                                 onChange={onChangeEntidade}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
+
             </div>
         );
 
