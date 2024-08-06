@@ -89,7 +89,7 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                         value: marco.id,
                         label: marco.nome,
                     }));
-                    marcosOptions.push({ value: 'outros', label: 'Outros' });
+                    marcosOptions.push({ value: 'Outros', label: 'Outros' });
                     setMarcosCriticos(marcosOptions);
                 }
             } catch (error) {
@@ -144,8 +144,8 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                                         )}
                                         onChange={(option) => {
                                             form.setFieldValue(field.name, option?.value);
-                                            setShowNomeMarcoCritico(option?.value === 'outros');
-                                            if (option?.value !== 'outros') {
+                                            setShowNomeMarcoCritico(option?.value === 'Outros');
+                                            if (option?.value !== 'Outros') {
                                                 form.setFieldValue('nome_marco_critico', '');
                                             }
                                         }}

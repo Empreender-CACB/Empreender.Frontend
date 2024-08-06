@@ -50,6 +50,7 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                     {historico.length > 0 ? (
                         historico.map((entry) => (
                             <div key={entry.id} className="mb-4 border-b pb-2">
+                                <p><strong>Usuário/Data:</strong> {entry.nome_usuario} - {format(new Date(entry.data), 'dd/MM/yyyy HH:mm')}</p>
                                 {entry.acao === 'anexo' ? (
                                     <>
                                         <p><strong>Ação:</strong> Adição de Anexo</p>
@@ -61,8 +62,7 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                                         <p><strong>Comentário:</strong> {entry.comentario || '-'}</p>
                                     </>
                                 )}
-                                <p><strong>Usuário:</strong> {entry.nome_usuario}</p>
-                                <p><strong>Data/Hora:</strong> {format(new Date(entry.data), 'dd/MM/yyyy HH:mm')}</p>
+                                
                             </div>
                         ))
                     ) : (
