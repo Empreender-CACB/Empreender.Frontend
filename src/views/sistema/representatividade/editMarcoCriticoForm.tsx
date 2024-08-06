@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { FormItem, FormContainer } from '@/components/ui/Form';
@@ -11,11 +11,6 @@ import { AxiosResponse } from 'axios';
 import { Usuario } from '@/@types/generalTypes';
 import moment from 'moment';
 
-interface Anexo {
-    file: File;
-    descricao: string;
-}
-
 interface AnexoDisplay {
     id: number;
     nome: string;
@@ -23,7 +18,7 @@ interface AnexoDisplay {
     descricao: string;
 }
 
-const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate }: { isGestor: boolean | undefined, onClose: () => void, marcoId: number, entidadeId: string, onUpdate: () => void }) => {
+const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, onUpdate }: { isGestor: boolean | undefined, onClose: () => void, marcoId: number, onUpdate: () => void }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -61,6 +56,13 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
     const [anexosExistentes, setAnexosExistentes] = useState<AnexoDisplay[]>([]);
     const [marcoCongelado, setMarcoCongelado] = useState(false);
     const [anexosParaRemover, setAnexosParaRemover] = useState<number[]>([]);
+    const [tipoAtual, setTipoAtual] = useState('');
+
+    const handleTipoChange = (option: any, setFieldValue: any) => {
+        setFieldValue('tipo_marco_critico', option?.value);
+        setFieldValue('tipo', option?.tipo);
+        setTipoAtual(option?.tipo);
+    };
 
     const handleRemoveAnexo = (anexoId: number) => {
         setAnexosParaRemover((prev) => [...prev, anexoId]);
@@ -86,20 +88,20 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
             }
         };
 
-        const fetchMarcosCriticosPadrao = async () => {
+        const fetchMarcosCriticosPadrao = async (marcoId: number) => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
-                    url: '/representatividade/listar-marco-critico-padrao',
-                    method: 'get',
-                    params: { entidadeId }
+                    url: `/representatividade/listar-marco-critico-padrao?id=${marcoId}`,
+                    method: 'get'
                 });
 
                 if (response.data) {
                     const marcosOptions = response.data.map((marco: any) => ({
                         value: String(marco.id),
                         label: marco.nome,
+                        tipo: marco.tipo,
                     }));
-                    marcosOptions.push({ value: 'outros', label: 'Outros' });
+                    marcosOptions.push({ value: 'outros', label: 'Outros', tipo: 'outros' });
                     setMarcosCriticos(marcosOptions);
                 }
             } catch (error) {
@@ -127,6 +129,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
                         entidadeId: response.data.relacao_2,
                     });
 
+                    setTipoAtual(response.data.tipo_marco_critico);
                     setMarcoCongelado(response.data.congelado);
 
                     if (response.data.tipo_marco_critico === 'outros') {
@@ -151,7 +154,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
         };
 
         fetchUsuarios();
-        fetchMarcosCriticosPadrao();
+        fetchMarcosCriticosPadrao(marcoId);
         fetchMarcoCritico();
         fetchAnexos();
     }, [marcoId]);
@@ -177,6 +180,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
     };
 
     const toggleEdit = () => setIsEditing(!isEditing);
+
 
     return (
         <Formik
@@ -206,16 +210,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
                                                 placeholder="Selecione o tipo de marco crítico"
                                                 options={marcosCriticos}
                                                 value={marcosCriticos.find(option => option.value === field.value)}
-                                                onChange={(option) => {
-                                                    form.setFieldValue(
-                                                        field.name,
-                                                        option?.value
-                                                    );
-                                                    setShowNomeMarcoCritico(option?.value === 'outros');
-                                                    if (option?.value !== 'outros') {
-                                                        form.setFieldValue('nome_marco_critico', '');
-                                                    }
-                                                }}
+                                                onChange={(option) => handleTipoChange(option, form.setFieldValue)}
                                                 isDisabled={!isEditing}
                                             />
                                         )}
@@ -244,6 +239,28 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
                                     )}
                                 </FormItem>
                             )}
+
+                            <FormItem
+                                label="Descrição"
+                                invalid={errors.descricao && touched.descricao}
+                                errorMessage={errors.descricao}
+                            >
+                                {isEditing && tipoAtual === 'Específico' ? (
+                                    <Field name="descricao">
+                                        {({ field }: FieldProps) => (
+                                            <Input
+                                                {...field}
+                                                textArea
+                                                placeholder="Descrição"
+                                                className="form-textarea mt-1 block w-full"
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <div>{values.descricao}</div>
+                                )}
+                            </FormItem>
+
 
                             <FormItem
                                 label="Responsável"
@@ -276,26 +293,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
                                 )}
                             </FormItem>
 
-                            <FormItem
-                                label="Descrição"
-                                invalid={errors.descricao && touched.descricao}
-                                errorMessage={errors.descricao}
-                            >
-                                {isEditing ? (
-                                    <Field name="descricao">
-                                        {({ field }: FieldProps) => (
-                                            <Input
-                                                {...field}
-                                                textArea
-                                                placeholder="Descrição"
-                                                className="form-textarea mt-1 block w-full"
-                                            />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <div>{values.descricao}</div>
-                                )}
-                            </FormItem>
+
 
                             <FormItem
                                 label="Data Prevista"
@@ -394,7 +392,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, entidadeId, onUpdate
                                 </Button>
                             ) : (
                                 <div
-                                    onClick={isGestor ? toggleEdit : () => {}}
+                                    onClick={isGestor ? toggleEdit : () => { }}
                                     className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${marcoCongelado || !isGestor ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     Editar
