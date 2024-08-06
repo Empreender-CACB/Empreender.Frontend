@@ -149,9 +149,9 @@ const Empresas = () => {
                 );
             },
         },
-        {
-            name: 'nome',
-            header: nameValue === 'nmfantasia' ? 'Nome Fantasia' : 'Razão Social',
+        ...(nameValue === 'nmfantasia' ? [{
+            name: 'nmfantasia',
+            header: 'Nome Fantasia',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
@@ -159,9 +159,9 @@ const Empresas = () => {
             render: ({ data }: any) => {
                 const text = data.nmfantasia
                 const tooltipText = data.nmfantasia
-        
+
                 const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
-                
+
                 return (
                     <div>
                         <Tooltip
@@ -175,7 +175,33 @@ const Empresas = () => {
                     </div>
                 );
             },
-        },                    
+        }] : [{
+            name: 'nurazaosocial',
+            header: 'Razão Social',
+            defaultFlex: 1.5,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const text = data.nurazaosocial
+                const tooltipText = data.nurazaosocial
+
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        }]),               
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
