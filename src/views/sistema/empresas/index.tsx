@@ -357,7 +357,7 @@ const Empresas = () => {
                     const mappedOptions = response.data.map((origemItem: any) => {
                         return ({
                             value: origemItem.idassociacao,
-                            label: origemItem.nmrazao,
+                            label: origemItem.sigla_nmrazao,
                         })
                     })
                     setOptionsEntidade(mappedOptions)
@@ -414,7 +414,7 @@ const Empresas = () => {
                                 placement='top'
                                 title={
                                     <div>
-                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa)
+                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa).
                                     </div>
                                 }
                             >
@@ -431,6 +431,18 @@ const Empresas = () => {
 
                     <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Vínculo: </span>
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher mais de um vínculo serão selecionadas empresas que atendem a todos os critérios, removendo empresas fora do escopo.
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2' />
+                            </Tooltip>
+                        </div>
                         <Select
                             isMulti
                             options={empresaOptions}
@@ -442,6 +454,18 @@ const Empresas = () => {
 
                     <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Origem: </span>
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher mais de uma origem as empresas serão selecionadas de maneira aditiva.
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2' />
+                            </Tooltip>
+                        </div>
                         <Select
                             isMulti
                             options={optionsOrigem}
