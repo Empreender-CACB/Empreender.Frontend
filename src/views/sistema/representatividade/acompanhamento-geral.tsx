@@ -197,6 +197,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [reload, setReload] = useState(false);
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
+        console.log(marcoId, idassociacao)
         setSelectedMarco({ marcoId, idassociacao });
         setIsEditModalOpen(true);
     };
@@ -206,16 +207,26 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         setIsAnalysisModalOpen(true);
     };
 
-    const handleCloseAnalysisModal = () => setIsAnalysisModalOpen(false);
-
-    const handleCloseEditModal = () => setIsEditModalOpen(false);
-    const handleCloseStatusModal = () => setIsStatusModalOpen(false);
     const handleOpenAnexoModal = (marcoId: any, idassociacao: any) => {
         setSelectedMarco({ marcoId, idassociacao });
         setIsAnexoModalOpen(true);
     };
 
+    const handleOpenHistoricoModal = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
+        setIsHistoricoModalOpen(true);
+    };
+
+    const handleStatusChange = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
+        setIsStatusModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => setIsEditModalOpen(false);
+    const handleCloseAnalysisModal = () => setIsAnalysisModalOpen(false);
     const handleCloseAnexoModal = () => setIsAnexoModalOpen(false);
+    const handleCloseStatusModal = () => setIsStatusModalOpen(false);
+    const handleCloseHistoricoModal = () => setIsHistoricoModalOpen(false);
 
     const handleUpdate = async () => {
         setReload(!reload);
@@ -235,13 +246,6 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         }
     };
 
-    const handleOpenHistoricoModal = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
-        setIsHistoricoModalOpen(true);
-    };
-
-    const handleCloseHistoricoModal = () => setIsHistoricoModalOpen(false);
-
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
         const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
@@ -254,59 +258,55 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaEye />}
-                        onClick={() => handleOpenEditModal(data.id_acompanhamento, data.idassociacao)}
+                        onClick={() => handleOpenEditModal(data['acompanhamento.id'], data.idassociacao)}
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" && isConsultor &&
+                {data.status === "Em análise" && isConsultor && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
                             size="xs"
                             icon={<FaFileSignature />}
-                            onClick={() => handleStatusChange(data.id_acompanhamento)}
+                            onClick={() => handleStatusChange(data['acompanhamento.id'], data.idassociacao)}
                         />
                     </Tooltip>
-                }
+                )}
 
-                {data.status == "Não atingido" && isGestor &&
+                {data.status === "Não atingido" && isGestor && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
                             size="xs"
                             icon={<FaClipboardCheck />}
-                            onClick={() => handleOpenAnalysisModal(data.id_acompanhamento, data.idassociacao)}
+                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'], data.idassociacao)}
                         />
                     </Tooltip>
-                }
+                )}
 
-                {isGestor &&
+                {isGestor && (
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
                             size="xs"
                             icon={<FaPaperclip />}
-                            onClick={() => handleOpenAnexoModal(data.id_acompanhamento, data.idassociacao)}
+                            onClick={() => handleOpenAnexoModal(data['acompanhamento.id'], data.idassociacao)}
                         />
                     </Tooltip>
-                }
+                )}
 
                 <Tooltip title="Histórico">
                     <Button
                         variant="solid"
                         size="xs"
                         icon={<FaHistory />}
-                        onClick={() => handleOpenHistoricoModal(data.id_acompanhamento, data.idassociacao)}
+                        onClick={() => handleOpenHistoricoModal(data['acompanhamento.id'], data.idassociacao)}
                     />
                 </Tooltip>
             </div>
-        )
+        );
     };
 
-    const handleStatusChange = (id: any) => {
-        setSelectedMarco({ marcoId: id, idassociacao: selectedMarco.idassociacao });
-        setIsStatusModalOpen(true);
-    };
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
