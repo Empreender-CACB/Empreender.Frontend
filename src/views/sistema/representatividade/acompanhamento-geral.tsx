@@ -47,12 +47,12 @@ const tarefaStatusValue = [
 const AcompanhamentoGeralMarcosCriticos = () => {
     const columns = [
         {
-            name: 'id_acompanhamento',
+            name: 'acompanhamento.id',
             header: 'Id',
-            columnName: 'id_acompanhamento',
-            type: 'string',
+            columnName: 'acompanhamento.id',
+            type: 'number',
             defaultFlex: 0.5,
-            operator: 'contains',
+            operator: 'eq',
             value: '',
         },
         {
