@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css'
 
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
@@ -11,7 +11,7 @@ import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 import { Button, Dialog, Tooltip } from '@/components/ui'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
 import ApiService from '@/services/ApiService'
 import EditMarcoCriticoForm from './editMarcoCriticoForm'
@@ -188,7 +188,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     ];
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedMarcoId, setSelectedMarcoId] = useState(null);
+    const [selectedMarco, setSelectedMarco] = useState({ marcoId: null, idassociacao: null });
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
@@ -196,13 +196,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     const [reload, setReload] = useState(false);
 
-    const handleOpenEditModal = (marcoId: any) => {
-        setSelectedMarcoId(marcoId);
+    const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
         setIsEditModalOpen(true);
     };
 
-    const handleOpenAnalysisModal = (marcoId: any) => {
-        setSelectedMarcoId(marcoId);
+    const handleOpenAnalysisModal = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
         setIsAnalysisModalOpen(true);
     };
 
@@ -210,13 +210,12 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     const handleCloseEditModal = () => setIsEditModalOpen(false);
     const handleCloseStatusModal = () => setIsStatusModalOpen(false);
-    const handleOpenAnexoModal = (marcoId: any) => {
-        setSelectedMarcoId(marcoId);
+    const handleOpenAnexoModal = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
         setIsAnexoModalOpen(true);
     };
 
     const handleCloseAnexoModal = () => setIsAnexoModalOpen(false);
-
 
     const handleUpdate = async () => {
         setReload(!reload);
@@ -225,7 +224,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/${selectedMarco.marcoId}`,
                 method: 'put',
                 data: { status, comentario }
             });
@@ -236,8 +235,8 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         }
     };
 
-    const handleOpenHistoricoModal = (marcoId: any) => {
-        setSelectedMarcoId(marcoId);
+    const handleOpenHistoricoModal = (marcoId: any, idassociacao: any) => {
+        setSelectedMarco({ marcoId, idassociacao });
         setIsHistoricoModalOpen(true);
     };
 
@@ -246,7 +245,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
         const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
-        const isGestor = data.userAssociacoes.includes(String(data.idassociacao));
+        const isGestor = data.userAssociacoes.includes(data.idassociacao);
 
         return (
             <div className="flex space-x-2">
@@ -255,7 +254,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaEye />}
-                        onClick={() => handleOpenEditModal(data.id_acompanhamento)}
+                        onClick={() => handleOpenEditModal(data.id_acompanhamento, data.idassociacao)}
                     />
                 </Tooltip>
 
@@ -276,7 +275,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaClipboardCheck />}
-                            onClick={() => handleOpenAnalysisModal(data.id_acompanhamento)}
+                            onClick={() => handleOpenAnalysisModal(data.id_acompanhamento, data.idassociacao)}
                         />
                     </Tooltip>
                 }
@@ -287,7 +286,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaPaperclip />}
-                            onClick={() => handleOpenAnexoModal(data.id_acompanhamento)}
+                            onClick={() => handleOpenAnexoModal(data.id_acompanhamento, data.idassociacao)}
                         />
                     </Tooltip>
                 }
@@ -297,16 +296,15 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaHistory />}
-                        onClick={() => handleOpenHistoricoModal(data.id_acompanhamento)}
+                        onClick={() => handleOpenHistoricoModal(data.id_acompanhamento, data.idassociacao)}
                     />
                 </Tooltip>
             </div>
         )
     };
 
-    // Funções de handler para os botões
     const handleStatusChange = (id: any) => {
-        setSelectedMarcoId(id);
+        setSelectedMarco({ marcoId: id, idassociacao: selectedMarco.idassociacao });
         setIsStatusModalOpen(true);
     };
 
@@ -326,23 +324,23 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
 
-            {selectedMarcoId && (
+            {selectedMarco.marcoId && (
                 <>
-                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={1000}>
-                        <EditMarcoCriticoForm isGestor={true} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
+                        <EditMarcoCriticoForm entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}
                         onClose={handleCloseStatusModal}
                         onSave={handleSaveStatusChange}
                     />
-                    <HistoryMarcoCriticoModal isOpen={isHistoricoModalOpen} onClose={handleCloseHistoricoModal} marcoId={selectedMarcoId} />
+                    <HistoryMarcoCriticoModal isOpen={isHistoricoModalOpen} onClose={handleCloseHistoricoModal} marcoId={selectedMarco.marcoId} />
                 </>
             )}
         </AdaptableCard>

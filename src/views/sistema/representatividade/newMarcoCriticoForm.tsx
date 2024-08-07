@@ -60,20 +60,20 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
-                const response: AxiosResponse<Usuario[]> = await ApiService.fetchData({
-                    url: '/usuarios-ativos',
-                    method: 'get',
+                const response: AxiosResponse = await ApiService.fetchData({
+                    url: `/get-usuarios-gestores/${entidadeId}`,
+                    method: 'get'
                 });
-
+        
                 if (response.data) {
-                    const usuariosOptions = response.data.map(usuario => ({
+                    const usuariosOptions = response.data.map((usuario: Usuario) => ({
                         value: usuario.nucpf,
                         label: usuario.nmusuario,
                     }));
                     setUsuarios(usuariosOptions);
                 }
             } catch (error) {
-                console.error('Erro ao buscar usuários ativos:', error);
+                console.error('Erro ao buscar usuários gestores:', error);
             }
         };
 

@@ -167,7 +167,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const user = useAppSelector((state) => state.auth.user);
     const isGestor = associacaoDetails && user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === associacaoDetails.idassociacao);
-
+    
     const [reload, setReload] = useState(false);
 
     const handleOpenModal = () => setIsModalOpen(true);
@@ -375,8 +375,8 @@ const AcompanhamentoMarcosCriticos = () => {
             </Dialog>
             {selectedMarcoId && (
                 <>
-                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={1000}>
-                        <EditMarcoCriticoForm isGestor={isGestor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                    <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
+                        <EditMarcoCriticoForm entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />

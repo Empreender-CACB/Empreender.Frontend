@@ -10,6 +10,7 @@ import ApiService from '@/services/ApiService';
 import { AxiosResponse } from 'axios';
 import { Usuario } from '@/@types/generalTypes';
 import moment from 'moment';
+import { useAppSelector } from '@/store';
 
 interface AnexoDisplay {
     id: number;
@@ -18,7 +19,15 @@ interface AnexoDisplay {
     descricao: string;
 }
 
-const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, onUpdate }: { isGestor: boolean | undefined, onClose: () => void, marcoId: number, onUpdate: () => void }) => {
+interface EditMarcoCriticoFormProps {
+    entidadeId: any;
+    isGestor?: boolean;
+    onClose: () => void;
+    marcoId: number;
+    onUpdate: () => void;
+}
+
+const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId, isGestor, onClose, marcoId, onUpdate }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -29,6 +38,12 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, onUpdate }: { isGest
         dataEncerramento: null,
         entidadeId: '',
     });
+    
+    const user = useAppSelector((state) => state.auth.user);
+
+    if (isGestor === undefined) {
+        isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
+    }
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -72,10 +87,10 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, onUpdate }: { isGest
         const fetchUsuarios = async () => {
             try {
                 const response: AxiosResponse = await ApiService.fetchData({
-                    url: '/usuarios-ativos',
-                    method: 'get',
+                    url: `/get-usuarios-gestores/${entidadeId}`,
+                    method: 'get'
                 });
-
+        
                 if (response.data) {
                     const usuariosOptions = response.data.map((usuario: Usuario) => ({
                         value: usuario.nucpf,
@@ -84,7 +99,7 @@ const EditMarcoCriticoForm = ({ isGestor, onClose, marcoId, onUpdate }: { isGest
                     setUsuarios(usuariosOptions);
                 }
             } catch (error) {
-                console.error('Erro ao buscar usuários ativos:', error);
+                console.error('Erro ao buscar usuários gestores:', error);
             }
         };
 
