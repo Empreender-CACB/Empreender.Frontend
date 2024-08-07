@@ -60,42 +60,49 @@ const E2022Consultores = () => {
             header: 'ID',
             defaultFlex: 1,
             type: 'number',
+            operator: 'eq',
             filterEditor: NumberFilter,
         },
         {
             name: 'nome',
             header: 'Nome',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'cpf',
             header: 'CPF',
             defaultFlex: 1.5,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'uf',
             header: 'UF',
             defaultFlex: 1,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'cidade',
             header: 'Cidade',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'telefone',
             header: 'Telefone',
             defaultFlex: 1.5,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'email',
             header: 'Email',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
@@ -104,6 +111,7 @@ const E2022Consultores = () => {
             defaultFlex: 1.5,
             type: 'date',
             dateFormat: 'DD/MM/YYYY',
+            operator: 'eq',
             filterEditor: DateFilter,
             render: ({ value, cellProps: { dateFormat } }: any) =>
                 moment(value).format(dateFormat) === 'Invalid date'
