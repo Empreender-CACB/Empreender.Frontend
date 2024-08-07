@@ -350,7 +350,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                             </FormItem>
 
                             <FormItem
-                                label="Data de Encerramento"
+                                label="Término"
                                 invalid={errors.dataEncerramento && touched.dataEncerramento}
                                 errorMessage={errors.dataEncerramento}
                             >
@@ -358,7 +358,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     <Field
                                         name="dataEncerramento"
                                         component={DatePicker}
-                                        placeholder="Data de Encerramento"
+                                        placeholder="Término"
                                         onChange={(date: Date) => setFieldValue('dataEncerramento', date)}
                                         value={values.dataEncerramento ? moment(values.dataEncerramento).toDate() : null}
                                     />
