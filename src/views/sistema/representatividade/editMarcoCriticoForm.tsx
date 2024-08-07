@@ -38,7 +38,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         dataEncerramento: null,
         entidadeId: '',
     });
-    
+
     const user = useAppSelector((state) => state.auth.user);
 
     if (isGestor === undefined) {
@@ -71,6 +71,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
     const [anexosExistentes, setAnexosExistentes] = useState<AnexoDisplay[]>([]);
     const [marcoCongelado, setMarcoCongelado] = useState(false);
     const [anexosParaRemover, setAnexosParaRemover] = useState<number[]>([]);
+    const [marcoCritico, setMarcoCritico] = useState<any>();
     const [tipoAtual, setTipoAtual] = useState('');
 
     const handleTipoChange = (option: any, setFieldValue: any) => {
@@ -90,7 +91,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                     url: `/get-usuarios-gestores/${entidadeId}`,
                     method: 'get'
                 });
-        
+
                 if (response.data) {
                     const usuariosOptions = response.data.map((usuario: Usuario) => ({
                         value: usuario.nucpf,
@@ -146,6 +147,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
 
                     setTipoAtual(response.data.tipo_marco_critico);
                     setMarcoCongelado(response.data.congelado);
+
+                    setMarcoCritico(response.data);
 
                     if (response.data.tipo_marco_critico === 'outros') {
                         setShowNomeMarcoCritico(true);
@@ -407,8 +410,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                 </Button>
                             ) : (
                                 <div
-                                    onClick={isGestor ? toggleEdit : () => { }}
-                                    className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${marcoCongelado || !isGestor ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    onClick={(isGestor && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
+                                    className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCongelado || !isGestor || marcoCritico?.status !== 'Não atingido') ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     Editar
                                 </div>
