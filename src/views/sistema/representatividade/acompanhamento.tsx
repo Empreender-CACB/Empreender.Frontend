@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css'
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
@@ -167,7 +167,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const user = useAppSelector((state) => state.auth.user);
     const isGestor = associacaoDetails && user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === associacaoDetails.idassociacao);
-    
+
     const [reload, setReload] = useState(false);
 
     const handleOpenModal = () => setIsModalOpen(true);
@@ -232,7 +232,7 @@ const AcompanhamentoMarcosCriticos = () => {
             await fetchAssociacaoDetails();
             await fetchIsConsultor();
         };
-    
+
         fetchData();
     }, [id]);
 
@@ -297,7 +297,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {isGestor && 
+                {isGestor &&
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
@@ -331,7 +331,11 @@ const AcompanhamentoMarcosCriticos = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div>
                     <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
-                    <h5>{associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}</h5>
+                    <h5>
+                        <Link to={`/sistema/associacao/detalhe/aid/${associacaoDetails?.idassociacao}`}>
+                            {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}
+                        </Link>
+                    </h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                     {isGestor &&
