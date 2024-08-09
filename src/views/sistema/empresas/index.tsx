@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css'
-
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
@@ -8,10 +7,9 @@ import { Button, Checkbox, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
-
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
-
+import { FaQuestion } from "react-icons/fa"
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
@@ -532,8 +530,21 @@ const Empresas = () => {
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Empresas</h3>
+        <div className="lg:flex items-center justify-between mb-4">
+        <div className="flex items-center">
+            <h3 className="mb-4 lg:mb-0">Empresas</h3>
+            <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
+                <Button
+                    shape="circle"
+                    size="xs"
+                    icon={<FaQuestion />}
+                    className="ml-2" // Ajuste o espaçamento aqui, se necessário
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
+                    }}
+                />
+            </Tooltip>
+        </div>
                 {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Button size="sm" icon={<HiOutlineReply />}>
