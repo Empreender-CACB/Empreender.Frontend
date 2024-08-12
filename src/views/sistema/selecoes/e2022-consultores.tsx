@@ -147,7 +147,7 @@ const E2022Consultores = () => {
         },
         {
             name: 'selectionado',
-            header: 'Selecionato',
+            header: 'Selecionado',
             type: 'select',
             operator: 'equals',
             value: '',
