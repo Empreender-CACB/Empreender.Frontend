@@ -17,6 +17,9 @@ import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
 import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
+import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
+import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
+import TagTrueFalse from '@/components/ui/Tag/TagTrueFalse'
 
 // const toastNotification = (
 //     <Notification title="Falha na inscrição." type="danger">
@@ -54,6 +57,12 @@ const E2022Consultores = () => {
     //         operator: 'eq',
     //     },
     // ]
+
+    const activeValue = [
+        { name: 'Sim', value: 'true' },
+        { name: 'Não', value: 'false' },
+    ]
+
     const columns = [
         {
             name: 'id',
@@ -117,6 +126,42 @@ const E2022Consultores = () => {
                 moment(value).format(dateFormat) === 'Invalid date'
                     ? '-'
                     : moment(value).format(dateFormat),
+        },
+        {
+            name: 'apto',
+            header: 'Apto',
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                 <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                </div>
+            ),
+        },
+        {
+            name: 'selectionado',
+            header: 'Selecionato',
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                     <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                </div>
+            ),
         },
     ];
 
