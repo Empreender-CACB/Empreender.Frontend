@@ -4,14 +4,15 @@ import { Dialog, Button, Input } from '@/components/ui';
 interface StatusChangeModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (status: string, comentario: string) => void;
+    onSave: (status: string, comentario: string, currentDate: any) => void;
 }
 
 const StatusChangeModal: React.FC<StatusChangeModalProps> = ({ isOpen, onClose, onSave }) => {
     const [consultorComentario, setConsultorComentario] = useState('');
 
     const handleSave = (status: string) => {
-        onSave(status, consultorComentario);
+        const currentDate = new Date(); // Data atual
+        onSave(status, consultorComentario, status === 'Atingido' ? currentDate : undefined);
         onClose();
     };
 

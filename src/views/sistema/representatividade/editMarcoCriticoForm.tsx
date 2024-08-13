@@ -65,7 +65,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
             )
     });
 
-    const [usuarios, setUsuarios] = useState<{ value: string, label: string }[]>([]);
     const [marcosCriticos, setMarcosCriticos] = useState<{ value: string, label: string }[]>([]);
     const [showNomeMarcoCritico, setShowNomeMarcoCritico] = useState(false);
     const [anexosExistentes, setAnexosExistentes] = useState<AnexoDisplay[]>([]);
@@ -85,25 +84,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
     };
 
     useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const response: AxiosResponse = await ApiService.fetchData({
-                    url: `/get-usuarios-gestores/${entidadeId}`,
-                    method: 'get'
-                });
-
-                if (response.data) {
-                    const usuariosOptions = response.data.map((usuario: Usuario) => ({
-                        value: usuario.nucpf,
-                        label: usuario.nmusuario,
-                    }));
-                    setUsuarios(usuariosOptions);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar usuários gestores:', error);
-            }
-        };
-
         const fetchMarcosCriticosPadrao = async (marcoId: number) => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
@@ -133,9 +113,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                 });
 
                 if (response.data) {
-                    // Set initial values
                     setInitialValues({
-                        tipo_marco_critico: String(response.data.relacao_1), // Converte o ID para string
+                        tipo_marco_critico: String(response.data.relacao_1),
                         nome_marco_critico: response.data.nome_marco_critico,
                         descricao: response.data.descricao_marco_critico,
                         responsavel: response.data.responsavel,
@@ -171,7 +150,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
             }
         };
 
-        fetchUsuarios();
         fetchMarcosCriticosPadrao(marcoId);
         fetchMarcoCritico();
         fetchAnexos();
@@ -224,7 +202,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
                                     errorMessage={errors.tipo_marco_critico}
                                 >
-                                    {isEditing ? (
+                                    {isEditing && !marcoCongelado ? (
                                         <Field name="tipo_marco_critico">
                                             {({ field, form }: FieldProps) => (
                                                 <Select
@@ -243,53 +221,55 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     )}
                                 </FormItem>
 
-                                {showNomeMarcoCritico && (
-                                    <FormItem
-                                        label="Nome do Marco Crítico Personalizado"
-                                        invalid={errors.nome_marco_critico && touched.nome_marco_critico}
-                                        errorMessage={errors.nome_marco_critico}
-                                    >
-                                        {isEditing ? (
-                                            <Field
-                                                autoComplete="off"
-                                                name="nome_marco_critico"
-                                                placeholder="Nome do Marco Crítico Personalizado"
-                                                component={Input}
-                                                readOnly={!isEditing}
-                                            />
-                                        ) : (
-                                            <div>{values.nome_marco_critico}</div>
-                                        )}
-                                    </FormItem>
-                                )}
-
-                                <FormItem
-                                    label="Descrição"
-                                    invalid={errors.descricao && touched.descricao}
-                                    errorMessage={errors.descricao}
-                                >
-                                    {isEditing && tipoAtual === 'Específico' ? (
-                                        <Field name="descricao">
-                                            {({ field }: FieldProps) => (
-                                                <Input
-                                                    {...field}
-                                                    textArea
-                                                    placeholder="Descrição"
-                                                    className="form-textarea mt-1 block w-full"
+                                {(tipoAtual === 'Específico' || tipoAtual === 'outros') && (
+                                    <>
+                                        <FormItem
+                                            label="Nome do Marco Crítico Personalizado"
+                                            invalid={errors.nome_marco_critico && touched.nome_marco_critico}
+                                            errorMessage={errors.nome_marco_critico}
+                                        >
+                                            {isEditing && !marcoCongelado ? (
+                                                <Field
+                                                    autoComplete="off"
+                                                    name="nome_marco_critico"
+                                                    placeholder="Nome do Marco Crítico Personalizado"
+                                                    component={Input}
+                                                    readOnly={!isEditing}
                                                 />
+                                            ) : (
+                                                <div>{values.nome_marco_critico}</div>
                                             )}
-                                        </Field>
-                                    ) : (
-                                        <div>{values.descricao}</div>
-                                    )}
-                                </FormItem>
+                                        </FormItem>
+
+                                        <FormItem
+                                            label="Descrição"
+                                            invalid={errors.descricao && touched.descricao}
+                                            errorMessage={errors.descricao}
+                                        >
+                                            {isEditing && tipoAtual === 'Específico' && !marcoCongelado ? (
+                                                <Field name="descricao">
+                                                    {({ field }: FieldProps) => (
+                                                        <Input
+                                                            {...field}
+                                                            textArea
+                                                            placeholder="Descrição"
+                                                            className="form-textarea mt-1 block w-full"
+                                                        />
+                                                    )}
+                                                </Field>
+                                            ) : (
+                                                <div>{values.descricao}</div>
+                                            )}
+                                        </FormItem>
+                                    </>
+                                )}
 
                                 <FormItem
                                     label="Data Prevista"
                                     invalid={errors.dataPrevista && touched.dataPrevista}
                                     errorMessage={errors.dataPrevista}
                                 >
-                                    {isEditing ? (
+                                    {isEditing && !marcoCongelado ? (
                                         <Field
                                             name="dataPrevista"
                                             component={DatePicker}
@@ -382,7 +362,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                 ) : (
                                     <div
                                         onClick={(isGestor && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCongelado || !isGestor || marcoCritico?.status !== 'Não atingido') ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !isGestor) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         Editar
                                     </div>

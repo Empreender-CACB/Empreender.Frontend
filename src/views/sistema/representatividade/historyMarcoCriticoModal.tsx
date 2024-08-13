@@ -3,6 +3,7 @@ import { Dialog, Button } from '@/components/ui';
 import ApiService from '@/services/ApiService';
 import { format } from 'date-fns';
 import { AxiosResponse } from 'axios';
+import { FaSort } from 'react-icons/fa';
 
 interface HistoricoModalProps {
     isOpen: boolean;
@@ -19,10 +20,12 @@ interface Historico {
     nome_usuario: string;
     acao: string;
     nome_anexo?: string;
+    id_anexo?: number;  // Adiciona a propriedade id_anexo para o histórico de anexos
 }
 
 const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose, marcoId }) => {
     const [historico, setHistorico] = useState<Historico[]>([]);
+    const [orderBy, setOrderBy] = useState<'asc' | 'desc'>('desc');
 
     useEffect(() => {
         if (isOpen) {
@@ -31,6 +34,7 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                     const response: AxiosResponse = await ApiService.fetchData({
                         url: `/representatividade/historico-acompanhamento/${marcoId}`,
                         method: 'get',
+                        params: { order: orderBy },
                     });
                     setHistorico(response.data);
                 } catch (error) {
@@ -40,12 +44,21 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
 
             fetchHistorico();
         }
-    }, [isOpen, marcoId]);
+    }, [isOpen, marcoId, orderBy]);
+
+    const toggleOrder = () => {
+        setOrderBy((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    };
 
     return (
         <Dialog isOpen={isOpen} onClose={onClose} width={1000}>
             <div>
-                <h5 className="mb-4">Histórico</h5>
+                <div className="flex items-center mb-4">
+                    <h5 className='mr-4'>Histórico</h5>
+                    <Button type="button" onClick={toggleOrder} className="flex items-center">
+                        Ordenando por: {orderBy === 'asc' ? 'Mais antigos' : 'Mais novos'} <FaSort className="ml-2" />
+                    </Button>
+                </div>
                 <div className="overflow-y-auto max-h-96">
                     {historico.length > 0 ? (
                         historico.map((entry) => (
@@ -55,6 +68,18 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                                     <>
                                         <p><strong>Ação:</strong> Adição de Anexo</p>
                                         <p><strong>Descrição:</strong> {entry.comentario || '-'}</p>
+                                        {entry.nome_anexo && entry.id_anexo && (
+                                            <div className="mt-2">
+                                                <a
+                                                    href={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(entry.id_anexo))}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 hover:underline"
+                                                >
+                                                    {entry.nome_anexo}
+                                                </a>
+                                            </div>
+                                        )}
                                     </>
                                 ) : (
                                     <>
@@ -62,7 +87,6 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                                         <p><strong>Comentário:</strong> {entry.comentario || '-'}</p>
                                     </>
                                 )}
-                                
                             </div>
                         ))
                     ) : (

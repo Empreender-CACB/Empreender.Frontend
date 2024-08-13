@@ -1,8 +1,9 @@
 import { Formik, Form, Field, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { Button, FormContainer, FormItem, Input, Upload } from '@/components/ui';
+import { Button, FormContainer, FormItem, Input, Notification, Upload } from '@/components/ui';
 import { FcFile, FcImageFile } from 'react-icons/fc';
 import ApiService from '@/services/ApiService';
+import toast from '@/components/ui/toast'
 
 interface Anexo {
     file: File;
@@ -23,6 +24,14 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
         )
     });
 
+    const toastNotificationSucess = (
+        <Notification title="Documentos(s) adicionado(s) com sucesso." type="info" />
+    )
+
+    const toastNotificationError = (
+        <Notification title="Erro ao salvar documentos(s)." type="danger" />
+    )
+
     const handleSubmit = async (values: any) => {
         try {
             const formData = new FormData();
@@ -42,10 +51,11 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
+            toast.push(toastNotificationSucess)
             onUpdate();
             onClose();
         } catch (error) {
+            toast.push(toastNotificationError)
             console.error('Erro ao adicionar anexo:', error);
         }
     };
@@ -59,7 +69,7 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
         >
             {({ setFieldValue, touched, errors, values }) => (
                 <Form>
-                    <h5 className="mb-4">Adicionar Anexo ao Marco Crítico</h5>
+                    <h5 className="mb-4">Adicionar Documentos</h5>
                     <FormContainer>
                         <div className='mb-4'>
                             <Upload
@@ -108,7 +118,7 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
 
                                                 <div className="flex-1">
                                                     <FormItem
-                                                        label={`Descrição do arquivo: ${anexo.file.name}`}
+                                                        label={`Descrição do documento: ${anexo.file.name}`}
                                                     >
                                                         <Field
                                                             autoComplete="off"
@@ -129,7 +139,7 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
                                 Cancelar
                             </Button>
                             <Button type="submit" className="mt-4" variant='solid'>
-                                Adicionar
+                                Salvar
                             </Button>
                         </div>
                     </FormContainer>

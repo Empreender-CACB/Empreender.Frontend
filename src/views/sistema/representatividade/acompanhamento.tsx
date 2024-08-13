@@ -146,7 +146,6 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Ações',
             defaultFlex: 0.5,
             columnName: 'actions',
-            type: 'string',
             render: ({ data }: any) => renderButtons(data),
         }
     ];
@@ -164,8 +163,8 @@ const AcompanhamentoMarcosCriticos = () => {
     const [isCongelado, setIsCongelado] = useState(false);
     const [isConsultor, setIsConsultor] = useState(false);
 
-
     const user = useAppSelector((state) => state.auth.user);
+
     const isGestor = associacaoDetails && user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === associacaoDetails.idassociacao);
 
     const [reload, setReload] = useState(false);
@@ -241,12 +240,16 @@ const AcompanhamentoMarcosCriticos = () => {
         await fetchAssociacaoDetails();
     };
 
-    const handleSaveStatusChange = async (status: string, comentario: string) => {
+    const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
                 url: `/representatividade/alterar-status-marco-critico/${selectedMarcoId}`,
                 method: 'put',
-                data: { status, comentario }
+                data: {
+                    status,
+                    comentario,
+                    dataTermino: dataTermino ? moment(dataTermino).format('YYYY-MM-DD') : null
+                }
             });
             handleCloseStatusModal();
             handleUpdate();
@@ -254,6 +257,8 @@ const AcompanhamentoMarcosCriticos = () => {
             console.error('Erro ao alterar o status:', error);
         }
     };
+
+
 
     const handleOpenHistoricoModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
@@ -332,7 +337,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 <div>
                     <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
                     <h5>
-                        <Link to={`/sistema/associacao/detalhe/aid/${associacaoDetails?.idassociacao}`}>
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
                             {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}
                         </Link>
                     </h5>
@@ -350,16 +355,29 @@ const AcompanhamentoMarcosCriticos = () => {
                             >
                                 Adicionar Marco Crítico
                             </Button>
-                            <Button
-                                block
-                                variant="solid"
-                                size="sm"
-                                color="blue-600"
-                                icon={<GiIceCube />}
-                                onClick={handleOpenFreezeModal}
-                            >
-                                {isCongelado ? "Descongelar" : "Congelar"} marcos críticos
-                            </Button>
+                            {isCongelado && user.recursos?.includes('ordenacao_ranking_e2022') ?
+                                <Button
+                                    block
+                                    variant="solid"
+                                    size="sm"
+                                    color="blue-600"
+                                    icon={<GiIceCube />}
+                                    onClick={handleOpenFreezeModal}
+                                >
+                                    Descongelar marcos críticos
+                                </Button>
+                                :
+                                <Button
+                                    block
+                                    variant="solid"
+                                    size="sm"
+                                    color="blue-600"
+                                    icon={<GiIceCube />}
+                                    onClick={handleOpenFreezeModal}
+                                >
+                                    Congelar marcos críticos
+                                </Button>
+                            }
                         </>
                     }
                 </div>

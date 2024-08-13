@@ -182,7 +182,6 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Ações',
             defaultFlex: 0.6,
             columnName: 'actions',
-            type: 'string',
             render: ({ data }: any) => renderButtons(data),
         }
     ];
@@ -197,7 +196,6 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [reload, setReload] = useState(false);
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
-        console.log(marcoId, idassociacao)
         setSelectedMarco({ marcoId, idassociacao });
         setIsEditModalOpen(true);
     };
@@ -232,19 +230,23 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         setReload(!reload);
     };
 
-    const handleSaveStatusChange = async (status: string, comentario: string) => {
+    const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
                 url: `/representatividade/alterar-status-marco-critico/${selectedMarco.marcoId}`,
                 method: 'put',
-                data: { status, comentario }
+                data: { 
+                    status, 
+                    comentario, 
+                    dataTermino: dataTermino ? moment(dataTermino).format('YYYY-MM-DD') : null
+                }
             });
             handleCloseStatusModal();
             handleUpdate();
         } catch (error) {
             console.error('Erro ao alterar o status:', error);
         }
-    };
+    };    
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
