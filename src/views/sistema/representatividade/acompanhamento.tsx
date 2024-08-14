@@ -25,6 +25,7 @@ import FreezeMarcosCriticosModal from './freezeMarcosCriticosModal'
 import { Associacao } from '@/@types/generalTypes'
 import AnalysisModal from './analysisMarcoCriticoModal'
 import { useAppSelector } from '@/store'
+import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
 
 moment.locale('pt-br')
 
@@ -54,11 +55,20 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const columns = [
         {
-            name: 'marco_nome',
+            name: 'acompanhamento.id',
+            header: 'Id',
+            columnName: 'acompanhamento.id',
+            type: 'number',
+            defaultFlex: 0.3,
+            operator: 'eq',
+            value: '',
+        },
+        {
+            name: 'marcos_criticos.nome',
             header: 'Nome',
-            columnName: 'marco_nome',
+            columnName: 'marcos_criticos.nome',
             type: 'string',
-            defaultFlex: 1.5,
+            defaultFlex: 1,
             operator: 'contains',
             value: '',
         },
@@ -67,15 +77,18 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Previsão',
             columnName: 'data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -88,15 +101,18 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Nova Previsão',
             columnName: 'nova_data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -109,15 +125,18 @@ const AcompanhamentoMarcosCriticos = () => {
             header: 'Término',
             columnName: 'data_encerramento',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -386,7 +405,7 @@ const AcompanhamentoMarcosCriticos = () => {
                 filename="Marcos_Criticos"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/${id}?reload=${reload}`}
-                CardLayout={LancamentosCard}
+                CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
             <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>

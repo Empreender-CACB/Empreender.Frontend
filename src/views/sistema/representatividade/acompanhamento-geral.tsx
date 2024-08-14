@@ -19,6 +19,7 @@ import AnexoMarcoCriticoForm from './anexoMarcoCriticoForm'
 import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import AnalysisModal from './analysisMarcoCriticoModal'
+import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
 
 moment.locale('pt-br')
 
@@ -56,9 +57,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'nmrazao',
+            name: 'sigla',
             header: 'Entidade',
-            columnName: 'nmrazao',
+            columnName: 'sigla',
             type: 'string',
             defaultFlex: 0.5,
             operator: 'contains',
@@ -90,9 +91,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'marco_nome',
+            name: 'marcos_criticos.nome',
             header: 'Nome',
-            columnName: 'marco_nome',
+            columnName: 'marcos_criticos.nome',
             type: 'string',
             defaultFlex: 1,
             operator: 'contains',
@@ -103,15 +104,18 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Previsão',
             columnName: 'data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -124,15 +128,18 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Nova Previsão',
             columnName: 'nova_data_prevista',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -145,15 +152,18 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Término',
             columnName: 'data_encerramento',
             defaultFlex: 0.6,
-            dateFormat: 'DD/MM/YYYY',
+            dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
             value: '',
             filterEditor: DateFilter,
             filterEditorProps: ({ index }: any) => {
                 return {
-                    dateFormat: 'DD/MM/YYYY',
-                    placeholder: index === 1 ? 'A data é anterior à...' : 'A data é posterior à',
+                    dateFormat: 'DD-MM-YYYY',
+                    placeholder:
+                        index === 1
+                            ? 'A data é anterior à...'
+                            : 'A data é posterior à',
                 }
             },
             render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -235,9 +245,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             await ApiService.fetchData({
                 url: `/representatividade/alterar-status-marco-critico/${selectedMarco.marcoId}`,
                 method: 'put',
-                data: { 
-                    status, 
-                    comentario, 
+                data: {
+                    status,
+                    comentario,
                     dataTermino: dataTermino ? moment(dataTermino).format('YYYY-MM-DD') : null
                 }
             });
@@ -246,7 +256,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         } catch (error) {
             console.error('Erro ao alterar o status:', error);
         }
-    };    
+    };
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
@@ -322,7 +332,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                 filename="Marcos_Criticos"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral?reload=${reload}`}
-                CardLayout={LancamentosCard}
+                CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
 
