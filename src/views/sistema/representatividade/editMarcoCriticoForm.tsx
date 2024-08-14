@@ -8,7 +8,6 @@ import Select from '@/components/ui/Select';
 import DatePicker from '@/components/ui/DatePicker';
 import ApiService from '@/services/ApiService';
 import { AxiosResponse } from 'axios';
-import { Usuario } from '@/@types/generalTypes';
 import moment from 'moment';
 import { useAppSelector } from '@/store';
 
@@ -66,7 +65,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
     });
 
     const [marcosCriticos, setMarcosCriticos] = useState<{ value: string, label: string }[]>([]);
-    const [showNomeMarcoCritico, setShowNomeMarcoCritico] = useState(false);
     const [anexosExistentes, setAnexosExistentes] = useState<AnexoDisplay[]>([]);
     const [marcoCongelado, setMarcoCongelado] = useState(false);
     const [anexosParaRemover, setAnexosParaRemover] = useState<number[]>([]);
@@ -77,7 +75,22 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         setFieldValue('tipo_marco_critico', option?.value);
         setFieldValue('tipo', option?.tipo);
         setTipoAtual(option?.tipo);
+
+        const selectedMarco: any = marcosCriticos.find(marco => marco.value === option.value);
+
+        if (option?.tipo === 'Específico' || option?.tipo === 'outros') {
+            setFieldValue('nome_marco_critico', selectedMarco?.label || '');
+            setFieldValue('descricao', selectedMarco?.descricao || '');
+        } else if (option?.tipo === 'outros') {
+            setFieldValue('nome_marco_critico', '');
+            setFieldValue('descricao', '');
+        } else {
+            setFieldValue('nome_marco_critico', selectedMarco?.label || '');
+            setFieldValue('descricao', selectedMarco?.descricao || '');
+        }
     };
+
+
 
     const handleRemoveAnexo = (anexoId: number) => {
         setAnexosParaRemover((prev) => [...prev, anexoId]);
@@ -96,8 +109,9 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                         value: String(marco.id),
                         label: marco.nome,
                         tipo: marco.tipo,
+                        descricao: marco.descricao
                     }));
-                    marcosOptions.push({ value: 'outros', label: 'Outros', tipo: 'outros' });
+                    marcosOptions.push({ value: 'outros', label: 'Outros', tipo: 'outros', descricao: '' });
                     setMarcosCriticos(marcosOptions);
                 }
             } catch (error) {
@@ -115,8 +129,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                 if (response.data) {
                     setInitialValues({
                         tipo_marco_critico: String(response.data.relacao_1),
-                        nome_marco_critico: response.data.nome_marco_critico,
-                        descricao: response.data.descricao_marco_critico,
+                        nome_marco_critico: response.data.nome_marco_critico || '',
+                        descricao: response.data.descricao || '',
                         responsavel: response.data.responsavel,
                         dataPrevista: response.data.data_prevista,
                         novaDataPrevista: response.data.nova_data_prevista,
@@ -126,12 +140,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
 
                     setTipoAtual(response.data.tipo_marco_critico);
                     setMarcoCongelado(response.data.congelado);
-
                     setMarcoCritico(response.data);
-
-                    if (response.data.tipo_marco_critico === 'outros') {
-                        setShowNomeMarcoCritico(true);
-                    }
                 }
             } catch (error) {
                 console.error('Erro ao buscar marco crítico:', error);
@@ -166,6 +175,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                     anexosParaRemover
                 }
             });
+
             onClose();
             onUpdate();
         } catch (error) {
@@ -208,7 +218,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                                 <Select
                                                     field={field}
                                                     form={form}
-                                                    placeholder="Selecione o tipo de marco crítico"
+                                                    placeholder="Selecione o nome do marco crítico"
                                                     options={marcosCriticos}
                                                     value={marcosCriticos.find(option => option.value === field.value)}
                                                     onChange={(option) => handleTipoChange(option, form.setFieldValue)}
@@ -217,7 +227,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                             )}
                                         </Field>
                                     ) : (
-                                        <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Selecione o tipo de marco crítico'}</div>
+                                        <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Selecione o nome do marco crítico'}</div>
                                     )}
                                 </FormItem>
 
@@ -240,29 +250,30 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                                 <div>{values.nome_marco_critico}</div>
                                             )}
                                         </FormItem>
-
-                                        <FormItem
-                                            label="Descrição"
-                                            invalid={errors.descricao && touched.descricao}
-                                            errorMessage={errors.descricao}
-                                        >
-                                            {isEditing && tipoAtual === 'Específico' && !marcoCongelado ? (
-                                                <Field name="descricao">
-                                                    {({ field }: FieldProps) => (
-                                                        <Input
-                                                            {...field}
-                                                            textArea
-                                                            placeholder="Descrição"
-                                                            className="form-textarea mt-1 block w-full"
-                                                        />
-                                                    )}
-                                                </Field>
-                                            ) : (
-                                                <div>{values.descricao}</div>
-                                            )}
-                                        </FormItem>
                                     </>
                                 )}
+
+                                <FormItem
+                                    label="Descrição"
+                                    invalid={errors.descricao && touched.descricao}
+                                    errorMessage={errors.descricao}
+                                >
+                                    {isEditing && (tipoAtual === 'Específico' || tipoAtual === 'outros') ? (
+                                        <Field name="descricao">
+                                            {({ field, form }: FieldProps) => (
+                                                <Input
+                                                    {...field}
+                                                    textArea
+                                                    value={form.values.descricao}
+                                                    placeholder="Descrição"
+                                                    className="form-textarea mt-1 block w-full"
+                                                />
+                                            )}
+                                        </Field>
+                                    ) : (
+                                        <div>{values.descricao}</div>
+                                    )}
+                                </FormItem>
 
                                 <FormItem
                                     label="Data Prevista"

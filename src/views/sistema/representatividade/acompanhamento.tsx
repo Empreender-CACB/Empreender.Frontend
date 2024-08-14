@@ -9,7 +9,6 @@ import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import { LancamentosCard } from '@/components/shared/TableCards/LancamentosCard'
 import { HiPlusCircle } from 'react-icons/hi'
 import { Button, Dialog, Tooltip } from '@/components/ui'
 import NewMarcoCriticoForm from './newMarcoCriticoForm'
@@ -295,7 +294,7 @@ const AcompanhamentoMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaEye />}
-                        onClick={() => handleOpenEditModal(data.id)}
+                        onClick={() => handleOpenEditModal(data['acompanhamento.id'])}
                     />
                 </Tooltip>
 
@@ -305,7 +304,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaFileSignature />}
-                            onClick={() => handleStatusChange(data.id)}
+                            onClick={() => handleStatusChange(data['acompanhamento.id'])}
                         />
                     </Tooltip>
                 }
@@ -316,7 +315,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaClipboardCheck />}
-                            onClick={() => handleOpenAnalysisModal(data.id)}
+                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'])}
                         />
                     </Tooltip>
                 }
@@ -327,7 +326,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaPaperclip />}
-                            onClick={() => handleOpenAnexoModal(data.id)}
+                            onClick={() => handleOpenAnexoModal(data['acompanhamento.id'])}
                         />
                     </Tooltip>
                 }
@@ -337,7 +336,7 @@ const AcompanhamentoMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaHistory />}
-                        onClick={() => handleOpenHistoricoModal(data.id)}
+                        onClick={() => handleOpenHistoricoModal(data['acompanhamento.id'])}
                     />
                 </Tooltip>
             </div>
