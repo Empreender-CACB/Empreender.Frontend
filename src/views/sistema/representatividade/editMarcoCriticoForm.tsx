@@ -31,7 +31,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         tipo_marco_critico: '',
         nome_marco_critico: '',
         descricao: '',
-        responsavel: '',
         dataPrevista: null,
         novaDataPrevista: null,
         dataEncerramento: null,
@@ -44,13 +43,14 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
     }
 
+    console.log(entidadeId, isGestor, onClose, marcoId, onUpdate);
+
     const [isEditing, setIsEditing] = useState(false);
 
     const validationSchema = Yup.object().shape({
         tipo_marco_critico: Yup.string().required('Selecione um tipo de marco crítico'),
         nome_marco_critico: Yup.string().nullable(),
         descricao: Yup.string().nullable(),
-        responsavel: Yup.string().required('Selecione um usuário responsável'),
         dataPrevista: Yup.date().nullable(),
         novaDataPrevista: Yup.date().nullable()
             .min(
@@ -89,8 +89,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
             setFieldValue('descricao', selectedMarco?.descricao || '');
         }
     };
-
-
 
     const handleRemoveAnexo = (anexoId: number) => {
         setAnexosParaRemover((prev) => [...prev, anexoId]);
@@ -131,7 +129,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                         tipo_marco_critico: String(response.data.relacao_1),
                         nome_marco_critico: response.data.nome_marco_critico || '',
                         descricao: response.data.descricao || '',
-                        responsavel: response.data.responsavel,
                         dataPrevista: response.data.data_prevista,
                         novaDataPrevista: response.data.nova_data_prevista,
                         dataEncerramento: response.data.data_encerramento,
@@ -166,6 +163,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
 
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
+        console.log('entrou aqui');
         try {
             await ApiService.fetchData({
                 url: `/representatividade/atualizar-marco-critico/${marcoId}`,
