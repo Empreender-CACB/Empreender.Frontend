@@ -43,8 +43,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
     }
 
-    console.log(entidadeId, isGestor, onClose, marcoId, onUpdate);
-
     const [isEditing, setIsEditing] = useState(false);
 
     const validationSchema = Yup.object().shape({
@@ -60,7 +58,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         dataEncerramento: Yup.date().nullable()
             .min(
                 Yup.ref('dataPrevista'),
-                'A data de encerramento não pode ser anterior à data prevista'
+                'A data de término não pode ser anterior à data prevista'
             )
     });
 
@@ -163,7 +161,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
 
 
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
-        console.log('entrou aqui');
         try {
             await ApiService.fetchData({
                 url: `/representatividade/atualizar-marco-critico/${marcoId}`,
@@ -229,7 +226,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     )}
                                 </FormItem>
 
-                                {(tipoAtual === 'Específico' || tipoAtual === 'outros') && (
+                                {(tipoAtual === 'Específico' || tipoAtual === 'outros') && !marcoCongelado && (
                                     <>
                                         <FormItem
                                             label="Nome do Marco Crítico Personalizado"
@@ -256,7 +253,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     invalid={errors.descricao && touched.descricao}
                                     errorMessage={errors.descricao}
                                 >
-                                    {isEditing && (tipoAtual === 'Específico' || tipoAtual === 'outros') ? (
+                                    {isEditing && !marcoCongelado && (tipoAtual === 'Específico' || tipoAtual === 'outros') ? (
                                         <Field name="descricao">
                                             {({ field, form }: FieldProps) => (
                                                 <Input
@@ -364,7 +361,6 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                         type="submit"
                                         className="mt-4"
                                         variant="solid"
-                                        disabled={marcoCongelado}
                                     >
                                         Salvar
                                     </Button>

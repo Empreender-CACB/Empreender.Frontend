@@ -8,15 +8,12 @@ import { useEffect, useState } from 'react';
 import { AxiosResponse } from 'axios';
 import ApiService from '@/services/ApiService';
 import toast from '@/components/ui/toast'
-import { Usuario } from '@/@types/generalTypes';
-
 
 const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () => void, entidadeId: string, onUpdate: () => void }) => {
     const initialValues = {
         tipo_marco_critico: '',
         nome_marco_critico: '',
         descricao: '',
-        responsavel: '',
         dataPrevista: null,
         novaDataPrevista: null,
         dataEncerramento: null,
@@ -27,7 +24,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
         tipo_marco_critico: Yup.string().required('Selecione um tipo de marco crítico'),
         nome_marco_critico: Yup.string().nullable(),
         descricao: Yup.string().nullable(),
-        responsavel: Yup.string().required('Selecione um usuário responsável'),
         dataPrevista: Yup.date().nullable(),
         novaDataPrevista: Yup.date().nullable()
             .min(
@@ -35,14 +31,13 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                 'A nova data prevista não pode ser anterior à data prevista inicial'
             ),
         dataEncerramento: Yup.date().nullable()
-            .test('is-greater', 'A data de encerramento não pode ser anterior à data prevista', function(value) {
+            .test('is-greater', 'A data de término não pode ser anterior à data prevista', function(value) {
                 const { dataPrevista } = this.parent;
                 return !value || !dataPrevista || value >= dataPrevista;
             })
     });
 
 
-    const [usuarios, setUsuarios] = useState<{ value: string, label: string }[]>([]);
     const [marcosCriticos, setMarcosCriticos] = useState<{ value: string, label: string }[]>([]);
     const [showNomeMarcoCritico, setShowNomeMarcoCritico] = useState(false);
 
@@ -58,25 +53,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
     )
 
     useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const response: AxiosResponse = await ApiService.fetchData({
-                    url: `/get-usuarios-gestores/${entidadeId}`,
-                    method: 'get'
-                });
-        
-                if (response.data) {
-                    const usuariosOptions = response.data.map((usuario: Usuario) => ({
-                        value: usuario.nucpf,
-                        label: usuario.nmusuario,
-                    }));
-                    setUsuarios(usuariosOptions);
-                }
-            } catch (error) {
-                console.error('Erro ao buscar usuários gestores:', error);
-            }
-        };
-
         const fetchMarcosCriticos = async () => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
@@ -96,8 +72,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                 console.error('Erro ao buscar marcos críticos:', error);
             }
         };
-
-        fetchUsuarios();
         fetchMarcosCriticos();
     }, []);
 
@@ -193,32 +167,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                         )}
 
                         <FormItem
-                            label="Responsável"
-                            invalid={errors.responsavel && touched.responsavel}
-                            errorMessage={errors.responsavel}
-                        >
-                            <Field name="responsavel">
-                                {({ field, form }: FieldProps) => (
-                                    <Select
-                                        field={field}
-                                        form={form}
-                                        placeholder="Selecione o usuário responsável"
-                                        options={usuarios}
-                                        value={usuarios.find(
-                                            (option) => option.value === values.responsavel
-                                        )}
-                                        onChange={(option) =>
-                                            form.setFieldValue(
-                                                field.name,
-                                                option?.value
-                                            )
-                                        }
-                                    />
-                                )}
-                            </Field>
-                        </FormItem>
-
-                        <FormItem
                             label="Data Prevista"
                             invalid={errors.dataPrevista && touched.dataPrevista}
                             errorMessage={errors.dataPrevista}
@@ -232,14 +180,14 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                         </FormItem>
 
                         <FormItem
-                            label="Data de Encerramento"
+                            label="Data de Término"
                             invalid={errors.dataEncerramento && touched.dataEncerramento}
                             errorMessage={errors.dataEncerramento}
                         >
                             <Field
                                 name="dataEncerramento"
                                 component={DatePicker}
-                                placeholder="Data de Encerramento"
+                                placeholder="Data de Término"
                                 onChange={(date: Date) => setFieldValue('dataEncerramento', date)}
                             />
                         </FormItem>

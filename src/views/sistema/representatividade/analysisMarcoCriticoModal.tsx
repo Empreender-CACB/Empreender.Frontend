@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, Button, Input } from '@/components/ui';
-import DatePickerRange from '@/components/ui/DatePicker/DatePickerRange';
 import DatePicker from '@/components/ui/DatePicker/DatePicker';
 
 interface AnalysisModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (comentario: string, status: string, dataTermino?: Date) => void;
+    dataTerminoInicial?: Date | null;
 }
 
-const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, onSave }) => {
+const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, onSave, dataTerminoInicial }) => {
     const [comentario, setComentario] = useState('');
     const [dataTermino, setDataTermino] = useState<Date | null>(null);
 
+    useEffect(() => {
+        if (dataTerminoInicial) {
+            setDataTermino(new Date(dataTerminoInicial));
+        }
+    }, [dataTerminoInicial]);
+
     const handleSave = () => {
-        onSave('Em análise', comentario, dataTermino ?? undefined);
+        const isDataTerminoAlterada =
+            dataTerminoInicial && dataTermino
+                ? dataTermino.getTime() !== new Date(dataTerminoInicial).getTime()
+                : dataTerminoInicial !== dataTermino;
+    
+        const dataTerminoToSave = isDataTerminoAlterada && dataTermino ? dataTermino : undefined;
+    
+        onSave('Em análise', comentario, dataTerminoToSave);
         onClose();
     };
+    
 
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
@@ -40,6 +54,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, onSave }
                         Data de Término (opcional)
                     </label>
                     <DatePicker
+                        placeholder="Selecione uma data"
                         value={dataTermino}
                         onChange={(date: any) => setDataTermino(date)}
                     />

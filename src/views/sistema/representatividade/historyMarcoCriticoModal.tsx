@@ -56,7 +56,7 @@ const HistoryMarcoCriticoModal: React.FC<HistoricoModalProps> = ({ isOpen, onClo
                 <div className="flex items-center mb-4">
                     <h5 className='mr-4'>Histórico</h5>
                     <Button type="button" onClick={toggleOrder} className="flex items-center">
-                        Ordenando por: {orderBy === 'asc' ? 'Mais antigos' : 'Mais novos'} <FaSort className="ml-2" />
+                        Ordenando por: {orderBy === 'asc' ? 'Mais antigos' : 'Mais recentes'} <FaSort className="ml-2" />
                     </Button>
                 </div>
                 <div className="overflow-y-auto max-h-96">

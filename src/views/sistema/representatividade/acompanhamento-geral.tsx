@@ -196,7 +196,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     ];
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedMarco, setSelectedMarco] = useState({ marcoId: null, idassociacao: null });
+    const [selectedMarco, setSelectedMarco] = useState<{ marcoId: number | null, idassociacao: number | null, data_termino?: Date | null }>({ marcoId: null, idassociacao: null });
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
@@ -209,8 +209,8 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         setIsEditModalOpen(true);
     };
 
-    const handleOpenAnalysisModal = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
+    const handleOpenAnalysisModal = (marcoId: any, idassociacao: any, data_termino: any) => {
+        setSelectedMarco({ marcoId, idassociacao, data_termino });
         setIsAnalysisModalOpen(true);
     };
 
@@ -261,7 +261,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const renderButtons = (data: any) => {
         const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
         const isGestor = data.userAssociacoes.includes(data.idassociacao);
-
+        if (data['acompanhamento.id'] == 123) {
+            console.log(data);
+        }
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -284,13 +286,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && isGestor && (
+                {data.status === "Não atingido" && data.congelado  && isGestor && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
                             size="xs"
                             icon={<FaClipboardCheck />}
-                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'], data.idassociacao)}
+                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'], data.idassociacao, data.data_encerramento)}
                         />
                     </Tooltip>
                 )}
@@ -341,7 +343,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         <EditMarcoCriticoForm entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
-                        <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />
+                        <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
                         <AnexoMarcoCriticoForm marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />

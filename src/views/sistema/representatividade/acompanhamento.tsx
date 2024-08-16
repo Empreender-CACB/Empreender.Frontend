@@ -180,6 +180,21 @@ const AcompanhamentoMarcosCriticos = () => {
     const [associacaoDetails, setAssociacaoDetails] = useState<Associacao>();
     const [isCongelado, setIsCongelado] = useState(false);
     const [isConsultor, setIsConsultor] = useState(false);
+    const [selectedMarcoDetails, setSelectedMarcoDetails] = useState<any>(null);
+
+    const fetchMarcoDetails = async (marcoId: number) => {
+        try {
+            const response: any = await ApiService.fetchData({
+                url: `/representatividade/marco-critico/${marcoId}`,
+                method: 'get'
+            });
+            if (response.data) {
+                setSelectedMarcoDetails(response.data);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar detalhes do marco crítico:', error);
+        }
+    };
 
     const user = useAppSelector((state) => state.auth.user);
 
@@ -197,6 +212,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const handleOpenAnalysisModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
+        fetchMarcoDetails(marcoId);  
         setIsAnalysisModalOpen(true);
     };
 
@@ -276,8 +292,6 @@ const AcompanhamentoMarcosCriticos = () => {
         }
     };
 
-
-
     const handleOpenHistoricoModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
         setIsHistoricoModalOpen(true);
@@ -309,7 +323,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {data.status == "Não atingido" && isGestor &&
+                {data.status == "Não atingido" && isCongelado && isGestor &&
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -343,7 +357,6 @@ const AcompanhamentoMarcosCriticos = () => {
         )
     };
 
-    // Funções de handler para os botões
     const handleStatusChange = (id: any) => {
         setSelectedMarcoId(id);
         setIsStatusModalOpen(true);
@@ -356,7 +369,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
                     <h5>
                         <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
-                            {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao}
+                            {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao} - {associacaoDetails?.sigla}
                         </Link>
                     </h5>
                 </div>
@@ -373,7 +386,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             >
                                 Adicionar Marco Crítico
                             </Button>
-                            {isCongelado && user.recursos?.includes('ordenacao_ranking_e2022') ?
+                            {isCongelado && user.recursos?.includes('ajuste_dados') ?
                                 <Button
                                     block
                                     variant="solid"
@@ -385,16 +398,21 @@ const AcompanhamentoMarcosCriticos = () => {
                                     Descongelar marcos críticos
                                 </Button>
                                 :
-                                <Button
-                                    block
-                                    variant="solid"
-                                    size="sm"
-                                    color="blue-600"
-                                    icon={<GiIceCube />}
-                                    onClick={handleOpenFreezeModal}
-                                >
-                                    Congelar marcos críticos
-                                </Button>
+                                <Tooltip title="O congelamento permite enviar os marcos críticos para análise dos consultores. 
+                                    Ao congelar, você ainda poderá alterar a data prevista, término e adicionar documentos ao marcos.">
+                                    <Button
+                                        block
+                                        variant="solid"
+                                        size="sm"
+                                        color="blue-600"
+                                        icon={<GiIceCube />}
+                                        disabled={isCongelado}
+                                        title="Marcos críticos já congelados."
+                                        onClick={handleOpenFreezeModal}
+                                    >
+                                        Congelar marcos críticos
+                                    </Button>
+                                </Tooltip>
                             }
                         </>
                     }
@@ -419,7 +437,7 @@ const AcompanhamentoMarcosCriticos = () => {
                         <EditMarcoCriticoForm entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
-                        <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} />
+                        <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarcoDetails?.data_encerramento} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
                         <AnexoMarcoCriticoForm marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
