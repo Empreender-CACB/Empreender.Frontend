@@ -398,8 +398,7 @@ const AcompanhamentoMarcosCriticos = () => {
                                     Descongelar marcos críticos
                                 </Button>
                                 :
-                                <Tooltip title="O congelamento permite enviar os marcos críticos para análise dos consultores. 
-                                    Ao congelar, você ainda poderá alterar a data prevista, término e adicionar documentos ao marcos.">
+                                <Tooltip title={isCongelado ? "Marcos críticos já congelados." : "O congelamento permite enviar os marcos críticos para análise dos consultores. Ao congelar, você ainda poderá alterar a data prevista, término e adicionar documentos ao marcos."}>
                                     <Button
                                         block
                                         variant="solid"
@@ -407,7 +406,6 @@ const AcompanhamentoMarcosCriticos = () => {
                                         color="blue-600"
                                         icon={<GiIceCube />}
                                         disabled={isCongelado}
-                                        title="Marcos críticos já congelados."
                                         onClick={handleOpenFreezeModal}
                                     >
                                         Congelar marcos críticos
