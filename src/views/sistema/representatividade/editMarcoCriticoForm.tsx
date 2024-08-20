@@ -208,19 +208,23 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     errorMessage={errors.tipo_marco_critico}
                                 >
                                     {isEditing && !marcoCongelado ? (
-                                        <Field name="tipo_marco_critico">
-                                            {({ field, form }: FieldProps) => (
-                                                <Select
-                                                    field={field}
-                                                    form={form}
-                                                    placeholder="Selecione o nome do marco crítico"
-                                                    options={marcosCriticos}
-                                                    value={marcosCriticos.find(option => option.value === field.value)}
-                                                    onChange={(option) => handleTipoChange(option, form.setFieldValue)}
-                                                    isDisabled={!isEditing}
-                                                />
-                                            )}
-                                        </Field>
+                                        tipoAtual !== 'Padrão' ? (
+                                            <Field name="tipo_marco_critico">
+                                                {({ field, form }: FieldProps) => (
+                                                    <Select
+                                                        field={field}
+                                                        form={form}
+                                                        placeholder="Selecione o nome do marco crítico"
+                                                        options={marcosCriticos}
+                                                        value={marcosCriticos.find(option => option.value === field.value)}
+                                                        onChange={(option) => handleTipoChange(option, form.setFieldValue)}
+                                                        isDisabled={!isEditing}
+                                                    />
+                                                )}
+                                            </Field>
+                                        ) : (
+                                            <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Nome do marco crítico padrão'}</div>
+                                        )
                                     ) : (
                                         <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Selecione o nome do marco crítico'}</div>
                                     )}
@@ -269,6 +273,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                         <div>{values.descricao}</div>
                                     )}
                                 </FormItem>
+
 
                                 <FormItem
                                     label="Data Prevista"
