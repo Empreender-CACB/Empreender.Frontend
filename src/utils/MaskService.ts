@@ -27,39 +27,39 @@ function isValidCNPJ(cnpj: any) {
     let pos = length - 7
 
     for (let i = length; i >= 1; i--) {
-        sum += numbers.charAt(length - i) * pos--;
-        if (pos < 2) pos = 9;
+        sum += numbers.charAt(length - i) * pos--
+        if (pos < 2) pos = 9
     }
 
-    let result = sum % 11 < 2 ? 0 : 11 - sum % 11;
-    if (result != verifiers.charAt(0)) return false;
+    let result = sum % 11 < 2 ? 0 : 11 - sum % 11
+    if (result != verifiers.charAt(0)) return false
 
-    length = length + 1;
-    numbers = cnpj.substring(0,length);
-    sum = 0;
-    pos = length - 7;
+    length = length + 1
+    numbers = cnpj.substring(0,length)
+    sum = 0
+    pos = length - 7
     for (let i = length; i >= 1; i--) {
-        sum += numbers.charAt(length - i) * pos--;
-        if (pos < 2) pos = 9;
+        sum += numbers.charAt(length - i) * pos--
+        if (pos < 2) pos = 9
     }
 
-    result = sum % 11 < 2 ? 0 : 11 - sum % 11;
-    if (result != verifiers.charAt(1)) return false;
+    result = sum % 11 < 2 ? 0 : 11 - sum % 11
+    if (result != verifiers.charAt(1)) return false
 
-    return true;
+    return true
 }
 
 const formatCPFCNPJ = (value: any) => {
-    if (value === null || value === undefined) return false;
+    if (value === null || value === undefined) return false
 
-    let stringValue = String(value).replace(/\D/g, '');
+    let stringValue = String(value).replace(/\D/g, '')
 
     if (stringValue.length === 11 && isValidCPF(stringValue)) {
-        return stringValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        return stringValue.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
     } else if (stringValue.length === 14 && isValidCNPJ(stringValue)) {
-        return stringValue.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        return stringValue.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
     }
-    return false;
-};
+    return false
+}
 
-export default formatCPFCNPJ;
+export default formatCPFCNPJ

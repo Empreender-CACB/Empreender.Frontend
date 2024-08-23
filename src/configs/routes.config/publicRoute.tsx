@@ -22,6 +22,15 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
+/*     {
+        key: 'sistema.showExcel',
+        path: `/show-excel`,
+        component: lazy(() => import('@/views/sistema/empresas/insert-excel2')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    }, */
     {
         key: 'cadastro_empresa',
         path: `/cadastro/empresa`,
@@ -74,6 +83,23 @@ const publicRoute: Routes = [
         meta: {
             layout: 'blank',
             footer: false,
+        },
+    },
+    {
+        key: 'substituicao_arquivos_evidencias',
+        path: `/diagnosticos/substituicao/:idEntidade`,
+        component: lazy(() => import('@/views/diagnosticos/substituicao')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
+    {
+        key: 'ranking.diag',
+        path: `/ranking/diagnosticos`,
+        component: lazy(() => import('@/views/ranking/diagnosticos')),
+        meta: {
+            layout: 'blank',
         },
     },
 ]

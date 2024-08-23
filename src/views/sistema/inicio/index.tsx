@@ -24,19 +24,21 @@ type Noticia = {
     link: string
 }
 
-const greetingMessage = () => {
-    const currentHour = new Date().getHours()
+const greetingMessage = (gender: string) => {
+    const currentHour = new Date().getHours();
 
-    let greeting = ''
+    let greeting = '';
+    const welcome = gender === 'F' ? 'bem-vinda' : 'bem-vindo';
+
     if (currentHour < 12) {
-        greeting = 'Bom dia'
+        greeting = `Bom dia, seja muito ${welcome}`;
     } else if (currentHour < 18) {
-        greeting = 'Boa tarde'
+        greeting = `Boa tarde, seja muito ${welcome}`;
     } else {
-        greeting = 'Boa noite'
+        greeting = `Boa noite, seja muito ${welcome}`;
     }
 
-    return greeting
+    return greeting;
 }
 
 const Arrow = (props: {
@@ -47,11 +49,11 @@ const Arrow = (props: {
     const disabled = props.disabled ? " arrow--disabled" : ""
     return (
         <svg
-            onClick={props.onClick}
             className={`arrow ${props.left ? "arrow--left" : "arrow--right"
                 } ${disabled}`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
+            onClick={props.onClick}
         >
             {props.left && (
                 <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
@@ -91,9 +93,9 @@ const Inicio = () => {
     const { nmusuario } = useAppSelector(
         (state) => state.auth.user
     )
-
-    console.log(useAppSelector((state) => state.auth.user));
-
+    const { cdsexo } = useAppSelector(
+        (state) => state.auth.user
+    )
     const [noticiasBlog, setNoticiasBlog] = useState<Noticia[]>([])
 
     // let num_noticias = '3'
@@ -153,7 +155,7 @@ const Inicio = () => {
             <div className="flex justify-between items-center mb-4 w-full">
                 <div>
                     <h3>
-                        {greetingMessage()},{' '}
+                        {greetingMessage(cdsexo)},{' '}
                         {nmusuario ? nmusuario.split(' ')[0] : ''}
                     </h3>
                     <p>Bom trabalho !</p>
@@ -207,12 +209,11 @@ const Inicio = () => {
                     <div
                         className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1670364781788-29998f919471?q=80&w=2835&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
-                            backgroundPosition: '-10% 9%',
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('/img/others/ipe.jpg')`
                         }}
                     >
-                        <div className="text-white font-bold mt-4 flex-grow w-full lg:w-1/2">
-                            <h2 className="text-white mb-4">
+                        <div className="text-white bg-black bg-opacity-10 shadow-sm font-bold mt-4 flex-grow w-full  rounded-lg p-4">
+                            <h2 className="text-white text-shadow-lg [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] mb-4">
                                 Estamos em obras!
                             </h2>
                             <h6 className="text-white mb-4">
@@ -225,14 +226,10 @@ const Inicio = () => {
                             </h6>
 
                             <h6 className="text-white mb-4">
-                                Bom momento para enviar críticas e sugestões{' '}
-                                <a href="#" className="underline">
-                                    (clique aqui)
-                                </a>
-                                . São muito bem-vindas.
+                                Bom momento para enviar críticas e sugestões. São muito bem-vindas.
                             </h6>
 
-                            <Link to="/docs/changelog">
+                            <Link target='__blank' to="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NzQzMA==">
                                 <Button
                                     className="w-full lg:w-auto"
                                     variant="solid"

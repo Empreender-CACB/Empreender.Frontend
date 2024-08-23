@@ -15,6 +15,7 @@ export type SignInResponse = {
         nucpf: string;
         nmusuario: string;
         dsemail: string;
+        cdsexo: string;
         perfil: string;
         cod_perfil: number;
         idobjeto: number;

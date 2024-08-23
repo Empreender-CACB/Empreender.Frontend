@@ -28,11 +28,11 @@ const dropdownItemList: DropdownList[] = [
         path: `${import.meta.env.VITE_PHP_URL}/sistema/usuario/preferencias-usuario`,
         icon: <HiOutlineCog />,
     },
-    {
-        label: 'Inscrição para curso',
-        path: `${APP_PREFIX_PATH}/curso-form`, 
-        icon: <HiOutlinePencil/>
-    },
+    // {
+    //     label: 'Inscrição para curso',
+    //     path: `${APP_PREFIX_PATH}/curso-form`, 
+    //     icon: <HiOutlinePencil/>
+    // },
 ]
 
 const _UserDropdown = ({ className }: CommonProps) => {
@@ -63,6 +63,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
                         nmusuario: user.nmusuario,
                         dsemail: user.dsemail,
                         perfil: user.perfil,
+                        cdsexo: user.cdsexo,
                         cod_perfil: user.cod_perfil,
                         fotouser: user.fotouser,
                         recursos: user.recursos,

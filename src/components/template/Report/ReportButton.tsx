@@ -4,7 +4,7 @@ import Dialog from '@/components/ui/Dialog'
 import Button from '@/components/ui/Button'
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { PiMegaphoneSimpleDuotone } from 'react-icons/pi'
+import {  PiBugBeetle } from 'react-icons/pi'
 import type { MouseEvent } from 'react'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
@@ -50,8 +50,8 @@ const ReportButton = () => {
     return (
         <div className="fixed bottom-1 right-1 z-25">
 
-            <Button size="xs" onClick={() => openDialog()} className="mr-2" icon={<PiMegaphoneSimpleDuotone />}>
-                <span>Algo deu errado?</span>
+            <Button size="xs" onClick={() => openDialog()} className="mr-2 text-red-500" icon={<PiBugBeetle />}>
+                <span className='text-gray-700'>Algo deu errado?</span>
             </Button>
 
 
@@ -60,8 +60,9 @@ const ReportButton = () => {
                 isOpen={dialogIsOpen}
                 onClose={onDialogClose}
                 onRequestClose={onDialogClose}
+                width={1000}
             >
-                <h5 className="mb-4">Relatar um bug</h5>
+                <h5 className="mb-4">Relatar um problema</h5>
                 <Alert showIcon className="mb-4" type="info">
                 Encontrou algum problema? Notifique o nosso time para que possamos corrigir o mais rápido possível!
                  </Alert>

@@ -49,6 +49,7 @@ function useAuth() {
                         cod_perfil: resp.data.user.cod_perfil,
                         idobjeto: resp.data.user.idobjeto,
                         fotouser: resp.data.user.fotouser,
+                        cdsexo: resp.data.user.cdsexo,
                         recursos: resp.data.user.recursos,
                         preferencias: resp.data.user.preferencias,
                         associacoes: resp.data.user.associacoes,
