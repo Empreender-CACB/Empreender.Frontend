@@ -3,20 +3,24 @@ import Tag from './Tag';
 
 interface TagActiveInativeProps {
   value: string;
-  activeText: string;
+  activeText: string | boolean;
+  customLabelTrue?: string;
+  customLabelFalse?: string;
+  customClassTrue?: string;
+  customClassFalse?: string;
 }
 
-const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText }) => {
+const TagActiveInative: React.FC<TagActiveInativeProps> = ({ value, activeText, customLabelTrue, customLabelFalse, customClassTrue, customClassFalse}) => {
   const isAtivo = value === activeText;
 
   const statusMapping: Record<string, { label: string; class: string }> = {
     Ativo: {
-      label: 'Ativa',
-      class: 'bg-sky-800 mr-2 text-white text-center',
+      label: customLabelTrue ?? 'Ativa',
+      class: customClassTrue ?? 'bg-sky-800 mr-2 text-white text-center',
     },
     Inativo: {
-      label: 'Inativa',
-      class: 'bg-orange-500 mr-2 text-white',
+      label: customLabelFalse ?? 'Inativa',
+      class: customClassFalse ?? 'bg-orange-500 mr-2 text-white',
     },
   };
 
