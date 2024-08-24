@@ -89,12 +89,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
-    autorizeExport = true,
     onSelectedRowsChange,
+    autorizeExport = true,
     defaultSortInfo
 }) => {
-
-
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const valorLocalStorage = Number(localStorage.getItem('lista_geral'))
@@ -494,18 +492,21 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     ></Button>
                 </Tooltip> */}
 
-                <Tooltip title={'Exportar dados'}>
-                    <Button
-                        disabled={isDownloading}
-                        icon={isDownloading ? <Spinner /> : <HiDownload />}
-                        className="mx-2"
-                        variant="plain"
-                        size="sm"
-                        onClick={() => {
-                            loadData(queryParams, true)
-                        }}
-                    ></Button>
-                </Tooltip>
+                {autorizeExport === true && (
+                    <Tooltip title={'Exportar dados'}>
+                        <Button
+                            disabled={isDownloading}
+                            icon={isDownloading ? <Spinner /> : <HiDownload />}
+                            className="mx-2"
+                            variant="plain"
+                            size="sm"
+                            onClick={() => {
+                                loadData(queryParams, true)
+                            }}
+                        ></Button>
+                    </Tooltip>
+                )}
+                
             </div>
 
             <Drawer
@@ -553,6 +554,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 columns={columns}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}
+                rowHeight = {null}
                 enableFiltering={true}
                 userSelect={true}
                 columnUserSelect={true}

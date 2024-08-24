@@ -14,6 +14,14 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/empresas')),
     },
     {
+        key: 'Anexos.lista',
+        path: `${APP_PREFIX_PATH}/anexos/`,
+        component: lazy(() => import('@/views/sistema/anexos')),
+        meta: {
+            pageContainerType: 'default',
+        },
+    },
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),

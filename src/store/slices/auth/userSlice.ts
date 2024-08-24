@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SLICE_BASE_NAME } from './constants'
+import { Associacao, Empresa, Nucleo } from '@/@types/generalTypes'
 
 type Preferencias = {
     data_lancamentos?: string
@@ -16,9 +17,14 @@ export type UserState = {
     cdsexo?: string
     perfil?: string
     cod_perfil?: number
+    idobjeto?: number
     fotouser?: string
     recursos: string[]
     preferencias?: Preferencias
+    associacoes: Associacao[]
+    empresas: Empresa[]
+    nucleos: Nucleo[]
+    projetos: any[]
 }
 
 const initialState: UserState = {
@@ -28,9 +34,14 @@ const initialState: UserState = {
     perfil: '',
     cdsexo: '',
     cod_perfil: 0,
+    idobjeto: 0,
     fotouser: '',
     recursos: [],
     preferencias: {},
+    associacoes: [],
+    empresas: [],
+    nucleos: [],
+    projetos: [],
 }
 
 const userSlice = createSlice({
@@ -45,8 +56,13 @@ const userSlice = createSlice({
             state.perfil = action.payload?.perfil
             state.fotouser = action.payload?.fotouser
             state.cod_perfil = action.payload?.cod_perfil
+            state.idobjeto = action.payload?.idobjeto
             state.recursos = action.payload?.recursos
             state.preferencias = action.payload?.preferencias
+            state.associacoes = action.payload?.associacoes
+            state.empresas = action.payload?.empresas
+            state.nucleos = action.payload?.nucleos
+            state.projetos = action.payload?.projetos
         },
     },
 })
