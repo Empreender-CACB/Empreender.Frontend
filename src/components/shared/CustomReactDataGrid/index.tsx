@@ -89,10 +89,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
-    autorizeExport,
-    onSelectedRowsChange
-    autorizeExport = true,
     onSelectedRowsChange,
+    autorizeExport = true,
     defaultSortInfo
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
