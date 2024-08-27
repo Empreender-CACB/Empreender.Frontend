@@ -119,7 +119,7 @@ const Usuarios = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to="/app/users/user-new"
+                        to={`${import.meta.env.VITE_PHP_URL}/usuario`}
                     >
                         <Button
                             block
