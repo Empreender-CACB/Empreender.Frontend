@@ -8,6 +8,7 @@ export interface NavigationTree {
     type: 'title' | 'collapse' | 'item'
     authority: string[]
     subMenu: NavigationTree[]
+    target?: string
 }
 
 export interface Documento {
@@ -31,8 +32,13 @@ export interface UserResponse {
         cdsexo: string
         perfil: string
         cod_perfil: number
+        idobjeto: number
         fotouser: string
         recursos: any
         preferencias: any
+        associacoes: any[]
+        empresas: any[]
+        nucleos: any[]
+        projetos: any[]
     }
 }

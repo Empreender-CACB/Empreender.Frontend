@@ -50,10 +50,14 @@ const ReportButton = () => {
     return (
         <div className="fixed bottom-1 right-1 z-25">
 
-            <Button size="xs" onClick={() => openDialog()} className="mr-2 text-red-500" icon={<PiBugBeetle />}>
-                <span className='text-gray-700'>Algo deu errado?</span>
+            <Button 
+                size="xs" 
+                className="mr-2 text-red-500 dark:text-red-400" 
+                icon={<PiBugBeetle />}
+                onClick={() => openDialog()} 
+            >
+                <span className="text-gray-700 dark:text-gray-300">Algo deu errado?</span>
             </Button>
-
 
 
             <Dialog

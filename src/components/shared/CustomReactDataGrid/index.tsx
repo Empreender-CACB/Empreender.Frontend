@@ -31,9 +31,11 @@ interface CustomReactDataGridPropsBasic {
     defaultFilterValue?: any
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    autorizeExport?: boolean
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
+    defaultSortInfo?: any
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
@@ -87,7 +89,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     widthSize = 1280,
     CardLayout,
     isSelectable,
-    onSelectedRowsChange
+    onSelectedRowsChange,
+    autorizeExport = true,
+    defaultSortInfo
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -450,7 +454,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     justifyContent: 'end',
                 }}
             >
-                <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
+                {/* <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -464,7 +468,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         }
                         onClick={() => onViewToggle()}
                     />
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip title={'Limpar filtros'}>
                     <Button
@@ -479,27 +483,30 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     ></Button>
                 </Tooltip>
 
-                <Tooltip title={'Filtrar dados'}>
+                {/* <Tooltip title={'Filtrar dados'}>
                     <Button
                         icon={<MdFilterAlt />}
                         size="sm"
                         variant="plain"
                         onClick={() => openDrawer()}
                     ></Button>
-                </Tooltip>
+                </Tooltip> */}
 
-                <Tooltip title={'Exportar dados'}>
-                    <Button
-                        disabled={isDownloading}
-                        icon={isDownloading ? <Spinner /> : <HiDownload />}
-                        className="mx-2"
-                        variant="plain"
-                        size="sm"
-                        onClick={() => {
-                            loadData(queryParams, true)
-                        }}
-                    ></Button>
-                </Tooltip>
+                {autorizeExport === true && (
+                    <Tooltip title={'Exportar dados'}>
+                        <Button
+                            disabled={isDownloading}
+                            icon={isDownloading ? <Spinner /> : <HiDownload />}
+                            className="mx-2"
+                            variant="plain"
+                            size="sm"
+                            onClick={() => {
+                                loadData(queryParams, true)
+                            }}
+                        ></Button>
+                    </Tooltip>
+                )}
+                
             </div>
 
             <Drawer
@@ -543,9 +550,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 wrapMultiple={false}
                 idProperty="id"
                 defaultFilterValue={defaultFilterValue || columns}
+                defaultSortInfo={defaultSortInfo}
                 columns={columns}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}
+                rowHeight = {null}
                 enableFiltering={true}
                 userSelect={true}
                 columnUserSelect={true}

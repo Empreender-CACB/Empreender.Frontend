@@ -14,6 +14,14 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/empresas')),
     },
     {
+        key: 'Anexos.lista',
+        path: `${APP_PREFIX_PATH}/anexos/`,
+        component: lazy(() => import('@/views/sistema/anexos')),
+        meta: {
+            pageContainerType: 'default',
+        },
+    },
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
@@ -130,9 +138,40 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'sistema.insertExcel',
+        path: `${APP_PREFIX_PATH}/insert-excel`,
+        component: lazy(() => import('@/views/sistema/empresas/insert-excel')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
+        key: 'sistema.showExcel',
+        path: `${APP_PREFIX_PATH}/show-excel`,
+        component: lazy(() => import('@/views/sistema/empresas/show-excel')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'sistema.selecao',
         path: `${APP_PREFIX_PATH}/selecoes/e2022-consultores`,
         component: lazy(() => import('@/views/sistema/selecoes/e2022-consultores')),
+    },
+    {
+        key: 'sistemaPrestcontas.listaGeralLancamentos',
+        path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
+        component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
+        meta: {
+            pageContainerType: 'gutterless',
+        },
+    },
+    {
+        key: 'sistema.selecaoPainel',
+        path: `${APP_PREFIX_PATH}/selecoes/painel-inscricoes`,
+        component: lazy(() => import('@/views/sistema/selecoes/painel-inscricoes'))
     },
 ]
 

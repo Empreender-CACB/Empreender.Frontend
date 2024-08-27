@@ -21,19 +21,19 @@ function openNotification(data: any) {
 
 const notifyBlogPDE = async () => {
     try {
-      const response = await ApiService.fetchData({
-        url: '/notifications/notifyBlogPDE',
-        method: 'post',
-      });
-      openNotification(response.data)
+        const response = await ApiService.fetchData({
+            url: '/notifications/notifyBlogPDE',
+            method: 'post',
+        });
+        openNotification(response.data)
 
     } catch (error) {
-      console.error('Error sending notification:', error);
+        console.error('Error sending notification:', error);
     }
-  };
+};
 
 
-  const setBlogRead = async () => {
+const setBlogRead = async () => {
     try {
         await ApiService.fetchData({
             url: '/notifications/setBlogRead',
@@ -51,7 +51,7 @@ const Blog = () => {
 
     useEffect(() => {
         setBlogRead();
-    },[])
+    }, [])
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -68,25 +68,25 @@ const Blog = () => {
                         </Link>
                     </Button>
 
-                        <Button
-                            block
-                            variant="solid"
-                            size="sm"
-                            icon={<HiBell />}
-                            onClick={notifyBlogPDE}
-                        >
-                            Marcar novidades
-                        </Button>
+                    <Button
+                        block
+                        variant="solid"
+                        size="sm"
+                        icon={<HiBell />}
+                        onClick={notifyBlogPDE}
+                    >
+                        Marcar novidades
+                    </Button>
                 </div>
             </div>
 
-<div className='h-full pb-10'>
-<Iframe url="https://blog.cacbempreenderapp.org.br/"
-        width="100%"
-        height="100%"
+            <div className='h-full pb-10'>
+                <Iframe url="https://blog.cacbempreenderapp.org.br/"
+                    width="100%"
+                    height="100%"
 
-        position="static"/>
-</div>
+                    position="static" />
+            </div>
 
         </AdaptableCard>
     )
