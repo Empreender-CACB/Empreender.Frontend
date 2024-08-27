@@ -128,7 +128,7 @@ const Usuarios = () => {
 
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${import.meta.env.VITE_PHP_URL}/usuario/adicionar`}
+                        to={`${import.meta.env.VITE_PHP_URL}/sistema/usuario/adicionar`}
                     >
                         <Button
                             block
