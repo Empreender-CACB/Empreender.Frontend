@@ -15,6 +15,7 @@ import Breadcrumb from '@/components/breadCrumbs/breadCrumb'
 import { FaQuestion } from "react-icons/fa"
 import Tooltip from '@/components/ui/Tooltip'
 import { useNavigate } from 'react-router-dom'
+import isValidEmail from '@/utils/email'
 
 const columns = [
     { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.1 },
@@ -36,7 +37,20 @@ const columns = [
     },
     { name: 'nmcontato', header: 'Contato', type: 'string', value: '', defaultFlex: 0.3 },
     { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.2 },
-    { name: 'email', header: 'E-mail', type: 'string', value: '', defaultFlex: 0.3 },
+    { name: 'email',
+      header: 'E-mail',
+      type: 'string',
+      value: '',
+      defaultFlex: 0.3,
+      render: ({ data }: any) => {
+        const isValid = isValidEmail(data.email)
+        return (
+            <div style={{ color: isValid ? 'inherit' : 'red' }}>
+                {data.email}
+            </div>
+        )
+    },    
+    },
     { name: 'idassociacao', header: 'ID da Entidade', type: 'number', value: '', defaultFlex: 0.18, filterEditor: NumberFilter },
     { name: 'nmrazao', header: 'Nome da Entidade', type: 'string', value: '', defaultFlex: 0.6 },
     { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.1 },
