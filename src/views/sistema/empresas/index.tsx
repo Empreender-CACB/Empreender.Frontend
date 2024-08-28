@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css'
-
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
@@ -8,10 +7,9 @@ import { Button, Checkbox, Tooltip } from '@/components/ui'
 import { useState, useEffect } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
-
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
-
+import { FaQuestion } from "react-icons/fa"
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
@@ -23,8 +21,8 @@ import { FcInfo } from 'react-icons/fc'
 moment.locale('pt-br')
 
 const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
+    { name: 'Ativo', value: 'S' },
+    { name: 'Inativo', value: 'N' },
 ]
 
 const restritaValue = [
@@ -45,14 +43,14 @@ const rfbValue = [
 ]
 
 const empresaOptions = [
-    { value: 'todas', label: 'Todas' },
-    { value: 'somente_nucleadas', label: 'Somente nucleadas' },
-    { value: 'nao_nucleadas', label: 'Somente não nucleadas' },
+    { value: 'somente_nucleadas', label: 'Nucleadas' },
+    { value: 'nao_nucleadas', label: 'Não nucleadas' },
     { value: 'projetos', label: 'Projeto' },
+    { value: 'vinculadas_entidades', label: 'Entidade' },
 ];
 
 const nameOptions = [
-    { value: 'nmfantasia', label: 'Fantasia' },
+    { value: 'nmfantasia', label: 'Nome Fantasia' },
     { value: 'nurazaosocial', label: 'Razão Social' },
 ];
 
@@ -65,42 +63,46 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState('todas')
+    const [empresaType, setEmpresaType] = useState<string[]>([]) 
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
+    const [entidadeType, setEntidadeType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [optionsSegmento, setOptionsSegmento] = useState([])
+    const [optionsEntidade, setOptionsEntidade] = useState([])
     const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
 
     const { user } = useAppSelector((state) => state.auth)
 
-    const isGestorEntidade = user.associacoes.length > 0;
-    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade;
+    const isGestorEntidade = user && Array.isArray(user.associacoes) && user.associacoes.length > 0
+    const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade
 
     const canExport = !!(user.recursos.includes('empresa_restrita') ||
         (isGestorEntidade && (
-            (checkedVisaoLocal && empresaType !== 'nao_nucleadas') &&
-            empresaType !== 'nao_nucleadas' &&
-            empresaType !== 'projetos' &&
-            empresaType !== 'todas'
-        )) || (isUsuarioEntidade && checkedVisaoLocal));
+            (checkedVisaoLocal && !empresaType.includes('nao_nucleadas')) &&
+            !empresaType.includes('nao_nucleadas') &&
+            !empresaType.includes('projetos') &&
+            !empresaType.includes('todas')
+        )) || (isUsuarioEntidade && checkedVisaoLocal))
 
 
-    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType}` +
+        const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType.join(',')}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
-        `${segmentoType ? `&segmentoType=${segmentoType.join(',')}` : ''}`;
+        `${segmentoType.length > 0 ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
+        `${entidadeType.length > 0 ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
 
-    let headerCnae;
+
+    let headerCnae
 
     switch (cnaeValue) {
         case 'principal':
-            headerCnae = "CNAE Principal";
+            headerCnae = "CNAE Principal"
             break;
         case 'secundario':
-            headerCnae = "CNAE Secundário";
+            headerCnae = "CNAE Secundário"
             break;
         default:
-            headerCnae = "CNAE";
+            headerCnae = "CNAE"
     }
 
     const columns = [
@@ -111,7 +113,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: "",
-            defaultFlex: 0.6,
+            defaultFlex: 0.4,
         },
         {
             name: 'iduf',
@@ -120,6 +122,7 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.32,
         },
         {
             name: 'nmcidade',
@@ -127,26 +130,80 @@ const Empresas = () => {
             type: 'string',
             operator: 'contains',
             value: '',
+            defaultFlex: 0.7,
+            render: ({ data }: any) => {
+                const text = data.nmcidade
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
+                    </Tooltip>
+                );
+            },
         },
-        {
+        ...(nameValue === 'nmfantasia' ? [{
             name: 'nmfantasia',
-            header: 'Nome',
+            header: 'Nome Fantasia',
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
             value: '',
-            render: ({ data }: any) => (
-                <div>
-                    <Link to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}>
-                        {data.nmfantasia}
-                    </Link>
-                </div>
-            ),
-        },
+            render: ({ data }: any) => {
+                const text = data.nmfantasia
+                const tooltipText = data.nmfantasia
+
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        }] : [{
+            name: 'nurazaosocial',
+            header: 'Razão Social',
+            defaultFlex: 1.5,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const text = data.nurazaosocial
+                const tooltipText = data.nurazaosocial
+
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+
+                return (
+                    <div>
+                        <Tooltip
+                            placement='left'
+                            title={<div>{tooltipText}</div>}
+                        >
+                            <Link to={linkTo}>
+                                {text}
+                            </Link>
+                        </Tooltip>
+                    </div>
+                );
+            },
+        }]),               
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
-            defaultFlex: 1,
+            defaultFlex: 0.7,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -160,23 +217,32 @@ const Empresas = () => {
             },
         },
         {
-            name: 'cnae_combined',
-            header: headerCnae,
-            defaultFlex: 1,
+            name: 'cd_cnae',
+            header: 'CNAE',
+            defaultFlex: 0.4,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+        },
+        {
+            name: 'st_cnae',
+            header: 'Descrição do CNAE',
+            defaultFlex: 1.7,
             type: 'string',
             operator: 'contains',
             value: '',
             render: ({ data }: any) => {
+                const text = data.st_cnae
                 return (
                     <Tooltip
                         placement='left'
                         title={
                             <div>
-                                {data.cnae_combined}
+                                {text}
                             </div>
                         }
                     >
-                        <span className="cursor-pointer">{data.cnae_combined}</span>
+                        <span className="cursor-pointer">{text}</span>
                     </Tooltip>
                 );
             },
@@ -184,7 +250,7 @@ const Empresas = () => {
         {
             name: 'situacao',
             header: 'Situação RFB',
-            defaultFlex: 1,
+            defaultFlex: 0.615,
             type: 'select',
             operator: 'equals',
             value: '',
@@ -197,7 +263,7 @@ const Empresas = () => {
         },
         {
             name: 'empresa.flativo',
-            header: 'Ativa',
+            header: 'Status',
             type: 'select',
             operator: 'equals',
             value: 'S',
@@ -216,7 +282,7 @@ const Empresas = () => {
     ]
 
     if (user.recursos.includes('empresa_restrita')) {
-        columns.push({
+        columns.splice(columns.length - 1, 0, {
             name: 'restrita',
             header: 'Restrita',
             type: 'select',
@@ -240,7 +306,7 @@ const Empresas = () => {
                     />
                 </div>
             ),
-        });
+        })
     }
 
     useEffect(() => {
@@ -255,11 +321,11 @@ const Empresas = () => {
                         label: segmento.dssegmento,
                     }))
                     setOptionsSegmento(mappedOptions)
-                });
+                })
             } catch (error) {
                 console.error(error);
             }
-        };
+        }
 
         const getOrigens = async () => {
             try {
@@ -278,24 +344,50 @@ const Empresas = () => {
             } catch (error) {
                 console.error(error);
             }
-        };
+        }
 
-        getSegmentos();
-        getOrigens();
+        const getEntidades = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: 'entidades/empresas',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((origemItem: any) => {
+                        return ({
+                            value: origemItem.idassociacao,
+                            label: origemItem.sigla_nmrazao,
+                        })
+                    })
+                    setOptionsEntidade(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getEntidades()
+        getSegmentos()
+        getOrigens()
     }, [])
 
     const onChangeSegmentos = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
-        setSegmentoType(values);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setSegmentoType(values)
     }
 
-    const onChangeEmpresa = (option: any) => {
-        return setEmpresaType(option.value)
+    const onChangeEmpresa = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setEmpresaType(values)
     }
 
     const onChangeOrigem = (selectedOptions: any) => {
-        const values = selectedOptions.map((option: { value: string }) => option.value);
-        setOrigemType(values);
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setOrigemType(values)
+    }
+
+    const onChangeEntidade = (selectedOptions: any) => {
+        const values = selectedOptions.map((option: { value: string }) => option.value)
+        setEntidadeType(values)
     }
 
     const radioGroup =
@@ -320,7 +412,7 @@ const Empresas = () => {
                                 placement='top'
                                 title={
                                     <div>
-                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa)
+                                        Ao escolher "Secundário", empresas poderão aparecer duplicadas na lista (cada linha representa um CNAE secundário, por empresa).
                                     </div>
                                 }
                             >
@@ -336,17 +428,42 @@ const Empresas = () => {
                     </div>
 
                     <div className='pr-4 flex items-center'>
-                        <span className="pr-2 font-black">Empresa: </span>
+                        <span className="pr-2 font-black">Vínculo: </span>
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher mais de um vínculo serão selecionadas empresas que atendem a todos os critérios, removendo empresas fora do escopo.
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2' />
+                            </Tooltip>
+                        </div>
                         <Select
-                            defaultValue={empresaOptions[0]}
+                            isMulti
                             options={empresaOptions}
                             onChange={onChangeEmpresa}
-                            customWidth={'160px'}>
+                            placeholder="Todos"
+                            >
                         </Select>
                     </div>
 
                     <div className='pr-4 flex items-center'>
                         <span className="pr-2 font-black">Origem: </span>
+                        <div className='mr-2'>
+                            <Tooltip
+                                placement='top'
+                                title={
+                                    <div>
+                                        Ao escolher mais de uma origem as empresas serão selecionadas de maneira aditiva.
+                                    </div>
+                                }
+                            >
+                                <FcInfo size={20} className='mt-1 ml-2' />
+                            </Tooltip>
+                        </div>
                         <Select
                             isMulti
                             options={optionsOrigem}
@@ -356,7 +473,7 @@ const Empresas = () => {
                         </Select>
                     </div>
 
-                    {empresaType === 'somente_nucleadas' && (
+                    {empresaType.includes('somente_nucleadas') && (
                         <div className='flex items-center'>
                             <span className="font-black">Visão local: </span>
 
@@ -378,9 +495,9 @@ const Empresas = () => {
                     )}
                 </div>
 
-                {empresaType === 'somente_nucleadas' && (
-                    <div>
-                        <div className="col-span-1">
+                <div className="flex flex-wrap">
+                    {empresaType.includes('somente_nucleadas') && (
+                        <div className={`flex-1 ${empresaType.includes('vinculadas_entidades') ? 'w-1/2 pr-2' : 'w-full'}`}>
                             <span className="font-black">Segmento: </span>
                             <Select
                                 isMulti
@@ -391,15 +508,43 @@ const Empresas = () => {
                                 onChange={onChangeSegmentos}
                             />
                         </div>
-                    </div>
-                )}
+                    )}
+
+                    {empresaType.includes('vinculadas_entidades') && (
+                        <div className={`flex-1 ${empresaType.includes('somente_nucleadas') ? 'w-1/2 pl-2' : 'w-full'}`}>
+                            <span className="font-black">Entidade: </span>
+                            <Select
+                                isMulti
+                                placeholder="Selecione uma opção"
+                                options={optionsEntidade}
+                                noOptionsMessage={() => 'Sem dados!'}
+                                loadingMessage={() => 'Carregando'}
+                                onChange={onChangeEntidade}
+                            />
+                        </div>
+                    )}
+                </div>
+
             </div>
         );
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Empresas</h3>
+        <div className="lg:flex items-center justify-between mb-4">
+        <div className="flex items-center">
+            <h3 className="mb-4 lg:mb-0">Empresas</h3>
+            <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
+                <Button
+                    shape="circle"
+                    size="xs"
+                    icon={<FaQuestion />}
+                    className="ml-2" // Ajuste o espaçamento aqui, se necessário
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
+                    }}
+                />
+            </Tooltip>
+        </div>
                 {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Button size="sm" icon={<HiOutlineReply />}>

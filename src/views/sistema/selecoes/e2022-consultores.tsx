@@ -17,6 +17,9 @@ import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
 import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
+import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
+import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
+import TagTrueFalse from '@/components/ui/Tag/TagTrueFalse'
 
 // const toastNotification = (
 //     <Notification title="Falha na inscrição." type="danger">
@@ -31,48 +34,84 @@ import toast from '@/components/ui/toast'
 // )
 
 const E2022Consultores = () => {
+
+    // const defaultFilterValue = [
+    //     {
+    //         name: 'id',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'nome',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'cpf',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'uf',
+    //         operator: 'eq',
+    //     },
+    //     {
+    //         name: 'cidade',
+    //         operator: 'eq',
+    //     },
+    // ]
+
+    const activeValue = [
+        { name: 'Sim', value: 'true' },
+        { name: 'Não', value: 'false' },
+    ]
+
     const columns = [
         {
             name: 'id',
             header: 'ID',
             defaultFlex: 1,
             type: 'number',
+            operator: 'eq',
             filterEditor: NumberFilter,
         },
         {
             name: 'nome',
             header: 'Nome',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'cpf',
             header: 'CPF',
             defaultFlex: 1.5,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'uf',
             header: 'UF',
             defaultFlex: 1,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'cidade',
             header: 'Cidade',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'telefone',
             header: 'Telefone',
             defaultFlex: 1.5,
+            operator: 'contains',
             type: 'string',
         },
         {
             name: 'email',
             header: 'Email',
             defaultFlex: 2,
+            operator: 'contains',
             type: 'string',
         },
         {
@@ -81,11 +120,48 @@ const E2022Consultores = () => {
             defaultFlex: 1.5,
             type: 'date',
             dateFormat: 'DD/MM/YYYY',
+            operator: 'eq',
             filterEditor: DateFilter,
             render: ({ value, cellProps: { dateFormat } }: any) =>
                 moment(value).format(dateFormat) === 'Invalid date'
                     ? '-'
                     : moment(value).format(dateFormat),
+        },
+        {
+            name: 'apto',
+            header: 'Apto',
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                 <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                </div>
+            ),
+        },
+        {
+            name: 'selecionado',
+            header: 'Selecionado',
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                     <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                </div>
+            ),
         },
     ];
 
@@ -122,12 +198,30 @@ const E2022Consultores = () => {
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
                             className="menu-item-link"
-                            to={`${import.meta.env.VITE_PHP_URL
-                                }/sistema/selecoes/e2022-consultores`}
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/selecoes/e2022-consultores`}
                         >
                             Versão antiga
                         </Link>
                     </Button>
+
+                    <Button size="sm" variant="solid">
+                        <a
+                            href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY="
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Resultado
+                        </a>
+                    </Button>
+                    <Button size="sm" variant='solid'>
+                        <Link
+                            className="menu-item-link"
+                            to={`/sistema/selecoes/painel-inscricoes`}
+                        >
+                            Painel de inscrições
+                        </Link>
+                    </Button>
+                    
                     <Tooltip title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}>
                         <span>
                             <Button
@@ -145,7 +239,7 @@ const E2022Consultores = () => {
                 </div>
             </div>
             <CustomReactDataGrid
-                filename="Empresas"
+                filename="Inscrições de Consultores"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL
                     }/selecoes/e2022-consultores`}
