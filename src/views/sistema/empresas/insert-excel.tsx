@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAppSelector } from '@/store'
 import ApiService from '@/services/ApiService'
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb'
+import { FaQuestion } from "react-icons/fa"
+import Tooltip from '@/components/ui/Tooltip'
 
 const ExcelUpload = () => {
   const [loading, setLoading] = useState(false)
@@ -94,7 +96,19 @@ const ExcelUpload = () => {
       />
       <Container>
       <Breadcrumb items={breadcrumbItems} /> 
-      <h3 className="mb-4 lg:mb-3">Inserir Novo Lote</h3>
+      <div className="flex items-center mb-4 lg:mb-3">
+      <h3 className="mr-2">Inserir Novo Lote</h3>
+      <Tooltip title="Para saber mais sobre como é feita a importação de empresas em lote clique aqui" placement="right-end">
+          <Button
+            shape="circle"
+            size="xs"
+            icon={<FaQuestion />}
+            onClick={() => {
+              window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE2OTg=')
+            }}
+          />
+        </Tooltip>
+      </div>
       <div className="flex justify-end items-center space-x-4 mb-4">
       <div className="flex-grow flex flex-col items-start">
         <p className="text-red-500 text-lg text-left">
