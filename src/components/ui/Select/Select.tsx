@@ -111,6 +111,7 @@ export interface SelectProps<
     field?: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     form?: any
+    customWidth?: any
     componentAs?: ReactSelect | CreatableSelect | AsyncSelect
 }
 
@@ -123,6 +124,7 @@ function _Select<
     ref: ForwardedRef<ReactSelect | CreatableSelect | AsyncSelect>
 ) {
     const {
+        customWidth,
         size,
         style,
         className,
@@ -194,6 +196,7 @@ function _Select<
                 input: (css) => {
                     return {
                         ...css,
+                        width: customWidth ?? 'auto',
                         input: {
                             outline: 'none',
                             outlineOffset: 0,

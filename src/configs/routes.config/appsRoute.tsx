@@ -14,6 +14,14 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/empresas')),
     },
     {
+        key: 'Anexos.lista',
+        path: `${APP_PREFIX_PATH}/anexos/`,
+        component: lazy(() => import('@/views/sistema/anexos')),
+        meta: {
+            pageContainerType: 'default',
+        },
+    },
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
@@ -146,9 +154,6 @@ const appsRoute: Routes = [
         key: 'sistemaPrestcontas.listaGeralLancamentos',
         path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
         component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
-        meta: {
-            pageContainerType: 'gutterless',
-        },
     },
     {
         key: 'sistema.selecaoPainel',

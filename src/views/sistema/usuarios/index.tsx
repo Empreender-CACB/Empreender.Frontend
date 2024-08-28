@@ -11,7 +11,7 @@ import { AdaptableCard } from '@/components/shared'
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 
-import { HiDownload, HiPlusCircle } from 'react-icons/hi'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { setUser, signInSuccess, useAppDispatch } from '@/store'
 import { UsuariosCard } from '@/components/shared/TableCards/UsuariosCard'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
@@ -43,11 +43,16 @@ const Usuarios = () => {
                 nmusuario: response.data.user.nmusuario,
                 dsemail: response.data.user.dsemail,
                 perfil: response.data.user.perfil,
+                idobjeto: response.data.user.idobjeto,
                 cod_perfil: response.data.user.cod_perfil,
                 fotouser: response.data.user.fotouser,
                 cdsexo: response.data.user.cdsexo,
                 recursos: response.data.user.recursos,
                 preferencias: response.data.user.preferencias,
+                associacoes: response.data.user.associacoes,
+                empresas: response.data.user.empresas,
+                nucleos: response.data.user.nucleos,
+                projetos: response.data.user.projetos,
             }
             dispatch(signInSuccess(newToken))
             dispatch(setUser(adaptedUser))
@@ -112,9 +117,18 @@ const Usuarios = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Usuários</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center">
+                <Button size="sm" icon={<HiOutlineReply />}>
+                        <Link
+                            className="menu-item-link"
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/usuario`}
+                        >
+                            Versão antiga
+                        </Link>
+                    </Button>
+
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to="/app/users/user-new"
+                        to={`${import.meta.env.VITE_PHP_URL}/sistema/usuario/adicionar`}
                     >
                         <Button
                             block
