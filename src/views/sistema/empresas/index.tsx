@@ -252,7 +252,7 @@ const Empresas = () => {
             header: 'Situação RFB',
             defaultFlex: 0.615,
             type: 'select',
-            operator: 'equals',
+            operator: 'eq',
             value: '',
             filterEditor: SelectFilter,
             filterEditorProps: {
@@ -265,7 +265,7 @@ const Empresas = () => {
             name: 'empresa.flativo',
             header: 'Status',
             type: 'select',
-            operator: 'equals',
+            operator: 'eq',
             value: 'S',
             filterEditor: SelectFilter,
             filterEditorProps: {
@@ -286,7 +286,7 @@ const Empresas = () => {
             name: 'restrita',
             header: 'Restrita',
             type: 'select',
-            operator: 'equals',
+            operator: 'eq',
             value: 'false',
             filterEditor: SelectFilter,
             filterEditorProps: {

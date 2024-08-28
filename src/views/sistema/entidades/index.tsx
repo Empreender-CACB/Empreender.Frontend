@@ -28,6 +28,7 @@ const columns = [
         header: 'ID',
         type: 'number',
         defaultFlex: 0.3,
+        operator:'eq',
         render: ({ data }: any) => {
             const text = data.idassociacao
             
@@ -42,17 +43,17 @@ const columns = [
         )
     }
 },
-{ name: 'nome', header: 'Tipo de Entidade', type: 'string', defaultFlex: 1 },
-{ name: 'nmpais', header: 'País', type: 'string', defaultFlex: 1 },
+{ name: 'nome', header: 'Tipo de Entidade', type: 'string', defaultFlex: 1 , operator:'contains'},
+{ name: 'nmpais', header: 'País', type: 'string', defaultFlex: 0.7 , operator: 'contains'},
 {
-    name: 'iduf', header: 'UF', type: 'select',
+    name: 'iduf', header: 'UF', type: 'select', operator:'eq' ,
     filterEditor: SelectFilter,
     filterEditorProps: {
         dataSource: estadosBrasileiros.map(state => ({ id: state.sigla, label: state.sigla }))
         },
-        defaultFlex: 0.3
+        defaultFlex: 0.4
     },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 },
+    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 , operator:'contains'},
     { name: 'sigla',
       header: 'Sigla',
       type: 'string',
@@ -73,6 +74,7 @@ const columns = [
         header: 'Razão Social',
         type: 'string',
         defaultFlex: 1.5,
+        operator: 'contains',
         render: ({ data }: any) => {
             const text = data.nmrazao
             const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
@@ -86,7 +88,7 @@ const columns = [
         )
     }
     },
-    { name: 'dsemail', header: 'Email', type: 'string', defaultFlex: 1 },
+    { name: 'dsemail', header: 'Email', type: 'string', defaultFlex: 1 , operator:'contains' },
     {
         name: 'flativo', 
         header: 'Status', 
