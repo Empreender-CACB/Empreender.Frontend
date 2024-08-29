@@ -14,8 +14,7 @@ import { useAppSelector } from '@/store'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { FcInfo } from 'react-icons/fc'
 import { FaQuestion } from "react-icons/fa"
-// import { associacaoCard } from '@/components/shared/TableCards/associacaoCard'
-
+import { EntidadeCard } from '@/components/shared/TableCards/EntidadeCard'
 
 moment.locale('pt-br')
 const activeValue = [
@@ -207,6 +206,7 @@ const Entidades = () => {
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/entidades?mostrarTudo=${checkedMostrarTudo}`}
                 options={radioGroup}
+                CardLayout={EntidadeCard}
             />
 
         </AdaptableCard>
