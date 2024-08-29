@@ -393,7 +393,7 @@ const Empresas = () => {
     const radioGroup =
         (
             <div>
-                <div className="pb-4 flex items-center">
+                <div className="pb-4 sm:flex sm:items-center">
 
                     <div className='flex items-center pr-5'>
                         <span className="pr-2 font-black">Nome: </span>
