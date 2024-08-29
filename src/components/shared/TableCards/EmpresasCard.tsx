@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 export const EmpresasCard = ({ data }) => {
     return (
         <Link
-            to={`./${data.idempresa}`}
+            to={`${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`}
             smooth={true}
             duration={500}
             offset={-80}
@@ -16,7 +16,7 @@ export const EmpresasCard = ({ data }) => {
 
             <span>{data.nucnpjcpf || '-'}</span>
             <p className="mt-2">
-                {data.nmcidade} - {data.nmuf}
+                {data.nmcidade} - {data.iduf}
             </p>
         </Link>
     )

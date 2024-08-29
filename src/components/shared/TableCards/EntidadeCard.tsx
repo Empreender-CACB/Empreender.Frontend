@@ -14,7 +14,6 @@ export const EntidadeCard = ({ data }) => {
                 <TagActiveInative value={data["associacao.flativo"]} activeText="S" />
             </div>
 
-            <span>{data.nucnpjcpf || '-'}</span>
             <p className="mt-2">
                 {data.nmcidade} - {data.iduf}
             </p>

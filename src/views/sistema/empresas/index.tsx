@@ -252,7 +252,7 @@ const Empresas = () => {
             header: 'Situação RFB',
             defaultFlex: 0.615,
             type: 'select',
-            operator: 'eq',
+            operator: 'equals',
             value: '',
             filterEditor: SelectFilter,
             filterEditorProps: {
@@ -265,7 +265,7 @@ const Empresas = () => {
             name: 'empresa.flativo',
             header: 'Status',
             type: 'select',
-            operator: 'eq',
+            operator: 'equals',
             value: 'S',
             filterEditor: SelectFilter,
             filterEditorProps: {
@@ -286,7 +286,7 @@ const Empresas = () => {
             name: 'restrita',
             header: 'Restrita',
             type: 'select',
-            operator: 'eq',
+            operator: 'equals',
             value: 'false',
             filterEditor: SelectFilter,
             filterEditorProps: {
@@ -393,7 +393,7 @@ const Empresas = () => {
     const radioGroup =
         (
             <div>
-                <div className="pb-4 flex items-center">
+                <div className="pb-4 sm:flex sm:items-center">
 
                     <div className='flex items-center pr-5'>
                         <span className="pr-2 font-black">Nome: </span>
