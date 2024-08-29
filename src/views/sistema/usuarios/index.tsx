@@ -69,33 +69,22 @@ const Usuarios = () => {
     }
 
     const columns = [
-        { name: 'iduf', header: 'UF', type: 'string', flex: 0.4 },
+        { name: 'iduf', header: 'UF', type: 'string', flex: 0.4,minWidth: 80},
         { name: 'nmcidade', header: 'Cidade', defaultFlex: 1 },
         { name: 'nucpf', header: 'CPF', defaultFlex: 1 },
         {
             name: 'nmusuario',
-            header: 'Nome Usuário',
+            header: 'Nome do usuário',
             defaultFlex: 1.5,
-            render: ({ data }: any) => (
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                    }}
+            render: ({ data, value }: any) => (
+                <Link
+                    className="menu-item-link max-w-md text-blue-500"
+                    to={`${
+                        import.meta.env.VITE_PHP_URL
+                    }/sistema/usuario/detalhe/uid/${btoa(data.id)}`}
                 >
-                    {data.nmusuario}
-                    <button
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                        }}
-                        onClick={() => handleEntrarComo(data)}
-                    >
-                        <GoSignIn size={20} title="Entrar como" />
-                    </button>
-                </div>
+                    {value}
+                </Link>
             ),
         },
         { name: 'nmlogin', header: 'Login', defaultFlex: 1 },
@@ -107,6 +96,31 @@ const Usuarios = () => {
             render: ({ value }: any) => (
                 <div className="flex items-center justify-center">
                     <TagActiveInative value={value} activeText="S" />
+                </div>
+            ),
+        },
+        {
+            name: 'id',
+            header: 'Ações',
+            defaultFlex: 0.6,
+            render: ({ data }: any) => (
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
+                    <button
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => handleEntrarComo(data)}
+                    >
+                        <GoSignIn size={20} title="Entrar como" />
+                    </button>
                 </div>
             ),
         },
