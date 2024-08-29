@@ -54,7 +54,7 @@ const columns = [
         defaultFlex: 0.4
     },
     { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 , operator:'contains'},
-    { name: 'sigla',
+    { name: 'associacao.sigla',
       header: 'Sigla',
       type: 'string',
       defaultFlex: 0.5,
