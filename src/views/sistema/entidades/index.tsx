@@ -58,6 +58,7 @@ const columns = [
       header: 'Sigla',
       type: 'string',
       defaultFlex: 0.5,
+      operator:'contains',
       render: ({ data }: any) => {
         const text = data.sigla
         const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
