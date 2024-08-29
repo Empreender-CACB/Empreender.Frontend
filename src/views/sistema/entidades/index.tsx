@@ -46,7 +46,7 @@ const columns = [
 { name: 'nome', header: 'Tipo de Entidade', type: 'string', defaultFlex: 1 , operator:'contains'},
 { name: 'nmpais', header: 'País', type: 'string', defaultFlex: 0.7 , operator: 'contains'},
 {
-    name: 'iduf', header: 'UF', type: 'select', operator:'eq' ,
+    name: 'iduf', header: 'UF', type: 'select', operator:'equals' ,
     filterEditor: SelectFilter,
     filterEditorProps: {
         dataSource: estadosBrasileiros.map(state => ({ id: state.sigla, label: state.sigla }))
@@ -89,7 +89,7 @@ const columns = [
         )
     }
     },
-    { name: 'dsemail', header: 'Email', type: 'string', defaultFlex: 1 , operator:'contains' },
+    { name: 'dsemail', header: 'E-mail', type: 'string', defaultFlex: 1 , operator:'contains' },
     {
         name: 'flativo', 
         header: 'Status', 
