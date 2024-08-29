@@ -111,12 +111,12 @@ const columns = [
 
 
 const Entidades = () => {
-    const [checkedMostrarTudo, setMostrarTudo] = useState(true)
+    const [checkedMostrarTudo, setMostrarTudo] = useState(false)
     const { user } = useAppSelector((state) => state.auth)
     
     const radioGroup = (
         <div className='flex items-center'>
-            <span className="font-black">Mostrar tudo</span>
+            <span className="font-black">Mostrar todos</span>
             <div className='mr-2'>
                 <Tooltip
                     placement='top'

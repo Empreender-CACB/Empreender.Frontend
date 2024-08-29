@@ -63,14 +63,14 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState<string[]>([]) 
+    const [empresaType, setEmpresaType] = useState<string[]>(['somente_nucleadas']) 
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [entidadeType, setEntidadeType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [optionsSegmento, setOptionsSegmento] = useState([])
     const [optionsEntidade, setOptionsEntidade] = useState([])
-    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
+    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(true)
 
     const { user } = useAppSelector((state) => state.auth)
 
@@ -444,6 +444,7 @@ const Empresas = () => {
                         <Select
                             isMulti
                             options={empresaOptions}
+                            defaultValue={empresaOptions[0]}
                             onChange={onChangeEmpresa}
                             placeholder="Todos"
                             >
