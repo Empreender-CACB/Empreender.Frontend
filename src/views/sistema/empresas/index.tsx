@@ -539,7 +539,7 @@ const Empresas = () => {
                     shape="circle"
                     size="xs"
                     icon={<FaQuestion />}
-                    className="ml-2" // Ajuste o espaçamento aqui, se necessário
+                    className="ml-2"
                     onClick={() => {
                         window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
                     }}
