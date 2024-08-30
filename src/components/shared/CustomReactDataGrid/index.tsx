@@ -552,7 +552,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 defaultFilterValue={defaultFilterValue || columns}
                 defaultSortInfo={defaultSortInfo}
                 columns={columns}
-                theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}
                 rowHeight = {null}
                 enableFiltering={true}
@@ -573,6 +572,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 checkboxColumn={isSelectable}
                 selected={selected}
                 onSelectionChange={handleSelectionChange}
+                showColumnMenuTool={false}
+                theme={isDark ? 'blue-dark' : 'blue-light'}
             />
             
         </div>
