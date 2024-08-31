@@ -1,5 +1,4 @@
 import '@inovua/reactdatagrid-community/index.css'
-
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -8,24 +7,42 @@ import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import Radio from '@/components/ui/Radio'
-
+import { FaQuestion } from "react-icons/fa"
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
-import { Button } from '@/components/ui'
+import { Button, Tooltip } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
-
+import { FcInfo } from 'react-icons/fc'
 import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { NucleosCard } from '@/components/shared/TableCards/NucleosCard'
 
 moment.locale('pt-br')
 const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
+    { name: 'Ativo', value: 'S' },
+    { name: 'Inativo', value: 'N' },
 ]
 
 const columns = [
-    { name: 'idnucleo', header: 'ID', type: 'string', value: '', defaultFlex: 0.3, },
+    { name: 'idnucleo',
+      header: 'ID',
+      type: 'number',
+      defaultFlex: 0.3,
+      render: ({ data }: any) => {
+        const text = data.idnucleo
+        
+        const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(data.idnucleo))}`
+        
+        return (
+            <div>
+            <Link to={linkTo}>
+                {text}
+            </Link>
+        </div>
+    )}
+    },
     {
-        name: 'iduf', header: 'UF', type: 'select',
+        name: 'iduf',
+        header: 'UF',
+        type: 'select',
         value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
@@ -36,20 +53,25 @@ const columns = [
         defaultFlex: 0.3,
     },
     {
-        name: 'nmcidade', header: 'Cidade', type: 'string'
+        name: 'nmcidade', header: 'Cidade', type: 'string', operator:'contains'
     },
     {
         name: 'nmnucleo',
         header: 'Núcleo',
         defaultFlex: 1.5,
         type: 'string',
-        render: ({ data }: any) => (
-            <div>
-                <Link to={`/sistema/nucleos/${data.idnucleo}`}>
-                    {data.nmnucleo}
+        render: ({ data }: any) => {
+            const text = data.nmnucleo
+            
+            const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(data.idnucleo))}`
+            
+            return (
+                <div>
+                <Link to={linkTo}>
+                    {text}
                 </Link>
             </div>
-        ),
+        )}
     },
     {
         name: 'dssegmento',
@@ -78,7 +100,7 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     {
-        name: 'nucleo.flativo', header: 'Ativa', type: 'select',
+        name: 'nucleo.flativo', header: 'Status', type: 'select',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: activeValue.map(option => {
@@ -97,7 +119,8 @@ const columns = [
 const defaultFilterValue = [
     {
         name: 'idnucleo',
-        type: 'string',
+        type: 'number',
+        operator: 'eq',
         value: '',
     },
     {
@@ -142,18 +165,41 @@ const Nucleos = () => {
     }
 
     const radioGroup = (
-        <div>
-            <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
-                <span className="pr-2 font-black">Mostrar Todos: </span>
-                <Radio value={'todos'}></Radio>
+        <div className="flex items-center">
+            <Radio.Group className="lg:mb-0 flex items-center" value={nameValue} onChange={onChange}>
+                <span className="pr-2 font-black">Mostrar Todos</span>
+                <Tooltip
+                    placement="top"
+                    title={
+                        <div>
+                            Assinale a caixa para apresentação de todos os núcleos cadastrados. Observe a situação do filtro Status.
+                        </div>
+                    }
+                >
+                    <FcInfo size={20}/>
+                </Tooltip>
+                <Radio value={'todos'} className="ml-2" />
             </Radio.Group>
         </div>
     );
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
+            <div className="flex items-center">
                 <h3 className="mb-4 lg:mb-0">Núcleos</h3>
-                <div className="flex flex-col lg:flex-row lg:items-center">
+                <Tooltip title="Para saber mais sobre o uso da Lista de Núcleos clique aqui" placement="right-end">
+                <Button
+                    shape="circle"
+                    size="xs"
+                    icon={<FaQuestion />}
+                    className="ml-2"
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/ODMz')
+                    }}
+                    />
+                </Tooltip>
+                </div>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-4">
 
                     <Button size="sm" icon={<HiOutlineReply />}>
                         <Link
