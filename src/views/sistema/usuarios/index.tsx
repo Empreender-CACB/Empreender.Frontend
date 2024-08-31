@@ -79,7 +79,7 @@ const Usuarios = () => {
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
                     to={`${import.meta.env.VITE_PHP_URL
-                        }/sistema/usuario/detalhe/uid/${btoa(data.id)}`}
+                        }/sistema/usuario/detalhe/uid/${btoa(data.nucpf)}`}
                 >
                     {value}
                 </Link>
@@ -127,7 +127,7 @@ const Usuarios = () => {
                                 className="menu-item-link max-w-md"
                                 // className={`menu-item-link max-w-md ${textTheme}`}
                                 to={`${import.meta.env.VITE_PHP_URL
-                                    }/sistema/usuario/detalhe/uid/${btoa(data.id)}`}
+                                    }/sistema/usuario/detalhe/uid/${btoa(data.nucpf)}`}
                             >
                                 <span
                                     className={`cursor-pointer p-2`}
