@@ -92,7 +92,7 @@ const FooterContent = () => {
                     <div className="mt-8 md:order-1 md:mt-0">
                         <p className="text-center leading-5 text-gray-500">
                             <span className="font-semibold">{parametro.valor}</span><br />
-                            <span className="italic" >Versão 4.91</span>
+                            <span className="italic" >Versão 5.0</span>
                         </p>
                     </div>
                 </div>
