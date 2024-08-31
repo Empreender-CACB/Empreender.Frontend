@@ -77,7 +77,6 @@ const FooterContent = () => {
     }, []);
 
     return (
-
         <>
             <footer className='bg-white'>
                 <div className="flex-auto w-full pb-12 px-6 md:flex md:items-center md:justify-between lg:px-8">
@@ -98,7 +97,6 @@ const FooterContent = () => {
                 </div>
             </footer>
         </>
-
     )
 }
 

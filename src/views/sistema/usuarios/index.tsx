@@ -85,8 +85,30 @@ const Usuarios = () => {
                 </Link>
             ),
         },
-        { name: 'nmlogin', header: 'Login', defaultFlex: 1 },
-        { name: 'nome', header: 'Perfil', defaultFlex: 1 },
+        {
+            name: 'nmlogin', header: 'Login', defaultFlex: 1,
+            render: ({ data, value }: any) => (
+                <Link
+                    className="menu-item-link max-w-md text-blue-500"
+                    to={`${import.meta.env.VITE_PHP_URL
+                        }/sistema/usuario/detalhe/uid/${btoa(data.nucpf)}`}
+                >
+                    {value}
+                </Link>
+            ),
+        },
+        {
+            name: 'nome', header: 'Perfil', defaultFlex: 1,
+            render: ({ data, value }: any) => (
+                <Link
+                    className="menu-item-link max-w-md text-blue-500"
+                    to={`${import.meta.env.VITE_PHP_URL
+                        }/sistema/usuario/detalhe/uid/${btoa(data.nucpf)}`}
+                >
+                    {value}
+                </Link>
+            ),
+        },
         {
             name: 'flativo',
             header: 'Ativo',
@@ -122,23 +144,7 @@ const Usuarios = () => {
                                 <GoSignIn />
                             </span>
                         </Tooltip>
-                        <Tooltip title="Visualizar detalhes">
-                            <Link
-                                className="menu-item-link max-w-md"
-                                // className={`menu-item-link max-w-md ${textTheme}`}
-                                to={`${import.meta.env.VITE_PHP_URL
-                                    }/sistema/usuario/detalhe/uid/${btoa(data.nucpf)}`}
-                            >
-                                <span
-                                    className={`cursor-pointer p-2`}
-                                >
-                                    <HiOutlineEye />
-                                </span>                </Link>
-
-
-                        </Tooltip>
                     </div>
-
                 </>
 
             ),

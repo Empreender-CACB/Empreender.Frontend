@@ -31,12 +31,7 @@ const SignIn = () => {
     return (
         <>
             <div className="mb-8 flex center justify-center">
-                <div className="logo w-44">
-                    <img src="/img/logo/logo-cacb.png" alt="Portal Empreender logo" />
-                </div>
-                <div className="ml-4">
-                    <img src="/img/logo/logo-empreender.png" alt="Empreender logo" />
-                </div>
+                <img className="h-16" src="/img/logo/EMPREENDER+CACB.png" alt="Empreender e CACB" /> 
             </div>
             <div className="mb-8">
                 <h3 className="mb-1">Bem-vindo</h3>
