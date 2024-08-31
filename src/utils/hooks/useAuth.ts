@@ -9,6 +9,7 @@ import {
     useAppDispatch,
 } from '@/store'
 import appConfig from '@/configs/app.config'
+import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import useQuery from './useQuery'
 import type { SignInCredential, SignUpCredential } from '@/@types/auth'
@@ -64,8 +65,10 @@ function useAuth() {
                     dispatch(setUser(adaptedUser))
                 }
 
+                const redirectUrl = query.get(REDIRECT_URL_KEY)
+                console.log(redirectUrl, appConfig.authenticatedEntryPath)
                 navigate(
-                    appConfig.authenticatedEntryPath
+                    redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath
                 )
 
                 return {
