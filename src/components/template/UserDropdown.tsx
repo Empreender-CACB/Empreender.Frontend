@@ -20,7 +20,7 @@ type DropdownList = {
 const dropdownItemList: DropdownList[] = [
     {
         label: 'Perfil',
-        path: '/app/account/settings/profile',
+        path: `${import.meta.env.VITE_PHP_URL}/sistema/usuario/meus-dados`,
         icon: <HiOutlineUser />,
     },
     {
