@@ -40,6 +40,28 @@ const handleVersionButtonClick = async () => {
     }
 }
 
+const handleVersionButtonClick = async () => {
+    try {
+        const rfbVersion = await fetchRfbVersion()
+        const toastNotification = (
+
+            <Notification duration={3000}>
+                {rfbVersion}
+            </Notification>
+        )
+        toast.push(toastNotification)
+    } catch (error) {
+        const toastErrorNotification = (
+
+            <Notification>
+                Não foi possível completar a operação. Por favor, tente novamente.
+            </Notification>
+        )
+        console.error('Erro ao obter a versão da RFB:', error)
+        toast.push(toastErrorNotification)
+    }
+}
+
 const HorizontalMenuDropdownItem = ({ nav }: HorizontalMenuItemProps) => {
     const { title, translateKey, path, key, target } = nav
 
