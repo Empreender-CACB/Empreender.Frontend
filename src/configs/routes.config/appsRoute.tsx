@@ -174,7 +174,12 @@ const appsRoute: Routes = [
         key: 'sistemaPrestContas.contaEspecial',
         path: `${APP_PREFIX_PATH}/prestcontas/painel-conta-especial`,
         component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/conta-especial'))
-    }
+    },
+    {
+        key: 'sistemaEntidade.painelAcompanhamento',
+        path: `${APP_PREFIX_PATH}/entidades/painel-acompanhamento`,
+        component: lazy(() => import('@/views/sistema/entidades/acompanhamento'))
+    },
 ]
 
 export default appsRoute
