@@ -112,7 +112,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
             <Dropdown
                 menuStyle={{ minWidth: 240 }}
                 renderTitle={UserAvatar}
-                placement="bottom-end"
+                placement="bottom-start"
             >
                 <Dropdown.Item variant="header">
                     <div className="py-2 px-3 flex items-center gap-2">
