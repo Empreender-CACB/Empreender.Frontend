@@ -1,15 +1,14 @@
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import Checkbox from '@/components/ui/Checkbox'
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Alert from '@/components/ui/Alert'
 import PasswordInput from '@/components/shared/PasswordInput'
 import ActionLink from '@/components/shared/ActionLink'
-import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import useAuth from '@/utils/hooks/useAuth'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import type { CommonProps } from '@/@types/common'
+import { useEffect, useState } from 'react'
 
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
@@ -37,7 +36,7 @@ const SignInForm = (props: SignInFormProps) => {
         signUpUrl = '/sign-up',
     } = props
 
-    const [message, setMessage] = useTimeOutMessage()
+    const [message, setMessage] = useState<any>(false);
 
     const { signIn } = useAuth()
 
