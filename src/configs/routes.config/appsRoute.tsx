@@ -180,6 +180,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/entidades/painel-acompanhamento`,
         component: lazy(() => import('@/views/sistema/entidades/acompanhamento'))
     },
+    {
+        key: 'logout',
+        path: `${APP_PREFIX_PATH}/logout`,
+        component: lazy(() => import('@/views/auth/Logout'))
+    },
 ]
 
 export default appsRoute
