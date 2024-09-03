@@ -17,6 +17,8 @@ import ApiService from '@/services/ApiService'
 import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
 import { FcInfo } from 'react-icons/fc'
+import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+
 
 moment.locale('pt-br')
 
@@ -110,19 +112,24 @@ const Empresas = () => {
             name: 'empresa.idempresa',
             header: 'ID',
             columnName: 'empresa.idempresa',
-            type: 'string',
-            operator: 'contains',
+            type: 'number',
+            operator: 'eq',
             value: "",
-            defaultFlex: 0.4,
+            defaultFlex: 0.6,
         },
         {
             name: 'iduf',
-            columnName: 'iduf',
             header: 'UF',
-            type: 'string',
-            operator: 'contains',
+            type: 'select',
             value: '',
-            defaultFlex: 0.32,
+            operator: 'equals',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: estadosBrasileiros.map(state => {
+                    return { id: state.sigla, label: state.sigla }
+                }),
+            },
+            defaultFlex: 0.55,
         },
         {
             name: 'nmcidade',
@@ -151,7 +158,7 @@ const Empresas = () => {
             name: 'nmfantasia',
             header: 'Nome',
             dbColumn: nameValue,
-            defaultFlex: 1.5,
+            defaultFlex: 1.35,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -178,7 +185,7 @@ const Empresas = () => {
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
-            defaultFlex: 0.7,
+            defaultFlex: 0.8,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -223,9 +230,9 @@ const Empresas = () => {
             },
         },
         {
-            name: 'situacao',
+            name: 'empresa.situacao',
             header: 'Situação RFB',
-            defaultFlex: 0.615,
+            defaultFlex: 0.65,
             type: 'select',
             operator: 'equals',
             value: '',
