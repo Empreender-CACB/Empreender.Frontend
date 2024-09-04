@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import { Button, Checkbox, Tooltip } from '@/components/ui'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
@@ -107,11 +107,10 @@ const Empresas = () => {
             headerCnae = "CNAE"
     }
 
-    const columns = [
+    const columns = useMemo(() => [
         {
             name: 'empresa.idempresa',
             header: 'ID',
-            columnName: 'empresa.idempresa',
             type: 'number',
             operator: 'eq',
             value: "",
@@ -155,9 +154,9 @@ const Empresas = () => {
             },
         },
         {
-            name: 'nmfantasia',
-            header: 'Nome',
-            dbColumn: nameValue,
+            name:`empresa.${nameValue}`,
+            id: `empresa.nmfantasia`,
+            header: "Nome",
             defaultFlex: 1.35,
             type: 'string',
             operator: 'contains',
@@ -244,32 +243,12 @@ const Empresas = () => {
             },
         },
         {
-            name: 'empresa.flativo',
-            header: 'Status',
-            type: 'select',
-            operator: 'equals',
-            value: 'S',
-            filterEditor: SelectFilter,
-            filterEditorProps: {
-                dataSource: activeValue.map((option) => {
-                    return { id: option.value, label: option.name }
-                }),
-            },
-            render: ({ value }: any) => (
-                <div className="flex items-center justify-center">
-                    <TagActiveInative value={value} activeText="S" />
-                </div>
-            ),
-        },
-    ]
-
-    if (user.recursos.includes('empresa_restrita')) {
-        columns.splice(columns.length - 1, 0, {
             name: 'restrita',
             header: 'Restrita',
             type: 'select',
             operator: 'equals',
             value: 'false',
+            visible: user.recursos.includes('empresa_restrita'),
             filterEditor: SelectFilter,
             filterEditorProps: {
                 dataSource: restritaValue.map((option) => {
@@ -288,8 +267,29 @@ const Empresas = () => {
                     />
                 </div>
             ),
-        })
-    }
+        },
+        {
+            name: 'empresa.flativo',
+            header: 'Status',
+            type: 'select',
+            operator: 'equals',
+            value: 'S',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: activeValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ value }: any) => (
+                <div className="flex items-center justify-center">
+                    <TagActiveInative value={value} activeText="S" />
+                </div>
+            ),
+        },
+
+    ], [nameValue]);
+
+
 
     useEffect(() => {
         const getSegmentos = async () => {
@@ -385,6 +385,7 @@ const Empresas = () => {
                             onChange={(e: any) => setNameValue(e.value)}>
                         </Select>
                     </div>
+
 
                     <div className='pr-4 flex items-center pr-5'>
                         <span className="font-black">CNAE: </span>

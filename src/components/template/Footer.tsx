@@ -109,7 +109,6 @@ export default function Footer({
                 // `footer flex flex-auto items-center h-16 ${PAGE_CONTAINER_GUTTER_X}`
             )}
         >
-            {pageContainerType === 'contained' ? (
                 <div className='mx-full bg-white'>
                     <div className='border border-gray-300 mb-5'>
                         <div className="mx-auto container py-6 lg:px-8">
@@ -142,9 +141,7 @@ export default function Footer({
 
                     </div>
                 </div>
-            ) : (
-                <FooterContent />
-            )}
+
         </footer>
     )
 }
