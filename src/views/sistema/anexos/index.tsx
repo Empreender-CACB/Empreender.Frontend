@@ -20,7 +20,7 @@ moment.locale('pt-br')
 const tipoValue = [
     { name: 'Aguardando aprovação', value: 'aa', color: 'yellow-600' },
     { name: 'Aprovado', value: 'ap', color: 'green-600' },
-    { name: 'Não se aplica', value: null, color: 'orange-600' },
+    { name: 'Não se aplica', value: 'null', color: 'orange-600' },
     { name: 'Recusado', value: 'rc', color: 'red-600' },
 ]
 
