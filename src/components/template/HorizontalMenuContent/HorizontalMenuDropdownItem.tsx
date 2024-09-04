@@ -18,6 +18,7 @@ export type HorizontalMenuItemProps = {
     }
 }
 
+
 const handleVersionButtonClick = async () => {
     try {
         const rfbVersion = await fetchRfbVersion()

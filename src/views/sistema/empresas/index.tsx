@@ -17,6 +17,8 @@ import ApiService from '@/services/ApiService'
 import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
 import { FcInfo } from 'react-icons/fc'
+import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+
 
 moment.locale('pt-br')
 
@@ -63,14 +65,14 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState<string[]>([]) 
+    const [empresaType, setEmpresaType] = useState<string[]>(['somente_nucleadas']) 
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [entidadeType, setEntidadeType] = useState([])
     const [optionsOrigem, setOptionsOrigem] = useState([])
     const [optionsSegmento, setOptionsSegmento] = useState([])
     const [optionsEntidade, setOptionsEntidade] = useState([])
-    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(false)
+    const [checkedVisaoLocal, setCheckedVisaoLocal] = useState(true)
 
     const { user } = useAppSelector((state) => state.auth)
 
@@ -109,18 +111,24 @@ const Empresas = () => {
         {
             name: 'empresa.idempresa',
             header: 'ID',
-            type: 'string',
-            operator: 'contains',
+            type: 'number',
+            operator: 'eq',
             value: "",
-            defaultFlex: 0.4,
+            defaultFlex: 0.6,
         },
         {
             name: 'iduf',
             header: 'UF',
-            type: 'string',
-            operator: 'contains',
+            type: 'select',
             value: '',
-            defaultFlex: 0.32,
+            operator: 'equals',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: estadosBrasileiros.map(state => {
+                    return { id: state.sigla, label: state.sigla }
+                }),
+            },
+            defaultFlex: 0.55,
         },
         {
             name: 'nmcidade',
@@ -149,7 +157,7 @@ const Empresas = () => {
             name:`empresa.${nameValue}`,
             id: `empresa.nmfantasia`,
             header: "Nome",
-            defaultFlex: 1.5,
+            defaultFlex: 1.35,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -176,7 +184,7 @@ const Empresas = () => {
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
-            defaultFlex: 0.7,
+            defaultFlex: 0.8,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -200,7 +208,7 @@ const Empresas = () => {
         {
             name: 'st_cnae',
             header: 'Descrição do CNAE',
-            defaultFlex: 1.7,
+            defaultFlex: 1.6,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -221,9 +229,9 @@ const Empresas = () => {
             },
         },
         {
-            name: 'situacao',
+            name: 'empresa.situacao',
             header: 'Situação RFB',
-            defaultFlex: 0.615,
+            defaultFlex: 0.85,
             type: 'select',
             operator: 'equals',
             value: '',
@@ -367,7 +375,7 @@ const Empresas = () => {
     const radioGroup =
         (
             <div>
-                <div className="pb-4 flex items-center">
+                <div className="pb-4 sm:flex sm:items-center">
 
                     <div className='flex items-center pr-5'>
                         <span className="pr-2 font-black">Nome: </span>
@@ -419,6 +427,7 @@ const Empresas = () => {
                         <Select
                             isMulti
                             options={empresaOptions}
+                            defaultValue={empresaOptions[0]}
                             onChange={onChangeEmpresa}
                             placeholder="Todos"
                             >
@@ -513,7 +522,7 @@ const Empresas = () => {
                     shape="circle"
                     size="xs"
                     icon={<FaQuestion />}
-                    className="ml-2" // Ajuste o espaçamento aqui, se necessário
+                    className="ml-2"
                     onClick={() => {
                         window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
                     }}

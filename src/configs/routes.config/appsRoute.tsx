@@ -32,6 +32,16 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/nucleos')),
     },
     {
+        key: 'Projetos.lista',
+        path: `${APP_PREFIX_PATH}/projetos/`,
+        component: lazy(() => import('@/views/sistema/projetos')),
+    },
+    {
+        key: 'Entidades.lista',
+        path: `${APP_PREFIX_PATH}/entidades/`,
+        component: lazy(() => import('@/views/sistema/entidades')),
+    },
+    {
         key: 'sistemaPreferencias.index',
         path: `${APP_PREFIX_PATH}/preferencias`,
         component: lazy(() => import('@/views/sistema/preferencias')),
@@ -154,14 +164,26 @@ const appsRoute: Routes = [
         key: 'sistemaPrestcontas.listaGeralLancamentos',
         path: `${APP_PREFIX_PATH}/prestcontas/lista-geral-lancamentos`,
         component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/lista-geral-lancamentos')),
-        meta: {
-            pageContainerType: 'gutterless',
-        },
     },
     {
         key: 'sistema.selecaoPainel',
         path: `${APP_PREFIX_PATH}/selecoes/painel-inscricoes`,
         component: lazy(() => import('@/views/sistema/selecoes/painel-inscricoes'))
+    },
+    {
+        key: 'sistemaPrestContas.contaEspecial',
+        path: `${APP_PREFIX_PATH}/prestcontas/painel-conta-especial`,
+        component: lazy(() => import('@/views/sistema/prestcontas/acompanhamento-financeiro/conta-especial'))
+    },
+    {
+        key: 'sistemaEntidade.painelAcompanhamento',
+        path: `${APP_PREFIX_PATH}/entidades/painel-acompanhamento`,
+        component: lazy(() => import('@/views/sistema/entidades/acompanhamento'))
+    },
+    {
+        key: 'logout',
+        path: `${APP_PREFIX_PATH}/logout`,
+        component: lazy(() => import('@/views/auth/Logout'))
     },
 ]
 
