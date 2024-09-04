@@ -571,6 +571,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onReady={setGridRef}
                 checkboxColumn={isSelectable}
                 selected={selected}
+                reorderColumns={false}
                 onSelectionChange={handleSelectionChange}
                 showColumnMenuTool={false}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
