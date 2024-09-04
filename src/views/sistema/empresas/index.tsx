@@ -209,7 +209,7 @@ const Empresas = () => {
         {
             name: 'st_cnae',
             header: 'Descrição do CNAE',
-            defaultFlex: 1.7,
+            defaultFlex: 1.6,
             type: 'string',
             operator: 'contains',
             value: '',
@@ -232,7 +232,7 @@ const Empresas = () => {
         {
             name: 'empresa.situacao',
             header: 'Situação RFB',
-            defaultFlex: 0.65,
+            defaultFlex: 0.85,
             type: 'select',
             operator: 'equals',
             value: '',
