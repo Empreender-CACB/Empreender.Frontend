@@ -3,7 +3,7 @@
 }
 
 .header-wrapper {
-  @apply flex relative items-center justify-between p-0 px-4 w-full;
+  @apply flex relative items-center justify-between p-0 px-8 w-full ;
 }
 
 .header-action {
