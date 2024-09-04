@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import { Button, Checkbox, Tooltip } from '@/components/ui'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Select from '@/components/ui/Select'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
@@ -105,11 +105,10 @@ const Empresas = () => {
             headerCnae = "CNAE"
     }
 
-    const columns = [
+    const columns = useMemo(() => [
         {
             name: 'empresa.idempresa',
             header: 'ID',
-            columnName: 'empresa.idempresa',
             type: 'string',
             operator: 'contains',
             value: "",
@@ -117,7 +116,6 @@ const Empresas = () => {
         },
         {
             name: 'iduf',
-            columnName: 'iduf',
             header: 'UF',
             type: 'string',
             operator: 'contains',
@@ -148,9 +146,9 @@ const Empresas = () => {
             },
         },
         {
-            name: 'nmfantasia',
-            header: 'Nome',
-            dbColumn: nameValue,
+            name:`empresa.${nameValue}`,
+            id: `empresa.nmfantasia`,
+            header: "Nome",
             defaultFlex: 1.5,
             type: 'string',
             operator: 'contains',
@@ -254,7 +252,7 @@ const Empresas = () => {
                 </div>
             ),
         },
-    ]
+    ], [nameValue]);
 
     if (user.recursos.includes('empresa_restrita')) {
         columns.splice(columns.length - 1, 0, {
@@ -378,6 +376,7 @@ const Empresas = () => {
                             onChange={(e: any) => setNameValue(e.value)}>
                         </Select>
                     </div>
+
 
                     <div className='pr-4 flex items-center pr-5'>
                         <span className="font-black">CNAE: </span>

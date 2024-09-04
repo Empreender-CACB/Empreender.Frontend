@@ -7,21 +7,21 @@ import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
 import { Button } from '@/components/ui'
-import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 
-import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
+import { HiOutlineReply } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { EmpresasCard } from '@/components/shared/TableCards/EmpresasCard'
-import { render } from '@headlessui/react/dist/utils/render'
 
 moment.locale('pt-br')
 
-const activeValue = [
-    { name: 'Ativa', value: 'S' },
-    { name: 'Inativa', value: 'N' },
+const tipoValue = [
+    { name: 'Aguardando aprovação', value: 'aa', color: 'yellow-600' },
+    { name: 'Aprovado', value: 'ap', color: 'green-600' },
+    { name: 'Não se aplica', value: null, color: 'orange-600' },
+    { name: 'Recusado', value: 'rc', color: 'red-600' },
 ]
 
 const columns = [
@@ -110,29 +110,57 @@ const columns = [
                 ? '-'
                 : moment(value).format(dateFormat),
     },
-
     {
         name: 'status',
         header: 'Status',
-        type: 'string',
-        operator: 'contains',
+        type: 'select',
+        operator: 'equals',
         value: '',
-    },
-    {
-        name: 'tipo',
-        header: 'Tipo',
-        defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
-        value: '',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: tipoValue.map((option) => {
+                return { id: option.value, label: option.name }
+            }),
+        },
+        render: ({ value }: any) => {
+            const selectedOption = tipoValue.find(option => option.value === value);
+            return (
+                <div className="flex items-center justify-center">
+                    {selectedOption && (
+                        <Button
+                            variant="solid"
+                            color={selectedOption.color}
+                            size="xs"
+                        >
+                            {selectedOption.name}
+                        </Button>
+                    )}
+                </div>
+            )
+        },
     },
     {
         name: 'vencimento',
         header: 'Vencimento',
         defaultFlex: 1,
-        type: 'string',
-        operator: 'contains',
+        dateFormat: 'DD-MM-YYYY',
+        type: 'date',
+        operator: 'after',
         value: '',
+        filterEditor: DateFilter,
+        filterEditorProps: ({ index }: any) => {
+            return {
+                dateFormat: 'DD-MM-YYYY',
+                placeholder:
+                    index === 1
+                        ? 'A data é anterior à...'
+                        : 'A data é posterior à',
+            }
+        },
+        render: ({ value, cellProps: { dateFormat } }: any) =>
+            moment(value).format(dateFormat) === 'Invalid date'
+                ? '-'
+                : moment(value).format(dateFormat),
     },
 ]
 
@@ -149,7 +177,7 @@ const Anexos = () => {
                             className="menu-item-link"
                             to={`${
                                 import.meta.env.VITE_PHP_URL
-                            }/sistema/empresa/`}
+                            }/sistema/anexo/`}
                         >
                             Versão antiga
                         </Link>
@@ -160,7 +188,7 @@ const Anexos = () => {
                         to="/data/product-list.csv"
                         target="_blank"
                     ></Link>
-                    <Link
+                    {/* <Link
                         className="block lg:inline-block md:mb-0 mb-4"
                         to="/app/sales/product-new"
                     >
@@ -172,7 +200,7 @@ const Anexos = () => {
                         >
                             Adicionar Anexo
                         </Button>
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
             <CustomReactDataGrid
