@@ -115,7 +115,6 @@ const columns = [
         header: 'Status',
         type: 'select',
         operator: 'equals',
-        value: '',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: tipoValue.map((option) => {
