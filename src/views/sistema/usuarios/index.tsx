@@ -46,6 +46,7 @@ const Usuarios = () => {
                 idobjeto: response.data.user.idobjeto,
                 cod_perfil: response.data.user.cod_perfil,
                 fotouser: response.data.user.fotouser,
+                associacoes: response.data.user.associacoes,
                 cdsexo: response.data.user.cdsexo,
                 recursos: response.data.user.recursos,
                 preferencias: response.data.user.preferencias,

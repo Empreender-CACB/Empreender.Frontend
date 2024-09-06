@@ -92,9 +92,10 @@ const DatePickerRange = forwardRef<HTMLInputElement, DatePickerRangeProps>(
 
         const { locale: themeLocale } = useConfig()
 
-        const finalLocale = locale || themeLocale
+        // const finalLocale = locale || themeLocale
+        const finalLocale = 'pt-br'
 
-        const dateFormat = inputFormat || 'YYYY-MM-DD'
+        const dateFormat = inputFormat || 'DD/MM/YYYY'
 
         const [dropdownOpened, setDropdownOpened] = useState(defaultOpen)
 

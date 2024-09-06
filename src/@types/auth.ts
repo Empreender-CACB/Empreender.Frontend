@@ -21,6 +21,7 @@ export type SignInResponse = {
         idobjeto: number;
         recursos: string[];
         preferencias: string[];
+        associacoes: any[];
         fotouser?: string;
         associacoes?: Associacao[],
         empresas?: Empresa[]
