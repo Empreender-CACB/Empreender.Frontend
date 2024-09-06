@@ -304,7 +304,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             }
 
             if (exportExcel) {
-                tableConfig.exportInfo = columns.map((column) => ({name: column.name, header: column.header}))
+                tableConfig.exportInfo = columns.map((column) => ({
+                    name: column.header === 'Nome' ? 'nmfantasia' : column.name,
+                    header: column.header
+                }))
                 setIsDownloading(true)
                 const toastId = String(await downloadAndNotify())
 
@@ -527,8 +530,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 ))}
             </Drawer>
 
-            {/* Descomentar para os cards funcionarem (e tambem o className da props do ReactDataGrid) */}
-{/* 
             {(loadedData && hideTable) || view === 'grid' ? (
                 <>
                     <CTableCards data={loadedData} renderItem={CardLayout} />
@@ -543,10 +544,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         </div>
                     </div>                
                 </>
-            ) : null} */}
+            ) : null}
             
             <ReactDataGrid
-                // className={`${hideClass}`}
+                className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
                 wrapMultiple={false}
@@ -573,7 +574,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onReady={setGridRef}
                 checkboxColumn={isSelectable}
                 selected={selected}
-                // reorderColumns={true}
                 onSelectionChange={handleSelectionChange}
                 showColumnMenuTool={false}
                 theme={isDark ? 'blue-dark' : 'blue-light'}
