@@ -304,7 +304,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             }
 
             if (exportExcel) {
-                tableConfig.exportInfo = columns.map((column) => ({name: column.name, header: column.header}))
+                tableConfig.exportInfo = columns.map((column) => ({
+                    name: column.header === 'Nome' ? 'nmfantasia' : column.name,
+                    header: column.header
+                }))
                 setIsDownloading(true)
                 const toastId = String(await downloadAndNotify())
 
