@@ -229,7 +229,7 @@ const NucleoDetalhes = () => {
                                         <h3 className="text-lg leading-6 font-medium text-gray-900">
                                             {associacao.nmnucleo}
                                         </h3>
-                                        <p className="flex mt-1 max-w-2xl text-sm text-gray-500">
+                                        <p className="flex mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">
                                             {noEmpty(
                                                 associacao.cidade
                                                     .nmcidade

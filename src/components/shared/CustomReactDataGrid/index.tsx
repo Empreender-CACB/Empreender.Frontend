@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useCallback, FC, useEffect } from 'react'
+import '@inovua/reactdatagrid-community/index.css'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
