@@ -42,6 +42,16 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/entidades')),
     },
     {
+        key: 'Entidades.detalhes',
+        path: `${APP_PREFIX_PATH}/entidades/:id`,
+        component: lazy(() => import('@/views/sistema/entidades/detalhes')),
+
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'sistemaPreferencias.index',
         path: `${APP_PREFIX_PATH}/preferencias`,
         component: lazy(() => import('@/views/sistema/preferencias')),
