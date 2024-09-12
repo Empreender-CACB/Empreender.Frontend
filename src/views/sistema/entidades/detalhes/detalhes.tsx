@@ -24,6 +24,7 @@ const Detalhes = ({ data }: DataProps) => {
         { label: 'Gestor', value: noEmpty(data.gestor?.nmusuario) },
         { label: 'Gestor - CPF', value: noEmpty(data.gestor?.nucpf) },
         { label: 'Gestor - E-mail', value: noEmpty(data.gestor?.dsemail) },
+        { label: 'Situação RFB', value: noEmpty(data.situacao) },
         {
             label: 'Data de criação',
             value: noEmpty(dayjs(data.data_inclusao).format('DD/MM/YYYY')),

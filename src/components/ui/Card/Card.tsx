@@ -21,14 +21,15 @@ export interface CardProps
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
-    const { cardBordered } = useConfig()
+    // const { cardBordered } = useConfig()
 
     const {
         children,
         className,
         clickable = false,
         bodyClass,
-        bordered = cardBordered || false,
+        bordered = false,
+        // bordered = cardBordered || false,
         header,
         headerClass,
         headerBorder = true,
