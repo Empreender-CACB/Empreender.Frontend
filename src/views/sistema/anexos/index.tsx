@@ -99,10 +99,7 @@ const columns = [
         filterEditorProps: ({ index }: any) => {
             return {
                 dateFormat: 'DD-MM-YYYY',
-                placeholder:
-                    index === 1
-                        ? 'A data é anterior à...'
-                        : 'A data é posterior à',
+                placeholder:'DD-MM-AAAA'
             }
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>

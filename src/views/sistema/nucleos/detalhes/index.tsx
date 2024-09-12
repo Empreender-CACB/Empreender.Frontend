@@ -21,6 +21,7 @@ import Detalhes from './detalhes'
 import ListaReunioes from '../reunioes/lista-reunioes'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
 import NucleosEmpresas from './empresas-vinculadas'
+import ApiService from '@/services/ApiService'
 
 const { TabNav, TabList, TabContent } = Tabs
 
@@ -31,26 +32,24 @@ const NucleoDetalhes = () => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        async function fetchNucleo() {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/nucleos/${idnucleo}`
-            )
-
-            if (response.ok) {
-                const data = await response.json()
-                setNucleo(data)
-                setLoading(false)
-            } else {
-                console.error(
-                    'Erro na requisição:',
-                    response.status,
-                    response.statusText
-                )
+        const fetchNucleo = async () => {
+            try {
+                const response = await ApiService.fetchData({
+                    url: `/nucleos/${idnucleo}`,
+                    method: 'get',
+                });
+    
+                if (response) {
+                    setNucleo(response.data);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
             }
         }
-
-        fetchNucleo()
-    }, [])
+    
+        fetchNucleo();
+    }, [idnucleo]);
 
     const optionsList = [
         {
