@@ -55,6 +55,7 @@ export type Associacao = {
     idpais: number
     nmrassociados: null | number
     cidade: Cidade
+    situacao: string
 }
 
 export type Nucleo = {
