@@ -42,8 +42,8 @@ const Detalhes = ({ data }: DataProps) => {
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
                     {details.map(({ label, value }, index) => (
                         <div className="sm:col-span-1" key={index}>
-                            <dt className="text-sm font-extrabold text-black">{label}</dt>
-                            <dd className="mt-1 text-sm text-gray-900">{value}</dd>
+                            <dt className="text-sm font-extrabold text-black dark:text-white">{label}</dt>
+                            <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{value}</dd>
                         </div>
                     ))}
                 </dl>

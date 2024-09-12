@@ -192,7 +192,7 @@ export const LayoutWithMenus = ({
                     </div>
                     <ScrollBar
                         autoHide
-                        className="bg-[#F3F4F6]"
+                        className="bg-[#F3F4F6] dark:bg-gray-800"
                         direction={direction}
                     >
                         <div className="p-4">{children}</div>
