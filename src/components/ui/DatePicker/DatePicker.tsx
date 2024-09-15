@@ -10,6 +10,7 @@ import type { CommonProps } from '../@types/common'
 import type { CalendarSharedProps } from './CalendarBase'
 import type { BasePickerSharedProps } from './BasePicker'
 import type { FocusEvent, KeyboardEvent, ChangeEvent } from 'react'
+import 'dayjs/locale/pt-br';
 
 const DEFAULT_INPUT_FORMAT = 'YYYY-MM-DD'
 
@@ -86,12 +87,13 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
         const { locale: themeLocale } = useConfig()
 
-        const finalLocale = locale || themeLocale
+        const finalLocale = 'pt-br'
+        const dateFormat = inputFormat || 'DD/MM/YYYY'
 
-        const dateFormat =
-            type === 'date'
-                ? DEFAULT_INPUT_FORMAT
-                : inputFormat || DEFAULT_INPUT_FORMAT
+        // const dateFormat =
+        //     type === 'date'
+        //         ? DEFAULT_INPUT_FORMAT
+        //         : inputFormat || DEFAULT_INPUT_FORMAT
 
         const [dropdownOpened, setDropdownOpened] = useState(defaultOpen)
 
