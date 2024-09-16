@@ -11,7 +11,7 @@ import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { Button, Dialog, Tooltip } from '@/components/ui'
 import { useState } from 'react'
-import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
+import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip, FaQuestion } from 'react-icons/fa'
 import ApiService from '@/services/ApiService'
 import EditMarcoCriticoForm from './editMarcoCriticoForm'
 import AnexoMarcoCriticoForm from './anexoMarcoCriticoForm'
@@ -286,7 +286,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && data.congelado  && isGestor && (
+                {data.status === "Não atingido" && data.congelado && isGestor && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -324,8 +324,19 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <div>
+                <div className="flex items-center">
                     <h3 className="mb-4 lg:mb-0">Acompanhamento Geral - Marcos Críticos</h3>
+                    <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
+                        <Button
+                            shape="circle"
+                            size="xs"
+                            icon={<FaQuestion />}
+                            className="ml-2"
+                            onClick={() => {
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                            }}
+                        />
+                    </Tooltip>
                 </div>
             </div>
 
