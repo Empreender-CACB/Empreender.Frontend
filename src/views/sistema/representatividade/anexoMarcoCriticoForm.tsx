@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Button, FormContainer, FormItem, Input, Notification, Upload } from '@/components/ui';
@@ -11,6 +12,8 @@ interface Anexo {
 }
 
 const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => void, marcoId: number, onUpdate: () => void }) => {
+    const [loading, setLoading] = useState(false);
+
     const initialValues = {
         anexos: [] as Anexo[]
     };
@@ -33,6 +36,7 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
     )
 
     const handleSubmit = async (values: any) => {
+        setLoading(true); 
         try {
             const formData = new FormData();
 
@@ -57,9 +61,10 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
         } catch (error) {
             toast.push(toastNotificationError)
             console.error('Erro ao adicionar anexo:', error);
+        } finally {
+            setLoading(false);
         }
     };
-
 
     return (
         <Formik
@@ -138,8 +143,14 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
                             <Button type="button" onClick={onClose} className="mt-4 mr-2">
                                 Cancelar
                             </Button>
-                            <Button type="submit" className="mt-4" variant='solid'>
-                                Salvar
+                            <Button
+                                type="submit"
+                                className="mt-4"
+                                variant='solid'
+                                loading={loading}
+                                disabled={loading}
+                            >
+                                {loading ? 'Salvando...' : 'Salvar'}
                             </Button>
                         </div>
                     </FormContainer>
