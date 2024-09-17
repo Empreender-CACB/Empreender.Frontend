@@ -16,7 +16,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
         descricao: '',
         dataPrevista: null,
         novaDataPrevista: null,
-        dataEncerramento: null,
         entidadeId: entidadeId,
     };
 
@@ -30,11 +29,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                 Yup.ref('dataPrevista'),
                 'A nova data prevista não pode ser anterior à data prevista inicial'
             ),
-        dataEncerramento: Yup.date().nullable()
-            .test('is-greater', 'A data de término não pode ser anterior à data prevista', function(value) {
-                const { dataPrevista } = this.parent;
-                return !value || !dataPrevista || value >= dataPrevista;
-            })
     });
 
 
@@ -176,19 +170,6 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
                                 component={DatePicker}
                                 placeholder="Data Prevista"
                                 onChange={(date: Date) => setFieldValue('dataPrevista', date)}
-                            />
-                        </FormItem>
-
-                        <FormItem
-                            label="Data de Término"
-                            invalid={errors.dataEncerramento && touched.dataEncerramento}
-                            errorMessage={errors.dataEncerramento}
-                        >
-                            <Field
-                                name="dataEncerramento"
-                                component={DatePicker}
-                                placeholder="Data de Término"
-                                onChange={(date: Date) => setFieldValue('dataEncerramento', date)}
                             />
                         </FormItem>
 

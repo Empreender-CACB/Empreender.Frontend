@@ -205,6 +205,15 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral')),
     },
+    {
+        key: 'sistema.versaoRfb',
+        path: `${APP_PREFIX_PATH}/rfb`,
+        component: lazy(() => import('@/views/sistema/empresas/versao-rfb')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default appsRoute

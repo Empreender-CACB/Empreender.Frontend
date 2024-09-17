@@ -13,7 +13,7 @@ import { HiPlusCircle } from 'react-icons/hi'
 import { Button, Dialog, Tooltip } from '@/components/ui'
 import NewMarcoCriticoForm from './newMarcoCriticoForm'
 import { useEffect, useState } from 'react'
-import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip } from 'react-icons/fa'
+import { FaClipboardCheck, FaEye, FaFileSignature, FaHistory, FaPaperclip, FaQuestion } from 'react-icons/fa'
 import { GiIceCube } from "react-icons/gi";
 import ApiService from '@/services/ApiService'
 import EditMarcoCriticoForm from './editMarcoCriticoForm'
@@ -366,7 +366,20 @@ const AcompanhamentoMarcosCriticos = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
                 <div>
-                    <h3 className="mb-4 lg:mb-0">Acompanhamento - Marcos Críticos</h3>
+                    <div className="flex items-center">
+                        <h3 className="mb-4 lg:mb-0">Acompanhamento Geral - Marcos Críticos</h3>
+                        <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
+                            <Button
+                                shape="circle"
+                                size="xs"
+                                icon={<FaQuestion />}
+                                className="ml-2"
+                                onClick={() => {
+                                    window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                                }}
+                            />
+                        </Tooltip>
+                    </div>
                     <h5>
                         <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
                             {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao} - {associacaoDetails?.sigla}
