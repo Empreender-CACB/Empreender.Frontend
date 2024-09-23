@@ -24,9 +24,10 @@ interface EditMarcoCriticoFormProps {
     onClose: () => void;
     marcoId: number;
     onUpdate: () => void;
+    tipoRelacao: string;
 }
 
-const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId, isGestor, onClose, marcoId, onUpdate }) => {
+const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao, entidadeId, isGestor, onClose, marcoId, onUpdate }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -96,7 +97,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         const fetchMarcosCriticosPadrao = async (marcoId: number) => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
-                    url: `/representatividade/listar-marco-critico-padrao?id=${marcoId}`,
+                    url: `/representatividade/listar-marco-critico-padrao?tipo=${tipoRelacao}&id=${marcoId}`,
                     method: 'get'
                 });
 
@@ -163,7 +164,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/atualizar-marco-critico/${marcoId}`,
+                url: `/representatividade/atualizar-marco-critico/${tipoRelacao}/${marcoId}`,
                 method: 'put',
                 data: {
                     ...values,

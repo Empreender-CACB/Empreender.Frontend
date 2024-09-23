@@ -44,7 +44,7 @@ const tarefaStatusValue = [
 ];
 
 
-const AcompanhamentoGeralMarcosCriticos = () => {
+const AcompanhamentoGeralNucleo = () => {
     const columns = [
         {
             name: 'acompanhamento.id',
@@ -65,8 +65,8 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
             render: ({ data }: any) => (
                 <div>
-                    <Link to={`/sistema/representatividade/acompanhamento/${data.idassociacao}`}>
-                        {data.sigla ?? data.nmrazao}
+                    <Link to={`/sistema/representatividade/acompanhamento/${data.idnucleo}`}>
+                        {data.nmnucleo}
                     </Link>
                 </div>
             ),
@@ -196,7 +196,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     ];
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [selectedMarco, setSelectedMarco] = useState<{ marcoId: number | null, idassociacao: number | null, data_termino?: Date | null }>({ marcoId: null, idassociacao: null });
+    const [selectedMarco, setSelectedMarco] = useState<{ marcoId: number | null, idnucleo: number | null, data_termino?: Date | null }>({ marcoId: null, idnucleo: null });
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
@@ -204,28 +204,28 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     const [reload, setReload] = useState(false);
 
-    const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
+    const handleOpenEditModal = (marcoId: any, idnucleo: any) => {
+        setSelectedMarco({ marcoId, idnucleo });
         setIsEditModalOpen(true);
     };
 
-    const handleOpenAnalysisModal = (marcoId: any, idassociacao: any, data_termino: any) => {
-        setSelectedMarco({ marcoId, idassociacao, data_termino });
+    const handleOpenAnalysisModal = (marcoId: any, idnucleo: any, data_termino: any) => {
+        setSelectedMarco({ marcoId, idnucleo, data_termino });
         setIsAnalysisModalOpen(true);
     };
 
-    const handleOpenAnexoModal = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
+    const handleOpenAnexoModal = (marcoId: any, idnucleo: any) => {
+        setSelectedMarco({ marcoId, idnucleo });
         setIsAnexoModalOpen(true);
     };
 
-    const handleOpenHistoricoModal = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
+    const handleOpenHistoricoModal = (marcoId: any, idnucleo: any) => {
+        setSelectedMarco({ marcoId, idnucleo });
         setIsHistoricoModalOpen(true);
     };
 
-    const handleStatusChange = (marcoId: any, idassociacao: any) => {
-        setSelectedMarco({ marcoId, idassociacao });
+    const handleStatusChange = (marcoId: any, idnucleo: any) => {
+        setSelectedMarco({ marcoId, idnucleo });
         setIsStatusModalOpen(true);
     };
 
@@ -242,7 +242,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico/${selectedMarco.marcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/marco_critico_nucleo/${selectedMarco.marcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -259,11 +259,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
-        const isGestor = data.userAssociacoes.includes(data.idassociacao);
-        if (data['acompanhamento.id'] == 123) {
-            console.log(data);
-        }
+        const isConsultor = data.consultorAssociacoes.includes(String(data.idnucleo));
+        const isGestor = data.userAssociacoes.includes(data.idnucleo);
+        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -271,7 +269,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaEye />}
-                        onClick={() => handleOpenEditModal(data['acompanhamento.id'], data.idassociacao)}
+                        onClick={() => handleOpenEditModal(data['acompanhamento.id'], data.idnucleo)}
                     />
                 </Tooltip>
 
@@ -281,7 +279,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaFileSignature />}
-                            onClick={() => handleStatusChange(data['acompanhamento.id'], data.idassociacao)}
+                            onClick={() => handleStatusChange(data['acompanhamento.id'], data.idnucleo)}
                         />
                     </Tooltip>
                 )}
@@ -292,7 +290,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaClipboardCheck />}
-                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'], data.idassociacao, data.data_encerramento)}
+                            onClick={() => handleOpenAnalysisModal(data['acompanhamento.id'], data.idnucleo, data.data_encerramento)}
                         />
                     </Tooltip>
                 )}
@@ -303,7 +301,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                             variant="solid"
                             size="xs"
                             icon={<FaPaperclip />}
-                            onClick={() => handleOpenAnexoModal(data['acompanhamento.id'], data.idassociacao)}
+                            onClick={() => handleOpenAnexoModal(data['acompanhamento.id'], data.idnucleo)}
                         />
                     </Tooltip>
                 )}
@@ -313,7 +311,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         variant="solid"
                         size="xs"
                         icon={<FaHistory />}
-                        onClick={() => handleOpenHistoricoModal(data['acompanhamento.id'], data.idassociacao)}
+                        onClick={() => handleOpenHistoricoModal(data['acompanhamento.id'], data.idnucleo)}
                     />
                 </Tooltip>
             </div>
@@ -325,7 +323,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                    <h3 className="mb-4 lg:mb-0">Acompanhamento Geral - Marcos Críticos</h3>
+                    <h3 className="mb-4 lg:mb-0">Acompanhamento Geral de Núcleos - Marcos Críticos</h3>
                     <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
                         <Button
                             shape="circle"
@@ -351,7 +349,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="nucleo" entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="nucleo" entidadeId={selectedMarco.idnucleo} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
@@ -371,4 +369,4 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     )
 }
 
-export default AcompanhamentoGeralMarcosCriticos
+export default AcompanhamentoGeralNucleo
