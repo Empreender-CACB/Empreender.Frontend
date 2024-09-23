@@ -224,10 +224,10 @@ function CadastraProposta() {
                                     </div>
 
                                     <div className="flex">
-                                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMjM2" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
                                             <BsFilePdf /> Termo de Referência
                                         </a>
-                                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY=" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
+                                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMjM1" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5" rel="noreferrer">
                                             <BsFilePdf /> Resultados da avaliação
                                         </a>
                                         <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
