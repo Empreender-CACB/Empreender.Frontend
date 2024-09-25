@@ -1,15 +1,14 @@
 import '@inovua/reactdatagrid-community/index.css'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import Radio from '@/components/ui/Radio'
 import { FaQuestion } from "react-icons/fa"
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
-import { Button, Tooltip } from '@/components/ui'
+import { Button, Checkbox, Tooltip } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 import { FcInfo } from 'react-icons/fc'
 import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
@@ -100,7 +99,11 @@ const columns = [
                 : moment(value).format(dateFormat),
     },
     {
-        name: 'nucleo.flativo', header: 'Status', type: 'select',
+        name: 'nucleo.flativo', 
+        header: 'Status', 
+        type: 'select',
+        operator: 'equals',
+        value: 'S',
         filterEditor: SelectFilter,
         filterEditorProps: {
             dataSource: activeValue.map(option => {
@@ -158,30 +161,31 @@ const defaultFilterValue = [
 
 const Nucleos = () => {
     const [nameValue, setNameValue] = useState('nmnucleo')
-    const [nucleoType, setNucleoType] = useState('todas')
+    const [checkedMostrarTudo, setMostrarTudo] = useState(false)
 
     const onChange = (val: string) => {
         setNameValue(val)
     }
 
     const radioGroup = (
-        <div className="flex items-center">
-            <Radio.Group className="lg:mb-0 flex items-center" value={nameValue} onChange={onChange}>
-                <span className="pr-2 font-black">Mostrar Todos</span>
+        <div className='flex items-center'>
+            <span className="font-black">Mostrar todos</span>
+            <div className='mr-2'>
                 <Tooltip
-                    placement="top"
+                    placement='top'
                     title={
                         <div>
                             Assinale a caixa para apresentação de todos os núcleos cadastrados. Observe a situação do filtro Status.
                         </div>
                     }
                 >
-                    <FcInfo size={20}/>
+                    <FcInfo size={20} className='mt-1 ml-2' />
                 </Tooltip>
-                <Radio value={'todos'} className="ml-2" />
-            </Radio.Group>
+            </div>
+            <Checkbox checked={checkedMostrarTudo} onChange={setMostrarTudo} />
         </div>
-    );
+    )
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
@@ -228,7 +232,7 @@ const Nucleos = () => {
                 filename='Nucleos'
                 columns={columns}
                 defaultFilterValue={defaultFilterValue}
-                url={`${import.meta.env.VITE_API_URL}/nucleos?nameValue=${nameValue}&nucleoType=${nucleoType}`}
+                url={`${import.meta.env.VITE_API_URL}/nucleos?nameValue=${nameValue}&mostrarTudo=${checkedMostrarTudo}`}
                 options={radioGroup}
                 CardLayout={NucleosCard}
             />

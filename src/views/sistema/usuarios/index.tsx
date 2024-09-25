@@ -5,23 +5,14 @@ import { Link } from 'react-router-dom'
 import { Button, Tooltip } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import { HiOutlineEye, HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
-import { setUser, signInSuccess, useAppDispatch } from '@/store'
+import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
+import { setUser, signInSuccess, useAppDispatch, useAppSelector } from '@/store'
 import { UsuariosCard } from '@/components/shared/TableCards/UsuariosCard'
 import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import { apiEntrarComo } from '@/services/MenuService'
-// import useThemeClass from '@/utils/hooks/useThemeClass'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
-// import TagTrueFalse from '@/components/ui/Tag/TagTrueFalse'
-const defaultFilterValue = [
-    { name: 'iduf', operator: 'contains', type: 'string', value: '' },
-    { name: 'nmcidade', operator: 'contains', type: 'string', value: '' },
-    { name: 'nucpf', operator: 'contains', type: 'string', value: '' },
-    { name: 'nmusuario', operator: 'contains', type: 'string', value: '' },
-    { name: 'nmlogin', operator: 'contains', type: 'string', value: '' },
-    { name: 'nome', operator: 'contains', type: 'string', value: '' },
-    { name: 'flativo', operator: 'contains', type: 'string', value: '' },
-]
+import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+
 
 const activeValue = [
     { name: 'Ativo', value: 'S' },
@@ -31,6 +22,7 @@ const activeValue = [
 const Usuarios = () => {
     const dispatch = useAppDispatch()
     // const { textTheme } = useThemeClass()
+    const { user } = useAppSelector((state) => state.auth)
 
     const handleEntrarComo = async (userData: any) => {
         const cpf = userData.nucpf.replace(/[.-]/g, '')
@@ -50,7 +42,6 @@ const Usuarios = () => {
                 cdsexo: response.data.user.cdsexo,
                 recursos: response.data.user.recursos,
                 preferencias: response.data.user.preferencias,
-                associacoes: response.data.user.associacoes,
                 empresas: response.data.user.empresas,
                 nucleos: response.data.user.nucleos,
                 projetos: response.data.user.projetos,
@@ -69,13 +60,27 @@ const Usuarios = () => {
     }
 
     const columns = [
-        { name: 'iduf', header: 'UF', type: 'string', flex: 0.4, minWidth: 80 },
-        { name: 'nmcidade', header: 'Cidade', defaultFlex: 1 },
-        { name: 'nucpf', header: 'CPF', defaultFlex: 1 },
+        {
+            name: 'iduf',
+            header: 'UF',
+            type: 'select',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: estadosBrasileiros.map(state => {
+                    return { id: state.sigla, label: state.sigla }
+                }),
+            },
+            defaultFlex: 0.4,
+            minWidth: 80
+        },
+        { name: 'nmcidade', header: 'Cidade', defaultFlex: 1, operator: 'contains',  },
+        { name: 'nucpf', header: 'CPF', defaultFlex: 1, operator: 'contains' },
         {
             name: 'nmusuario',
             header: 'Nome do usuário',
             defaultFlex: 1.5,
+            operator: 'contains',
             render: ({ data, value }: any) => (
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
@@ -88,6 +93,7 @@ const Usuarios = () => {
         },
         {
             name: 'nmlogin', header: 'Login', defaultFlex: 1,
+            operator: 'contains',
             render: ({ data, value }: any) => (
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
@@ -100,6 +106,7 @@ const Usuarios = () => {
         },
         {
             name: 'nome', header: 'Perfil', defaultFlex: 1,
+            operator: 'contains',
             render: ({ data, value }: any) => (
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
@@ -115,7 +122,7 @@ const Usuarios = () => {
             header: 'Ativo',
             type: 'select',
             operator: 'equals',
-            value: '',
+            value: 'S',
             filterEditor: SelectFilter,
             filterEditorProps: {
                 dataSource: activeValue.map((option) => {
@@ -132,6 +139,8 @@ const Usuarios = () => {
             name: 'id',
             header: 'Ações',
             defaultFlex: 0.6,
+            operator: 'contains',
+            visible: user.recursos.includes('e_como'),
             render: ({ data }: any) => (
                 <>
 
@@ -150,7 +159,7 @@ const Usuarios = () => {
 
             ),
         },
-    ]
+    ]    
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -185,7 +194,6 @@ const Usuarios = () => {
             <CustomReactDataGrid
                 filename="Usuários"
                 columns={columns}
-                defaultFilterValue={defaultFilterValue}
                 url={`${import.meta.env.VITE_API_URL}/usuarios`}
                 CardLayout={UsuariosCard}
             />
