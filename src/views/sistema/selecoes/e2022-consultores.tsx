@@ -4,60 +4,23 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button, Notification } from '@/components/ui'
+import { Button, Notification, Select } from '@/components/ui'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ApiService from '@/services/ApiService'
 import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
 import Tooltip from '@/components/ui/Tooltip'
 import toast from '@/components/ui/toast'
-import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import TagTrueFalse from '@/components/ui/Tag/TagTrueFalse'
 
-// const toastNotification = (
-//     <Notification title="Falha na inscrição." type="danger">
-//         Não foi possível completar a operação. Por favor, tente novamente.
-//     </Notification>
-// )
-
-// const toastNotificationSucess = (
-//     <Notification title="Obrigado por participar." type="info">
-//         Em instantes você será redirecionado.
-//     </Notification>
-// )
-
 const E2022Consultores = () => {
-
-    // const defaultFilterValue = [
-    //     {
-    //         name: 'id',
-    //         operator: 'eq',
-    //     },
-    //     {
-    //         name: 'nome',
-    //         operator: 'eq',
-    //     },
-    //     {
-    //         name: 'cpf',
-    //         operator: 'eq',
-    //     },
-    //     {
-    //         name: 'uf',
-    //         operator: 'eq',
-    //     },
-    //     {
-    //         name: 'cidade',
-    //         operator: 'eq',
-    //     },
-    // ]
-
     const activeValue = [
         { name: 'Sim', value: 'true' },
         { name: 'Não', value: 'false' },
@@ -141,7 +104,7 @@ const E2022Consultores = () => {
             },
             render: ({ value }: any) => (
                 <div className="flex items-center justify-center">
-                 <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                    <TagTrueFalse isActive={value} trueText='Sim' falseText='Não' />
                 </div>
             ),
         },
@@ -159,7 +122,7 @@ const E2022Consultores = () => {
             },
             render: ({ value }: any) => (
                 <div className="flex items-center justify-center">
-                     <TagTrueFalse isActive={value} trueText='Sim' falseText='Não'  />
+                    <TagTrueFalse isActive={value} trueText='Sim' falseText='Não' />
                 </div>
             ),
         },
@@ -189,6 +152,55 @@ const E2022Consultores = () => {
             )
         });
     };
+
+    const [origem, setOrigem] = useState<string[]>(['3']);
+    const [origemOptions, setOrigemOptions] = useState<string[]>([])
+
+    const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`
+
+    const onChangeOrigem = (selectedOptions: any) => {
+        setOrigem([selectedOptions.value]);
+    };
+
+    useEffect(() => {
+        const getOrigens = async () => {
+            try {
+                await ApiService.fetchData({
+                    url: 'selecoes/get-origens-candidaturas',
+                    method: 'get',
+                }).then((response: any) => {
+                    const mappedOptions = response.data.map((origemItem: any) => {
+                        return ({
+                            value: origemItem.tipo,
+                            label: origemItem.tipo == 1 ? "Representatividade - Concurso 1" : "Representatividade - Concurso 2",
+                        })
+                    })
+                    setOrigemOptions(mappedOptions)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getOrigens()
+    }, [])
+
+    const optionsGroup =
+        (
+            <div className="pb-4 sm:flex sm:items-center">
+                <div className={`w-1/2 pl-2`}>
+                    <span className="font-black">Tema: </span>
+                    <Select
+                        placeholder="Selecione uma opção"
+                        options={origemOptions}
+                        noOptionsMessage={() => 'Sem dados!'}
+                        loadingMessage={() => 'Carregando'}
+                        onChange={onChangeOrigem}
+                        defaultValue={origemOptions.find((opt: any) => opt.value === '3')}
+                    />
+                </div>
+            </div>
+        );
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -221,7 +233,7 @@ const E2022Consultores = () => {
                             Painel de inscrições
                         </Link>
                     </Button>
-                    
+
                     <Tooltip title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}>
                         <span>
                             <Button
@@ -239,10 +251,10 @@ const E2022Consultores = () => {
                 </div>
             </div>
             <CustomReactDataGrid
+                options={optionsGroup}
                 filename="Inscrições de Consultores"
                 columns={columns}
-                url={`${import.meta.env.VITE_API_URL
-                    }/selecoes/e2022-consultores`}
+                url={url}
                 isSelectable
                 onSelectedRowsChange={handleSelectedRowsChange}
                 CardLayout={CandidaturaCard}
