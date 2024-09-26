@@ -153,7 +153,7 @@ const E2022Consultores = () => {
         });
     };
 
-    const [origem, setOrigem] = useState<string[]>(['3']);
+    const [origem, setOrigem] = useState<string[]>(['2']);
     const [origemOptions, setOrigemOptions] = useState<string[]>([])
 
     const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`
@@ -172,7 +172,7 @@ const E2022Consultores = () => {
                     const mappedOptions = response.data.map((origemItem: any) => {
                         return ({
                             value: origemItem.tipo,
-                            label: origemItem.tipo == 1 ? "Representatividade - Concurso 1" : "Representatividade - Concurso 2",
+                            label: origemItem.tipo == 1 ? "ENEM - Brasil Sustentável - 1ª chamada" : "ENEM - Brasil Sustentável - 2ª chamada",
                         })
                     })
                     setOrigemOptions(mappedOptions)
@@ -189,14 +189,14 @@ const E2022Consultores = () => {
         (
             <div className="pb-4 sm:flex sm:items-center">
                 <div className={`w-1/2 pl-2`}>
-                    <span className="font-black">Tema: </span>
+                    <span className="font-black">Chamada </span>
                     <Select
                         placeholder="Selecione uma opção"
                         options={origemOptions}
                         noOptionsMessage={() => 'Sem dados!'}
                         loadingMessage={() => 'Carregando'}
                         onChange={onChangeOrigem}
-                        defaultValue={origemOptions.find((opt: any) => opt.value === '3')}
+                        defaultValue={origemOptions.find((opt: any) => opt.value === '2')}
                     />
                 </div>
             </div>

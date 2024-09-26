@@ -190,7 +190,7 @@ function CadastraProposta() {
             )}
             {!isRegistrationClosed && (
                 <form className=' bg-white sm:w-full lg:w-9/12' id="login" onSubmit={handleSubmit}>
-                    <input type='hidden' name='tipo' value="3" />
+                    <input type='hidden' name='tipo' value="2" />
                     <div className="flex items-center space-x-4">
                         <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
                             <div className="grid grid-cols-4 gap-8">
