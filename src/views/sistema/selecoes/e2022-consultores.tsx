@@ -153,7 +153,7 @@ const E2022Consultores = () => {
         });
     };
 
-    const [origem, setOrigem] = useState<string[]>(['2']);
+    const [origem, setOrigem] = useState<any>(['2']);
     const [origemOptions, setOrigemOptions] = useState<string[]>([])
 
     const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`
@@ -196,7 +196,8 @@ const E2022Consultores = () => {
                         noOptionsMessage={() => 'Sem dados!'}
                         loadingMessage={() => 'Carregando'}
                         onChange={onChangeOrigem}
-                        defaultValue={origemOptions.find((opt: any) => opt.value === '2')}
+                        value={origemOptions.find((opt: any) => opt.value === parseInt(origem))}
+
                     />
                 </div>
             </div>
