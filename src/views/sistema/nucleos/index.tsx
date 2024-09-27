@@ -81,6 +81,7 @@ const columns = [
     {
         name: 'dtultimaalteracao',
         header: 'Última Alteração',
+        type: 'date',
         defaultFlex: 0.5,
         dateFormat: 'DD/MM/YYYY',
         filterEditor: DateFilter,
@@ -123,7 +124,7 @@ const defaultFilterValue = [
     {
         name: 'idnucleo',
         type: 'number',
-        operator: 'eq',
+        operator: 'equals',
         value: '',
     },
     {

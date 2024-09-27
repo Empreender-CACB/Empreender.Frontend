@@ -74,12 +74,13 @@ const Usuarios = () => {
             defaultFlex: 0.4,
             minWidth: 80
         },
-        { name: 'nmcidade', header: 'Cidade', defaultFlex: 1, operator: 'contains',  },
-        { name: 'nucpf', header: 'CPF', defaultFlex: 1, operator: 'contains' },
+        { name: 'nmcidade', header: 'Cidade', defaultFlex: 1, type: 'string', operator: 'contains',  },
+        { name: 'nucpf', header: 'CPF', type: 'string', defaultFlex: 1, operator: 'contains' },
         {
             name: 'nmusuario',
             header: 'Nome do usuário',
             defaultFlex: 1.5,
+            type: 'string',
             operator: 'contains',
             render: ({ data, value }: any) => (
                 <Link
@@ -94,6 +95,7 @@ const Usuarios = () => {
         {
             name: 'nmlogin', header: 'Login', defaultFlex: 1,
             operator: 'contains',
+            type: 'string',
             render: ({ data, value }: any) => (
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
@@ -107,6 +109,7 @@ const Usuarios = () => {
         {
             name: 'nome', header: 'Perfil', defaultFlex: 1,
             operator: 'contains',
+            type: 'string',
             render: ({ data, value }: any) => (
                 <Link
                     className="menu-item-link max-w-md text-blue-500"
@@ -192,7 +195,7 @@ const Usuarios = () => {
             </div>
 
             <CustomReactDataGrid
-                filename="Usuários"
+                filename="Usuarios"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/usuarios`}
                 CardLayout={UsuariosCard}
