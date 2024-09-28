@@ -216,7 +216,7 @@ const Nucleos = () => {
                     </Button>
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to="/app/sales/product-new"
+                        to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/adicionar/`}
                     >
                         <Button
                             block
