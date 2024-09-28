@@ -64,6 +64,7 @@ const Usuarios = () => {
             name: 'iduf',
             header: 'UF',
             type: 'select',
+            operator: 'equals',
             value: '',
             filterEditor: SelectFilter,
             filterEditorProps: {
