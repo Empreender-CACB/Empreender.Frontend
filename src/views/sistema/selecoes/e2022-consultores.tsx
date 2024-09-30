@@ -37,7 +37,7 @@ const E2022Consultores = () => {
         },
         {
             name: 'nome',
-            header: 'Nome',
+            header: 'Nome ',
             defaultFlex: 2,
             operator: 'contains',
             type: 'string',
