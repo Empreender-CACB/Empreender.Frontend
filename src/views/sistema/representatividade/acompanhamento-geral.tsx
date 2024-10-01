@@ -43,6 +43,27 @@ const tarefaStatusValue = [
     { name: 'Não Atingido', value: 'Não atingido' },
 ];
 
+const congeladoStatusStyles: any = {
+    'true': { label: 'Congelado', class: 'bg-blue-500 text-white' },
+    'false': { label: 'Não Congelado', class: 'bg-gray-500 text-white' }
+};
+
+export const CongeladoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
+    console.log('statusKey',statusKey);
+
+    const statusInfo = congeladoStatusStyles[statusKey]
+    return (
+        <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
+            {statusInfo.label}
+        </div>
+    )
+}
+
+const congeladoValue = [
+    { name: 'Congelado', value: true },
+    { name: 'Não Congelado', value: false },
+];
+
 
 const AcompanhamentoGeralMarcosCriticos = () => {
     const columns = [
@@ -185,6 +206,22 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                 }),
             },
             render: ({ data }: any) => <TarefaStatusTag statusKey={data.status} />,
+        },
+        {
+            name: 'congelado',
+            header: 'Congelado',
+            columnName: 'congelado',
+            defaultFlex: 0.6,
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: congeladoValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ data }: any) => <CongeladoStatusTag statusKey={data.congelado} />,
         },
         {
             name: 'actions',
