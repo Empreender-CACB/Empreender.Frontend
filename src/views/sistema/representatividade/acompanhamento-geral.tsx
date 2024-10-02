@@ -86,7 +86,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
             render: ({ data }: any) => (
                 <div>
-                    <Link to={`/sistema/representatividade/acompanhamento/${data.idassociacao}`}>
+                    <Link className='text-blue-500' to={`/sistema/representatividade/acompanhamento/${data.idassociacao}`}>
                         {data.sigla ?? data.nmrazao}
                     </Link>
                 </div>
@@ -238,8 +238,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
-
     const [reload, setReload] = useState(false);
+
+    let isConsultor = false;
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
         setSelectedMarco({ marcoId, idassociacao });
@@ -296,11 +297,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
+        isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
         const isGestor = data.userAssociacoes.includes(data.idassociacao);
-        if (data['acompanhamento.id'] == 123) {
-            console.log(data);
-        }
+        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -312,7 +311,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status === "Em análise" && isConsultor && (
+                {data.status === "Em análise" && (isGestor || isConsultor) && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -323,7 +322,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && data.congelado && isGestor && (
+                {data.status === "Não atingido" && data.congelado && (isGestor || isConsultor)  && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -334,7 +333,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {isGestor && (
+                {(isGestor || isConsultor) && (
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
@@ -388,7 +387,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm entidadeId={selectedMarco.idassociacao} isConsultor={isConsultor} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />

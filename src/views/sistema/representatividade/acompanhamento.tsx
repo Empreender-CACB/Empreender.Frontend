@@ -312,7 +312,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" && isConsultor &&
+                {data.status == "Em análise" && (isGestor || isConsultor) &&
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -323,7 +323,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {data.status == "Não atingido" && isCongelado && isGestor &&
+                {data.status == "Não atingido" && isCongelado && (isGestor || isConsultor) &&
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -334,7 +334,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {isGestor &&
+                {(isGestor || isConsultor) &&
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
@@ -387,7 +387,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                    {isGestor &&
+                    {(isGestor || isConsultor)  &&
                         <>
                             <Button
                                 block
@@ -445,7 +445,7 @@ const AcompanhamentoMarcosCriticos = () => {
             {selectedMarcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor || isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarcoDetails?.data_encerramento} />
