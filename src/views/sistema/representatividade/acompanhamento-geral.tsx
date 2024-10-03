@@ -49,8 +49,6 @@ const congeladoStatusStyles: any = {
 };
 
 export const CongeladoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
-    console.log('statusKey',statusKey);
-
     const statusInfo = congeladoStatusStyles[statusKey]
     return (
         <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
@@ -239,8 +237,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [reload, setReload] = useState(false);
-
-    let isConsultor = false;
+    const [isConsultor, setIsConsultor] = useState(false);
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
         setSelectedMarco({ marcoId, idassociacao });
@@ -297,7 +294,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
+        setIsConsultor(data.consultorAssociacoes.includes(String(data.idassociacao)));
         const isGestor = data.userAssociacoes.includes(data.idassociacao);
         
         return (
@@ -356,6 +353,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         );
     };
 
+    console.log('isConsultor', isConsultor);
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">

@@ -399,7 +399,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             >
                                 Adicionar Marco Crítico
                             </Button>
-                            {isCongelado && user.recursos?.includes('ajuste_dados') ?
+                            {isCongelado && isConsultor ?
                                 <Button
                                     block
                                     variant="solid"
