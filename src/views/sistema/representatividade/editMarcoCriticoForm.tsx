@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { FormItem, FormContainer } from '@/components/ui/Form';
@@ -21,13 +21,14 @@ interface AnexoDisplay {
 interface EditMarcoCriticoFormProps {
     entidadeId: any;
     isGestor?: boolean;
+    isConsultor?: boolean;
     onClose: () => void;
     marcoId: number;
     onUpdate: () => void;
     tipoRelacao: string;
 }
 
-const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao, entidadeId, isGestor, onClose, marcoId, onUpdate }) => {
+const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao, entidadeId, isGestor, isConsultor, onClose, marcoId, onUpdate }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -201,7 +202,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                         <h5 className="mb-4">{isEditing ? "Editar" : "Visualizar"} marco crítico</h5>
                         <FormContainer>
 
-                            <div className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
+                            <div style={{ maxHeight: '60vh', overflowY: 'auto' }} className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
 
                                 <FormItem
                                     label="Nome"
@@ -372,8 +373,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                     </Button>
                                 ) : (
                                     <div
-                                        onClick={(isGestor && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !isGestor) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        onClick={((isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
+                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor)) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         Editar
                                     </div>

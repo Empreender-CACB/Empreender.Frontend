@@ -43,6 +43,25 @@ const tarefaStatusValue = [
     { name: 'Não Atingido', value: 'Não atingido' },
 ];
 
+const congeladoStatusStyles: any = {
+    'true': { label: 'Congelado', class: 'bg-blue-500 text-white' },
+    'false': { label: 'Não Congelado', class: 'bg-gray-500 text-white' }
+};
+
+export const CongeladoStatusTag: React.FC<{ statusKey: string }> = ({ statusKey }) => {
+    const statusInfo = congeladoStatusStyles[statusKey]
+    return (
+        <div style={statusInfo.style} className={`border-0 rounded-md text-center px-2 py-1 ${statusInfo.class}`}>
+            {statusInfo.label}
+        </div>
+    )
+}
+
+const congeladoValue = [
+    { name: 'Congelado', value: true },
+    { name: 'Não Congelado', value: false },
+];
+
 
 const AcompanhamentoGeralMarcosCriticos = () => {
     const columns = [
@@ -65,7 +84,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
             render: ({ data }: any) => (
                 <div>
-                    <Link to={`/sistema/representatividade/acompanhamento/${data.idassociacao}`}>
+                    <Link className='text-blue-500' to={`/sistema/representatividade/acompanhamento/${data.idassociacao}`}>
                         {data.sigla ?? data.nmrazao}
                     </Link>
                 </div>
@@ -187,6 +206,22 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             render: ({ data }: any) => <TarefaStatusTag statusKey={data.status} />,
         },
         {
+            name: 'congelado',
+            header: 'Congelado',
+            columnName: 'congelado',
+            defaultFlex: 0.6,
+            type: 'select',
+            operator: 'equals',
+            value: '',
+            filterEditor: SelectFilter,
+            filterEditorProps: {
+                dataSource: congeladoValue.map((option) => {
+                    return { id: option.value, label: option.name }
+                }),
+            },
+            render: ({ data }: any) => <CongeladoStatusTag statusKey={data.congelado} />,
+        },
+        {
             name: 'actions',
             header: 'Ações',
             defaultFlex: 0.6,
@@ -201,8 +236,8 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
-
     const [reload, setReload] = useState(false);
+    const [isConsultor, setIsConsultor] = useState(false);
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
         setSelectedMarco({ marcoId, idassociacao });
@@ -259,11 +294,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        const isConsultor = data.consultorAssociacoes.includes(String(data.idassociacao));
+        setIsConsultor(data.consultorAssociacoes.includes(String(data.idassociacao)));
         const isGestor = data.userAssociacoes.includes(data.idassociacao);
-        if (data['acompanhamento.id'] == 123) {
-            console.log(data);
-        }
+        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -275,7 +308,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status === "Em análise" && isConsultor && (
+                {data.status === "Em análise" && (isGestor || isConsultor) && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -286,7 +319,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && data.congelado && isGestor && (
+                {data.status === "Não atingido" && data.congelado && (isGestor || isConsultor)  && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -297,7 +330,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {isGestor && (
+                {(isGestor || isConsultor) && (
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
@@ -320,6 +353,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         );
     };
 
+    console.log('isConsultor', isConsultor);
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -351,7 +385,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="nucleo" entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="nucleo" isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
