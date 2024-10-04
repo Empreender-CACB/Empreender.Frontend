@@ -26,6 +26,8 @@ import {
     FcParallelTasks,
     FcSettings,
     FcShop,
+    FcBusiness,
+    FcSupport
 } from 'react-icons/fc'
 
 export type NavigationIcons = Record<string, JSX.Element>
@@ -55,7 +57,7 @@ export const navigationIcon: NavigationIcons = {
     reports: <FcDocument />,
     files: <FcFile />,
     curriculos: <FcDiploma2 />,
-    adm: <FcSettings />,
+    adm: <FcSupport />,
 }
 
 export default navigationIcon

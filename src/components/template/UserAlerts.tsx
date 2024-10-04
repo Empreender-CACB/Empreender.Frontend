@@ -24,12 +24,6 @@ interface DataResponse {
 
 const alertsConfig = [
     {
-        key: 'dadosIncompletosNaoObrigatorios',
-        type: 'warning',
-        icon: <HiExclamation />,
-        message: 'Dados não obrigatórios incompletos.',
-    },
-    {
         key: 'dadosIncompletosObrigatorios',
         type: 'danger',
         icon: <HiExclamation />,
@@ -40,13 +34,6 @@ const alertsConfig = [
         type: 'success',
         icon: <HiCake />,
         message: 'Feliz Aniversário!',
-    },
-    {
-        key: 'foiAniversario',
-        type: 'info',
-        icon: <HiCake />,
-        message:
-            'Esperamos que tenha tido uma ótima celebração de aniversário.',
     },
     {
         key: 'atualizarEmail',

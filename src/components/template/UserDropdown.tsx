@@ -20,7 +20,7 @@ type DropdownList = {
 const dropdownItemList: DropdownList[] = [
     {
         label: 'Perfil',
-        path: '/app/account/settings/profile',
+        path: `${import.meta.env.VITE_PHP_URL}/sistema/usuario/meus-dados`,
         icon: <HiOutlineUser />,
     },
     {
@@ -68,6 +68,10 @@ const _UserDropdown = ({ className }: CommonProps) => {
                         fotouser: user.fotouser,
                         recursos: user.recursos,
                         preferencias: user.preferencias,
+                        associacoes: user.associacoes,
+                        empresas: user.empresas,
+                        nucleos: user.nucleos,
+                        projetos: user.projetos,
                     }
 
                     dispatch(setUser(adaptedUser))
@@ -108,7 +112,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
             <Dropdown
                 menuStyle={{ minWidth: 240 }}
                 renderTitle={UserAvatar}
-                placement="bottom-end"
+                placement="bottom-start"
             >
                 <Dropdown.Item variant="header">
                     <div className="py-2 px-3 flex items-center gap-2">

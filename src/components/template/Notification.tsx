@@ -2,16 +2,16 @@ import { useEffect, useState, useCallback } from 'react'
 import classNames from 'classnames'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import Avatar from '@/components/ui/Avatar'
-import Dropdown from '@/components/ui/Dropdown'
-import ScrollBar from '@/components/ui/ScrollBar'
-import Spinner from '@/components/ui/Spinner'
+// import Dropdown from '@/components/ui/Dropdown'
+// import ScrollBar from '@/components/ui/ScrollBar'
+// import Spinner from '@/components/ui/Spinner'
 import Badge from '@/components/ui/Badge'
 import ApiService from '@/services/ApiService';
 import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
-import type { MouseEvent } from 'react'
-import Tooltip from '@/components/ui/Tooltip'
-import Switcher from '@/components/ui/Switcher'
+// import type { MouseEvent } from 'react'
+// import Tooltip from '@/components/ui/Tooltip'
+// import Switcher from '@/components/ui/Switcher'
 
 import {
     HiOutlineBell,
@@ -70,6 +70,16 @@ const notificationTypeAvatar = (data: {
                 return <GeneratedAvatar target={target} />
             }
         case 'blog_pde':
+
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-100"
+                    icon={<HiNewspaper />}
+                />
+            )
+        case 'lancamentos':
+
             return (
                 <Avatar
                     shape="circle"
@@ -184,6 +194,9 @@ const _Notification = ({ className }: { className?: string }) => {
     //     onNotificationOpen()
     // }, [notificationList])
 
+
+
+
     const onMarkAsRead = useCallback(async (id: any) => {
         // Atualiza o estado primeiro para uma resposta rápida na UI
         setNotificationList(currentList => currentList.map(item => {
@@ -224,6 +237,8 @@ const _Notification = ({ className }: { className?: string }) => {
     const hasNotificationsToShow = viewAll ? notificationList.length > 0 : notificationList.some(item => !item.lida);
 
     return (
+
+
         <>
 
             <Dialog
@@ -344,9 +359,11 @@ const _Notification = ({ className }: { className?: string }) => {
                                         <p className="mt-1">Volte depois </p> 
                                     </div>
                                 </div>
+
                             )
                         }
                     </ScrollBar>
+
                 </div>
                 <Dropdown.Item variant="header">
                     <div className="flex justify-center border-t border-gray-200 dark:border-gray-600 px-4 py-2">

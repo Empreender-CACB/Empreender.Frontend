@@ -325,7 +325,7 @@ const Inicio = () => {
 
             <AdaptableCard className='mt-5'>
                 <h4 className="mb-4">Galeria de vídeos</h4>
-                <Slider {...settingsVideos}>
+                <Slider {...settingsVideos} className='mb-5'>
                     {videos.map(
                         (video: {
                             link: string
@@ -333,7 +333,7 @@ const Inicio = () => {
                             titulo_carousel: string
                         }) => {
                             const videoIdMatch = video.link.match(/v=([^&]+)/)
-                            const videoId: string =
+                            const videoId =
                                 videoIdMatch && videoIdMatch[1]
                                     ? videoIdMatch[1]
                                     : ''
@@ -341,7 +341,7 @@ const Inicio = () => {
                             return (
                                 <div
                                     key={video.id}
-                                    className="p-2 sm:w-1/4 w-full"
+                                    className="p-2 sm:w-1/4 w-full mb-4"
                                     onClick={(event) => {
                                         event.preventDefault();
                                         setSelectedVideoId(videoId);

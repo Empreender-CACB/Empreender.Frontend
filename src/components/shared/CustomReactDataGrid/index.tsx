@@ -31,6 +31,7 @@ interface CustomReactDataGridPropsBasic {
     defaultFilterValue?: any
     options?: React.ReactNode
     CardLayout?: React.ComponentType<any>
+    autorizeExport?: boolean
     isSelectable?: boolean
     onSelectedRowsChange?: any
     widthSize?: number
@@ -89,10 +90,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     CardLayout,
     isSelectable,
     onSelectedRowsChange,
+    autorizeExport = true,
     defaultSortInfo
 }) => {
-
-
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
     const valorLocalStorage = Number(localStorage.getItem('lista_geral'))
@@ -304,7 +304,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             }
 
             if (exportExcel) {
-                tableConfig.exportInfo = columns.map((column) => ({name: column.name, header: column.header}))
+                tableConfig.exportInfo = columns.map((column) => ({
+                    name: column.header === 'Nome' ? 'nmfantasia' : column.name,
+                    header: column.header
+                }))
                 setIsDownloading(true)
                 const toastId = String(await downloadAndNotify())
 
@@ -454,7 +457,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     justifyContent: 'end',
                 }}
             >
-                <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
+                {/* <Tooltip title={view === 'grid' ? 'Lista' : 'Quadros'}>
                     <Button
                         className="hidden md:flex"
                         variant="plain"
@@ -468,7 +471,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         }
                         onClick={() => onViewToggle()}
                     />
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip title={'Limpar filtros'}>
                     <Button
@@ -483,27 +486,30 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                     ></Button>
                 </Tooltip>
 
-                <Tooltip title={'Filtrar dados'}>
+                {/* <Tooltip title={'Filtrar dados'}>
                     <Button
                         icon={<MdFilterAlt />}
                         size="sm"
                         variant="plain"
                         onClick={() => openDrawer()}
                     ></Button>
-                </Tooltip>
+                </Tooltip> */}
 
-                <Tooltip title={'Exportar dados'}>
-                    <Button
-                        disabled={isDownloading}
-                        icon={isDownloading ? <Spinner /> : <HiDownload />}
-                        className="mx-2"
-                        variant="plain"
-                        size="sm"
-                        onClick={() => {
-                            loadData(queryParams, true)
-                        }}
-                    ></Button>
-                </Tooltip>
+                {autorizeExport === true && (
+                    <Tooltip title={'Exportar dados'}>
+                        <Button
+                            disabled={isDownloading}
+                            icon={isDownloading ? <Spinner /> : <HiDownload />}
+                            className="mx-2"
+                            variant="plain"
+                            size="sm"
+                            onClick={() => {
+                                loadData(queryParams, true)
+                            }}
+                        ></Button>
+                    </Tooltip>
+                )}
+                
             </div>
 
             <Drawer
@@ -524,6 +530,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 ))}
             </Drawer>
 
+            {/* Descomentar para os cards funcionarem (e tambem o className da props do ReactDataGrid) */}
+{/* 
             {(loadedData && hideTable) || view === 'grid' ? (
                 <>
                     <CTableCards data={loadedData} renderItem={CardLayout} />
@@ -538,10 +546,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         </div>
                     </div>                
                 </>
-            ) : null}
+            ) : null} */}
             
             <ReactDataGrid
-                className={`${hideClass}`}
+                // className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
                 wrapMultiple={false}
@@ -549,8 +557,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 defaultFilterValue={defaultFilterValue || columns}
                 defaultSortInfo={defaultSortInfo}
                 columns={columns}
-                theme={isDark ? 'blue-dark' : 'blue-light'}
                 defaultLimit={30}
+                rowHeight = {null}
                 enableFiltering={true}
                 userSelect={true}
                 columnUserSelect={true}
@@ -568,7 +576,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onReady={setGridRef}
                 checkboxColumn={isSelectable}
                 selected={selected}
+                // reorderColumns={true}
                 onSelectionChange={handleSelectionChange}
+                showColumnMenuTool={false}
+                theme={isDark ? 'blue-dark' : 'blue-light'}
             />
             
         </div>

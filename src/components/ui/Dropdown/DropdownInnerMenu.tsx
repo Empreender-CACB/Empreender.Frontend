@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useEffect } from 'react'
 import { MenuContextProvider } from './context/menuContext'
 import useUncertainRef from '../hooks/useUncertainRef'
 import {
@@ -18,6 +18,7 @@ export interface DropdownInnerMenuProps extends CommonProps {
     placement?: DropdownPlacement
     menuClass?: string
 }
+
 
 const Menu = forwardRef<HTMLElement, DropdownInnerMenuProps>((props, ref) => {
     const {
@@ -55,6 +56,40 @@ const Menu = forwardRef<HTMLElement, DropdownInnerMenuProps>((props, ref) => {
         transform: getTransform(40),
     } as const
     const initialStyle = exitStyle
+
+    useEffect(() => {
+        const node = menuRef && 'current' in menuRef ? menuRef.current : null;
+        
+        if (node) {
+            const rect = node.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+    
+            console.log('Rect:', rect);
+            console.log('Viewport Width:', viewportWidth);
+            console.log('Placement:', placement);
+    
+            if (placement === 'bottom-end' || placement === 'bottom-start' || placement === 'bottom-center') {
+                if (rect.right > viewportWidth) {
+                    node.style.left = 'auto';
+                    node.style.right = '0';
+                } else {
+                    node.style.left = '0';
+                    node.style.right = 'auto';
+                }
+            } else {
+                if (rect.right > viewportWidth) {
+                    console.log('Abrir para a esquerda');
+                    node.style.left = 'auto';
+                    node.style.right = '100%';
+                } else {
+                    console.log('Abrir para a direita');
+                    node.style.left = '100%';
+                    node.style.right = 'auto';
+                }
+            }
+        }
+    }, [menuRef.current, placement]);
+    
 
     return (
         <MenuContextProvider

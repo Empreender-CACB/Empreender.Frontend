@@ -41,13 +41,13 @@ const DeckedLayout = () => {
       <div className="flex flex-auto min-w-0">
         <div className="flex flex-col flex-auto min-h-screen min-w-0 relative w-full">
           <Header
-            container
+            container={false}
             className="shadow dark:shadow-2xl"
             headerStart={<HeaderActionsStart />}
             headerEnd={<HeaderActionsEnd />}
           />
-          <SecondaryHeader contained />
-          <View pageContainerType="contained" />
+          <SecondaryHeader contained={false} />
+          <View pageContainerType="default" />
         </div>
       </div>
     </div>
