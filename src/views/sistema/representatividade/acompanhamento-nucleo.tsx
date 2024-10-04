@@ -21,7 +21,7 @@ import AnexoMarcoCriticoForm from './anexoMarcoCriticoForm'
 import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import FreezeMarcosCriticosModal from './freezeMarcosCriticosModal'
-import { Associacao } from '@/@types/generalTypes'
+import { Nucleo } from '@/@types/generalTypes'
 import AnalysisModal from './analysisMarcoCriticoModal'
 import { useAppSelector } from '@/store'
 import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
@@ -49,9 +49,7 @@ const tarefaStatusValue = [
     { name: 'Não Atingido', value: 'Não atingido' },
 ];
 
-
-const AcompanhamentoMarcosCriticos = () => {
-
+const AcompanhamentoNucleos = () => {
     const columns = [
         {
             name: 'acompanhamento.id',
@@ -177,7 +175,7 @@ const AcompanhamentoMarcosCriticos = () => {
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isFreezeModalOpen, setIsFreezeModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
-    const [associacaoDetails, setAssociacaoDetails] = useState<Associacao>();
+    const [nucleoDetails, setNucleoDetails] = useState<Nucleo>();
     const [isCongelado, setIsCongelado] = useState(false);
     const [isConsultor, setIsConsultor] = useState(false);
     const [selectedMarcoDetails, setSelectedMarcoDetails] = useState<any>(null);
@@ -198,7 +196,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const user = useAppSelector((state) => state.auth.user);
 
-    const isGestor = associacaoDetails && user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === associacaoDetails.idassociacao);
+    const isGestor = nucleoDetails && user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === nucleoDetails.idnucleo);
 
     const [reload, setReload] = useState(false);
 
@@ -231,18 +229,18 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const handleCloseAnexoModal = () => setIsAnexoModalOpen(false);
 
-    const fetchAssociacaoDetails = async () => {
+    const fetchNucleoDetails = async () => {
         try {
             const response: any = await ApiService.fetchData({
-                url: `/representatividade/detalhes-associacao/${id}`,
+                url: `/representatividade/detalhes-nucleo/${id}`,
                 method: 'get'
             });
             if (response.data) {
-                setAssociacaoDetails(response.data);
+                setNucleoDetails(response.data);
                 setIsCongelado(response.data.congelado);
             }
         } catch (error) {
-            console.error('Erro ao buscar detalhes da associação:', error);
+            console.error('Erro ao buscar detalhes do núcleo:', error);
         }
     };
 
@@ -262,7 +260,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchAssociacaoDetails();
+            await fetchNucleoDetails();
             await fetchIsConsultor();
         };
 
@@ -271,13 +269,13 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const handleUpdate = async () => {
         setReload(!reload);
-        await fetchAssociacaoDetails();
+        await fetchNucleoDetails();
     };
 
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/marco_critico_nucleo/${selectedMarcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -312,7 +310,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" && (isGestor || isConsultor) &&
+                {data.status == "Em análise" && isConsultor &&
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -323,7 +321,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {data.status == "Não atingido" && isCongelado && (isGestor || isConsultor) &&
+                {data.status == "Não atingido" && isCongelado && isGestor &&
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -334,7 +332,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     </Tooltip>
                 }
 
-                {(isGestor || isConsultor) &&
+                {isGestor &&
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"
@@ -367,7 +365,7 @@ const AcompanhamentoMarcosCriticos = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div>
                     <div className="flex items-center">
-                        <h3 className="mb-4 lg:mb-0">Acompanhamento de Entidade - Marcos Críticos</h3>
+                        <h3 className="mb-4 lg:mb-0">Acompanhamento de Núcleo - Marcos Críticos</h3>
                         <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
                             <Button
                                 shape="circle"
@@ -381,13 +379,13 @@ const AcompanhamentoMarcosCriticos = () => {
                         </Tooltip>
                     </div>
                     <h5>
-                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
-                            {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao} - {associacaoDetails?.sigla}
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/aid/${btoa(String(nucleoDetails?.idnucleo))}`}>
+                            {nucleoDetails?.idnucleo} - {nucleoDetails?.nmnucleo}
                         </Link>
                     </h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                    {(isGestor || isConsultor)  &&
+                    {isGestor &&
                         <>
                             <Button
                                 block
@@ -399,7 +397,7 @@ const AcompanhamentoMarcosCriticos = () => {
                             >
                                 Adicionar Marco Crítico
                             </Button>
-                            {isCongelado && isConsultor ?
+                            {isCongelado && user.recursos?.includes('ajuste_dados') ?
                                 <Button
                                     block
                                     variant="solid"
@@ -432,26 +430,26 @@ const AcompanhamentoMarcosCriticos = () => {
             <CustomReactDataGrid
                 filename="Marcos_Criticos"
                 columns={columns}
-                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/marco_critico/${id}?reload=${reload}`}
+                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/nucleo/${id}?reload=${reload}`}
                 CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
             <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>
-                <NewMarcoCriticoForm relacao='entidade' entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
+                <NewMarcoCriticoForm relacao='nucleo' entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
             </Dialog>
             <Dialog isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal}>
-                <FreezeMarcosCriticosModal tipo="entidade" isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
+                <FreezeMarcosCriticosModal tipo="nucleo" isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
             </Dialog>
             {selectedMarcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="entidade" entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor || isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="nucleo" entidadeId={nucleoDetails?.idnucleo} isGestor={isGestor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarcoDetails?.data_encerramento} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm tipo="entidade" marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm tipo="nucleo" marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}
@@ -465,4 +463,4 @@ const AcompanhamentoMarcosCriticos = () => {
     )
 }
 
-export default AcompanhamentoMarcosCriticos
+export default AcompanhamentoNucleos

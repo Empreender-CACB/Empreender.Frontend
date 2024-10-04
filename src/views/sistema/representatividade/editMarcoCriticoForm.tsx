@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { FormItem, FormContainer } from '@/components/ui/Form';
@@ -21,12 +21,14 @@ interface AnexoDisplay {
 interface EditMarcoCriticoFormProps {
     entidadeId: any;
     isGestor?: boolean;
+    isConsultor?: boolean;
     onClose: () => void;
     marcoId: number;
     onUpdate: () => void;
+    tipoRelacao: string;
 }
 
-const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId, isGestor, onClose, marcoId, onUpdate }) => {
+const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao, entidadeId, isGestor, isConsultor, onClose, marcoId, onUpdate }) => {
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -96,7 +98,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
         const fetchMarcosCriticosPadrao = async (marcoId: number) => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
-                    url: `/representatividade/listar-marco-critico-padrao?id=${marcoId}`,
+                    url: `/representatividade/listar-marco-critico-padrao?tipo=${tipoRelacao}&id=${marcoId}`,
                     method: 'get'
                 });
 
@@ -163,7 +165,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
     const handleSubmit = async (values: any, { setSubmitting }: any) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/atualizar-marco-critico/${marcoId}`,
+                url: `/representatividade/atualizar-marco-critico/${tipoRelacao}/${marcoId}`,
                 method: 'put',
                 data: {
                     ...values,
@@ -200,57 +202,54 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                         <h5 className="mb-4">{isEditing ? "Editar" : "Visualizar"} marco crítico</h5>
                         <FormContainer>
 
-                            <div className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
-
-                                <FormItem
-                                    label="Nome"
-                                    invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
-                                    errorMessage={errors.tipo_marco_critico}
-                                >
-                                    {isEditing && !marcoCongelado ? (
-                                        tipoAtual !== 'Padrão' ? (
-                                            <Field name="tipo_marco_critico">
-                                                {({ field, form }: FieldProps) => (
-                                                    <Select
-                                                        field={field}
-                                                        form={form}
-                                                        placeholder="Selecione o nome do marco crítico"
-                                                        options={marcosCriticos}
-                                                        value={marcosCriticos.find(option => option.value === field.value)}
-                                                        onChange={(option) => handleTipoChange(option, form.setFieldValue)}
-                                                        isDisabled={!isEditing}
-                                                    />
-                                                )}
-                                            </Field>
+                            <div style={{ maxHeight: '60vh', overflowY: 'auto' }} className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
+                                {((tipoAtual === 'Específico' || tipoAtual === 'outros') && !marcoCongelado) ?
+                                    <FormItem
+                                        label="Nome do Marco Crítico Personalizado"
+                                        invalid={errors.nome_marco_critico && touched.nome_marco_critico}
+                                        errorMessage={errors.nome_marco_critico}
+                                    >
+                                        {isEditing && !marcoCongelado ? (
+                                            <Field
+                                                autoComplete="off"
+                                                name="nome_marco_critico"
+                                                placeholder="Nome do Marco Crítico Personalizado"
+                                                component={Input}
+                                                readOnly={!isEditing}
+                                            />
                                         ) : (
-                                            <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Nome do marco crítico padrão'}</div>
-                                        )
-                                    ) : (
-                                        <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Selecione o nome do marco crítico'}</div>
-                                    )}
-                                </FormItem>
-
-                                {(tipoAtual === 'Específico' || tipoAtual === 'outros') && !marcoCongelado && (
-                                    <>
-                                        <FormItem
-                                            label="Nome do Marco Crítico Personalizado"
-                                            invalid={errors.nome_marco_critico && touched.nome_marco_critico}
-                                            errorMessage={errors.nome_marco_critico}
-                                        >
-                                            {isEditing && !marcoCongelado ? (
-                                                <Field
-                                                    autoComplete="off"
-                                                    name="nome_marco_critico"
-                                                    placeholder="Nome do Marco Crítico Personalizado"
-                                                    component={Input}
-                                                    readOnly={!isEditing}
-                                                />
+                                            <div>{values.nome_marco_critico}</div>
+                                        )}
+                                    </FormItem>
+                                    :
+                                    <FormItem
+                                        label="Nome"
+                                        invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
+                                        errorMessage={errors.tipo_marco_critico}
+                                    >
+                                        {isEditing && !marcoCongelado ? (
+                                            tipoAtual !== 'Padrão' ? (
+                                                <Field name="tipo_marco_critico">
+                                                    {({ field, form }: FieldProps) => (
+                                                        <Select
+                                                            field={field}
+                                                            form={form}
+                                                            placeholder="Selecione o nome do marco crítico"
+                                                            options={marcosCriticos}
+                                                            value={marcosCriticos.find(option => option.value === field.value)}
+                                                            onChange={(option) => handleTipoChange(option, form.setFieldValue)}
+                                                            isDisabled={!isEditing}
+                                                        />
+                                                    )}
+                                                </Field>
                                             ) : (
-                                                <div>{values.nome_marco_critico}</div>
-                                            )}
-                                        </FormItem>
-                                    </>
-                                )}
+                                                <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Nome do marco crítico padrão'}</div>
+                                            )
+                                        ) : (
+                                            <div>{values.nome_marco_critico}</div>
+                                        )}
+                                    </FormItem>
+                                }
 
                                 <FormItem
                                     label="Descrição"
@@ -371,8 +370,8 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ entidadeId,
                                     </Button>
                                 ) : (
                                     <div
-                                        onClick={(isGestor && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !isGestor) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        onClick={((isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
+                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor)) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         Editar
                                     </div>

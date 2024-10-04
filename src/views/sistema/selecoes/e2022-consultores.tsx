@@ -37,7 +37,7 @@ const E2022Consultores = () => {
         },
         {
             name: 'nome',
-            header: 'Nome',
+            header: 'Nome ',
             defaultFlex: 2,
             operator: 'contains',
             type: 'string',
@@ -140,23 +140,23 @@ const E2022Consultores = () => {
             method: 'post',
             data: { candidaturaIds: selectedRows }
         }).then((data: any) => {
-            window.open(import.meta.env.VITE_API_URL + data.data.url)
+            window.open(import.meta.env.VITE_API_URL + data.data.url);
             toast.push(
                 <Notification title="O download será iniciado em instantes." type="info" />
-            )
+            );
         }).catch((error: any) => {
             toast.push(
                 <Notification title="Erro ao realizar download." type="danger">
                     {error.response.data}
                 </Notification>
-            )
+            );
         });
     };
 
     const [origem, setOrigem] = useState<any>(['2']);
-    const [origemOptions, setOrigemOptions] = useState<string[]>([])
+    const [origemOptions, setOrigemOptions] = useState<string[]>([]);
 
-    const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`
+    const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`;
 
     const onChangeOrigem = (selectedOptions: any) => {
         setOrigem([selectedOptions.value]);
@@ -173,35 +173,38 @@ const E2022Consultores = () => {
                         return ({
                             value: origemItem.tipo,
                             label: origemItem.tipo == 1 ? "ENEM - Brasil Sustentável - 1ª chamada" : "ENEM - Brasil Sustentável - 2ª chamada",
-                        })
-                    })
-                    setOrigemOptions(mappedOptions)
+                        });
+                    });
+                    setOrigemOptions(mappedOptions);
                 });
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
 
-        getOrigens()
-    }, [])
+        getOrigens();
+    }, []);
 
-    const optionsGroup =
-        (
-            <div className="pb-4 sm:flex sm:items-center">
-                <div className={`w-1/2 pl-2`}>
-                    <span className="font-black">Chamada </span>
-                    <Select
-                        placeholder="Selecione uma opção"
-                        options={origemOptions}
-                        noOptionsMessage={() => 'Sem dados!'}
-                        loadingMessage={() => 'Carregando'}
-                        onChange={onChangeOrigem}
-                        value={origemOptions.find((opt: any) => opt.value === parseInt(origem))}
+    useEffect(() => {
+        // Resetar as linhas selecionadas ao mudar a origem
+        setSelectedRows([]);
+    }, [origem]);
 
-                    />
-                </div>
+    const optionsGroup = (
+        <div className="pb-4 sm:flex sm:items-center">
+            <div className={`w-1/2 pl-2`}>
+                <span className="font-black">Chamada </span>
+                <Select
+                    placeholder="Selecione uma opção"
+                    options={origemOptions}
+                    noOptionsMessage={() => 'Sem dados!'}
+                    loadingMessage={() => 'Carregando'}
+                    onChange={onChangeOrigem}
+                    value={origemOptions.find((opt: any) => opt.value === parseInt(origem))}
+                />
             </div>
-        );
+        </div>
+    );
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -262,6 +265,6 @@ const E2022Consultores = () => {
             />
         </AdaptableCard>
     );
-};
+}
 
 export default E2022Consultores;

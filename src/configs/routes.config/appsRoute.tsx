@@ -214,6 +214,16 @@ const appsRoute: Routes = [
             footer: false,
         },
     },
+    {
+        key: 'representatividade.marcosCriticosNucleos',
+        path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-nucleo/:id`,
+        component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-nucleo')),
+    },
+    {
+        key: 'representatividade.marcosCriticosGeralNucleos',
+        path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral-nucleos`,
+        component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
+    },
 ]
 
 export default appsRoute

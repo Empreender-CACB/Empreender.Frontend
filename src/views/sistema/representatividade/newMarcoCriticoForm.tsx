@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios';
 import ApiService from '@/services/ApiService';
 import toast from '@/components/ui/toast'
 
-const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () => void, entidadeId: string, onUpdate: () => void }) => {
+const NewMarcoCriticoForm = ({ relacao, onClose, entidadeId, onUpdate }: { relacao: string, onClose: () => void, entidadeId: string, onUpdate: () => void }) => {
     const initialValues = {
         tipo_marco_critico: '',
         nome_marco_critico: '',
@@ -50,7 +50,7 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
         const fetchMarcosCriticos = async () => {
             try {
                 const response: AxiosResponse<any[]> = await ApiService.fetchData({
-                    url: '/representatividade/listar-marco-critico-padrao',
+                    url: `/representatividade/listar-marco-critico-padrao?tipo=${relacao}`,
                     method: 'get',
                 });
 
@@ -72,7 +72,7 @@ const NewMarcoCriticoForm = ({ onClose, entidadeId, onUpdate }: { onClose: () =>
     const handleSubmit = async (values: any) => {
         try {
             await ApiService.fetchData({
-                url: 'representatividade/adicionar-marco-critico',
+                url: `representatividade/adicionar-marco-critico/${relacao}`,
                 method: 'post',
                 data: values
             });

@@ -8,13 +8,14 @@ interface FreezeMarcosCriticosModalProps {
     onClose: () => void;
     onUpdate: () => void;
     entidadeId: string;
+    tipo: string;
 }
 
-const FreezeMarcosCriticosModal: React.FC<FreezeMarcosCriticosModalProps> = ({ isCongelado, entidadeId, isOpen, onClose, onUpdate }) => {
+const FreezeMarcosCriticosModal: React.FC<FreezeMarcosCriticosModalProps> = ({ tipo, isCongelado, entidadeId, isOpen, onClose, onUpdate }) => {
     const handleConfirm = async () => {
         try {
             await ApiService.fetchData({
-                url: '/representatividade/congelar-marcos-criticos',
+                url: `/representatividade/congelar-marcos-criticos/${tipo}`,
                 method: 'put',
                 data: { entidadeId }
             });
