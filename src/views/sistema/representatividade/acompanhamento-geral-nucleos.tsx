@@ -56,16 +56,16 @@ const AcompanhamentoGeralNucleo = () => {
             value: '',
         },
         {
-            name: 'sigla',
-            header: 'Entidade',
-            columnName: 'sigla',
+            name: 'nmnucleo',
+            header: 'Núcleo',
+            columnName: 'nmnucleo',
             type: 'string',
             defaultFlex: 0.5,
             operator: 'contains',
             value: '',
             render: ({ data }: any) => (
                 <div>
-                    <Link to={`/sistema/representatividade/acompanhamento/${data.idnucleo}`}>
+                    <Link className='text-blue-500' to={`/sistema/representatividade/acompanhamento-nucleo/${data.relacao_2}`}>
                         {data.nmnucleo}
                     </Link>
                 </div>
@@ -341,7 +341,7 @@ const AcompanhamentoGeralNucleo = () => {
             <CustomReactDataGrid
                 filename="Marcos_Criticos"
                 columns={columns}
-                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral?reload=${reload}`}
+                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral/marco_critico_nucleo?reload=${reload}`}
                 CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
