@@ -19,6 +19,7 @@ import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import AnalysisModal from './analysisMarcoCriticoModal'
 import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
+import { useAppSelector } from '@/store'
 
 moment.locale('pt-br')
 
@@ -195,12 +196,15 @@ const AcompanhamentoGeralNucleo = () => {
         }
     ];
 
+    const { recursos } = useAppSelector((state) => state.auth.user)
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedMarco, setSelectedMarco] = useState<{ marcoId: number | null, idnucleo: number | null, data_termino?: Date | null }>({ marcoId: null, idnucleo: null });
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isAnexoModalOpen, setIsAnexoModalOpen] = useState(false);
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
+    const [isConsultor, setIsConsultor] = useState(false);
 
     const [reload, setReload] = useState(false);
 
@@ -257,9 +261,11 @@ const AcompanhamentoGeralNucleo = () => {
         }
     };
 
+
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
-        const isConsultor = data.consultorAssociacoes.includes(String(data.idnucleo));
+        setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
+
         const isGestor = data.userAssociacoes.includes(data.idnucleo);
         
         return (
