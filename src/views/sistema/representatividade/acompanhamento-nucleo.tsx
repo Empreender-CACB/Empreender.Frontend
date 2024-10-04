@@ -166,7 +166,10 @@ const AcompanhamentoNucleos = () => {
         }
     ];
 
+    const { recursos } = useAppSelector((state) => state.auth.user)
+
     const { id } = useParams<{ id: string }>();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedMarcoId, setSelectedMarcoId] = useState(null);
@@ -177,8 +180,9 @@ const AcompanhamentoNucleos = () => {
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [nucleoDetails, setNucleoDetails] = useState<Nucleo>();
     const [isCongelado, setIsCongelado] = useState(false);
-    const [isConsultor, setIsConsultor] = useState(false);
     const [selectedMarcoDetails, setSelectedMarcoDetails] = useState<any>(null);
+    const [isConsultor, setIsConsultor] = useState(false);
+
 
     const fetchMarcoDetails = async (marcoId: number) => {
         try {
@@ -210,7 +214,7 @@ const AcompanhamentoNucleos = () => {
 
     const handleOpenAnalysisModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
-        fetchMarcoDetails(marcoId);  
+        fetchMarcoDetails(marcoId);
         setIsAnalysisModalOpen(true);
     };
 
@@ -244,24 +248,10 @@ const AcompanhamentoNucleos = () => {
         }
     };
 
-    const fetchIsConsultor = async () => {
-        try {
-            const response: any = await ApiService.fetchData({
-                url: `/get-consultor-entidade/${id}`,
-                method: 'get'
-            });
-            if (response.data) {
-                setIsConsultor(response.data.isConsultor);
-            }
-        } catch (error) {
-            console.error('Erro ao verificar vínculo do usuário:', error);
-        }
-    };
 
     useEffect(() => {
         const fetchData = async () => {
             await fetchNucleoDetails();
-            await fetchIsConsultor();
         };
 
         fetchData();
@@ -299,6 +289,8 @@ const AcompanhamentoNucleos = () => {
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
+        setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
+
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -385,44 +377,70 @@ const AcompanhamentoNucleos = () => {
                     </h5>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                    {isGestor &&
+                    {(isGestor || isConsultor) &&
                         <>
-                            <Button
-                                block
-                                variant="solid"
-                                size="sm"
-                                icon={<HiPlusCircle />}
-                                disabled={isCongelado}
-                                onClick={handleOpenModal}
-                            >
-                                Adicionar Marco Crítico
-                            </Button>
-                            {isCongelado && user.recursos?.includes('ajuste_dados') ?
+                            {isGestor &&
+
                                 <Button
                                     block
                                     variant="solid"
                                     size="sm"
-                                    color="blue-600"
-                                    icon={<GiIceCube />}
-                                    onClick={handleOpenFreezeModal}
+                                    icon={<HiPlusCircle />}
+                                    disabled={isCongelado}
+                                    onClick={handleOpenModal}
                                 >
-                                    Descongelar marcos críticos
+                                    Adicionar Marco Crítico
                                 </Button>
-                                :
-                                <Tooltip title={isCongelado ? "Marcos críticos já congelados." : "O congelamento permite enviar os marcos críticos para análise dos consultores. Ao congelar, você ainda poderá alterar a data prevista, término e adicionar documentos ao marcos."}>
-                                    <Button
-                                        block
-                                        variant="solid"
-                                        size="sm"
-                                        color="blue-600"
-                                        icon={<GiIceCube />}
-                                        disabled={isCongelado}
-                                        onClick={handleOpenFreezeModal}
-                                    >
-                                        Congelar marcos críticos
-                                    </Button>
-                                </Tooltip>
                             }
+                            {isCongelado ? (
+                                <>
+                                    {/* Se o consultor está visualizando e o marco está congelado, ele pode descongelar */}
+                                    {isConsultor && (
+                                        <Button
+                                            block
+                                            variant="solid"
+                                            size="sm"
+                                            color="blue-600"
+                                            icon={<GiIceCube />}
+                                            onClick={handleOpenFreezeModal}
+                                        >
+                                            Descongelar marcos críticos
+                                        </Button>
+                                    )}
+
+                                    {/* Se o gestor está visualizando e o marco está congelado, ele vê o botão de congelar desabilitado */}
+                                    {isGestor && (
+                                        <Tooltip title="Marcos críticos já congelados.">
+                                            <Button
+                                                block
+                                                variant="solid"
+                                                size="sm"
+                                                color="blue-600"
+                                                icon={<GiIceCube />}
+                                                disabled
+                                            >
+                                                Congelar marcos críticos
+                                            </Button>
+                                        </Tooltip>
+                                    )}
+                                </>
+                            ) : (
+                                // Se não está congelado, permitir que o gestor congele os marcos críticos
+                                isGestor && (
+                                    <Tooltip title="O congelamento permite enviar os marcos críticos para análise dos consultores. Ao congelar, você ainda poderá alterar a data prevista, término e adicionar documentos aos marcos.">
+                                        <Button
+                                            block
+                                            variant="solid"
+                                            size="sm"
+                                            color="blue-600"
+                                            icon={<GiIceCube />}
+                                            onClick={handleOpenFreezeModal}
+                                        >
+                                            Congelar marcos críticos
+                                        </Button>
+                                    </Tooltip>
+                                )
+                            )}
                         </>
                     }
                 </div>
