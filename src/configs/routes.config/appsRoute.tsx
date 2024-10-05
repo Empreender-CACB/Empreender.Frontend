@@ -206,6 +206,11 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral')),
     },
     {
+        key: 'sistemaLancamento.transferenciasPagamentos',
+        path: `${APP_PREFIX_PATH}/lancamentos/transferencias-pagamentos`,
+        component: lazy(() => import('@/views/sistema/lancamentos/transferencias-pagamentos')),
+    },
+    {
         key: 'sistema.versaoRfb',
         path: `${APP_PREFIX_PATH}/rfb`,
         component: lazy(() => import('@/views/sistema/empresas/versao-rfb')),
