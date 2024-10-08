@@ -27,10 +27,18 @@ const VersaoRFB = () => {
     }, [])
 
     return (
-        <Container className="fixed inset-0 flex items-center justify-center z-50">
+        
+        <Container className="flex items-center justify-center my-8">
             <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto">
                 <h2 className="text-lg font-bold mb-4">Versão da RFB</h2>
-                <p>{rfbData}</p>
+                    <p>
+                        {rfbData.split('\n').map((line, index) => (
+                            <span key={index}>
+                                {line}
+                                <br />
+                            </span>
+                        ))}
+                    </p>
                 <div className="flex justify-end space-x-4">
                     <Button 
                         variant="default" 
