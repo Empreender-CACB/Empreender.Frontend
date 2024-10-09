@@ -437,7 +437,7 @@ function CadastraProposta() {
                                                                 <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
                                                                     {/* Input de Upload */}
                                                                     <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                        <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
+                                                                        <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png" />
                                                                     </label>
 
                                                                     {/* Select */}
