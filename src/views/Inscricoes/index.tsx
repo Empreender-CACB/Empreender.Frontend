@@ -301,7 +301,7 @@ function CadastraProposta() {
                         <div className="bg-white dark:bg-gray-800 p-10 center text-center">
                             <span className="text-xl text-gray-800 dark:text-gray-100 font-bold">
                                 Inscrições encerradas. Para acessar o resultado,&nbsp;
-                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE0OTY=" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
+                                <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM1MTM4" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
                                     clique aqui
                                 </a> ou informe o CPF.
                             </span>
@@ -350,7 +350,7 @@ function CadastraProposta() {
                                                     Verifique se a documentação inserida na sua inscrição está em
                                                     conformidade com a lista de documentos exigidos no{" "}
                                                     <span className="font-semibold">
-                                                        <a target='_blank' href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==">Termo de Referência (TR0336/24)</a>
+                                                        <a target='_blank' href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTM5OQ==" rel="noreferrer">Termo de Referência (TR0236/24)</a>
 
                                                     </span>{" "}
                                                     em anexo e realize os ajustes necessários até o dia{" "}
