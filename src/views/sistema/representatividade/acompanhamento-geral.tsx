@@ -19,6 +19,8 @@ import StatusChangeModal from './statusChangeModal'
 import HistoryMarcoCriticoModal from './historyMarcoCriticoModal'
 import AnalysisModal from './analysisMarcoCriticoModal'
 import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
+import { MdDashboard } from 'react-icons/md'
+import ZohoFrame from '@/components/shared/ZohoFrame'
 
 moment.locale('pt-br')
 
@@ -118,28 +120,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'data_prevista',
-            header: 'Previsão',
-            columnName: 'data_prevista',
-            defaultFlex: 0.6,
-            dateFormat: 'DD-MM-YYYY',
-            type: 'date',
-            operator: 'after',
+            name: 'nmusuario',
+            header: 'Consultor',
+            columnName: 'nmusuario',
+            type: 'string',
+            defaultFlex: 1,
+            operator: 'contains',
             value: '',
-            filterEditor: DateFilter,
-            filterEditorProps: ({ index }: any) => {
-                return {
-                    dateFormat: 'DD-MM-YYYY',
-                    placeholder:
-                        index === 1
-                            ? 'A data é anterior à...'
-                            : 'A data é posterior à',
-                }
-            },
-            render: ({ value, cellProps: { dateFormat } }: any) =>
-                moment(value).format(dateFormat) === 'Invalid date'
-                    ? '-'
-                    : moment(value).format(dateFormat),
         },
         {
             name: 'nova_data_prevista',
@@ -238,6 +225,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [reload, setReload] = useState(false);
     const [isConsultor, setIsConsultor] = useState(false);
+    const [isGestor, setIsGestor] = useState(false);
+    const [idAssociacaoGestor, setIdAssociacaoGestor] = useState<number | null>(null);
+
 
     const handleOpenEditModal = (marcoId: any, idassociacao: any) => {
         setSelectedMarco({ marcoId, idassociacao });
@@ -292,13 +282,19 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         }
     };
 
-    // Função para renderizar os botões
     const renderButtons = (data: any) => {
         setIsConsultor(data.consultorAssociacoes.includes(String(data.idassociacao)));
-        const isGestor = data.userAssociacoes.includes(data.idassociacao);
-        
+    
+        if (data.userAssociacoes.includes(data.idassociacao)) {
+            setIsGestor(true);
+            setIdAssociacaoGestor(data.idassociacao);
+        } else {
+            setIsGestor(false);
+            setIdAssociacaoGestor(null);
+        }
+
         return (
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap space-x-2">
                 <Tooltip title="Ver">
                     <Button
                         variant="solid"
@@ -319,7 +315,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && data.congelado && (isGestor || isConsultor)  && (
+                {data.status === "Não atingido" && data.congelado && (isGestor || isConsultor) && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -353,7 +349,24 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         );
     };
 
-    console.log('isConsultor', isConsultor);
+    // Função para definir a URL do painel Zoho com base no tipo de usuário
+    const getZohoURL = (isConsultor: boolean, isGestor: boolean, userName?: string) => {
+        if (isConsultor) {
+            return `https://analytics.zoho.com/open-view/1704802000048065118?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22Consultor%22%3D'${userName}'`;
+        } else if (isGestor) {
+            return `https://analytics.zoho.com/open-view/1704802000048065118/68c91bb4a9d53fefab075c66c702bab7?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22ID%20entidade%22%3D${idAssociacaoGestor}`;
+        } else {
+            return `https://analytics.zoho.com/open-view/1704802000048065118/68c91bb4a9d53fefab075c66c702bab7`;
+        }
+    };
+    
+    // Passando idAssociacaoGestor caso o usuário seja gestor
+    const zohoURL = getZohoURL(isConsultor, isGestor, 'Renata Cristiane da Silva');
+    
+    const [showPanel, setShowPanel] = useState(false);
+    const handleToggle = () => {
+        setShowPanel(!showPanel);
+    };
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -372,15 +385,46 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         />
                     </Tooltip>
                 </div>
+
+                <div className="flex flex-col lg:flex-row lg:items-center">
+                {!showPanel ? (
+                    <Button
+                        block
+                        variant="solid"
+                        size="sm"
+                        icon={<MdDashboard />}
+                        onClick={handleToggle}
+                    >
+                        Painel de acompanhamento
+                    </Button>
+                ) : (
+                    <Button
+                        block
+                        variant="solid"
+                        size="sm"
+                        icon={<MdDashboard />}
+                        onClick={handleToggle}
+                    >
+                        Quadro geral
+                    </Button>
+                )}
+                </div>
             </div>
 
-            <CustomReactDataGrid
-                filename="Marcos_Criticos"
-                columns={columns}
-                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral?reload=${reload}`}
-                CardLayout={AcompanhamentoCard}
-                defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
-            />
+
+            <div className="mt-4">
+                {showPanel ? (
+                    <ZohoFrame url={zohoURL} />
+                ) : (
+                    <CustomReactDataGrid
+                        filename="Marcos_Criticos"
+                        columns={columns}
+                        url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral?reload=${reload}`}
+                        CardLayout={AcompanhamentoCard}
+                        defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
+                    />
+                )}
+            </div>
 
             {selectedMarco.marcoId && (
                 <>
