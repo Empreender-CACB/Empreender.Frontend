@@ -292,7 +292,7 @@ function CadastraProposta() {
                         </div>
                         <div className="flex justify-center w-11/12 mx-auto xl:w-full xl:mx-0">
                             <h1 className="text-3xl text-gray-800 dark:text-gray-100 font-bold mt-5">
-                                Seleção de consultores de núcleos setoriais
+                                Seleção de consultores de núcleos setoriais - 2ª Chamada
                             </h1>
                         </div>
 
