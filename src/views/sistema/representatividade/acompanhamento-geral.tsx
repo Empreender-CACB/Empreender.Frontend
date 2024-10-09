@@ -21,6 +21,7 @@ import AnalysisModal from './analysisMarcoCriticoModal'
 import { AcompanhamentoCard } from '@/components/shared/TableCards/AcompanhamentoCard'
 import { MdDashboard } from 'react-icons/md'
 import ZohoFrame from '@/components/shared/ZohoFrame'
+import { useAppSelector } from '@/store'
 
 moment.locale('pt-br')
 
@@ -284,7 +285,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
 
     const renderButtons = (data: any) => {
         setIsConsultor(data.consultorAssociacoes.includes(String(data.idassociacao)));
-    
+        
         if (data.userAssociacoes.includes(data.idassociacao)) {
             setIsGestor(true);
             setIdAssociacaoGestor(data.idassociacao);
@@ -352,6 +353,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     // Função para definir a URL do painel Zoho com base no tipo de usuário
     const getZohoURL = (isConsultor: boolean, isGestor: boolean, userName?: string) => {
         if (isConsultor) {
+            console.log('entrou aqui')
             return `https://analytics.zoho.com/open-view/1704802000048065118?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22Consultor%22%3D'${userName}'`;
         } else if (isGestor) {
             return `https://analytics.zoho.com/open-view/1704802000048065118/68c91bb4a9d53fefab075c66c702bab7?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22ID%20entidade%22%3D${idAssociacaoGestor}`;
@@ -360,8 +362,11 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         }
     };
     
-    // Passando idAssociacaoGestor caso o usuário seja gestor
-    const zohoURL = getZohoURL(isConsultor, isGestor, 'Renata Cristiane da Silva');
+    const { nmusuario } = useAppSelector(
+        (state) => state.auth.user
+    )
+
+    const zohoURL = getZohoURL(isConsultor, isGestor, nmusuario);
     
     const [showPanel, setShowPanel] = useState(false);
     const handleToggle = () => {
