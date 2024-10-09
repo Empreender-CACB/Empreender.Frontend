@@ -354,7 +354,7 @@ function CadastraProposta() {
 
                                                     </span>{" "}
                                                     em anexo e realize os ajustes necessários até o dia{" "}
-                                                    <span className="font-semibold">09/08/2024 (sexta-feira)</span>:
+                                                    <span className="font-semibold">16/10/2024 (quarta-feira)</span>:
                                                 </li>
                                             </ol>
                                             <ul className="list-disc list-inside text-gray-700 mb-4 ml-5">
