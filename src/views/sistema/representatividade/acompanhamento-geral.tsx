@@ -286,10 +286,16 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const renderButtons = (data: any) => {
         setIsConsultor(data.consultorAssociacoes.includes(String(data.idassociacao)));
         
-        if (data.userAssociacoes.includes(data.idassociacao)) {
+        if (data.consultorAssociacoes.includes(String(data.idassociacao))) {
+            setIsConsultor(true);
+            setIsGestor(false); 
+            setIdAssociacaoGestor(null);
+        } else if (data.userAssociacoes.includes(data.idassociacao)) {
             setIsGestor(true);
+            setIsConsultor(false); 
             setIdAssociacaoGestor(data.idassociacao);
         } else {
+            setIsConsultor(false);
             setIsGestor(false);
             setIdAssociacaoGestor(null);
         }
@@ -353,7 +359,6 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     // Função para definir a URL do painel Zoho com base no tipo de usuário
     const getZohoURL = (isConsultor: boolean, isGestor: boolean, userName?: string) => {
         if (isConsultor) {
-            console.log('entrou aqui')
             return `https://analytics.zoho.com/open-view/1704802000048065118?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22Consultor%22%3D'${userName}'`;
         } else if (isGestor) {
             return `https://analytics.zoho.com/open-view/1704802000048065118/68c91bb4a9d53fefab075c66c702bab7?ZOHO_CRITERIA=%22AC%20-%20rep%22.%22ID%20entidade%22%3D${idAssociacaoGestor}`;
