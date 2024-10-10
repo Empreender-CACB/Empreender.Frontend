@@ -73,7 +73,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Id',
             columnName: 'acompanhamento.id',
             type: 'number',
-            defaultFlex: 0.5,
+            defaultFlex: 0.3,
             operator: 'eq',
             value: '',
         },
@@ -107,7 +107,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Cidade',
             columnName: 'nmcidade',
             type: 'string',
-            defaultFlex: 0.7,
+            defaultFlex: 0.6,
             operator: 'contains',
             value: '',
         },
@@ -116,7 +116,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Nome',
             columnName: 'marcos_criticos.nome',
             type: 'string',
-            defaultFlex: 1,
+            defaultFlex: 0.6,
             operator: 'contains',
             value: '',
         },
@@ -125,7 +125,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             header: 'Consultor',
             columnName: 'nmusuario',
             type: 'string',
-            defaultFlex: 1,
+            defaultFlex: 0.6,
             operator: 'contains',
             value: '',
         },
@@ -212,7 +212,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         {
             name: 'actions',
             header: 'Ações',
-            defaultFlex: 0.6,
+            defaultFlex: 1,
             columnName: 'actions',
             render: ({ data }: any) => renderButtons(data),
         }
@@ -301,7 +301,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
         }
 
         return (
-            <div className="flex flex-wrap space-x-2">
+            <div className="flex space-x-2">
                 <Tooltip title="Ver">
                     <Button
                         variant="solid"
