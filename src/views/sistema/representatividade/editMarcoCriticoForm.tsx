@@ -32,6 +32,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
     const [initialValues, setInitialValues] = useState({
         tipo_marco_critico: '',
         nome_marco_critico: '',
+        subatividade: '',
         descricao: '',
         dataPrevista: null,
         novaDataPrevista: null,
@@ -41,8 +42,11 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
 
     const user = useAppSelector((state) => state.auth.user);
 
-    if (isGestor === undefined) {
+    if (isGestor === undefined && tipoRelacao == 'entidade') {
         isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
+    } else if (isGestor === undefined && tipoRelacao == 'nucleo') {
+        isGestor = user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === entidadeId);
+
     }
 
     const [isEditing, setIsEditing] = useState(false);
@@ -129,6 +133,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                         tipo_marco_critico: String(response.data.relacao_1),
                         nome_marco_critico: response.data.nome_marco_critico || '',
                         descricao: response.data.descricao || '',
+                        subatividade: response.data.subatividade || '',
                         dataPrevista: response.data.data_prevista,
                         novaDataPrevista: response.data.nova_data_prevista,
                         dataEncerramento: response.data.data_encerramento,
@@ -223,7 +228,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                     </FormItem>
                                     :
                                     <FormItem
-                                        label="Nome"
+                                        label={tipoRelacao == 'nucleo' ? "Atividade" : "Nome"}
                                         invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
                                         errorMessage={errors.tipo_marco_critico}
                                     >
@@ -248,6 +253,17 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                         ) : (
                                             <div>{values.nome_marco_critico}</div>
                                         )}
+                                    </FormItem>
+                                }
+
+                                {tipoRelacao == 'nucleo'
+                                    &&
+                                    <FormItem
+                                        label="Subatividade"
+                                        invalid={errors.descricao && touched.descricao}
+                                        errorMessage={errors.descricao}
+                                    >
+                                        <div>{values.subatividade}</div>
                                     </FormItem>
                                 }
 

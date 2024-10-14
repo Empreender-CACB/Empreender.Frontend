@@ -71,7 +71,7 @@ const AcompanhamentoGeralNucleo = () => {
             header: 'Id',
             columnName: 'acompanhamento.id',
             type: 'number',
-            defaultFlex: 0.5,
+            defaultFlex: 0.3,
             operator: 'eq',
             value: '',
         },
@@ -96,7 +96,7 @@ const AcompanhamentoGeralNucleo = () => {
             header: 'UF',
             columnName: 'iduf',
             type: 'string',
-            defaultFlex: 0.5,
+            defaultFlex: 0.3,
             operator: 'contains',
             value: '',
         },
@@ -111,7 +111,7 @@ const AcompanhamentoGeralNucleo = () => {
         },
         {
             name: 'marcos_criticos.nome',
-            header: 'Nome',
+            header: 'Atividade',
             columnName: 'marcos_criticos.nome',
             type: 'string',
             defaultFlex: 1,
@@ -119,28 +119,13 @@ const AcompanhamentoGeralNucleo = () => {
             value: '',
         },
         {
-            name: 'data_prevista',
-            header: 'Previsão',
-            columnName: 'data_prevista',
-            defaultFlex: 0.6,
-            dateFormat: 'DD-MM-YYYY',
-            type: 'date',
-            operator: 'after',
+            name: 'subatividade',
+            header: 'Subatividade',
+            columnName: 'subatividade',
+            type: 'string',
+            defaultFlex: 1,
+            operator: 'contains',
             value: '',
-            filterEditor: DateFilter,
-            filterEditorProps: ({ index }: any) => {
-                return {
-                    dateFormat: 'DD-MM-YYYY',
-                    placeholder:
-                        index === 1
-                            ? 'A data é anterior à...'
-                            : 'A data é posterior à',
-                }
-            },
-            render: ({ value, cellProps: { dateFormat } }: any) =>
-                moment(value).format(dateFormat) === 'Invalid date'
-                    ? '-'
-                    : moment(value).format(dateFormat),
         },
         {
             name: 'nova_data_prevista',
@@ -225,7 +210,7 @@ const AcompanhamentoGeralNucleo = () => {
         {
             name: 'actions',
             header: 'Ações',
-            defaultFlex: 0.6,
+            defaultFlex: 1,
             columnName: 'actions',
             render: ({ data }: any) => renderButtons(data),
         }
@@ -240,6 +225,7 @@ const AcompanhamentoGeralNucleo = () => {
     const [isHistoricoModalOpen, setIsHistoricoModalOpen] = useState(false);
     const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
     const [isConsultor, setIsConsultor] = useState(false);
+    const [isGestor, setIsGestor] = useState(false);
 
     const [reload, setReload] = useState(false);
 
@@ -296,13 +282,13 @@ const AcompanhamentoGeralNucleo = () => {
         }
     };
 
+    const user = useAppSelector((state) => state.auth.user);
 
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
         setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
+        setIsGestor(user.nucleos.some((nucleo) => nucleo.idnucleo === data.idnucleo));
 
-        const isGestor = data.userAssociacoes.includes(data.idnucleo);
-        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">

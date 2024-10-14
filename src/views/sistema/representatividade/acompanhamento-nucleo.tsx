@@ -70,6 +70,15 @@ const AcompanhamentoNucleos = () => {
             value: '',
         },
         {
+            name: 'subatividade',
+            header: 'Subatividade',
+            columnName: 'subatividade',
+            type: 'string',
+            defaultFlex: 1,
+            operator: 'contains',
+            value: '',
+        },
+        {
             name: 'data_prevista',
             header: 'Previsão',
             columnName: 'data_prevista',
@@ -182,6 +191,7 @@ const AcompanhamentoNucleos = () => {
     const [isCongelado, setIsCongelado] = useState(false);
     const [selectedMarcoDetails, setSelectedMarcoDetails] = useState<any>(null);
     const [isConsultor, setIsConsultor] = useState(false);
+    const [isGestor, setIsGestor] = useState<any>(false);
 
 
     const fetchMarcoDetails = async (marcoId: number) => {
@@ -199,8 +209,6 @@ const AcompanhamentoNucleos = () => {
     };
 
     const user = useAppSelector((state) => state.auth.user);
-
-    const isGestor = nucleoDetails && user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === nucleoDetails.idnucleo);
 
     const [reload, setReload] = useState(false);
 
@@ -248,7 +256,6 @@ const AcompanhamentoNucleos = () => {
         }
     };
 
-
     useEffect(() => {
         const fetchData = async () => {
             await fetchNucleoDetails();
@@ -290,6 +297,9 @@ const AcompanhamentoNucleos = () => {
     // Função para renderizar os botões
     const renderButtons = (data: any) => {
         setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
+        const isGestorBool = nucleoDetails && user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === nucleoDetails.idnucleo);
+
+        setIsGestor(isGestorBool);
 
         return (
             <div className="flex space-x-2">
@@ -379,19 +389,6 @@ const AcompanhamentoNucleos = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                     {(isGestor || isConsultor) &&
                         <>
-                            {isGestor &&
-
-                                <Button
-                                    block
-                                    variant="solid"
-                                    size="sm"
-                                    icon={<HiPlusCircle />}
-                                    disabled={isCongelado}
-                                    onClick={handleOpenModal}
-                                >
-                                    Adicionar Marco Crítico
-                                </Button>
-                            }
                             {isCongelado ? (
                                 <>
                                     {/* Se o consultor está visualizando e o marco está congelado, ele pode descongelar */}
