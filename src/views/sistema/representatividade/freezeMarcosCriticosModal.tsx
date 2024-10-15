@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, Button } from '@/components/ui';
 import ApiService from '@/services/ApiService';
 
@@ -12,8 +12,11 @@ interface FreezeMarcosCriticosModalProps {
 }
 
 const FreezeMarcosCriticosModal: React.FC<FreezeMarcosCriticosModalProps> = ({ tipo, isCongelado, entidadeId, isOpen, onClose, onUpdate }) => {
+    const [loading, setLoading] = useState(false);
+
     const handleConfirm = async () => {
         try {
+            setLoading(true);
             await ApiService.fetchData({
                 url: `/representatividade/congelar-marcos-criticos/${tipo}`,
                 method: 'put',
@@ -23,6 +26,8 @@ const FreezeMarcosCriticosModal: React.FC<FreezeMarcosCriticosModalProps> = ({ t
             onClose();
         } catch (error) {
             console.error('Erro ao congelar marcos críticos:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -30,16 +35,23 @@ const FreezeMarcosCriticosModal: React.FC<FreezeMarcosCriticosModalProps> = ({ t
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div>
                 <h5 className='mb-4'>{isCongelado ? "Descongelar" : "Congelar"} Marcos Críticos</h5>
-                {isCongelado ? 
+                {isCongelado ?
                     <p>Deseja descongelar os marcos críticos? Com essa ação, Será possível editar os marcos críticos da entidade.</p>
-                    : 
+                    :
                     <p>Deseja congelar os marcos críticos? Com essa ação, não poderão mais ser adicionados novos marcos, ou editá-los.</p>
                 }
                 <div className="flex justify-between mt-4">
                     <Button type="button" onClick={onClose} className="mr-2">
                         Cancelar
                     </Button>
-                    <Button type="button" onClick={handleConfirm} color="green-600" variant="solid">
+                    <Button 
+                        loading={loading}
+                        disabled={loading} 
+                        type="button" 
+                        onClick={handleConfirm} 
+                        color="green-600" 
+                        variant="solid"
+                    >
                         Confirmar
                     </Button>
                 </div>
