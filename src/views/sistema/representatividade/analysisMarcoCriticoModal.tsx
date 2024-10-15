@@ -29,8 +29,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, onSave, 
     
         onSave('Em análise', comentario, dataTerminoToSave);
         onClose();
-    };
-    
+    };    
 
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
@@ -39,7 +38,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, onSave, 
 
                 <div className="my-4">
                     <label htmlFor="comentario" className="block text-sm mb-2 text-gray-700">
-                        Comentário do gestor (opcional)
+                        Comentário para o gestor (opcional)
                     </label>
                     <Input
                         placeholder="Digite seu comentário"
