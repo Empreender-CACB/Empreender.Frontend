@@ -20,8 +20,6 @@ import { FcInfo } from 'react-icons/fc'
 import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import ReactGA from 'react-ga4'
 
-ReactGA.initialize('G-9380D60LWF')
-
 moment.locale('pt-br')
 
 const activeValue = [
@@ -310,6 +308,9 @@ const Empresas = () => {
                 console.error(error);
             }
         }
+
+        ReactGA.initialize('G-9380D60LWF')
+        ReactGA.send({ hitType: "pageview", page: "/empresas", title: "Lista de Empresas" })
 
         const getOrigens = async () => {
             try {
