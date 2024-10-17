@@ -25,6 +25,8 @@ import CTableCards from './CTableCards'
 //import './theme.css'
 import i18n from './i18n'
 import { TableConfigType, apiDataTable } from '@/services/DataTableService'
+import ReactGA from 'react-ga4'
+
 interface CustomReactDataGridPropsBasic {
     filename: string
     columns: any[]
@@ -167,6 +169,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+    
+    useEffect(() => {
+    ReactGA.initialize('G-9380D60LWF')
+    }, [])
+
 
     const openDialog = () => {
         setIsOpen(true)
