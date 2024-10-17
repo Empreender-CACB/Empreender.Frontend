@@ -76,6 +76,14 @@ const Empresas = () => {
 
     const { user } = useAppSelector((state) => state.auth)
 
+    const handleClick = (platform) => {
+        ReactGA.event({
+            category: 'Filtro de empresa',
+            action: 'Click',
+            label: platform,
+        });
+    };
+
     const isGestorEntidade = user && Array.isArray(user.associacoes) && user.associacoes.length > 0
     const isUsuarioEntidade = user.perfil == 'assoc' && user.idobjeto && !isGestorEntidade
 
@@ -528,6 +536,7 @@ const Empresas = () => {
                     className="ml-2"
                     onClick={() => {
                         window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
+                        handleClick("Documentação")
                     }}
                 />
             </Tooltip>
