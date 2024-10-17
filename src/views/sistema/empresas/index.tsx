@@ -18,7 +18,9 @@ import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
 import { FcInfo } from 'react-icons/fc'
 import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+import ReactGA from 'react-ga4'
 
+ReactGA.initialize('G-9380D60LWF')
 
 moment.locale('pt-br')
 
