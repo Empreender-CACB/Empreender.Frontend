@@ -388,7 +388,7 @@ function CadastraProposta() {
 
         <div className="bg-gray-50 px-6 py-4">
           <p className="text-sm text-gray-500">
-            Participante da iniciativa de energia renovável da COGECOM, contribuindo para um futuro sustentável.
+            mais dados não sei o que.
           </p>
         </div>
       </div>
