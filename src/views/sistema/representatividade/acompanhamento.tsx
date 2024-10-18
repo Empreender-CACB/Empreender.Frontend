@@ -312,7 +312,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" && (isGestor || isConsultor) &&
+                {data.status == "Em análise" && isConsultor &&
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -445,7 +445,7 @@ const AcompanhamentoMarcosCriticos = () => {
             {selectedMarcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="entidade" entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor || isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="entidade" entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor} isConsultor={isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarcoDetails?.data_encerramento} />
