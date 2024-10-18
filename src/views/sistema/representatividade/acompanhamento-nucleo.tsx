@@ -272,7 +272,7 @@ const AcompanhamentoNucleos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico_nucleo/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/nucleo/${selectedMarcoId}`,
                 method: 'put',
                 data: {
                     status,

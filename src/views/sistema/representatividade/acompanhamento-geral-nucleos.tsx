@@ -267,7 +267,7 @@ const AcompanhamentoGeralNucleo = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico_nucleo/${selectedMarco.marcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/nucleo/${selectedMarco.marcoId}`,
                 method: 'put',
                 data: {
                     status,
