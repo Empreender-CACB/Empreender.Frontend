@@ -265,6 +265,15 @@ function CadastraProposta() {
         }
     };
 
+    const company = {
+        name: "COGECOM Energia Renovável",
+        cnpj: "12.345.678/0001-99",
+        address: "Rua Sustentabilidade, 123 - São Paulo, SP",
+        energyGenerated: "350 milhões de kWh",
+        contact: "contato@cogecom.com.br",
+        phone: "(11) 98765-4321",
+        status: "Cadastrada no PDE"
+      };
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
@@ -359,6 +368,31 @@ function CadastraProposta() {
 </div>
 
 
+<div className="w-full max-w-4xl mx-auto p-6">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">{company.name}</h2>
+            <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+              {company.status}
+            </span>
+          </div>
+
+          <div className="text-gray-700 space-y-2">
+            <p><strong>CNPJ:</strong> {company.cnpj}</p>
+            <p><strong>Endereço:</strong> {company.address}</p>
+            <p><strong>Email de Contato:</strong> {company.contact}</p>
+            <p><strong>Telefone:</strong> {company.phone}</p>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 px-6 py-4">
+          <p className="text-sm text-gray-500">
+            Participante da iniciativa de energia renovável da COGECOM, contribuindo para um futuro sustentável.
+          </p>
+        </div>
+      </div>
+    </div>
 
                         <>
                             {apto && userData && (
