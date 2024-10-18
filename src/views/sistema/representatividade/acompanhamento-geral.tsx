@@ -439,13 +439,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="nucleo" isGestor={isGestor} isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="entidade" isGestor={isGestor} isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm tipo="nucleo" marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm tipo="entidade" marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}
