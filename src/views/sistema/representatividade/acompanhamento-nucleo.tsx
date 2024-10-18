@@ -272,7 +272,7 @@ const AcompanhamentoNucleos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico_nucleo/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/nucleo/${selectedMarcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -381,7 +381,7 @@ const AcompanhamentoNucleos = () => {
                         </Tooltip>
                     </div>
                     <h5>
-                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/aid/${btoa(String(nucleoDetails?.idnucleo))}`}>
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(nucleoDetails?.idnucleo))}`}>
                             {nucleoDetails?.idnucleo} - {nucleoDetails?.nmnucleo}
                         </Link>
                     </h5>

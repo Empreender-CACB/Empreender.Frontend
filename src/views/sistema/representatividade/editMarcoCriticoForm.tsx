@@ -43,6 +43,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
     const user = useAppSelector((state) => state.auth.user);
 
     if (isGestor === undefined && tipoRelacao == 'entidade') {
+        console.log('é gestor entidade');
         isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
     } else if (isGestor === undefined && tipoRelacao == 'nucleo') {
         isGestor = user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === entidadeId);
@@ -206,172 +207,172 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                     <Form>
                         <h5 className="mb-4">{isEditing ? "Editar" : "Visualizar"} marco crítico</h5>
                         <FormContainer>
-
-                            <div style={{ maxHeight: '60vh', overflowY: 'auto' }} className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
-                                {((tipoAtual === 'Específico' || tipoAtual === 'outros') && !marcoCongelado) ?
-                                    <FormItem
-                                        label="Nome do Marco Crítico Personalizado"
-                                        invalid={errors.nome_marco_critico && touched.nome_marco_critico}
-                                        errorMessage={errors.nome_marco_critico}
-                                    >
-                                        {isEditing && !marcoCongelado ? (
-                                            <Field
-                                                autoComplete="off"
-                                                name="nome_marco_critico"
-                                                placeholder="Nome do Marco Crítico Personalizado"
-                                                component={Input}
-                                                readOnly={!isEditing}
-                                            />
-                                        ) : (
-                                            <div>{values.nome_marco_critico}</div>
-                                        )}
-                                    </FormItem>
-                                    :
-                                    <FormItem
-                                        label={tipoRelacao == 'nucleo' ? "Atividade" : "Nome"}
-                                        invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
-                                        errorMessage={errors.tipo_marco_critico}
-                                    >
-                                        {isEditing && !marcoCongelado ? (
-                                            tipoAtual !== 'Padrão' ? (
-                                                <Field name="tipo_marco_critico">
-                                                    {({ field, form }: FieldProps) => (
-                                                        <Select
-                                                            field={field}
-                                                            form={form}
-                                                            placeholder="Selecione o nome do marco crítico"
-                                                            options={marcosCriticos}
-                                                            value={marcosCriticos.find(option => option.value === field.value)}
-                                                            onChange={(option) => handleTipoChange(option, form.setFieldValue)}
-                                                            isDisabled={!isEditing}
-                                                        />
-                                                    )}
-                                                </Field>
+                            <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                                <div className={isEditing ? "" : "grid grid-cols-2 gap-4"}>
+                                    {((tipoAtual === 'Específico' || tipoAtual === 'outros') && !marcoCongelado) ?
+                                        <FormItem
+                                            label="Nome do Marco Crítico Personalizado"
+                                            invalid={errors.nome_marco_critico && touched.nome_marco_critico}
+                                            errorMessage={errors.nome_marco_critico}
+                                        >
+                                            {isEditing && !marcoCongelado ? (
+                                                <Field
+                                                    autoComplete="off"
+                                                    name="nome_marco_critico"
+                                                    placeholder="Nome do Marco Crítico Personalizado"
+                                                    component={Input}
+                                                    readOnly={!isEditing}
+                                                />
                                             ) : (
-                                                <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Nome do marco crítico padrão'}</div>
-                                            )
-                                        ) : (
-                                            <div>{values.nome_marco_critico}</div>
-                                        )}
-                                    </FormItem>
-                                }
+                                                <div>{values.nome_marco_critico}</div>
+                                            )}
+                                        </FormItem>
+                                        :
+                                        <FormItem
+                                            label={tipoRelacao == 'nucleo' ? "Atividade" : "Nome"}
+                                            invalid={errors.tipo_marco_critico && touched.tipo_marco_critico}
+                                            errorMessage={errors.tipo_marco_critico}
+                                        >
+                                            {isEditing && !marcoCongelado ? (
+                                                tipoAtual !== 'Padrão' ? (
+                                                    <Field name="tipo_marco_critico">
+                                                        {({ field, form }: FieldProps) => (
+                                                            <Select
+                                                                field={field}
+                                                                form={form}
+                                                                placeholder="Selecione o nome do marco crítico"
+                                                                options={marcosCriticos}
+                                                                value={marcosCriticos.find(option => option.value === field.value)}
+                                                                onChange={(option) => handleTipoChange(option, form.setFieldValue)}
+                                                                isDisabled={!isEditing}
+                                                            />
+                                                        )}
+                                                    </Field>
+                                                ) : (
+                                                    <div>{marcosCriticos.find(option => option.value === values.tipo_marco_critico)?.label || 'Nome do marco crítico padrão'}</div>
+                                                )
+                                            ) : (
+                                                <div>{values.nome_marco_critico}</div>
+                                            )}
+                                        </FormItem>
+                                    }
 
-                                {tipoRelacao == 'nucleo'
-                                    &&
+                                    {tipoRelacao == 'nucleo'
+                                        &&
+                                        <FormItem
+                                            label="Subatividade"
+                                            invalid={errors.descricao && touched.descricao}
+                                            errorMessage={errors.descricao}
+                                        >
+                                            <div>{values.subatividade}</div>
+                                        </FormItem>
+                                    }
+
                                     <FormItem
-                                        label="Subatividade"
+                                        label="Descrição"
                                         invalid={errors.descricao && touched.descricao}
                                         errorMessage={errors.descricao}
                                     >
-                                        <div>{values.subatividade}</div>
+                                        {isEditing && !marcoCongelado && (tipoAtual === 'Específico' || tipoAtual === 'outros') ? (
+                                            <Field name="descricao">
+                                                {({ field, form }: FieldProps) => (
+                                                    <Input
+                                                        {...field}
+                                                        textArea
+                                                        value={form.values.descricao}
+                                                        placeholder="Descrição"
+                                                        className="form-textarea mt-1 block w-full"
+                                                    />
+                                                )}
+                                            </Field>
+                                        ) : (
+                                            <div>{values.descricao}</div>
+                                        )}
                                     </FormItem>
-                                }
-
-                                <FormItem
-                                    label="Descrição"
-                                    invalid={errors.descricao && touched.descricao}
-                                    errorMessage={errors.descricao}
-                                >
-                                    {isEditing && !marcoCongelado && (tipoAtual === 'Específico' || tipoAtual === 'outros') ? (
-                                        <Field name="descricao">
-                                            {({ field, form }: FieldProps) => (
-                                                <Input
-                                                    {...field}
-                                                    textArea
-                                                    value={form.values.descricao}
-                                                    placeholder="Descrição"
-                                                    className="form-textarea mt-1 block w-full"
-                                                />
-                                            )}
-                                        </Field>
-                                    ) : (
-                                        <div>{values.descricao}</div>
-                                    )}
-                                </FormItem>
 
 
-                                <FormItem
-                                    label="Data Prevista"
-                                    invalid={errors.dataPrevista && touched.dataPrevista}
-                                    errorMessage={errors.dataPrevista}
-                                >
-                                    {isEditing && !marcoCongelado ? (
-                                        <Field
-                                            name="dataPrevista"
-                                            component={DatePicker}
-                                            placeholder="Data Prevista"
-                                            onChange={(date: Date) => setFieldValue('dataPrevista', date)}
-                                            value={values.dataPrevista ? moment(values.dataPrevista).toDate() : null}
-                                        />
-                                    ) : (
-                                        <div>{values.dataPrevista ? moment(values.dataPrevista).format('DD/MM/YYYY') : '-'}</div>
-                                    )}
-                                </FormItem>
+                                    <FormItem
+                                        label="Data Prevista"
+                                        invalid={errors.dataPrevista && touched.dataPrevista}
+                                        errorMessage={errors.dataPrevista}
+                                    >
+                                        {isEditing && !marcoCongelado ? (
+                                            <Field
+                                                name="dataPrevista"
+                                                component={DatePicker}
+                                                placeholder="Data Prevista"
+                                                onChange={(date: Date) => setFieldValue('dataPrevista', date)}
+                                                value={values.dataPrevista ? moment(values.dataPrevista).toDate() : null}
+                                            />
+                                        ) : (
+                                            <div>{values.dataPrevista ? moment(values.dataPrevista).format('DD/MM/YYYY') : '-'}</div>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem
-                                    label="Nova Data Prevista"
-                                    invalid={errors.novaDataPrevista && touched.novaDataPrevista}
-                                    errorMessage={errors.novaDataPrevista}
-                                >
-                                    {isEditing ? (
-                                        <Field
-                                            name="novaDataPrevista"
-                                            component={DatePicker}
-                                            placeholder="Nova Data Prevista"
-                                            onChange={(date: Date) => setFieldValue('novaDataPrevista', date)}
-                                            value={values.novaDataPrevista ? moment(values.novaDataPrevista).toDate() : null}
-                                        />
-                                    ) : (
-                                        <div>{values.novaDataPrevista ? moment(values.novaDataPrevista).format('DD/MM/YYYY') : '-'}</div>
-                                    )}
-                                </FormItem>
+                                    <FormItem
+                                        label="Nova Data Prevista"
+                                        invalid={errors.novaDataPrevista && touched.novaDataPrevista}
+                                        errorMessage={errors.novaDataPrevista}
+                                    >
+                                        {isEditing ? (
+                                            <Field
+                                                name="novaDataPrevista"
+                                                component={DatePicker}
+                                                placeholder="Nova Data Prevista"
+                                                onChange={(date: Date) => setFieldValue('novaDataPrevista', date)}
+                                                value={values.novaDataPrevista ? moment(values.novaDataPrevista).toDate() : null}
+                                            />
+                                        ) : (
+                                            <div>{values.novaDataPrevista ? moment(values.novaDataPrevista).format('DD/MM/YYYY') : '-'}</div>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem
-                                    label="Término"
-                                    invalid={errors.dataEncerramento && touched.dataEncerramento}
-                                    errorMessage={errors.dataEncerramento}
-                                >
-                                    {isEditing ? (
-                                        <Field
-                                            name="dataEncerramento"
-                                            component={DatePicker}
-                                            placeholder="Término"
-                                            onChange={(date: Date) => setFieldValue('dataEncerramento', date)}
-                                            value={values.dataEncerramento ? moment(values.dataEncerramento).toDate() : null}
-                                        />
-                                    ) : (
-                                        <div>{values.dataEncerramento ? moment(values.dataEncerramento).format('DD/MM/YYYY') : '-'}</div>
-                                    )}
-                                </FormItem>
-                            </div>
-
-                            <Field name="entidadeId" type="hidden" />
-
-                            {anexosExistentes.length > 0 &&
-                                <div className="my-4">
-                                    <h6 className="mb-2">Documentos</h6>
-                                    <ul>
-                                        {anexosExistentes.map(anexo => (
-                                            <li key={anexo.id} className="mb-2 flex justify-between items-center">
-                                                <div>
-                                                    <a href={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(anexo.id))}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                        {anexo.nome_arquivo}
-                                                    </a> - {anexo.descricao}
-                                                </div>
-                                                {isEditing && !anexosParaRemover.includes(anexo.id) && (
-                                                    <Button type="button" onClick={() => handleRemoveAnexo(anexo.id)} variant="solid" color="red-600">
-                                                        Remover
-                                                    </Button>
-                                                )}
-                                                {anexosParaRemover.includes(anexo.id) && (
-                                                    <div className="text-red-500 ml-2">Será removido</div>
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <FormItem
+                                        label="Término"
+                                        invalid={errors.dataEncerramento && touched.dataEncerramento}
+                                        errorMessage={errors.dataEncerramento}
+                                    >
+                                        {isEditing ? (
+                                            <Field
+                                                name="dataEncerramento"
+                                                component={DatePicker}
+                                                placeholder="Término"
+                                                onChange={(date: Date) => setFieldValue('dataEncerramento', date)}
+                                                value={values.dataEncerramento ? moment(values.dataEncerramento).toDate() : null}
+                                            />
+                                        ) : (
+                                            <div>{values.dataEncerramento ? moment(values.dataEncerramento).format('DD/MM/YYYY') : '-'}</div>
+                                        )}
+                                    </FormItem>
                                 </div>
-                            }
 
+                                <Field name="entidadeId" type="hidden" />
+
+                                {anexosExistentes.length > 0 &&
+                                    <div className="my-4">
+                                        <h6 className="mb-2">Documentos</h6>
+                                        <ul>
+                                            {anexosExistentes.map(anexo => (
+                                                <li key={anexo.id} className="mb-2 flex justify-between items-center">
+                                                    <div>
+                                                        <a href={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(anexo.id))}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                            {anexo.nome_arquivo}
+                                                        </a> - {anexo.descricao}
+                                                    </div>
+                                                    {isEditing && !anexosParaRemover.includes(anexo.id) && (
+                                                        <Button type="button" onClick={() => handleRemoveAnexo(anexo.id)} variant="solid" color="red-600">
+                                                            Remover
+                                                        </Button>
+                                                    )}
+                                                    {anexosParaRemover.includes(anexo.id) && (
+                                                        <div className="text-red-500 ml-2">Será removido</div>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                }
+                            </div>
                             <div className="flex justify-end">
                                 <Button type="button" onClick={onClose} className="mt-4 mr-2">
                                     Cancelar
@@ -386,14 +387,24 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                     </Button>
                                 ) : (
                                     <div
-                                        onClick={((isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor)) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        onClick={() => {
+                                            if (!marcoCongelado && (isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') {
+                                                toggleEdit();
+                                            }
+                                        }}
+                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor) || marcoCongelado)
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : ''
+                                            }`}
                                     >
                                         Editar
                                     </div>
                                 )}
                             </div>
+
+
                         </FormContainer>
+
                     </Form>
                 )
             }}

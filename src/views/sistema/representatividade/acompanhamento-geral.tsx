@@ -268,7 +268,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico/${selectedMarco.marcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/entidade/${selectedMarco.marcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -311,7 +311,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status === "Em análise" && (isGestor || isConsultor) && (
+                {data.status === "Em análise" && isConsultor && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -439,13 +439,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm tipoRelacao="nucleo" isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="entidade" isGestor={isGestor} isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm tipo="nucleo" marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm tipo="entidade" marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}
