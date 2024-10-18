@@ -302,8 +302,8 @@ function CadastraProposta() {
                             <span className="text-xl text-gray-800 dark:text-gray-100 font-bold">
                                 Inscrições encerradas. Para acessar o resultado,&nbsp;
                                 <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM1MTM4" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
-                                    clique aqui
-                                </a> ou informe o CPF.
+                                    clique aqui.
+                                </a>
                             </span>
                         </div>
 
