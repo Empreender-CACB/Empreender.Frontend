@@ -277,7 +277,7 @@ const AcompanhamentoMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/marco_critico/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/entidade/${selectedMarcoId}`,
                 method: 'put',
                 data: {
                     status,
