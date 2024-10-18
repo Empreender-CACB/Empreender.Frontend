@@ -311,13 +311,13 @@ function CadastraProposta() {
                         <>
                             <div className='center text-center pb-5'>
                                 {/* <h3 className='mb-2'>Complementar dados</h3> */}
-                                <IMaskInput
+                                {/* <IMaskInput
                                     className='input input-md h-11 focus:ring-sky-900 focus-within:ring-sky-900 focus-within:border-sky-900 focus:border-sky-900 mb-2'
                                     mask={'000.000.000-00'}
                                     name='cpf'
                                     placeholder='Informe o seu CPF'
                                     onAccept={verifyCPF}
-                                />
+                                /> */}
 
                                 {inapto === true && (
                                     <Alert showIcon className="mb-4">
