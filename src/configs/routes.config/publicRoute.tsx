@@ -13,6 +13,16 @@ const publicRoute: Routes = [
         },
     },
     {
+        key: 'projeto-cogecon',
+        path: `/projeto-cogecon`,
+        component: lazy(() => import('@/views/Cogecon')),
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'curso',
         path: `/curso-form`,
         component: lazy(() => import('@/views/Inscricoes/cursoform')),
