@@ -381,7 +381,7 @@ const AcompanhamentoNucleos = () => {
                         </Tooltip>
                     </div>
                     <h5>
-                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/aid/${btoa(String(nucleoDetails?.idnucleo))}`}>
+                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(nucleoDetails?.idnucleo))}`}>
                             {nucleoDetails?.idnucleo} - {nucleoDetails?.nmnucleo}
                         </Link>
                     </h5>

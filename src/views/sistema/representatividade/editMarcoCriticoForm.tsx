@@ -43,6 +43,7 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
     const user = useAppSelector((state) => state.auth.user);
 
     if (isGestor === undefined && tipoRelacao == 'entidade') {
+        console.log('é gestor entidade');
         isGestor = user?.associacoes && user?.associacoes.some(assoc => assoc.idassociacao === entidadeId);
     } else if (isGestor === undefined && tipoRelacao == 'nucleo') {
         isGestor = user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === entidadeId);
@@ -386,13 +387,22 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                     </Button>
                                 ) : (
                                     <div
-                                        onClick={((isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor)) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        onClick={() => {
+                                            if (!marcoCongelado && (isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') {
+                                                toggleEdit();
+                                            }
+                                        }}
+                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor) || marcoCongelado)
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                            }`}
                                     >
                                         Editar
                                     </div>
                                 )}
                             </div>
+
+
                         </FormContainer>
                     </Form>
                 )
