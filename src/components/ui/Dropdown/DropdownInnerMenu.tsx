@@ -64,10 +64,6 @@ const Menu = forwardRef<HTMLElement, DropdownInnerMenuProps>((props, ref) => {
             const rect = node.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
     
-            console.log('Rect:', rect);
-            console.log('Viewport Width:', viewportWidth);
-            console.log('Placement:', placement);
-    
             if (placement === 'bottom-end' || placement === 'bottom-start' || placement === 'bottom-center') {
                 if (rect.right > viewportWidth) {
                     node.style.left = 'auto';
