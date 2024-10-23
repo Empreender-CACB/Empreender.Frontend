@@ -22,6 +22,11 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'Anexos.adicionar',
+        path: `${APP_PREFIX_PATH}/anexos/adicionar`,
+        component: lazy(() => import('@/views/sistema/anexos/adicionar')),
+    },
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
