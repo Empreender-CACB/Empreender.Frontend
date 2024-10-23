@@ -293,16 +293,21 @@ const E2022Consultores = () => {
                         >
                             <Tooltip
                                 placement='left-start'
-                                title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}
+                                title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos (exporta apenas as linhas selecionadas, considerando paginação)'}
                             >
                                 <span>Exportar documentos selecionados</span>
                             </Tooltip>
                         </Dropdown.Item>
                         <Dropdown.Item
-                            disabled={isDownloading}
+                            disabled={true}
                             onClick={handleExportAllDocuments}
                         >
-                            Exportar todos os documentos
+                            <Tooltip
+                                placement='left-start'
+                                title={'Temporariamente desativado'}
+                            >
+                                Exportar todos os documentos
+                            </Tooltip>
                         </Dropdown.Item>
                     </Dropdown>
                 </div>
