@@ -112,9 +112,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'marcos_criticos.nome',
-            header: 'Nome',
-            columnName: 'marcos_criticos.nome',
+            name: 'nome',
+            header: ' Nome',
+            columnName: 'nome',
             type: 'string',
             defaultFlex: 0.6,
             operator: 'contains',
@@ -431,7 +431,6 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                         columns={columns}
                         url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral/marco_critico?reload=${reload}`}
                         CardLayout={AcompanhamentoCard}
-                        defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
                     />
                 )}
             </div>
