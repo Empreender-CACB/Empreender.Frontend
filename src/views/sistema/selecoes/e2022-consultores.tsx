@@ -130,7 +130,7 @@ const E2022Consultores = () => {
 
     const [origem, setOrigem] = useState<any>(['2']);
     const [origemOptions, setOrigemOptions] = useState<string[]>([]);
-
+    const [isDownloading, setIsDownloading] = useState(false);
     const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const handleSelectedRowsChange = (selectedIds: number[]) => {
@@ -144,6 +144,7 @@ const E2022Consultores = () => {
     };
 
     const handleExportDocuments = async () => {
+        setIsDownloading(true);
         toast.push(
             <Notification title="O download será iniciado em instantes." type="info" />
         );
@@ -160,14 +161,17 @@ const E2022Consultores = () => {
                     {error.response.data}
                 </Notification>
             );
+        }).finally(() => {
+            setIsDownloading(false);
         });
     };
 
     const handleExportAllDocuments = async () => {
+        setIsDownloading(true);
         toast.push(
             <Notification title="O download será iniciado em instantes." type="info" />
         );
-    
+
         await ApiService.fetchData<Blob>({
             url: `/selecoes/e2022-consultores-download-todos/${origem}`,
             method: 'post',
@@ -180,6 +184,8 @@ const E2022Consultores = () => {
                     {error.response.data}
                 </Notification>
             );
+        }).finally(() => {
+            setIsDownloading(false);
         });
     };
 
@@ -233,7 +239,7 @@ const E2022Consultores = () => {
         </div>
     );
 
-    
+
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -282,26 +288,28 @@ const E2022Consultores = () => {
                         className="mr-2"
                     >
                         <Dropdown.Item
-                            eventKey="a"
-                            disabled={selectedRows.length === 0}
+                            disabled={selectedRows.length === 0 || isDownloading}
                             onClick={handleExportDocuments}
                         >
                             <Tooltip
                                 placement='left-start'
-                                title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}
+                                title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos (exporta apenas as linhas selecionadas, considerando paginação)'}
                             >
                                 <span>Exportar documentos selecionados</span>
                             </Tooltip>
                         </Dropdown.Item>
                         <Dropdown.Item
-                            eventKey="b"
+                            disabled={true}
                             onClick={handleExportAllDocuments}
                         >
-                            Exportar todos os documentos
+                            <Tooltip
+                                placement='left-start'
+                                title={'Temporariamente desativado'}
+                            >
+                                Exportar todos os documentos
+                            </Tooltip>
                         </Dropdown.Item>
                     </Dropdown>
-
-
                 </div>
             </div>
             <CustomReactDataGrid
