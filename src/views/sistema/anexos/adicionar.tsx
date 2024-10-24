@@ -7,6 +7,8 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
+import ApiService from '@/services/ApiService';
+import { useEffect, useState } from 'react';
 
 type FormModel = {
     nome: string;
@@ -34,14 +36,33 @@ const validationSchema = Yup.object().shape({
     vencimento: Yup.date().nullable(),
     necessitaAprovacao: Yup.string().required('Campo obrigatório'),
     descricao: Yup.string(),
+    tipoVinculo: Yup.string()
 });
 
 const breadcrumbItems = [
     { label: 'Início', link: '/' },
-    { label: 'Inserir novo Lote', link: '/sistema/insert-excel' },
+    { label: 'Adicionar documento', link: '/sistema/insert-excel' },
 ]
 
-const DocumentoForm = () => {
+const AdicionarAnexo = () => {
+    const [arquivosTipos, setArquivosTipos] = useState([]);
+
+    const fetchArquivosTipos = async () => {
+        try {
+            const response = await ApiService.fetchData({
+                url: '/arquivos-tipos',
+                method: 'get',
+            });
+            setArquivosTipos(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar os tipos de arquivos:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchArquivosTipos();
+    }, []);
+
     return (
         <Container>
             <div className="w-full max-w-4xl mb-4">
@@ -58,6 +79,7 @@ const DocumentoForm = () => {
                         vencimento: null,
                         necessitaAprovacao: '',
                         descricao: '',
+                        tipoVinculo: ''
                     }}
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
@@ -87,43 +109,41 @@ const DocumentoForm = () => {
                                 {/* Seção Carga */}
                                 <div className="mb-6 bg-blue-100 p-4 rounded-lg">
                                     <h5 className="text-lg font-semibold mb-4">Carga</h5>
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div className="flex flex-wrap gap-4">
                                         <FormItem
                                             label="Arquivo"
                                             asterisk
                                             invalid={!!errors.nomeArquivo && touched.nomeArquivo}
                                             errorMessage={errors.nomeArquivo}
+                                            className="flex-1 w-full md:w-auto"
                                         >
                                             <Field name="nomeArquivo">
                                                 {({ field }: any) => (
-                                                    <div className="flex-1">
-                                                        <Upload
-                                                            isFullWidth={true}
-                                                            variant='solid'
-                                                            uploadLimit={1}
-                                                            onChange={(files) => setFieldValue('nomeArquivo', files[0])}
-                                                        />
-                                                    </div>
+                                                    <Upload
+                                                        isFullWidth={true}
+                                                        variant='solid'
+                                                        uploadLimit={1}
+                                                        onChange={(files) => setFieldValue('nomeArquivo', files[0])}
+                                                    />
                                                 )}
                                             </Field>
                                         </FormItem>
-
 
                                         <FormItem
                                             label="Selecione o tipo do documento"
                                             asterisk
                                             invalid={!!errors.tipoId && touched.tipoId}
                                             errorMessage={errors.tipoId}
+                                            className="flex-1 w-full md:w-auto" 
                                         >
                                             <Field name="tipoId">
                                                 {({ field, form }: any) => (
                                                     <Select
                                                         field={field}
                                                         form={form}
-                                                        options={optionsTipoDocumento}
-                                                        value={optionsTipoDocumento.find(
-                                                            (option) => option.value === values.tipoId
-                                                        )}
+                                                        placeholder="Selecione o tipo do documento"
+                                                        options={arquivosTipos.map((tipo: any) => ({ label: tipo.tipo, value: tipo.id }))}
+                                                        value={arquivosTipos.find((option: any) => option.value === values.tipoId)}
                                                         onChange={(option: any) =>
                                                             form.setFieldValue('tipoId', option?.value)
                                                         }
@@ -132,21 +152,44 @@ const DocumentoForm = () => {
                                             </Field>
                                         </FormItem>
 
-                                        <FormItem label="Vencimento">
+                                        <FormItem label="Vencimento" className="w-full md:w-auto"> 
                                             <Field name="vencimento" type="date" as={Input} className="w-full" />
                                         </FormItem>
 
                                         <FormItem
-                                            label="Precisa de Aprovação?"
+                                            label="Tipo vínculo"
+                                            asterisk
+                                            invalid={!!errors.tipoVinculo && touched.tipoVinculo}
+                                            errorMessage={errors.tipoVinculo}
+                                            className="w-full md:w-1/4" 
+                                        >
+                                            <Field name="tipoVinculo">
+                                                {({ field, form }: any) => (
+                                                    <Select
+                                                        field={field}
+                                                        form={form}
+                                                        isDisabled={true}
+                                                        options={[{ label: 'Projeto', value: 'projeto' }]}
+                                                        value={{ label: 'Projeto', value: 'projeto' }}
+                                                        onChange={() => { }}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </FormItem>
+
+                                        <FormItem
+                                            label="Necessita de Aprovação?"
                                             asterisk
                                             invalid={!!errors.necessitaAprovacao && touched.necessitaAprovacao}
                                             errorMessage={errors.necessitaAprovacao}
+                                            className="w-full md:w-auto" 
                                         >
                                             <Field name="necessitaAprovacao">
                                                 {({ field, form }: any) => (
                                                     <Select
                                                         field={field}
                                                         form={form}
+                                                        placeholder="Necessita de Aprovação?"
                                                         options={optionsSimNao}
                                                         value={optionsSimNao.find(
                                                             (option) => option.value === values.necessitaAprovacao
@@ -161,7 +204,9 @@ const DocumentoForm = () => {
                                     </div>
                                 </div>
 
-                                {/* Seção Vincular */}
+
+
+
                                 <div className="mb-6">
                                     <h5 className="text-lg font-semibold mb-4">Vincular</h5>
                                     <FormItem label="Vinculado a" asterisk>
@@ -175,7 +220,6 @@ const DocumentoForm = () => {
                                     </FormItem>
                                 </div>
 
-                                {/* Seção Descrição */}
                                 <div className="mb-6">
                                     <h5 className="text-lg font-semibold mb-4">Descrição</h5>
                                     <FormItem label="Descrição">
@@ -190,7 +234,6 @@ const DocumentoForm = () => {
                                     </FormItem>
                                 </div>
 
-                                {/* Botões de ação */}
                                 <div className="flex justify-end gap-4">
                                     <Button type="reset" className="bg-gray-300">Cancelar</Button>
                                     <Button type="submit" variant='solid'>Salvar</Button>
@@ -204,4 +247,4 @@ const DocumentoForm = () => {
     );
 };
 
-export default DocumentoForm;
+export default AdicionarAnexo;
