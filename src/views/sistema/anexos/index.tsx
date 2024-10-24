@@ -173,11 +173,6 @@ const Anexos = () => {
     const radioGroup = (
         <div>
             <div className="flex items-center">
-                <Button variant='solid' size='sm' 
-                onClick={() => {
-                    window.open('https://www.empreender.org.br/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==')
-                }}
-                >Painel</Button>
                 <span className="font-black mr-2 ml-4">Arquivos: </span>
 
                 <label className="mr-4">
@@ -222,7 +217,7 @@ const Anexos = () => {
                 <h3 className="mb-4 lg:mb-0">Anexos</h3>
 
                 <div className="flex flex-col lg:flex-row lg:items-center">
-                    <Button size="sm" icon={<HiOutlineReply />}>
+                    <Button size="sm" icon={<HiOutlineReply />} className='mr-4'>
                         <Link
                             className="menu-item-link"
                             to={`${
@@ -232,6 +227,11 @@ const Anexos = () => {
                             Versão antiga
                         </Link>
                     </Button>
+                    <Button variant='solid' size='sm' 
+                        onClick={() => {
+                            window.open('https://www.empreender.org.br/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==')
+                        }}
+                >Painel</Button>
                 </div>
             </div>
             <CustomReactDataGrid
