@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Steps from '@/components/ui/Steps'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Button from '@/components/ui/Button'
@@ -9,7 +10,7 @@ import Input from '@/components/ui/Input'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { IMaskInput } from 'react-imask';
 import { BsFilePdf, BsFileWord } from 'react-icons/bs'
-import ParametrosGeraisService from '@/services/ParametrosGeraisService'
+import { FaBuilding, FaUser } from 'react-icons/fa';
 import Alert from '@/components/ui/Alert'
 
 const ErrorComponent = ({ errors }: any) => {
@@ -44,28 +45,43 @@ function CadastraProposta() {
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}])
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
-    const [parametro, setParametro] = useState('')
     const [cpf, setCpf] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [empresaData, setEmpresaData] = useState(null);
+    const [error, setError] = useState(false);
     const [apto, setApto] = useState(false);
     const [userData, setUserData] = useState(null);
     const [anexos, setAnexos] = useState(null);
-    const [inapto, setInapto] = useState(false);
     const [message, setMessage] = useState('');
+    const [tipoCadastro, setTipoCadastro] = useState('');
+
+    const [step, setStep] = useState(0)
+
+    const onChange = (nextStep: number) => {
+        if (nextStep < 0) {
+            setStep(0)
+        } else if (nextStep > 3) {
+            setStep(3)
+        } else {
+            setStep(nextStep)
+        }
+    }
+
+    const onNext = () => onChange(step + 1)
+
+    const onPrevious = () => onChange(step - 1)
+
+    const stepConditions: { [key: number]: () => boolean } = {
+        0: () => tipoCadastro !== '',
+        1: () =>  empresaData?.permissao?.habil === true,
+        2: () => true, 
+      };
 
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await ParametrosGeraisService.show(46);
-                setParametro(response.data.data);
-            } catch (error) {
-                console.error('Erro ao buscar parâmetros gerais:', error);
-            }
-        };
+    const canAdvance = stepConditions[step]();
 
-        fetchData();
-    }, []);
 
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
@@ -171,6 +187,24 @@ function CadastraProposta() {
         setIsSubmitting(false);
 
     };
+
+    const verify = async () => {
+
+
+        setIsLoading(true);
+        console.log('is loading', isLoading)
+
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/cogecom/status/${cnpj}`);
+          await setEmpresaData(response.data);
+          setError(!response.data.permissao.habil);
+        } catch (err) {
+            setError(false);
+        }
+        finally {
+            setIsLoading(false);
+          }
+      };
 
     // const handleSubmit = async (event: any) => {
     //     event.preventDefault();
@@ -349,52 +383,130 @@ function CadastraProposta() {
     Empresas não cadastradas no PDE serão incluídas automaticamente e identificadas como participantes do projeto através do campo "Origem", marcado como "COGECOM".
   </p>
 
-  <div className="mt-6">
-    <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">CNPJ ou CPF</label>
-    <input
-      type="text"
-      id="cnpj"
-      name="cnpj"
-      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      placeholder="Informe o CNPJ ou CPF"
-    />
-  </div>
 
-  <div className="mt-6">
-    <button className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      Iniciar Cadastro
-    </button>
-  </div>
 </div>
 
 
-<div className="w-full max-w-4xl mx-auto p-6">
+    <div className=" max-w-4xl mx-auto px-2 pt-10">
+
+        
+             <Steps current={step} status={error ? 'error' : undefined}> 
+                <Steps.Item title="Tipo de Cadastro" />
+                <Steps.Item title="Dados" />
+                <Steps.Item title="Cadastro" />
+            </Steps>
+            <div className="mt-6  bg-gray-50 dark:bg-gray-700 rounded ">
+            {step === 0 && (
+        <div className="mt-6 grid grid-cols-2 gap-6 pt-8 flex items-center justify-center ">
+          <div
+            className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-blue-100 transition ${
+              tipoCadastro === 'empresa' ? 'ring-2 ring-blue-500' : ''
+            }`}
+            onClick={() => setTipoCadastro('empresa')}
+          >
+            <FaBuilding className="text-4xl text-blue-500 mx-auto mb-4" />
+            <h4 className="text-center font-semibold">Empresa</h4>
+          </div>
+          <div
+            className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-green-100 transition ${
+              tipoCadastro === 'pessoa_fisica' ? 'ring-2 ring-green-500' : ''
+            }`}
+            onClick={() => setTipoCadastro('pessoa_fisica')}
+          >
+            <FaUser className="text-4xl text-green-500 mx-auto mb-4" />
+            <h4 className="text-center font-semibold">Pessoa Física</h4>
+          </div>
+        </div>
+      )}           
+      
+      {step === 1 && (
+        <div className="mt-6">
+
+<label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">Informe o {tipoCadastro === 'empresa' ? 'CNPJ' : 'CPF'}</label>
+<input
+            type="text"
+            value={cnpj}
+            onChange={(e) => setCnpj(e.target.value)}
+            placeholder="CNPJ"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+
+
+          <div className='mt-6'>
+                      <Button
+                      variant="solid"
+                      color="indigo-700"
+                                  className="w-full mb-10"
+            loading={isLoading}
+            onClick={verify}
+
+          >
+            Verificar
+          </Button>
+
+
+          {empresaData && !empresaData?.permissao.habil &&            
+           <Alert showIcon className="mb-4" type="danger">
+                {empresaData?.permissao.mensagem}
+            </Alert>}
+
+          {empresaData && (
+        <div className="w-full max-w-4xl mx-auto p-6">
       <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">{company.name}</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{empresaData.empresa.nurazaosocial}</h2>
             <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
               {company.status}
             </span>
           </div>
 
           <div className="text-gray-700 space-y-2">
-            <p><strong>CNPJ:</strong> {company.cnpj}</p>
-            <p><strong>Endereço:</strong> {company.address}</p>
-            <p><strong>Email de Contato:</strong> {company.contact}</p>
-            <p><strong>Telefone:</strong> {company.phone}</p>
+            <p><strong>CNPJ:</strong>{empresaData.empresa.nucnpjcpf}</p>
+            <p><strong>Estado -  Cidade:</strong> {empresaData.empresa.iduf} - {empresaData.empresa.nmcidade}  </p>
           </div>
         </div>
 
-        <div className="bg-gray-50 px-6 py-4">
-          <p className="text-sm text-gray-500">
-            mais dados não sei o que.
-          </p>
-        </div>
       </div>
     </div>
+      )}
+          </div>
+
+          
+
+
+        </div>
+      )}
+      
+       </div>
+            <div className="mt-16 text-right">
+                <Button
+                    className="mx-2"
+                    disabled={step === 0}
+                    onClick={onPrevious}
+                >
+                    Voltar
+                </Button>
+                <button
+          className={`py-2 px-4 ${
+            canAdvance ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400'
+          } text-white rounded shadow`}
+          disabled={!canAdvance}
+          onClick={onNext}
+        >
+          {step === 2 ? 'Enviar' : 'Avançar'}
+        </button>
+            </div>
+        </div>
+
+        
 
                         <>
+                        <div className="mt-8 md:order-1 md:mt-0">
+                                <p className="text-center leading-5 text-gray-500">
+                                    <span className="font-semibold">Portal do Empreender - V5 - 2024</span><br />
+                                </p>
+                            </div>
                             {apto && userData && (
 
                                 <>
@@ -552,11 +664,7 @@ function CadastraProposta() {
 
                             )}
 
-                            <div className="mt-8 md:order-1 md:mt-0">
-                                <p className="text-center leading-5 text-gray-500">
-                                    <span className="font-semibold">{parametro.valor}</span><br />
-                                </p>
-                            </div>
+
                         </>
 
                     </div>
