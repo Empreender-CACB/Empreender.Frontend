@@ -76,7 +76,7 @@ function CadastraProposta() {
     const stepConditions: { [key: number]: () => boolean } = {
         0: () => tipoCadastro !== '',
         1: () =>  empresaData?.permissao?.habil === true,
-        2: () => true, 
+        2: () => false, 
       };
 
 
@@ -478,6 +478,61 @@ function CadastraProposta() {
         </div>
       )}
       
+      {step === 2 && (
+        <div className="mt-6">
+
+
+<div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
+                                                <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
+                                                    Documentos
+                                                </label>
+                                                <div className="mt-2">
+                                                    <div className="container">
+                                                        {inputs.map((item, index) => (
+                                                            <div key={index} className="input_container">
+                                                                <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
+                                                                    {/* Input de Upload */}
+                                                                    <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
+                                                                        <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png" />
+                                                                    </label>
+
+                                                                    {/* Select */}
+                                                                    <div className='flex items-center space-x-2'>
+                                                                        <select name="type_document" className="border p-2 rounded-md">
+                                                                            <option value="Currículo profissional">Cópia de Fatura de Energia</option>
+                                                                            <option value="Formação acadêmica">Documento de Identidade do Responsável </option>
+                                                                            <option value="Experiência profissional">Contrato social</option>
+                                                                            <option value="Cursos realizados">Cartão do CNPJ</option>
+                                                                            <option value="Documento de identificação">Ata da assembleia de eleição</option>
+                                                                        </select>
+                                                                        {inputs.length > 1 && (
+
+                                                                            <span onClick={() => handleDeleteInput(index)}>
+                                                                                <CloseIcon />
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                {index === inputs.length - 1 && (
+                                                                    <Button variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />} onClick={() => handleAddInput()}>
+                                                                        <span>Adicionar mais arquivos</span>
+                                                                    </Button>)}
+                                                            </div>
+                                                        ))}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+          </div>
+
+          
+
+
+        
+      )}
        </div>
             <div className="mt-16 text-right">
                 <Button
