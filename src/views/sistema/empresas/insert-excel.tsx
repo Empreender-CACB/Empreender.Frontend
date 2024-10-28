@@ -24,25 +24,41 @@ const ExcelUpload = () => {
 
     reader.onload = async (e) => {
         const data = new Uint8Array(e.target.result)
-        const workbook = XLSX.read(data, {
-            type: 'array',
-            cellDates: false
-        })
+        const workbook = XLSX.read(data, { type: 'array', cellDates: false })
 
         const sheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[sheetName]
 
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { rawNumbers: true })
 
-        const modifiedData = jsonData.map((obj) => ({
-            ...obj,
-            cnpj: String(obj.cnpj).padStart(14, '0'),
-            user_id: cpf
-        }))
+        const requiredColumns = ['cnpj']
+        requiredColumns.forEach((col) => {
+            if (!jsonData[0][col]) {
+                jsonData[0][col] = '' 
+            }
+        })
+        
+const modifiedData = jsonData.map((obj) => ({
+  ...obj,
+  cnpj: String(obj.cnpj).padStart(14, '0'),
+  telefone_empresa: obj.telefone_empresa ? obj.telefone_empresa : null,
+  celular_empresa: obj.celular_empresa ? obj.celular_empresa : null,
+  email_empresa: obj.email_empresa ? obj.email_empresa : null,
+  contato: obj.contato ? obj.contato : null,
+  telefone_contato: obj.telefone_contato ? obj.telefone_contato : null,
+  celular_contato: obj.celular_contato ? obj.celular_contato : null,
+  email_contato: obj.email_contato ? obj.email_contato : null,
+  idassociacao: obj.idassociacao ? parseInt(obj.idassociacao, 10) : null,
+  idprojeto1: obj.idprojeto1 ? parseInt(obj.idprojeto1, 10) : null,
+  idprojeto2: obj.idprojeto2 ? parseInt(obj.idprojeto2, 10) : null,
+  user_id: cpf
+}))
 
-        const requiredColumns = ['cnpj', 'contato', 'telefone', 'email', 'idassociacao']
-        const missingColumns = requiredColumns.filter((column) => !Object.keys(modifiedData[0]).includes(column))
-
+      
+        
+        const missingColumns = requiredColumns.filter((column) => 
+            !Object.keys(modifiedData[0]).includes(column)
+        )
         if (missingColumns.length > 0) {
             toast.push(
                 <Notification title="Erro" type="danger">
