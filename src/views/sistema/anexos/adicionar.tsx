@@ -9,24 +9,14 @@ import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
-
-type FormModel = {
-    nome: string;
-    nomeArquivo: File | null;
-    tipoId: string;
-    vencimento: Date | null;
-    necessitaAprovacao: string;
-    descricao: string;
-};
-
-const optionsTipoDocumento = [
-    { value: '1', label: 'Tipo 1' },
-    { value: '2', label: 'Tipo 2' },
-];
+import { Link, useParams } from 'react-router-dom';
+import capitalize from '@/components/ui/utils/capitalize';
+import { Notification, toast } from '@/components/ui';
+import { useFormikContext } from 'formik';
 
 const optionsSimNao = [
-    { value: '1', label: 'Sim' },
-    { value: '0', label: 'Não' },
+    { value: 's', label: 'Sim' },
+    { value: 'n', label: 'Não' },
 ];
 
 const validationSchema = Yup.object().shape({
@@ -36,7 +26,8 @@ const validationSchema = Yup.object().shape({
     vencimento: Yup.date().nullable(),
     necessitaAprovacao: Yup.string().required('Campo obrigatório'),
     descricao: Yup.string(),
-    tipoVinculo: Yup.string()
+    tipoVinculo: Yup.string(),
+    idVinculo: Yup.string().required('ID de vínculo obrigatório'),
 });
 
 const breadcrumbItems = [
@@ -45,23 +36,88 @@ const breadcrumbItems = [
 ]
 
 const AdicionarAnexo = () => {
-    const [arquivosTipos, setArquivosTipos] = useState([]);
-
-    const fetchArquivosTipos = async () => {
-        try {
-            const response = await ApiService.fetchData({
-                url: '/arquivos-tipos',
-                method: 'get',
-            });
-            setArquivosTipos(response.data);
-        } catch (error) {
-            console.error('Erro ao buscar os tipos de arquivos:', error);
-        }
-    };
+    const [arquivosTipos, setArquivosTipos] = useState<any>([]);
+    const [nomeArquivoSubstituto, setNomeArquivoSubstituto] = useState('');
+    const [nomeEnte, setNomeEnte] = useState('');
+    const [mostrarVencimento, setMostrarVencimento] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [necessitaAprovacaoDisabled, setNecessitaAprovacaoDisabled] = useState(false);
+    const { tipoVinculo, idVinculo, substitutoId } = useParams<string>();
 
     useEffect(() => {
-        fetchArquivosTipos();
-    }, []);
+        const fetchData = async () => {
+            try {
+                const tiposResponse = await ApiService.fetchData({
+                    url: '/anexos/getArquivosTipo',
+                    method: 'get',
+                });
+                setArquivosTipos(tiposResponse.data);
+
+                if (tipoVinculo && idVinculo) {
+                    const enteResponse = await ApiService.fetchData({
+                        url: `/anexos/getAnexoVinculo/${tipoVinculo}/${idVinculo}`,
+                        method: 'get',
+                    });
+                    setNomeEnte(enteResponse.data.nomeVinculo);
+                }
+
+                if (substitutoId) {
+                    const substitutoResponse = await ApiService.fetchData({
+                        url: `/anexo/${substitutoId}`,
+                        method: 'get',
+                    });
+                    setNomeArquivoSubstituto(substitutoResponse.data.nome);
+
+                    // Definir o tipoId e passar para o formik
+                    const tipoId = substitutoResponse.data.tipo_id;
+                    setTipoIdInicial(tipoId);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        };
+
+        fetchData();
+    }, [tipoVinculo, idVinculo, substitutoId]);
+
+    // Armazenar o tipoId inicial se for uma substituição
+    const [tipoIdInicial, setTipoIdInicial] = useState('');
+
+    const handleSave = async (values: any) => {
+        setLoading(true);
+        toast.push(
+            <Notification title="Salvando arquivo, aguarde..." type="success" />
+        );
+
+        const formData = new FormData();
+        formData.append('nome', values.nome);
+        formData.append('descricao', values.descricao);
+        formData.append('tipoId', values.tipoId);
+        formData.append('vencimento', values.vencimento ? values.vencimento.toString() : '');
+        formData.append('necessitaAprovacao', values.necessitaAprovacao);
+        formData.append('tipoVinculo', tipoVinculo || '');
+        formData.append('idVinculo', idVinculo || '');
+        if (substitutoId) formData.append('substitutoId', substitutoId);
+        if (values.nomeArquivo) formData.append('nomeArquivo', values.nomeArquivo);
+
+        try {
+            const response = await ApiService.fetchData({
+                url: `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`,
+                method: 'post',
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
+            const anexoId = response.data.anexo.id;
+
+            window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
+        } catch (error) {
+            toast.push(
+                <Notification title="Erro ao salvar arquivo." type="danger" />
+            );
+            setLoading(false);
+        }
+    };
 
     return (
         <Container>
@@ -75,172 +131,228 @@ const AdicionarAnexo = () => {
                     initialValues={{
                         nome: '',
                         nomeArquivo: null,
-                        tipoId: '',
+                        tipoId: tipoIdInicial || '',
                         vencimento: null,
                         necessitaAprovacao: '',
                         descricao: '',
-                        tipoVinculo: ''
+                        tipoVinculo: tipoVinculo || '',
+                        idVinculo: idVinculo || ''
                     }}
+                    enableReinitialize // Para garantir que o formulário seja reiniciado quando tipoIdInicial mudar
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log('Form values:', values);
+                        handleSave(values);
                         setSubmitting(false);
                     }}
                 >
-                    {({ values, setFieldValue, errors, touched }) => (
-                        <Form>
-                            <FormContainer>
-                                <div className="mb-6">
-                                    <FormItem
-                                        label="Nome"
-                                        asterisk
-                                        invalid={!!errors.nome && touched.nome}
-                                        errorMessage={errors.nome}
-                                    >
-                                        <Field
-                                            name="nome"
-                                            as={Input}
-                                            placeholder="Nome do documento"
-                                            className="w-full"
-                                        />
-                                    </FormItem>
-                                </div>
+                    {({ setFieldValue, values, errors, touched }) => {
+                        useEffect(() => {
+                            // Chama a função de configuração do tipo de arquivo quando tipoIdInicial estiver disponível
+                            if (tipoIdInicial) {
+                                buscarTipoArquivo(tipoIdInicial);
+                            }
+                        }, [tipoIdInicial]);
 
-                                {/* Seção Carga */}
-                                <div className="mb-6 bg-blue-100 p-4 rounded-lg">
-                                    <h5 className="text-lg font-semibold mb-4">Carga</h5>
-                                    <div className="flex flex-wrap gap-4">
+                        const buscarTipoArquivo = (tipoId: string) => {
+                            const tipoArquivo = arquivosTipos.find((tipo: any) => tipo.id === tipoId);
+
+                            if (!tipoArquivo) return;
+
+                            if (tipoArquivo.obrigatorio === 'nao_aplica') {
+                                setFieldValue('necessitaAprovacao', 'n');
+                                setFieldValue('status', 'nao_aplica');
+                                setNecessitaAprovacaoDisabled(true);
+                            } else if (tipoArquivo.obrigatorio === 'obrigatorio') {
+                                setFieldValue('necessitaAprovacao', 's');
+                                setFieldValue('status', 'aa');
+                                setNecessitaAprovacaoDisabled(true);
+                            } else if (tipoArquivo.obrigatorio === 'opcional') {
+                                setFieldValue('status', 'aa');
+                                setNecessitaAprovacaoDisabled(false);
+                            }
+
+                            setMostrarVencimento(tipoArquivo.vencimento_obrigatorio !== 'nao_aplica');
+                        };
+
+                        return (
+                            <Form>
+                                <FormContainer>
+                                    <div className="mb-6">
                                         <FormItem
-                                            label="Arquivo"
+                                            label="Nome"
                                             asterisk
-                                            invalid={!!errors.nomeArquivo && touched.nomeArquivo}
-                                            errorMessage={errors.nomeArquivo}
-                                            className="flex-1 w-full md:w-auto"
+                                            invalid={!!errors.nome && touched.nome}
+                                            errorMessage={errors.nome}
                                         >
-                                            <Field name="nomeArquivo">
-                                                {({ field }: any) => (
-                                                    <Upload
-                                                        isFullWidth={true}
-                                                        variant='solid'
-                                                        uploadLimit={1}
-                                                        onChange={(files) => setFieldValue('nomeArquivo', files[0])}
-                                                    />
-                                                )}
-                                            </Field>
-                                        </FormItem>
-
-                                        <FormItem
-                                            label="Selecione o tipo do documento"
-                                            asterisk
-                                            invalid={!!errors.tipoId && touched.tipoId}
-                                            errorMessage={errors.tipoId}
-                                            className="flex-1 w-full md:w-auto" 
-                                        >
-                                            <Field name="tipoId">
-                                                {({ field, form }: any) => (
-                                                    <Select
-                                                        field={field}
-                                                        form={form}
-                                                        placeholder="Selecione o tipo do documento"
-                                                        options={arquivosTipos.map((tipo: any) => ({ label: tipo.tipo, value: tipo.id }))}
-                                                        value={arquivosTipos.find((option: any) => option.value === values.tipoId)}
-                                                        onChange={(option: any) =>
-                                                            form.setFieldValue('tipoId', option?.value)
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
-                                        </FormItem>
-
-                                        <FormItem label="Vencimento" className="w-full md:w-auto"> 
-                                            <Field name="vencimento" type="date" as={Input} className="w-full" />
-                                        </FormItem>
-
-                                        <FormItem
-                                            label="Tipo vínculo"
-                                            asterisk
-                                            invalid={!!errors.tipoVinculo && touched.tipoVinculo}
-                                            errorMessage={errors.tipoVinculo}
-                                            className="w-full md:w-1/4" 
-                                        >
-                                            <Field name="tipoVinculo">
-                                                {({ field, form }: any) => (
-                                                    <Select
-                                                        field={field}
-                                                        form={form}
-                                                        isDisabled={true}
-                                                        options={[{ label: 'Projeto', value: 'projeto' }]}
-                                                        value={{ label: 'Projeto', value: 'projeto' }}
-                                                        onChange={() => { }}
-                                                    />
-                                                )}
-                                            </Field>
-                                        </FormItem>
-
-                                        <FormItem
-                                            label="Necessita de Aprovação?"
-                                            asterisk
-                                            invalid={!!errors.necessitaAprovacao && touched.necessitaAprovacao}
-                                            errorMessage={errors.necessitaAprovacao}
-                                            className="w-full md:w-auto" 
-                                        >
-                                            <Field name="necessitaAprovacao">
-                                                {({ field, form }: any) => (
-                                                    <Select
-                                                        field={field}
-                                                        form={form}
-                                                        placeholder="Necessita de Aprovação?"
-                                                        options={optionsSimNao}
-                                                        value={optionsSimNao.find(
-                                                            (option) => option.value === values.necessitaAprovacao
-                                                        )}
-                                                        onChange={(option: any) =>
-                                                            form.setFieldValue('necessitaAprovacao', option?.value)
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
+                                            <Field
+                                                name="nome"
+                                                as={Input}
+                                                placeholder="Nome do documento"
+                                                className="w-full"
+                                            />
                                         </FormItem>
                                     </div>
-                                </div>
+
+                                    {/* Seção Carga */}
+                                    <div className="mb-6 bg-blue-100 p-4 rounded-lg">
+                                        <h5 className="text-lg font-semibold mb-4">Carga</h5>
+                                        <div className="flex flex-wrap gap-4">
+                                            <FormItem
+                                                label="Arquivo"
+                                                asterisk
+                                                invalid={!!errors.nomeArquivo && touched.nomeArquivo}
+                                                errorMessage={errors.nomeArquivo}
+                                                className="flex-1 w-full md:w-auto"
+                                            >
+                                                <Field name="nomeArquivo">
+                                                    {({ field }: any) => (
+                                                        <Upload
+                                                            isFullWidth={true}
+                                                            variant='solid'
+                                                            uploadLimit={1}
+                                                            onChange={(files) => setFieldValue('nomeArquivo', files[0])}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </FormItem>
+
+                                            <FormItem
+                                                label="Selecione o tipo do documento"
+                                                asterisk
+                                                invalid={!!errors.tipoId && touched.tipoId}
+                                                errorMessage={errors.tipoId}
+                                                className="flex-1 w-full md:w-auto"
+                                            >
+                                                <Field name="tipoId">
+                                                    {({ field, form }: any) => (
+                                                        <Select
+                                                            {...field}
+                                                            placeholder="Selecione o tipo do documento"
+                                                            options={arquivosTipos.map((tipo: any) => ({
+                                                                label: tipo.tipo,
+                                                                value: tipo.id,
+                                                            }))}
+                                                            value={
+                                                                form.values.tipoId
+                                                                    ? { label: arquivosTipos.find((tipo: any) => tipo.id === form.values.tipoId)?.tipo, value: form.values.tipoId }
+                                                                    : null
+                                                            }
+                                                            onChange={(option: any) => {
+                                                                form.setFieldValue('tipoId', option?.value);
+                                                                buscarTipoArquivo(option?.value);
+                                                            }}
+                                                            isDisabled={!!substitutoId}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </FormItem>
 
 
+                                            {mostrarVencimento && (
+                                                <FormItem label="Vencimento">
+                                                    <Field name="vencimento" type="date" as={Input} className="w-full" />
+                                                </FormItem>
+                                            )}
 
+                                            <FormItem
+                                                label="Tipo vínculo"
+                                                asterisk
+                                                invalid={!!errors.tipoVinculo && touched.tipoVinculo}
+                                                errorMessage={errors.tipoVinculo}
+                                                className="w-full md:w-1/4"
+                                            >
+                                                <Field>
+                                                    {({ form }: any) => (
+                                                        <Select
+                                                            isDisabled={true}
+                                                            options={[{ label: capitalize(tipoVinculo || ''), value: tipoVinculo || '' }]}
+                                                            value={{ label: capitalize(tipoVinculo || ''), value: tipoVinculo || '' }}
+                                                            onChange={() => { }}
+                                                        />
+                                                    )}
+                                                </Field>
+                                                <Field type="hidden" name="tipoVinculo" value={tipoVinculo} />
+                                            </FormItem>
 
-                                <div className="mb-6">
-                                    <h5 className="text-lg font-semibold mb-4">Vincular</h5>
-                                    <FormItem label="Vinculado a" asterisk>
-                                        <Field
-                                            name="vinculado"
-                                            as={Input}
-                                            disabled
-                                            value="2148 - Apoio para melhoria de Autogestão e Liderança do Núcleo de Jovens Empreendedores ACCIJUC - Clone"
-                                            className="w-full"
-                                        />
-                                    </FormItem>
-                                </div>
+                                            <FormItem
+                                                label="Necessita de Aprovação?"
+                                                asterisk
+                                                invalid={!!errors.necessitaAprovacao && touched.necessitaAprovacao}
+                                                errorMessage={errors.necessitaAprovacao}
+                                                className="w-full md:w-auto"
+                                            >
+                                                <Field name="necessitaAprovacao">
+                                                    {({ field, form }: any) => (
+                                                        <Select
+                                                            {...field}
+                                                            options={optionsSimNao}
+                                                            isDisabled={necessitaAprovacaoDisabled}
+                                                            placeholder="Necessita de Aprovação?"
+                                                            value={optionsSimNao.find(option => option.value === form.values.necessitaAprovacao)}
+                                                            onChange={(option: any) => form.setFieldValue('necessitaAprovacao', option?.value)}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </FormItem>
+                                        </div>
+                                    </div>
 
-                                <div className="mb-6">
-                                    <h5 className="text-lg font-semibold mb-4">Descrição</h5>
-                                    <FormItem label="Descrição">
-                                        <Field
-                                            name="descricao"
-                                            as="textarea"
-                                            textArea
-                                            placeholder="Descrição do documento"
-                                            className="w-full h-32"
-                                            component={Input}
-                                        />
-                                    </FormItem>
-                                </div>
+                                    <div className="mb-6">
+                                        <h5 className="text-lg font-semibold mb-4">Vincular</h5>
+                                        <FormItem label="Vinculado a" asterisk>
+                                            <Field
+                                                name="vinculado"
+                                                as={Input}
+                                                disabled
+                                                value={nomeEnte}
+                                                className="w-full"
+                                            />
+                                        </FormItem>
+                                    </div>
 
-                                <div className="flex justify-end gap-4">
-                                    <Button type="reset" className="bg-gray-300">Cancelar</Button>
-                                    <Button type="submit" variant='solid'>Salvar</Button>
-                                </div>
-                            </FormContainer>
-                        </Form>
-                    )}
+                                    {substitutoId && (
+                                        <div className="mb-6">
+                                            <h5 className="text-lg font-semibold mb-4">Substituindo</h5>
+                                            <p className="text-lg font-semibold">
+                                                <Link
+                                                    to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(substitutoId)}`}
+                                                    target="_blank"
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                >
+                                                    {nomeArquivoSubstituto}
+                                                </Link>
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    <div className="mb-6">
+                                        <h5 className="text-lg font-semibold mb-4">Descrição</h5>
+                                        <FormItem label="Descrição">
+                                            <Field
+                                                name="descricao"
+                                                as="textarea"
+                                                textArea
+                                                placeholder="Descrição do documento"
+                                                className="w-full h-32"
+                                                component={Input}
+                                            />
+                                        </FormItem>
+                                    </div>
+
+                                    <div className="flex justify-end gap-4">
+                                        <Button type="reset" className="bg-gray-300">Cancelar</Button>
+                                        <Button
+                                            type="submit"
+                                            variant='solid'
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Salvando...' : 'Salvar'}
+                                        </Button>
+                                    </div>
+                                </FormContainer>
+                            </Form>
+                        );
+                    }}
                 </Formik>
             </div>
         </Container>
