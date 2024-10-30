@@ -283,12 +283,15 @@ const AcompanhamentoGeralNucleo = () => {
     };
 
     const user = useAppSelector((state) => state.auth.user);
+    const userAssociacoesIds = user.associacoes.map((entidade) => entidade.idassociacao);
 
-    // Função para renderizar os botões
     const renderButtons = (data: any) => {
         setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
-        setIsGestor(user.nucleos.some((nucleo) => nucleo.idnucleo === data.idnucleo));
 
+        const isGestorDeEntidadeComNucleo = userAssociacoesIds.includes(data.idassociacao || data.relacao_2);
+
+        setIsGestor(user.nucleos.some((nucleo) => nucleo.idnucleo === data.idnucleo) || isGestorDeEntidadeComNucleo);
+        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
