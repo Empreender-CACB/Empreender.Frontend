@@ -62,7 +62,7 @@ const AcompanhamentoNucleos = () => {
         },
         {
             name: 'marcos_criticos.nome',
-            header: 'Nome',
+            header: 'Atividade',
             columnName: 'marcos_criticos.nome',
             type: 'string',
             defaultFlex: 1,
