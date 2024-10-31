@@ -222,7 +222,7 @@ const Anexos = () => {
                             className="menu-item-link"
                             to={`${
                                 import.meta.env.VITE_PHP_URL
-                            }/sistema/anexos/`}
+                            }/sistema/anexo/`}
                         >
                             Versão antiga
                         </Link>
