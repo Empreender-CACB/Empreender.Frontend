@@ -68,7 +68,7 @@ const columns = [
         name: 'id_vinculo',
         header: 'ID vínculo',
         type: 'string',
-        operator: 'contains',
+        operator: 'eq',
         defaultFlex: 0.6,
         value: '',
     },
@@ -76,7 +76,7 @@ const columns = [
         name: 'id_vinculo_aux',
         header: 'ID auxiliar',
         type: 'string',
-        operator: 'contains',
+        operator: 'eq',
         defaultFlex: 0.6,
         value: '',
     },
@@ -93,7 +93,7 @@ const columns = [
         defaultFlex: 1,
         dateFormat: 'DD-MM-YYYY',
         type: 'date',
-        operator: 'after',
+        operator: 'eq',
         value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
@@ -144,7 +144,7 @@ const columns = [
         defaultFlex: 1,
         dateFormat: 'DD-MM-YYYY',
         type: 'date',
-        operator: 'after',
+        operator: 'eq',
         value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
@@ -229,7 +229,7 @@ const Anexos = () => {
                     </Button>
                     <Button variant='solid' size='sm' 
                         onClick={() => {
-                            window.open('https://www.empreender.org.br/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==')
+                            window.open(`${import.meta.env.VITE_PHP_URL}/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==`)
                         }}
                 >Painel</Button>
                 </div>
