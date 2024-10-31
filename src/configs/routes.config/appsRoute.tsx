@@ -234,6 +234,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral-nucleos`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
     },
+    {
+        key: 'Anotacoes.adicionar',
+        path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo`,
+        component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
+    },
 ]
 
 export default appsRoute

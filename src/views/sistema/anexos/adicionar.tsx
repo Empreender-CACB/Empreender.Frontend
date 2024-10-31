@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import capitalize from '@/components/ui/utils/capitalize';
 import { Notification, toast } from '@/components/ui';
-import { useFormikContext } from 'formik';
 
 const optionsSimNao = [
     { value: 's', label: 'Sim' },
@@ -55,7 +54,7 @@ const AdicionarAnexo = () => {
 
                 if (tipoVinculo && idVinculo) {
                     const enteResponse = await ApiService.fetchData({
-                        url: `/anexos/getAnexoVinculo/${tipoVinculo}/${idVinculo}`,
+                        url: `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
                         method: 'get',
                     });
                     setNomeEnte(enteResponse.data.nomeVinculo);
