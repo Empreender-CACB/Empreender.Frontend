@@ -377,32 +377,25 @@ const EditMarcoCriticoForm: React.FC<EditMarcoCriticoFormProps> = ({ tipoRelacao
                                 <Button type="button" onClick={onClose} className="mt-4 mr-2">
                                     Cancelar
                                 </Button>
-                                {isEditing ? (
-                                    <Button
-                                        type="submit"
-                                        className="mt-4"
-                                        variant="solid"
-                                    >
-                                        Salvar
-                                    </Button>
-                                ) : (
-                                    <div
-                                        onClick={() => {
-                                            if (!marcoCongelado && (isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') {
-                                                toggleEdit();
-                                            }
-                                        }}
-                                        className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor) || marcoCongelado)
-                                            ? 'opacity-50 cursor-not-allowed'
-                                            : ''
-                                            }`}
-                                    >
-                                        Editar
-                                    </div>
-                                )}
+                                {
+                                    isEditing ? (
+                                        <Button
+                                            type="submit"
+                                            className="mt-4"
+                                            variant="solid"
+                                        >
+                                            Salvar
+                                        </Button>
+                                    ) : (
+                                        <div
+                                            onClick={((isGestor || isConsultor) && marcoCritico?.status === 'Não atingido') ? toggleEdit : () => { }}
+                                            className={`mt-4 px-6 py-3 rounded-md text-white bg-blue-600 cursor-pointer ${(marcoCritico?.status !== 'Não atingido' || !(isGestor || isConsultor)) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            Editar
+                                        </div>
+                                    )
+                                }
                             </div>
-
-
                         </FormContainer>
 
                     </Form>
