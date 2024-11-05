@@ -4,6 +4,8 @@ import Dialog from '@/components/ui/Dialog';
 import ApiService from '@/services/ApiService';
 import moment from 'moment';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
+import { Link } from 'react-router-dom';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 const situacaoDivulgada = 'di';
 
@@ -105,18 +107,13 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                             </Button>
                         )}
 
-                        <Button
-                            variant="solid"
-                            color="blue"
-                            onClick={() =>
-                                window.open(
-                                    `${import.meta.env.VITE_PHP_URL}/sistema/anexo/adicionar/t/anotacao/id/${btoa(anotacao.id)}`,
-                                    '_blank'
-                                )
-                            }
+                        <Link
+                            to={`${ APP_PREFIX_PATH }/anexos/adicionar/anotacao/${anotacao.id}`}
+                            target="_blank"
+                            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
                         >
                             Anexar Arquivo
-                        </Button>
+                        </Link>
                     </div>
 
                     <div className="mt-4">

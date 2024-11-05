@@ -17,7 +17,7 @@ import ApiService from '@/services/ApiService'
 import { useAppSelector } from '@/store'
 import formatCPFCNPJ from '@/utils/MaskService'
 import { FcInfo } from 'react-icons/fc'
-import  estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
+import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import ReactGA from 'react-ga4'
 
 moment.locale('pt-br')
@@ -65,7 +65,7 @@ const cnaeOptions = [
 const Empresas = () => {
     const [nameValue, setNameValue] = useState('nmfantasia')
     const [cnaeValue, setCnaeValue] = useState('principal')
-    const [empresaType, setEmpresaType] = useState<string[]>(['somente_nucleadas']) 
+    const [empresaType, setEmpresaType] = useState<string[]>(['somente_nucleadas'])
     const [origemType, setOrigemType] = useState<string[]>([])
     const [segmentoType, setSegmentoType] = useState([])
     const [entidadeType, setEntidadeType] = useState([])
@@ -76,7 +76,7 @@ const Empresas = () => {
 
     const { user } = useAppSelector((state) => state.auth)
 
-    const handleClick = (platform) => {
+    const handleClick = (platform: any) => {
         ReactGA.event({
             category: 'Filtro de empresa',
             action: 'Click',
@@ -96,10 +96,10 @@ const Empresas = () => {
         )) || (isUsuarioEntidade && checkedVisaoLocal))
 
 
-        const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType.join(',')}` +
+    const url = `${import.meta.env.VITE_API_URL}/empresas?nameValue=${nameValue}&cnaeValue=${cnaeValue}&visaoLocal=${checkedVisaoLocal}&empresaType=${empresaType.join(',')}` +
         `${origemType.length > 0 ? `&origemType=${origemType.join(',')}` : ''}` +
         `${segmentoType.length > 0 ? `&segmentoType=${segmentoType.join(',')}` : ''}` +
-        `${entidadeType.length > 0 ? `&entidadeType=${entidadeType.join(',')}` : ''}` 
+        `${entidadeType.length > 0 ? `&entidadeType=${entidadeType.join(',')}` : ''}`
 
 
     let headerCnae
@@ -162,7 +162,7 @@ const Empresas = () => {
             },
         },
         {
-            name:`empresa.${nameValue}`,
+            name: `empresa.${nameValue}`,
             id: `empresa.nmfantasia`,
             header: "Nome",
             defaultFlex: 1.35,
@@ -188,7 +188,7 @@ const Empresas = () => {
                     </div>
                 );
             },
-        },                   
+        },
         {
             name: 'nucnpjcpf',
             header: 'CNPJ',
@@ -441,7 +441,7 @@ const Empresas = () => {
                             defaultValue={empresaOptions[0]}
                             onChange={onChangeEmpresa}
                             placeholder="Todos"
-                            >
+                        >
                         </Select>
                     </div>
 
@@ -525,22 +525,22 @@ const Empresas = () => {
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-        <div className="lg:flex items-center justify-between mb-4">
-        <div className="flex items-center">
-            <h3 className="mb-4 lg:mb-0">Empresas</h3>
-            <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
-                <Button
-                    shape="circle"
-                    size="xs"
-                    icon={<FaQuestion />}
-                    className="ml-2"
-                    onClick={() => {
-                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
-                        handleClick("Documentação")
-                    }}
-                />
-            </Tooltip>
-        </div>
+            <div className="lg:flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                    <h3 className="mb-4 lg:mb-0">Empresas</h3>
+                    <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
+                        <Button
+                            shape="circle"
+                            size="xs"
+                            icon={<FaQuestion />}
+                            className="ml-2"
+                            onClick={() => {
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzNzU=')
+                                handleClick("Documentação")
+                            }}
+                        />
+                    </Tooltip>
+                </div>
                 {/* <div style={{ height: 80 }} >Current filterValue: {filterValue ? <code>{JSON.stringify(filterValue, null, 2)}</code>: 'none'}.</div> */}
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Button size="sm" icon={<HiOutlineReply />}>

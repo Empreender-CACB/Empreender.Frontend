@@ -7,6 +7,7 @@ import { Button, FormItem, Input, Notification, Select, Tag, toast } from '@/com
 import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import capitalize from '@/components/ui/utils/capitalize';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 const validationSchema = Yup.object().shape({
     descricao: Yup.string().required('Campo obrigatório'),
@@ -60,12 +61,15 @@ const AdicionarAnotacao = () => {
         fetchVinculo();
     }, [tipoVinculo, idVinculo]);
 
+
+    const navigate = useNavigate();
+
     const handleSave = async (values: any) => {
         setLoading(true);
         toast.push(
             <Notification title="Salvando anotação, aguarde..." type="success" />
         );
-
+    
         try {
             await ApiService.fetchData({
                 url: '/anotacoes/adicionar',
@@ -76,14 +80,8 @@ const AdicionarAnotacao = () => {
                     idVinculo,
                 },
             });
-    
-            let redirectUrl = `${import.meta.env.VITE_PHP_URL}/sistema/inicio`;
 
-            if (tipoVinculo === 'projeto') {
-                redirectUrl = `${import.meta.env.VITE_PHP_URL}/sistema/prestcontas/projeto-anotacao/id/${btoa(idVinculo || '')}`;
-            }
-    
-            window.location.href = redirectUrl;
+            navigate(`/sistema/anotacoes/${tipoVinculo}/${idVinculo}`);
         } catch (error) {
             toast.push(
                 <Notification title="Erro ao salvar anotação." type="danger" />
@@ -97,7 +95,6 @@ const AdicionarAnotacao = () => {
         <Container>
             <div className="w-full max-w-4xl mb-4">
                 <Breadcrumb items={breadcrumbItems} />
-                <h1 className="text-2xl font-semibold text-gray-800">Nova anotação</h1>
             </div>
             <div className="w-full bg-white p-6 rounded-lg shadow-md">
                 <Formik
