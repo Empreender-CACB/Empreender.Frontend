@@ -15,6 +15,8 @@ import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import { useAppSelector } from '@/store';
 import { capitalize } from 'lodash';
 import AnotacaoModal from './anotacao-modal';
+import { HiPlusCircle } from 'react-icons/hi';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 moment.locale('pt-br');
 
@@ -185,9 +187,28 @@ const Anotacoes = () => {
                     </Tag>
                 </div>
             </div>
+
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Anotações</h3>
+                <div className="flex items-center">
+                    <h3 className="mb-4 lg:mb-0">Anotações</h3>
+                </div>
+                <div className="flex flex-col lg:flex-row lg:items-center">
+                    <Link
+                        className="block lg:inline-block md:mb-0 mb-4"
+                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/projeto/${idVinculo}`}
+                    >
+                        <Button
+                            block
+                            variant="solid"
+                            size="sm"
+                            icon={<HiPlusCircle />}
+                        >
+                            Adicionar anotação
+                        </Button>
+                    </Link>
+                </div>
             </div>
+
             <CustomReactDataGrid
                 filename="Anotações"
                 columns={columns}
