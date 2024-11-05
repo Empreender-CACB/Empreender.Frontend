@@ -68,14 +68,14 @@ const AdicionarAnotacao = () => {
 
         try {
             await ApiService.fetchData({
-                url: '/anotacoes',
+                url: '/anotacoes/adicionar',
                 method: 'post',
                 data: {
                     ...values,
                     tipoVinculo,
                     idVinculo,
                 },
-            });            
+            });
     
             let redirectUrl = `${import.meta.env.VITE_PHP_URL}/sistema/inicio`;
 
