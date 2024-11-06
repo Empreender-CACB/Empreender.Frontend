@@ -6,6 +6,7 @@ import moment from 'moment';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
 import { Link } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import AnexosComponent from '../anexos/AnexosComponent';
 
 const situacaoDivulgada = 'di';
 
@@ -117,15 +118,10 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                     </div>
 
                     <div className="mt-4">
-                        {/* <CustomReactDataGrid
-                            filename="Anexos"
-                            columns={[
-                                { name: 'id', header: 'ID', defaultFlex: 0.6 },
-                                { name: 'nome', header: 'Nome do Arquivo', defaultFlex: 1.5 },
-                                { name: 'data_inclusao', header: 'Data', dateFormat: 'DD-MM-YYYY', defaultFlex: 1 },
-                            ]}
-                            url={`${import.meta.env.VITE_API_URL}/anexos/anotacao/${idAnotacao}`}
-                        /> */}
+                        <AnexosComponent
+                            url={`${import.meta.env.VITE_API_URL}/anotacoes/anexos/${anotacao.id}`}
+                            title="Documentos Importantes"
+                        />
                     </div>
                 </section>
             )}
