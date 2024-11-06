@@ -236,9 +236,9 @@ const appsRoute: Routes = [
     },
     {
         key: 'Anotacoes.adicionar',
-        path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo`,
+        path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
         component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
-    },
+    },    
     {
         key: 'Anotacoes.index',
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,

@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
-import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter';
 import { Button } from '@/components/ui';
-import { AdaptableCard } from '@/components/shared';
 import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
@@ -23,15 +21,6 @@ const tipoValue = [
 ];
 
 const columns = [
-    {
-        name: 'id',
-        header: 'ID',
-        columnName: 'empresa.idempresa',
-        type: 'number',
-        defaultFlex: 0.6,
-        operator: 'eq',
-        filterEditor: NumberFilter,
-    },
     {
         name: 'nome',
         header: 'Nome',
@@ -60,32 +49,9 @@ const columns = [
         ),
     },
     {
-        name: 'id_vinculo',
-        header: 'ID vínculo',
-        type: 'string',
-        operator: 'contains',
-        defaultFlex: 0.6,
-        value: '',
-    },
-    {
-        name: 'id_vinculo_aux',
-        header: 'ID auxiliar',
-        type: 'string',
-        operator: 'contains',
-        defaultFlex: 0.6,
-        value: '',
-    },
-    {
-        name: 'tipo_vinculo',
-        header: 'Tipo Vinculo',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
         name: 'data_inclusao',
         header: 'Carga',
-        defaultFlex: 1,
+        defaultFlex: 0.5,
         dateFormat: 'DD-MM-YYYY',
         type: 'date',
         operator: 'after',
@@ -107,6 +73,7 @@ const columns = [
         filterEditorProps: {
             dataSource: tipoValue.map(option => ({ id: option.value, label: option.name })),
         },
+        defaultFlex: 1,
         render: ({ value }: any) => {
             const selectedOption = tipoValue.find(option => option.value === value);
             return (
@@ -123,7 +90,7 @@ const columns = [
     {
         name: 'vencimento',
         header: 'Vencimento',
-        defaultFlex: 1,
+        defaultFlex: 0.5,
         dateFormat: 'DD-MM-YYYY',
         type: 'date',
         operator: 'after',
@@ -141,9 +108,10 @@ const columns = [
 interface AnexosProps {
     url: string;
     title?: string;
+    minHeight?: number;
 }
 
-const AnexosComponent: React.FC<AnexosProps> = ({ url, title = 'Anexos' }) => {
+const AnexosComponent: React.FC<AnexosProps> = ({ url, title = 'Anexos', minHeight }) => {
     const [filtroVencimento, setFiltroVencimento] = useState('todos');
 
     const handleFiltroChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,15 +158,14 @@ const AnexosComponent: React.FC<AnexosProps> = ({ url, title = 'Anexos' }) => {
     );
 
     return (
-        <AdaptableCard className="h-full" bodyClass="h-full">
-            <CustomReactDataGrid
-                filename={title}
-                columns={columns}
-                options={radioGroup}
-                url={`${url}?filtroVencimento=${filtroVencimento}`}
-                CardLayout={AnexoCard}
-            />
-        </AdaptableCard>
+        <CustomReactDataGrid
+            filename={title}
+            columns={columns}
+            options={radioGroup}
+            url={`${url}?filtroVencimento=${filtroVencimento}`}
+            CardLayout={AnexoCard}
+            minHeight={minHeight}
+        />
     );
 };
 

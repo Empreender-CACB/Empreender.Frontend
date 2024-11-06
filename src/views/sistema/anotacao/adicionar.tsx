@@ -7,7 +7,6 @@ import { Button, FormItem, Input, Notification, Select, Tag, toast } from '@/com
 import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import capitalize from '@/components/ui/utils/capitalize';
-import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 const validationSchema = Yup.object().shape({
     descricao: Yup.string().required('Campo obrigatório'),
@@ -28,14 +27,17 @@ const privacidadeOptions = [
     { value: 'na', label: 'Nacional' },
 ];
 
-
-const AdicionarAnotacao = () => {
+const AnotacaoForm = () => {
     const [nomeVinculo, setNomeVinculo] = useState('');
-    const [loading, setLoading] = useState<boolean>();
-    const { tipoVinculo, idVinculo } = useParams();
-    const [breadcrumbItems, setBreadcrumbItems] = useState([
-        { label: 'Início', link: '/' },
-    ]);
+    const [loading, setLoading] = useState(false);
+    const [initialValues, setInitialValues] = useState({
+        descricao: '',
+        situacao: '',
+        privacidade: '',
+    });
+    const { tipoVinculo, idVinculo, idAnotacao } = useParams();
+    const navigate = useNavigate();
+    const isEditMode = Boolean(idAnotacao);
 
     useEffect(() => {
         const fetchVinculo = async () => {
@@ -44,36 +46,46 @@ const AdicionarAnotacao = () => {
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
                     method: 'get',
                 });
-
-                const { nomeVinculo, breadcrumb } = vinculoResponse.data;
-
+                const { nomeVinculo } = vinculoResponse.data;
                 setNomeVinculo(nomeVinculo);
-                setBreadcrumbItems([
-                    { label: 'Início', link: '/' },
-                    ...breadcrumb.map((item: any) => ({ label: item.label, link: item.url })),
-                    { label: 'Adicionar anotação', link: '#' },
-                ]);
             } catch (error) {
                 console.error('Erro ao buscar dados do vínculo:', error);
             }
         };
 
+        const fetchAnotacao = async () => {
+            if (!isEditMode) return;
+            try {
+                const response = await ApiService.fetchData({
+                    url: `/anotacoes/fetchAnotacao/${idAnotacao}`,
+                    method: 'get',
+                });
+                setInitialValues({
+                    descricao: response.data.descricao,
+                    situacao: response.data.situacao,
+                    privacidade: response.data.privacidade,
+                });
+            } catch (error) {
+                console.error('Erro ao buscar dados da anotação:', error);
+            }
+        };
+
         fetchVinculo();
-    }, [tipoVinculo, idVinculo]);
-
-
-    const navigate = useNavigate();
+        fetchAnotacao();
+    }, [tipoVinculo, idVinculo, idAnotacao, isEditMode]);
 
     const handleSave = async (values: any) => {
         setLoading(true);
         toast.push(
-            <Notification title="Salvando anotação, aguarde..." type="success" />
+            <Notification title={`${isEditMode ? 'Editando' : 'Salvando'} anotação, aguarde...`} type="success" />
         );
-    
+
         try {
+            const url = isEditMode ? `/anotacoes/editar/${idAnotacao}` : '/anotacoes/adicionar';
+            const method = isEditMode ? 'put' : 'post';
             await ApiService.fetchData({
-                url: '/anotacoes/adicionar',
-                method: 'post',
+                url,
+                method,
                 data: {
                     ...values,
                     tipoVinculo,
@@ -86,33 +98,35 @@ const AdicionarAnotacao = () => {
             toast.push(
                 <Notification title="Erro ao salvar anotação." type="danger" />
             );
+        } finally {
             setLoading(false);
         }
     };
-    
 
     return (
         <Container>
             <div className="w-full max-w-4xl mb-4">
-                <Breadcrumb items={breadcrumbItems} />
+                <Breadcrumb items={[
+                    { label: 'Início', link: '/' },
+                    { label: `${isEditMode ? 'Editar' : 'Adicionar'} anotação`, link: '#' },
+                ]} />
             </div>
             <div className="w-full bg-white p-6 rounded-lg shadow-md">
                 <Formik
-                    initialValues={{
-                        descricao: '',
-                        situacao: '',
-                        privacidade: '',
-                    }}
+                    initialValues={initialValues}
+                    enableReinitialize
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
                         handleSave(values);
                         setSubmitting(false);
                     }}
                 >
-                    {({ setFieldValue, errors, touched, isSubmitting }) => (
+                    {({ errors, touched }) => (
                         <Form>
                             <div className="mb-6">
-                                <h5 className="text-xl font-semibold text-gray-700 mb-4 dark:text-black ">Você está criando uma nova anotação em:</h5>
+                                <h5 className="text-xl font-semibold text-gray-700 mb-4">
+                                    Você está {isEditMode ? 'editando' : 'criando'} uma anotação em:
+                                </h5>
                                 <div className="flex items-center space-x-2">
                                     <Tag className="bg-gray-400 text-white border-0 rounded">
                                         {capitalize(tipoVinculo || '')}
@@ -124,7 +138,6 @@ const AdicionarAnotacao = () => {
                                     </Link>
                                 </div>
                             </div>
-
 
                             <div className="mb-6">
                                 <FormItem asterisk label="Descrição" invalid={!!errors.descricao && touched.descricao}
@@ -199,4 +212,4 @@ const AdicionarAnotacao = () => {
     );
 };
 
-export default AdicionarAnotacao;
+export default AnotacaoForm;
