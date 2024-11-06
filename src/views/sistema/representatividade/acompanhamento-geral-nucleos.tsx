@@ -361,7 +361,7 @@ const AcompanhamentoGeralNucleo = () => {
                             icon={<FaQuestion />}
                             className="ml-2"
                             onClick={() => {
-                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM4OTE1')
                             }}
                         />
                     </Tooltip>
