@@ -45,24 +45,24 @@ const validationSchema = Yup.object().shape({
     }),
     tipoCadastro: Yup.string().required('Tipo de cadastro é obrigatório'),
 
-    upload:Yup.object().shape({
-            faturaEnergia: Yup.mixed().required('Cópia da Fatura de Energia é obrigatória'),
-            documentoIdentidade: Yup.mixed().required('Documento de Identidade é obrigatória'),
-            contratoSocial: Yup.mixed().when('tipoCadastro', {
-                is: 'empresa',
-                then: (schema) => schema.required('Contrato social é obrigatório para empresas'),
-            }),
-            cartaoCnpj: Yup.mixed().when('tipoCadastro', {
-                is: (value) => value === 'empresa' || value === 'condominio',
-                then: (schema) => schema.required('Cartão do CNPJ é obrigatório para empresas e condomínios'),
-            }),
-            ataAssembleia: Yup.mixed().when('tipoCadastro', {
-                is: 'condominio',
-                then: (schema) => schema.required('Ata da assembleia é obrigatória para condomínios'),
-            }),
+    upload: Yup.object().shape({
+        faturaEnergia: Yup.mixed().required('Cópia da Fatura de Energia é obrigatória'),
+        documentoIdentidade: Yup.mixed().required('Documento de Identidade é obrigatória'),
+        contratoSocial: Yup.mixed().when('tipoCadastro', {
+            is: 'empresa',
+            then: (schema) => schema.required('Contrato social é obrigatório para empresas'),
         }),
+        cartaoCnpj: Yup.mixed().when('tipoCadastro', {
+            is: (value) => value === 'empresa' || value === 'condominio',
+            then: (schema) => schema.required('Cartão do CNPJ é obrigatório para empresas e condomínios'),
+        }),
+        ataAssembleia: Yup.mixed().when('tipoCadastro', {
+            is: 'condominio',
+            then: (schema) => schema.required('Ata da assembleia é obrigatória para condomínios'),
+        }),
+    }),
 });
-    
+
 
 const ErrorComponent = ({ errors }: any) => {
     if (!errors || errors.length === 0) {
@@ -101,6 +101,8 @@ function CadastraProposta() {
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState(null);
+    const [status, setStatus] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
     const [error, setError] = useState(false);
     const [tipoCadastro, setTipoCadastro] = useState('');
     const [isManualContact, setIsManualContact] = useState(false);
@@ -125,16 +127,16 @@ function CadastraProposta() {
 
     const onNext = () => onChange(step + 1)
 
-    const onPrevious = () => onChange(step - 1)
+    const onPrevious = () => {onChange(0), setError(false)}
 
-    const stepConditions: { [key: number]: () => boolean } = {
-        0: () => tipoCadastro !== '',
-        1: () => empresaData?.permissao?.habil === true,
-        2: () => false,
-    };
+    // const stepConditions: { [key: number]: () => boolean } = {
+    //     0: () => tipoCadastro !== '',
+    //     1: () => empresaData?.permissao?.habil === true,
+    //     2: () => false,
+    // };
 
 
-    const canAdvance = stepConditions[step]();
+    // const canAdvance = stepConditions[step]();
 
     const toastNotification = (
         <Notification title="Falha na submissão." type="danger">
@@ -154,9 +156,11 @@ function CadastraProposta() {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/cogecom/status/${cnpj}`);
             await setEmpresaData(response.data);
+            await setStatus(response.data.status);
             setError(!response.data.permissao.habil);
+            onNext();
         } catch (err) {
-            setError(false);
+            setError(true);
         }
         finally {
             setIsLoading(false);
@@ -204,10 +208,10 @@ function CadastraProposta() {
                                 </p>
 
                                 <div className="flex">
-                                        <a target="_blank" href="#" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
-                                            <span className='text-red-600 font-bold'><BsFilePdf /></span>  <i className='text-ms'>Termo de Adesão</i>
-                                        </a>
-                             </div>
+                                    <a target="_blank" href="#" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
+                                        <span className='text-red-600 font-bold'><BsFilePdf /></span>  <i className='text-ms'>Termo de Adesão</i>
+                                    </a>
+                                </div>
 
                             </div>
                         </div>
@@ -257,7 +261,7 @@ function CadastraProposta() {
                                         <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-blue-50 transition ${tipoCadastro === 'empresa' ? 'ring-2 ring-blue-500' : ''
                                                 }`}
-                                            onClick={() => setTipoCadastro('empresa')}
+                                            onClick={() => { setTipoCadastro('empresa'), onNext() }}
                                         >
                                             <FaBuilding className="text-4xl text-blue-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Empresa</h4>
@@ -266,7 +270,7 @@ function CadastraProposta() {
                                         <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-green-50 transition ${tipoCadastro === 'pessoa_fisica' ? 'ring-2 ring-green-500' : ''
                                                 }`}
-                                            onClick={() => setTipoCadastro('pessoa_fisica')}
+                                            onClick={() => { setTipoCadastro('pessoa_fisica'), onNext() }}
                                         >
                                             <FaUser className="text-4xl text-green-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Pessoa Física</h4>
@@ -275,7 +279,7 @@ function CadastraProposta() {
                                         <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-yellow-50 transition ${tipoCadastro === 'condominio' ? 'ring-2 ring-yellow-500' : ''
                                                 }`}
-                                            onClick={() => setTipoCadastro('condominio')}
+                                            onClick={() => { setTipoCadastro('condominio'), onNext() }}
                                         >
                                             <FaHome className="text-4xl text-yellow-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Condomínio</h4>
@@ -309,14 +313,19 @@ function CadastraProposta() {
                                                 onClick={verify}
 
                                             >
-                                                Verificar
+                                                Avançar
                                             </Button>
 
 
-                                            {empresaData && !empresaData?.permissao.habil &&
+                                            {error &&
                                                 <Alert showIcon className="mb-4" type="danger">
-                                                    {empresaData?.permissao.mensagem}
-                                                </Alert>}
+                                                    {tipoCadastro === 'pessoa_fisica' ? (
+                                                        <>Essa pessoa não está em nossa base de dados. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                    ) : (
+                                                        <>Esta empresa não está em nossa base de dados da “Receita Federal”. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                    )}
+                                                </Alert>
+                                            }
 
                                             {empresaData && (
                                                 <div className="w-full max-w-4xl mx-auto p-6">
@@ -461,162 +470,162 @@ function CadastraProposta() {
                                                                 </FormItem>
 
                                                                 {isManualContact && (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FormItem
-            label="Nome do Contato"
-            invalid={Boolean(errors.nomeContato && touched.nomeContato)}
-            errorMessage={errors.nomeContato}
-        >
-            <Field
-                name="nomeContato"
-                as={Input}
-                placeholder="Nome do Contato"
-                
-            />
-        </FormItem>
+                                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                        <FormItem
+                                                                            label="Nome do Contato"
+                                                                            invalid={Boolean(errors.nomeContato && touched.nomeContato)}
+                                                                            errorMessage={errors.nomeContato}
+                                                                        >
+                                                                            <Field
+                                                                                name="nomeContato"
+                                                                                as={Input}
+                                                                                placeholder="Nome do Contato"
 
-        <FormItem
-            label="CPF"
-            invalid={Boolean(errors.cpfContato && touched.cpfContato)}
-            errorMessage={errors.cpfContato}
-        >
-           <Field name="cpfContato">
-                {({ field, form }) => (
-                    <IMaskInput
-                        {...field}
-                        mask={'000.000.000-00'}
-                        unmask={true}
-                        onAccept={(value) => form.setFieldValue('cpfContato', value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                )}
-            </Field>
-        </FormItem>
+                                                                            />
+                                                                        </FormItem>
 
-        <FormItem
-            label="Email"
-            invalid={Boolean(errors.emailContato && touched.emailContato)}
-            errorMessage={errors.emailContato}
-        >
-            <Field
-                name="emailContato"
-                type="email"
-                as={Input}
-                placeholder="Email"
-            />
-        </FormItem>
+                                                                        <FormItem
+                                                                            label="CPF"
+                                                                            invalid={Boolean(errors.cpfContato && touched.cpfContato)}
+                                                                            errorMessage={errors.cpfContato}
+                                                                        >
+                                                                            <Field name="cpfContato">
+                                                                                {({ field, form }) => (
+                                                                                    <IMaskInput
+                                                                                        {...field}
+                                                                                        mask={'000.000.000-00'}
+                                                                                        unmask={true}
+                                                                                        onAccept={(value) => form.setFieldValue('cpfContato', value)}
+                                                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
 
-        <FormItem
-            label="Celular"
-            invalid={Boolean(errors.celularContato && touched.celularContato)}
-            errorMessage={errors.celularContato}
-        >
-           <Field name="celularContato">
-                {({ field, form }) => (
-                    <IMaskInput
-                        {...field}
-                        mask={'(00) 00000-0000'}
-                        unmask={true}
-                        onAccept={(value) => form.setFieldValue('celularContato', value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                )}
-            </Field>
-        </FormItem>
-    </div>
-)}
+                                                                        <FormItem
+                                                                            label="Email"
+                                                                            invalid={Boolean(errors.emailContato && touched.emailContato)}
+                                                                            errorMessage={errors.emailContato}
+                                                                        >
+                                                                            <Field
+                                                                                name="emailContato"
+                                                                                type="email"
+                                                                                as={Input}
+                                                                                placeholder="Email"
+                                                                            />
+                                                                        </FormItem>
+
+                                                                        <FormItem
+                                                                            label="Celular"
+                                                                            invalid={Boolean(errors.celularContato && touched.celularContato)}
+                                                                            errorMessage={errors.celularContato}
+                                                                        >
+                                                                            <Field name="celularContato">
+                                                                                {({ field, form }) => (
+                                                                                    <IMaskInput
+                                                                                        {...field}
+                                                                                        mask={'(00) 00000-0000'}
+                                                                                        unmask={true}
+                                                                                        onAccept={(value) => form.setFieldValue('celularContato', value)}
+                                                                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
+                                                                    </div>
+                                                                )}
 
 
-<FormItem
-                    asterisk
-                    label="Upload de Documentos"
-                    invalid={Boolean(errors.upload && touched.upload)}
-                    errorMessage={errors.upload}
-                >
-                    {/* Fatura de Energia */}
-                    <Field name="upload.faturaEnergia">
-                        {({ field }) => (
-                            <Upload
-                                fileList={values.upload.faturaEnergia}
-                                onChange={(file) => setFieldValue(field.name, [file])}
-                                onFileRemove={() => setFieldValue(field.name, [])}
-                            >
-                                <Button variant="solid">Cópia da Fatura de Energia</Button>
-                            </Upload>
-                        )}
-                    </Field>
+                                                                <FormItem
+                                                                    asterisk
+                                                                    label="Inclusão de Documentos"
+                                                                    invalid={Boolean(errors.upload && touched.upload)}
+                                                                    errorMessage={errors.upload}
+                                                                >
+                                                                    {/* Fatura de Energia */}
+                                                                    <Field name="upload.faturaEnergia">
+                                                                        {({ field }) => (
+                                                                            <Upload
+                                                                                fileList={values.upload.faturaEnergia}
+                                                                                onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                onFileRemove={() => setFieldValue(field.name, [])}
+                                                                            >
+                                                                                <Button variant="solid">Cópia da Fatura de Energia</Button>
+                                                                            </Upload>
+                                                                        )}
+                                                                    </Field>
 
-                    {/* Documento de Identidade */}
-                    <Field name="upload.documentoIdentidade">
-                        {({ field }) => (
-                            <Upload
-                                fileList={values.upload.documentoIdentidade}
-                                onChange={(file) => setFieldValue(field.name, [file])}
-                                onFileRemove={() => setFieldValue(field.name, [])}
-                            >
-                                <Button variant="solid">Documento de Identidade</Button>
-                            </Upload>
-                        )}
-                    </Field>
+                                                                    {/* Documento de Identidade */}
+                                                                    <Field name="upload.documentoIdentidade">
+                                                                        {({ field }) => (
+                                                                            <Upload
+                                                                                fileList={values.upload.documentoIdentidade}
+                                                                                onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                onFileRemove={() => setFieldValue(field.name, [])}
+                                                                            >
+                                                                                <Button variant="solid">Documento de Identidade</Button>
+                                                                            </Upload>
+                                                                        )}
+                                                                    </Field>
 
-                    {/* Campos específicos para empresas */}
-                    {tipoCadastro === 'empresa' && (
-                        <>
-                            <Field name="upload.contratoSocial">
-                                {({ field }) => (
-                                    <Upload
-                                        fileList={values.upload.contratoSocial}
-                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                    >
-                                        <Button variant="solid">Contrato Social</Button>
-                                    </Upload>
-                                )}
-                            </Field>
+                                                                    {/* Campos específicos para empresas */}
+                                                                    {tipoCadastro === 'empresa' && (
+                                                                        <>
+                                                                            <Field name="upload.contratoSocial">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        fileList={values.upload.contratoSocial}
+                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                                                                    >
+                                                                                        <Button variant="solid">Contrato Social</Button>
+                                                                                    </Upload>
+                                                                                )}
+                                                                            </Field>
 
-                            <Field name="upload.cartaoCnpj">
-                                {({ field }) => (
-                                    <Upload
-                                        fileList={values.upload.cartaoCnpj}
-                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                    >
-                                        <Button variant="solid">Cartão do CNPJ</Button>
-                                    </Upload>
-                                )}
-                            </Field>
-                        </>
-                    )}
+                                                                            <Field name="upload.cartaoCnpj">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        fileList={values.upload.cartaoCnpj}
+                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                                                                    >
+                                                                                        <Button variant="solid">Cartão do CNPJ</Button>
+                                                                                    </Upload>
+                                                                                )}
+                                                                            </Field>
+                                                                        </>
+                                                                    )}
 
-                    {/* Campos específicos para condomínios */}
-                    {tipoCadastro === 'condominio' && (
-                        <>
-                            <Field name="upload.ataAssembleia">
-                                {({ field }) => (
-                                    <Upload
-                                        fileList={values.upload.ataAssembleia}
-                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                    >
-                                        <Button variant="solid">Ata da Assembleia de Eleição</Button>
-                                    </Upload>
-                                )}
-                            </Field>
+                                                                    {/* Campos específicos para condomínios */}
+                                                                    {tipoCadastro === 'condominio' && (
+                                                                        <>
+                                                                            <Field name="upload.ataAssembleia">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        fileList={values.upload.ataAssembleia}
+                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                                                                    >
+                                                                                        <Button variant="solid">Ata da Assembleia de Eleição</Button>
+                                                                                    </Upload>
+                                                                                )}
+                                                                            </Field>
 
-                            <Field name="upload.cartaoCnpj">
-                                {({ field }) => (
-                                    <Upload
-                                        fileList={values.upload.cartaoCnpj}
-                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                    >
-                                        <Button variant="solid">Cartão do CNPJ</Button>
-                                    </Upload>
-                                )}
-                            </Field>
-                        </>
-                    )}
-                </FormItem>
+                                                                            <Field name="upload.cartaoCnpj">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        fileList={values.upload.cartaoCnpj}
+                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                                                                    >
+                                                                                        <Button variant="solid">Cartão do CNPJ</Button>
+                                                                                    </Upload>
+                                                                                )}
+                                                                            </Field>
+                                                                        </>
+                                                                    )}
+                                                                </FormItem>
                                                                 <FormItem
                                                                     invalid={
                                                                         errors.singleCheckbox &&
@@ -628,7 +637,7 @@ function CadastraProposta() {
                                                                         name="singleCheckbox"
                                                                         component={Checkbox}
                                                                     >
-                                                                        Eu concordo com os termos e condições.
+                                                                        Concordo com a manutenção dos dados fornecidos e dos obtidos automaticamente a partir da Receita Federal
                                                                     </Field>
                                                                 </FormItem>
 
@@ -658,9 +667,9 @@ function CadastraProposta() {
                                     disabled={step === 0}
                                     onClick={onPrevious}
                                 >
-                                    Voltar
+                                    Recomeçar
                                 </Button>
-                                <button
+                                {/* <button
                                     hidden={step === 2}
                                     className={`py-2 px-4 ${canAdvance ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400'
                                         } text-white rounded shadow`}
@@ -668,7 +677,7 @@ function CadastraProposta() {
                                     onClick={onNext}
                                 >
                                     {step === 2 ? 'Enviar' : 'Avançar'}
-                                </button>
+                                </button> */}
                             </div>
                         </div>
 
