@@ -4,8 +4,10 @@ import Dialog from '@/components/ui/Dialog';
 import ApiService from '@/services/ApiService';
 import moment from 'moment';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import AnexosComponent from '../anexos/AnexosComponent';
+import { HiPencil, HiPlusCircle } from 'react-icons/hi';
 
 const situacaoDivulgada = 'di';
 
@@ -32,6 +34,7 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
     const [anotacao, setAnotacao] = useState<any>(null);
     const [isAuthor, setIsAuthor] = useState(false);
     const [isRead, setIsRead] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isOpen && idAnotacao) {
@@ -60,18 +63,35 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                 method: 'post',
             });
             setIsRead(true);
+            window.location.reload();
+
         } catch (error) {
             console.error('Erro ao marcar como lida:', error);
         }
     };
 
+    const handleDelete = async () => {
+        if (!window.confirm("Tem certeza que deseja excluir esta anotação?")) return;
+
+        try {
+            await ApiService.fetchData({
+                url: `/anotacoes/excluir/${idAnotacao}`,
+                method: 'delete',
+            });
+            onClose();
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao excluir anotação:', error);
+        }
+    };
+
     return (
-        <Dialog isOpen={isOpen} onClose={onClose} width={1200} height={600}>
+        <Dialog isOpen={isOpen} onClose={onClose} width={1200}>
             {anotacao && (
                 <section className="p-6 bg-white rounded-lg shadow-lg max-w-full">
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex items-center space-x-4">
-                            <h2 className="text-xl font-bold text-gray-800">Anotação ID: {anotacao.id}</h2>
+                            <h2 className="text-xl font-bold text-gray-800">Anotação {anotacao.id}</h2>
                             <span className="text-gray-600">
                                 {anotacao.situacao === situacaoDivulgada
                                     ? `Criado em ${moment(anotacao.data_inclusao).format('DD/MM/YYYY HH:mm')}`
@@ -83,16 +103,6 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                                 <strong>Privacidade:</strong>
                                 <span className="ml-2">{privacidadeLabels[anotacao.privacidade] || 'Indisponível'}</span>
                             </div>
-                            {isAuthor && (
-                                <div className="flex space-x-2">
-                                    <Button variant="solid" color="blue" onClick={() => { }}>
-                                        Editar
-                                    </Button>
-                                    <Button variant="solid" color="red" onClick={() => { }}>
-                                        Excluir
-                                    </Button>
-                                </div>
-                            )}
                         </div>
                     </div>
 
@@ -101,31 +111,55 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                     </div>
 
                     <div className="flex justify-end space-x-2 mt-4">
+                        {isAuthor && (
+                            <div className="flex space-x-2">
+                                <Link
+                                    className="block lg:inline-block md:mb-0 mb-4"
+                                    to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}/${anotacao.id}`}
+                                >
+                                    <Button
+                                        block
+                                        variant="solid"
+                                        size="sm"
+                                        icon={<HiPencil />}
+                                    >
+                                        Editar
+                                    </Button>
+                                </Link>
+
+                                <Button variant="solid" color="red" onClick={handleDelete} size='sm'>
+                                    Excluir
+                                </Button>
+
+                                <Link
+                                    className="block lg:inline-block md:mb-0 mb-4"
+                                    to={`${APP_PREFIX_PATH}/anexos/adicionar/anotacao/${anotacao.id}`}
+                                >
+                                    <Button
+                                        block
+                                        variant="solid"
+                                        size="sm"
+                                        icon={<HiPlusCircle />}
+                                    >
+                                        Anexar Arquivo
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
+
                         {!isRead && anotacao.situacao === situacaoDivulgada && !isAuthor && (
-                            <Button variant="solid" color="green" onClick={handleMarkAsRead}>
+                            <Button variant="solid" color="green" onClick={handleMarkAsRead} size='sm'>
                                 Marcar como lida
                             </Button>
                         )}
-
-                        <Link
-                            to={`${ APP_PREFIX_PATH }/anexos/adicionar/anotacao/${anotacao.id}`}
-                            target="_blank"
-                            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
-                        >
-                            Anexar Arquivo
-                        </Link>
                     </div>
 
                     <div className="mt-4">
-                        {/* <CustomReactDataGrid
-                            filename="Anexos"
-                            columns={[
-                                { name: 'id', header: 'ID', defaultFlex: 0.6 },
-                                { name: 'nome', header: 'Nome do Arquivo', defaultFlex: 1.5 },
-                                { name: 'data_inclusao', header: 'Data', dateFormat: 'DD-MM-YYYY', defaultFlex: 1 },
-                            ]}
-                            url={`${import.meta.env.VITE_API_URL}/anexos/anotacao/${idAnotacao}`}
-                        /> */}
+                        <AnexosComponent
+                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/anotacao/${anotacao.id}`}
+                            title="Documentos Importantes"
+                            minHeight={500}
+                        />
                     </div>
                 </section>
             )}

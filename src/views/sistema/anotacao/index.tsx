@@ -195,7 +195,7 @@ const Anotacoes = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/projeto/${idVinculo}`}
+                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${tipoVinculo}/${idVinculo}`}
                     >
                         <Button
                             block

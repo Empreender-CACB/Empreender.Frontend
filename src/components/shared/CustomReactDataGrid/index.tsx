@@ -40,6 +40,7 @@ interface CustomReactDataGridPropsBasic {
     widthSize?: number
     defaultSortInfo?: any
     onFilterChange?: (filters: any) => void;
+    minHeight?: number
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
@@ -96,7 +97,8 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     onSelectedRowsChange,
     autorizeExport = true,
     defaultSortInfo,
-    onFilterChange
+    onFilterChange,
+    minHeight
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -353,7 +355,7 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
     const dataSource = useCallback(loadData, [url])
 
-    const gridStyle = { minHeight: 750, width: '100%' }
+    const gridStyle = { minHeight: minHeight ? minHeight : 750, width: '100%' }
 
     const handleFilterValueChange = (newFilterValue: any) => {
         if (onFilterChange) {
