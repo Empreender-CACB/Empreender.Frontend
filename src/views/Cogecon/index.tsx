@@ -16,26 +16,11 @@ import Upload from '@/components/ui/Upload'
 import SegmentItemOption from '@/components/shared/SegmentItemOption'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
-import type { FieldProps } from 'formik'
 import { AiOutlineMail } from 'react-icons/ai';
-import { BsTelephone } from 'react-icons/bs';
+import { BsTelephone, BsFilePdf } from 'react-icons/bs';
 import { MdWork } from 'react-icons/md'
 
 
-
-type FormModel = {
-    input: string
-    select: string
-    multipleSelect: string[]
-    date: Date | null
-    time: Date | null
-    singleCheckbox: boolean
-    multipleCheckbox: Array<string | number>
-    radio: string
-    switcher: boolean
-    segment: string[];
-    upload: File[];
-}
 
 
 
@@ -217,6 +202,12 @@ function CadastraProposta() {
                                     No âmbito do PDE, o projeto visa facilitar a adesão de empresas e entidades, promovendo o consumo de energia renovável e a redução de custos operacionais.
                                     Ao integrar-se ao COGECOM, empresas podem reduzir suas despesas com energia, tornar-se mais sustentáveis e investir em outras áreas de crescimento, contribuindo para um futuro mais sustentável.
                                 </p>
+
+                                <div className="flex">
+                                        <a target="_blank" href="#" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
+                                            <span className='text-red-600 font-bold'><BsFilePdf /></span>  <i className='text-ms'>Termo de Adesão</i>
+                                        </a>
+                             </div>
 
                             </div>
                         </div>
