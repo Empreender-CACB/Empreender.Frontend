@@ -1,16 +1,83 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 import Steps from '@/components/ui/Steps'
 import Notification from '@/components/ui/Notification'
-import toast from '@/components/ui/toast'
 import Button from '@/components/ui/Button'
-import { HiOutlinePlus } from 'react-icons/hi'
+import { HiCheckCircle } from 'react-icons/hi'
 import { CgClose as CloseIcon } from 'react-icons/cg'
 import Input from '@/components/ui/Input'
-import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros'
 import { IMaskInput } from 'react-imask';
 import { FaBuilding, FaUser, FaHome } from 'react-icons/fa';
 import Alert from '@/components/ui/Alert'
+import { FormItem, FormContainer } from '@/components/ui/Form'
+import Checkbox from '@/components/ui/Checkbox'
+import Segment from '@/components/ui/Segment'
+import Upload from '@/components/ui/Upload'
+import SegmentItemOption from '@/components/shared/SegmentItemOption'
+import { Field, Form, Formik } from 'formik'
+import * as Yup from 'yup'
+import type { FieldProps } from 'formik'
+import { AiOutlineMail } from 'react-icons/ai';
+import { BsTelephone } from 'react-icons/bs';
+import { MdWork } from 'react-icons/md'
+
+
+
+type FormModel = {
+    input: string
+    select: string
+    multipleSelect: string[]
+    date: Date | null
+    time: Date | null
+    singleCheckbox: boolean
+    multipleCheckbox: Array<string | number>
+    radio: string
+    switcher: boolean
+    segment: string[];
+    upload: File[];
+}
+
+
+
+const validationSchema = Yup.object().shape({
+    singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
+    segment: Yup.array().min(1, 'Selecione um contato.'),
+    nomeContato: Yup.string().when('isManualContact', {
+        is: true,
+        then: (schema) => schema.required('Nome do contato é obrigatório'),
+    }),
+    cpfContato: Yup.string().when('isManualContact', {
+        is: true,
+        then: (schema) => schema.required('CPF é obrigatório'),
+    }),
+    emailContato: Yup.string().when('isManualContact', {
+        is: true,
+        then: (schema) => schema.email('Email inválido').required('Email é obrigatório'),
+    }),
+    celularContato: Yup.string().when('isManualContact', {
+        is: true,
+        then: (schema) => schema.required('Celular é obrigatório'),
+    }),
+    tipoCadastro: Yup.string().required('Tipo de cadastro é obrigatório'),
+
+    upload:Yup.object().shape({
+            faturaEnergia: Yup.mixed().required('Cópia da Fatura de Energia é obrigatória'),
+            documentoIdentidade: Yup.mixed().required('Documento de Identidade é obrigatória'),
+            contratoSocial: Yup.mixed().when('tipoCadastro', {
+                is: 'empresa',
+                then: (schema) => schema.required('Contrato social é obrigatório para empresas'),
+            }),
+            cartaoCnpj: Yup.mixed().when('tipoCadastro', {
+                is: (value) => value === 'empresa' || value === 'condominio',
+                then: (schema) => schema.required('Cartão do CNPJ é obrigatório para empresas e condomínios'),
+            }),
+            ataAssembleia: Yup.mixed().when('tipoCadastro', {
+                is: 'condominio',
+                then: (schema) => schema.required('Ata da assembleia é obrigatória para condomínios'),
+            }),
+        }),
+});
+    
 
 const ErrorComponent = ({ errors }: any) => {
     if (!errors || errors.length === 0) {
@@ -39,12 +106,7 @@ const ErrorComponent = ({ errors }: any) => {
     );
 };
 
-const people = [
-    { id: 1, name: "Nome da pessoa 1", handle: "pessoa1", imageUrl: "https://via.placeholder.com/40" },
-    { id: 2, name: "Nome da pessoa 2", handle: "pessoa2", imageUrl: "https://via.placeholder.com/40" },
-    { id: 3, name: "Nome da pessoa 3", handle: "pessoa3", imageUrl: "https://via.placeholder.com/40" },
-    // Adicione mais pessoas conforme necessário
-];
+
 function CadastraProposta() {
     const [errors, setErrors] = useState(null)
     const [success, setSuccess] = useState(false)
@@ -52,26 +114,17 @@ function CadastraProposta() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
-    const [cpf, setCpf] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState(null);
     const [error, setError] = useState(false);
-    const [apto, setApto] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [anexos, setAnexos] = useState(null);
-    const [message, setMessage] = useState('');
     const [tipoCadastro, setTipoCadastro] = useState('');
+    const [isManualContact, setIsManualContact] = useState(false);
 
-    const [selectedPerson, setSelectedPerson] = useState(null);
-
-    const handleSelect = (personId) => {
-        setSelectedPerson(personId);
-    };
 
     const [step, setStep] = useState(0)
 
     const onChange = (nextStep: number) => {
-        if(step < 2) {
+        if (step < 1) {
 
             setEmpresaData(null)
 
@@ -98,44 +151,6 @@ function CadastraProposta() {
 
     const canAdvance = stepConditions[step]();
 
-
-    const handleAddInput = () => {
-        setInputs([...inputs, {}]);
-    };
-
-    const handleDeleteInput = (index: any) => {
-        const newArray = [...inputs];
-        newArray.splice(index, 1);
-        setInputs(newArray);
-        index.preventDefault()
-        index.stopPropagation()
-        // index.stopImmediatePropagation()
-        return false
-    };
-
-    const SuccessComponent = () => {
-        // if (success == false) {
-        //     return null; // Não há erros, não renderiza nada
-        // }
-
-        return (
-            <div className="bg-indigo-700">
-                <div className="py-24 px-6 sm:px-6 sm:py-32 lg:px-8">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <h2 className="text-4xl font-bold tracking-tight text-white">
-                            Arquivos enviados com sucesso.
-                            <br />
-                        </h2>
-                        <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-indigo-200">
-                            Obrigado pela participação.
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
     const toastNotification = (
         <Notification title="Falha na submissão." type="danger">
             Não foi possível completar a operação. Por favor, verifique os arquivos e tente novamente.
@@ -148,68 +163,9 @@ function CadastraProposta() {
         </Notification>
     )
 
-    const handleSubmit = async (event: any) => {
-        event.preventDefault();
-        setIsSubmitting(true);
-        const formData = new FormData()
-
-        const fileInputs = event.target.querySelectorAll('[name="files"]');
-
-        fileInputs.forEach((fileInput: any) => {
-            const files = fileInput.files;
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
-        });
-
-        const selectElements = event.target.querySelectorAll('[name="type_document"]');
-
-        selectElements.forEach((selectElement: any) => {
-            for (let i = 0; i < selectElement.options.length; i++) {
-                if (selectElement.options[i].selected) {
-                    formData.append('selectValues', selectElement.options[i].value);
-                }
-            }
-        });
-
-
-        try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/candidaturas/${userData.cpf}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            setErrors(null);
-            setSuccess(true);
-            document.getElementById("formData").reset();
-            toast.push(toastNotificationSucess)
-            document.getElementById('success').scrollIntoView({
-                behavior: 'smooth'
-            });
-
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            setErrors(error.response.data.errors);
-            setSuccess(false);
-            setIsSubmitting(false);
-            toast.push(toastNotification)
-            document.getElementById('errors').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-
-        await verifyCPF(cpf);
-        setIsSubmitting(false);
-
-    };
 
     const verify = async () => {
-
-
         setIsLoading(true);
-        console.log('is loading', isLoading)
-
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/cogecom/status/${cnpj}`);
             await setEmpresaData(response.data);
@@ -222,53 +178,6 @@ function CadastraProposta() {
         }
     };
 
-    const verifyCPF = async (value: any) => {
-        setCpf(value);
-        if (value.length === 14) {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}`);
-
-                if (response.status === 200) {
-                    console.log('CPF está na base e apto.');
-                    setApto(true); // Se o status for 200, apto é true
-                    setUserData(response.data.candidato);
-                    setAnexos(response.data.anexos);
-                    setInapto(false);
-                }
-            } catch (error) {
-                if (axios.isAxiosError(error) && error.response) {
-                    if (error.response.status === 404) {
-                        setMessage('O CPF informado não está na lista de inscrição.')
-                    } else if (error.response.status === 403) {
-                        setMessage('O CPF informado não foi selecionado para prosseguir na seleção.')
-                    } else {
-                        console.error('Erro desconhecido:', error.message);
-                    }
-                } else {
-                    console.error('Erro ao buscar dados:', error);
-                }
-                setApto(false); // Em caso de erro, também defina apto como false
-                setUserData(null);
-                setAnexos(null);
-                setInapto(true);
-            }
-        } else {
-            setApto(false);
-            setUserData(null);
-            setAnexos(null);
-            setInapto(false);
-        }
-    };
-
-    const company = {
-        name: "COGECOM Energia Renovável",
-        cnpj: "12.345.678/0001-99",
-        address: "Rua Sustentabilidade, 123 - São Paulo, SP",
-        energyGenerated: "350 milhões de kWh",
-        contact: "contato@cogecom.com.br",
-        phone: "(11) 98765-4321",
-        status: "Cadastrada no PDE"
-    };
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
@@ -299,42 +208,7 @@ function CadastraProposta() {
                             </div>
 
                         </div>
-                        <div className="flow-root mt-6">
-                            <ul role="list" className="-my-5 divide-y divide-gray-200">
-                                {people.map((person) => (
-                                    <li key={person.id} className="py-4">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="flex-shrink-0">
-                                                <img className="h-8 w-8 rounded-full" src={person.imageUrl} alt={person.name} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-gray-900 truncate">{person.name}</p>
-                                                <p className="text-sm text-gray-500 truncate">{'@' + person.handle}</p>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    onClick={() => handleSelect(person.id)}
-                                                    className={`inline-flex items-center shadow-sm px-2.5 py-0.5 border text-sm leading-5 font-medium rounded-full ${selectedPerson === person.id
-                                                            ? "text-white bg-blue-500 border-blue-500"
-                                                            : "text-gray-700 bg-white border-gray-300 hover:bg-gray-50"
-                                                        }`}
-                                                >
-                                                    {selectedPerson === person.id ? "Selecionado" : "Selecionar"}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="mt-6">
-                                <button
-                                    onClick={() => setSelectedPerson(null)}
-                                    className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                                >
-                                    Desmarcar Seleção
-                                </button>
-                            </div>
-                        </div>
+
                         <div className="w-full  bg-black border-t border-gray-400 rounded-t-lg">
                             <div className='p-5 max-w-4xl mx-auto'>
                                 <p className=" font-extrabold text-gray-200 text-2xl  mb-2">Projeto COGECOM</p>
@@ -424,20 +298,20 @@ function CadastraProposta() {
 
                                         <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">Informe o {tipoCadastro === 'pessoa_fisica' ? 'CPF' : 'CNPJ'}</label>
                                         <IMaskInput
-                                            mask={tipoCadastro === 'pessoa_fisica'?'000.000.000-00':'00.000.000/0000-00'}
+                                            mask={tipoCadastro === 'pessoa_fisica' ? '000.000.000-00' : '00.000.000/0000-00'}
                                             unmask={true}
                                             onAccept={(value) => setCnpj(value)}
                                             placeholder={tipoCadastro === 'pessoa_fisica' ? 'CPF' : 'CNPJ'}
                                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
 
-                                        
+
 
 
                                         <div className='mt-6'>
                                             <Button
                                                 variant="solid"
-                                                disabled={!(cnpj.length === 11 && tipoCadastro=='pessoa_fisica' || cnpj.length === 14 && tipoCadastro!=='pessoa_fisica')}
+                                                disabled={!(cnpj.length === 11 && tipoCadastro == 'pessoa_fisica' || cnpj.length === 14 && tipoCadastro !== 'pessoa_fisica')}
                                                 color="indigo-700"
                                                 className="w-full mb-10"
                                                 loading={isLoading}
@@ -460,13 +334,14 @@ function CadastraProposta() {
                                                             <div className="flex justify-between items-center mb-4">
                                                                 <h2 className="text-2xl font-bold text-gray-800">{empresaData.empresa.nurazaosocial}</h2>
                                                                 <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                                                                    {company.status}
+                                                                    {'fonte: ' + empresaData.fonte}
                                                                 </span>
                                                             </div>
 
                                                             <div className="text-gray-700 space-y-2">
+                                                                <p><strong>Nome Fantasia:</strong>{empresaData.empresa.nmfantasia}</p>
                                                                 <p><strong>CNPJ:</strong>{empresaData.empresa.nucnpjcpf}</p>
-                                                                <p><strong>Estado -  Cidade:</strong> {empresaData.empresa.iduf} - {empresaData.empresa.nmcidade}  </p>
+                                                                <p>{empresaData.empresa.iduf} - {empresaData.empresa.nmcidade}  </p>
                                                             </div>
                                                         </div>
 
@@ -475,87 +350,311 @@ function CadastraProposta() {
                                             )}
                                         </div>
 
-
-
-
                                     </div>
                                 )}
 
                                 {step === 2 && (
-                                <div className="mx-auto">
-                                <div className="grid grid-cols-2 gap-8 mt-9">
-                                    {/* <div className="xl:w-9/12 w-11/12 mx-auto xl:mx-0"> */}
+                                    <div className="mx-auto my-2">
+                                        <div className=" mt-10 py-2 py-2">
+                                            <div>
+                                                <Formik
+                                                    enableReinitialize
+                                                    initialValues={{
+                                                        segment: '',
+                                                        nomeContato: '',
+                                                        cpfContato: '',
+                                                        emailContato: '',
+                                                        celularContato: '',
+                                                        isManualContact: false,
+                                                        tipoCadastro: tipoCadastro,
+                                                        upload: {
+                                                            faturaEnergia: [],
+                                                            documentoIdentidade: [],
+                                                            contratoSocial: [],
+                                                            cartaoCnpj: [],
+                                                            ataAssembleia: [],
+                                                        },
+                                                    }}
+                                                    validationSchema={validationSchema}
+                                                    onSubmit={(values, { setSubmitting }) => {
+                                                        console.log('values', values)
+                                                        setTimeout(() => {
+                                                            alert(JSON.stringify(values, null, 2))
+                                                            setSubmitting(false)
+                                                        }, 400)
+                                                    }}
+                                                >
+                                                    {({ values, touched, setFieldValue, errors, resetForm }) => (
+                                                        <Form>
+                                                            <FormContainer>
 
-                                    <div className=" flex flex-col w-full col-span-2 sm:col-span-2">
-                                        <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                            Nome Completo
-                                        </label>
-                                        <input required type="text" id="nome" name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
-                                    </div>
+                                                                <FormItem
+                                                                    asterisk
+                                                                    label="Contato"
+                                                                    invalid={Boolean(errors.segment && touched.segment)}
+                                                                    errorMessage={errors.segment as string}
+                                                                >
+                                                                    <Field name="segment">
+                                                                        {({ field, form }) => (
+                                                                            <Segment
+                                                                                className="w-full"
+                                                                                value={field.value}
+                                                                                onChange={(val) => {
+                                                                                    form.setFieldValue(field.name, val);
+                                                                                    setIsManualContact(val == "Informar contato");
+                                                                                    const isManual = val === "Informar contato";
+                                                                                    setFieldValue('isManualContact', isManual);
+                                                                                }}                                                                            >
+                                                                                <div className="grid grid-cols-3 gap-4 w-full">
+                                                                                    <Segment.Item value="Informar contato">
+                                                                                        {({ active, onSegmentItemClick, disabled }) => (
+                                                                                            <div className="text-center">
+                                                                                                <SegmentItemOption
+                                                                                                    hoverable
+                                                                                                    active={active}
+                                                                                                    disabled={disabled}
+                                                                                                    defaultGutter={false}
+                                                                                                    className="relative min-h-[80px] w-full"
+                                                                                                    customCheck={
+                                                                                                        <HiCheckCircle className="text-indigo-600 absolute top-2 right-2 text-lg" />
+                                                                                                    }
+                                                                                                    onSegmentItemClick={(onSegmentItemClick)}
+                                                                                                >
+                                                                                                    <div className="flex flex-col items-start mx-4">
+                                                                                                        <h6>Informar um novo contato</h6>
+                                                                                                    </div>
+                                                                                                </SegmentItemOption>
+                                                                                            </div>
+                                                                                        )}
+                                                                                    </Segment.Item>
 
-                                    <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
-                                        <label htmlFor="cpf" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                            CPF
-                                        </label>
-                                        <IMaskInput
-                                        mask={'000.000.000-00'}
-                                            className='border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400'
-                                            
-                                            name='cpf'
-                                            placeholder='Informe os números do seu CPF'
-                                        />
-                                    </div>
+                                                                                    {/* Segmentos Dinâmicos */}
+                                                                                    {empresaData?.contatos?.length > 0 &&
+                                                                                        empresaData.contatos.map((segment) => (
+                                                                                            <Segment.Item key={segment.nmcontato} value={Number(segment.idcontato)}>
+                                                                                                {({ active, onSegmentItemClick, disabled }) => (
+                                                                                                    <div className="text-center">
+                                                                                                        <SegmentItemOption
+                                                                                                            hoverable
+                                                                                                            active={active}
+                                                                                                            disabled={disabled}
+                                                                                                            defaultGutter={false}
+                                                                                                            className="relative min-h-[80px] w-full"
+                                                                                                            customCheck={
+                                                                                                                <HiCheckCircle className="text-indigo-600 absolute top-2 right-2 text-lg" />
+                                                                                                            }
+                                                                                                            onSegmentItemClick={onSegmentItemClick}
+                                                                                                        >
+                                                                                                            <div className="flex flex-col items-start mx-4">
+                                                                                                                <h6>{segment.nmcontato}</h6>
+                                                                                                                <p className="flex items-center">
+                                                                                                                    <AiOutlineMail className="mr-2" /> {segment.dsemail || '-'}
+                                                                                                                </p>
+                                                                                                                <p className="flex items-center">
+                                                                                                                    <BsTelephone className="mr-2" /> {segment.nucel || '-'}
+                                                                                                                </p>
+                                                                                                                <p className="flex items-center">
+                                                                                                                    <MdWork className="mr-2" /> {segment.cargo || '-'}
+                                                                                                                </p>
+
+                                                                                                            </div>
+                                                                                                        </SegmentItemOption>
+                                                                                                    </div>
+                                                                                                )}
+                                                                                            </Segment.Item>
+                                                                                        ))}
+                                                                                </div>
+                                                                            </Segment>
+                                                                        )}
+                                                                    </Field>
+                                                                </FormItem>
+
+                                                                {isManualContact && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormItem
+            label="Nome do Contato"
+            invalid={Boolean(errors.nomeContato && touched.nomeContato)}
+            errorMessage={errors.nomeContato}
+        >
+            <Field
+                name="nomeContato"
+                as={Input}
+                placeholder="Nome do Contato"
+                
+            />
+        </FormItem>
+
+        <FormItem
+            label="CPF"
+            invalid={Boolean(errors.cpfContato && touched.cpfContato)}
+            errorMessage={errors.cpfContato}
+        >
+           <Field name="cpfContato">
+                {({ field, form }) => (
+                    <IMaskInput
+                        {...field}
+                        mask={'000.000.000-00'}
+                        unmask={true}
+                        onAccept={(value) => form.setFieldValue('cpfContato', value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                )}
+            </Field>
+        </FormItem>
+
+        <FormItem
+            label="Email"
+            invalid={Boolean(errors.emailContato && touched.emailContato)}
+            errorMessage={errors.emailContato}
+        >
+            <Field
+                name="emailContato"
+                type="email"
+                as={Input}
+                placeholder="Email"
+            />
+        </FormItem>
+
+        <FormItem
+            label="Celular"
+            invalid={Boolean(errors.celularContato && touched.celularContato)}
+            errorMessage={errors.celularContato}
+        >
+           <Field name="celularContato">
+                {({ field, form }) => (
+                    <IMaskInput
+                        {...field}
+                        mask={'(00) 00000-0000'}
+                        unmask={true}
+                        onAccept={(value) => form.setFieldValue('celularContato', value)}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                )}
+            </Field>
+        </FormItem>
+    </div>
+)}
 
 
+<FormItem
+                    asterisk
+                    label="Upload de Documentos"
+                    invalid={Boolean(errors.upload && touched.upload)}
+                    errorMessage={errors.upload}
+                >
+                    {/* Fatura de Energia */}
+                    <Field name="upload.faturaEnergia">
+                        {({ field }) => (
+                            <Upload
+                                fileList={values.upload.faturaEnergia}
+                                onChange={(file) => setFieldValue(field.name, [file])}
+                                onFileRemove={() => setFieldValue(field.name, [])}
+                            >
+                                <Button variant="solid">Cópia da Fatura de Energia</Button>
+                            </Upload>
+                        )}
+                    </Field>
 
-                                    
+                    {/* Documento de Identidade */}
+                    <Field name="upload.documentoIdentidade">
+                        {({ field }) => (
+                            <Upload
+                                fileList={values.upload.documentoIdentidade}
+                                onChange={(file) => setFieldValue(field.name, [file])}
+                                onFileRemove={() => setFieldValue(field.name, [])}
+                            >
+                                <Button variant="solid">Documento de Identidade</Button>
+                            </Upload>
+                        )}
+                    </Field>
 
+                    {/* Campos específicos para empresas */}
+                    {tipoCadastro === 'empresa' && (
+                        <>
+                            <Field name="upload.contratoSocial">
+                                {({ field }) => (
+                                    <Upload
+                                        fileList={values.upload.contratoSocial}
+                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                    >
+                                        <Button variant="solid">Contrato Social</Button>
+                                    </Upload>
+                                )}
+                            </Field>
 
-                                    <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
-                                        <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-                                            Documentos
-                                        </label>
-                                        <div className="mt-2">
-                                            <div className="container">
-                                                {inputs.map((item, index) => (
-                                                    <div className="input_container" key={index}>
-                                                        <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
-                                                            {/* Input de Upload */}
-                                                            <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                <input type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
-                                                            </label>
+                            <Field name="upload.cartaoCnpj">
+                                {({ field }) => (
+                                    <Upload
+                                        fileList={values.upload.cartaoCnpj}
+                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                    >
+                                        <Button variant="solid">Cartão do CNPJ</Button>
+                                    </Upload>
+                                )}
+                            </Field>
+                        </>
+                    )}
 
-                                                            {/* Select */}
-                                                            <div className='flex items-center space-x-2'>
-                                                                <select name="type_document" className="border p-2 rounded-md">
-                                                                    <option value="Currículo profissional">Currículo Profissional</option>
-                                                                    <option value="Formação acadêmica">Formação acadêmica</option>
-                                                                    <option value="Experiência profissional">Experiência profissional</option>
-                                                                    <option value="Cursos realizados">Cursos realizados</option>
-                                                                </select>
-                                                                {inputs.length > 1 && (
+                    {/* Campos específicos para condomínios */}
+                    {tipoCadastro === 'condominio' && (
+                        <>
+                            <Field name="upload.ataAssembleia">
+                                {({ field }) => (
+                                    <Upload
+                                        fileList={values.upload.ataAssembleia}
+                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                    >
+                                        <Button variant="solid">Ata da Assembleia de Eleição</Button>
+                                    </Upload>
+                                )}
+                            </Field>
 
-                                                                    <span onClick={() => handleDeleteInput(index)}>
-                                                                        <CloseIcon />
-                                                                    </span>
-                                                                )}
-                                                            </div>
+                            <Field name="upload.cartaoCnpj">
+                                {({ field }) => (
+                                    <Upload
+                                        fileList={values.upload.cartaoCnpj}
+                                        onChange={(file) => setFieldValue(field.name, [file])}
+                                        onFileRemove={() => setFieldValue(field.name, [])}
+                                    >
+                                        <Button variant="solid">Cartão do CNPJ</Button>
+                                    </Upload>
+                                )}
+                            </Field>
+                        </>
+                    )}
+                </FormItem>
+                                                                <FormItem
+                                                                    invalid={
+                                                                        errors.singleCheckbox &&
+                                                                        touched.singleCheckbox
+                                                                    }
+                                                                    errorMessage={errors.singleCheckbox}
+                                                                >
+                                                                    <Field
+                                                                        name="singleCheckbox"
+                                                                        component={Checkbox}
+                                                                    >
+                                                                        Eu concordo com os termos e condições.
+                                                                    </Field>
+                                                                </FormItem>
 
-
-
-                                                        </div>
-                                                        {index === inputs.length - 1 && (
-                                                            <Button onClick={() => handleAddInput()} variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />}>
-                                                                <span>Adicionar mais arquivos.</span>
-                                                            </Button>)}
-                                                    </div>
-                                                ))}
-
+                                                                <FormItem>
+                                                                    <Button variant="solid" type="submit">
+                                                                        Cadastrar
+                                                                    </Button>
+                                                                </FormItem>
+                                                            </FormContainer>
+                                                        </Form>
+                                                    )}
+                                                </Formik>
                                             </div>
+
                                         </div>
+
                                     </div>
-                                </div>
-                            </div>
 
 
 
@@ -571,6 +670,7 @@ function CadastraProposta() {
                                     Voltar
                                 </Button>
                                 <button
+                                    hidden={step === 2}
                                     className={`py-2 px-4 ${canAdvance ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400'
                                         } text-white rounded shadow`}
                                     disabled={!canAdvance}
@@ -583,172 +683,12 @@ function CadastraProposta() {
 
 
 
-                        <>
-                            <div className="mt-8 md:order-1 md:mt-0">
-                                <p className="text-center leading-5 text-gray-500">
-                                    <span className="font-semibold">Portal do Empreender - V5 - 2024</span><br />
-                                </p>
-                            </div>
-                            {apto && userData && (
+                        <div className="mt-8 md:order-1 md:mt-0">
+                            <p className="text-center leading-5 text-gray-500">
+                                <span className="font-semibold">Portal do Empreender - V5 - 2024</span><br />
+                            </p>
+                        </div>
 
-                                <>
-
-                                    <div className="p-4 bg-white shadow-md  border-2 rounded-lg mt-2 mb-10">
-                                        <h2 className="text-lg font-bold mb-2">Informações do candidato</h2>
-                                        <p><strong>Nome:</strong> {userData.nome}</p>
-                                        <p><strong>CPF:</strong> {userData.cpf}</p>
-                                        <p><strong>Telefone:</strong> {userData.telefone}</p>
-                                        <p><strong>Email:</strong> {userData.email}</p>
-                                    </div>
-                                    <div className="">
-                                        <div className="p-4 bg-white shadow-md rounded-lg mb-10 bg-white shadow-lg  border-2 rounded-lg mt-2">
-
-                                            <h3 className="text-gray-700 mb-4">
-                                                Para seguir com o processo de seleção:
-                                            </h3>
-                                            <ol className="list-bullet list-inside text-gray-700 mb-4">
-
-                                                <li>
-                                                    Verifique se a documentação inserida na sua inscrição está em
-                                                    conformidade com a lista de documentos exigidos no{" "}
-                                                    <span className="font-semibold">
-                                                        <a target='_blank' href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMjM2" rel="noreferrer">Termo de Referência (TR0336/24)</a>
-
-                                                    </span>{" "}
-                                                    em anexo e realize os ajustes necessários até o dia{" "}
-                                                    <span className="font-semibold">16/10/2024 (quarta-feira)</span>:
-                                                </li>
-                                            </ol>
-                                            <ul className="list-disc list-inside text-gray-700 mb-4 ml-5">
-                                                <li>
-                                                    Documento de identificação onde conste o número de
-                                                    inscrição no CPF.
-                                                </li>
-                                                <li>
-                                                    Documentos comprobatórios da participação em cursos de graduação e
-                                                    pós-graduação (lato sensu e stricto sensu) informados no currículo.
-                                                </li>
-                                                <li>
-                                                    Documentos comprobatórios de cursos de especialização e extensão
-                                                    informados no currículo.
-                                                </li>
-                                                <li>
-                                                    Documentos comprobatórios da experiência profissional informada no
-                                                    currículo.
-                                                </li>
-                                            </ul>
-                                            <p className="text-gray-700 mb-4">
-                                                Caso seja constatada a ausência de alguma documentação, o candidato
-                                                poderá ser considerado{" "}
-                                                <span className="text-red-600 font-semibold">INAPTO</span>.
-                                            </p>
-                                            <p className="text-gray-700 mb-4">
-                                                A classificação do candidato como{" "}
-                                                <span className="text-green-600 font-semibold">APTO</span> e sua
-                                                posição no ranking gera apenas expectativa de contratação, não se
-                                                constituindo em obrigação da CACB. A eventual efetivação da
-                                                contratação observará as disposições legais e o interesse e
-                                                conveniência da CACB e da Associação Comercial local.
-                                            </p>
-                                            <p className="text-gray-700">
-                                                Ressalta-se que há o limite de até duas ACEs por consultor. Será
-                                                levada em conta, também, a disponibilidade adequada de tempo para
-                                                atender às necessidades e a distância entre os Municípios para a
-                                                realização dos trabalhos.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-2" id="errors" ><ErrorComponent errors={errors} /></div>
-                                    <div id="success">
-                                        {success &&
-                                            (<div className='pt-2 pb-2'>
-                                                <Alert showIcon className="mb-4" type="success">
-                                                    Arquivos atualizados com sucesso.
-                                                </Alert>
-                                            </div>)}
-                                    </div>
-
-                                    <form id="formData" onSubmit={handleSubmit}>
-
-                                        <div className="bg-white shadow-md border-2 rounded-lg mt-2 p-4">
-                                            <h3 className="text-lg font-semibold mb-4">Lista de arquivos enviados</h3>
-                                            <ul className="divide-y divide-gray-200">
-                                                {anexos.map((anexo) => (
-                                                    <li key={anexo.id} className="py-2 flex justify-between items-center">
-                                                        <span className="text-sm text-gray-700">{anexo.nome_arquivo}</span>
-
-                                                        <Button size='xs' className='mr-4' variant="solid">  <a href={`${import.meta.env.VITE_API_URL}/anexo/${anexo.id}/download/`} target="_blank" rel="noopener noreferrer">ver documento</a>  </Button>
-
-                                                    </li>
-
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div>
-
-
-
-                                            <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
-                                                <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-                                                    Documentos
-                                                </label>
-                                                <div className="mt-2">
-                                                    <div className="container">
-                                                        {inputs.map((item, index) => (
-                                                            <div key={index} className="input_container">
-                                                                <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
-                                                                    {/* Input de Upload */}
-                                                                    <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                        <input required type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .jpg, .jpeg, .png" />
-                                                                    </label>
-
-                                                                    {/* Select */}
-                                                                    <div className='flex items-center space-x-2'>
-                                                                        <select name="type_document" className="border p-2 rounded-md">
-                                                                            <option value="Currículo profissional">Currículo Profissional</option>
-                                                                            <option value="Formação acadêmica">Formação acadêmica</option>
-                                                                            <option value="Experiência profissional">Experiência profissional</option>
-                                                                            <option value="Cursos realizados">Cursos realizados</option>
-                                                                            <option value="Documento de identificação">Documento de identificação</option>
-                                                                        </select>
-                                                                        {inputs.length > 1 && (
-
-                                                                            <span onClick={() => handleDeleteInput(index)}>
-                                                                                <CloseIcon />
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-
-
-
-                                                                </div>
-                                                                {index === inputs.length - 1 && (
-                                                                    <Button variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />} onClick={() => handleAddInput()}>
-                                                                        <span>Adicionar mais arquivos</span>
-                                                                    </Button>)}
-                                                            </div>
-                                                        ))}
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="center text-center ">
-
-                                            <Button
-                                                disabled={isSubmitting}
-                                                title={isSubmitting ? "Enviando informações..." : ""} variant="solid">Complementar dados</Button>
-
-                                        </div>
-                                    </form>
-                                </>
-
-                            )}
-
-
-                        </>
 
                     </div>
                 </div>
