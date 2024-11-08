@@ -79,8 +79,10 @@ const AdicionarAnexo = () => {
         fetchData();
     }, [tipoVinculo, idVinculo, substitutoId]);
 
-    // Armazenar o tipoId inicial se for uma substituição
     const [tipoIdInicial, setTipoIdInicial] = useState('');
+
+    const query = new URLSearchParams(window.location.search);
+    const redirectUrl = query.get("redirectUrl");
 
     const handleSave = async (values: any) => {
         setLoading(true);
@@ -109,7 +111,11 @@ const AdicionarAnexo = () => {
 
             const anexoId = response.data.anexo.id;
 
-            window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
+            if (redirectUrl) {
+                window.location.href = `${redirectUrl}`;
+            } else {
+                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
+            }
         } catch (error) {
             toast.push(
                 <Notification title="Erro ao salvar arquivo." type="danger" />
@@ -122,7 +128,7 @@ const AdicionarAnexo = () => {
         <Container>
             <div className="w-full max-w-4xl mb-4">
                 <Breadcrumb items={breadcrumbItems} />
-                <h1 className="text-2xl font-semibold text-gray-800">Adição de Anexo</h1>
+                <h1 className="text-2xl font-semibold text-gray-800">Adição de Documento</h1>
             </div>
 
             <div className="w-full bg-white p-6 rounded-lg shadow-md">

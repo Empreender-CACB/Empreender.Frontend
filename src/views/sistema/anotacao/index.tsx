@@ -21,13 +21,13 @@ import { APP_PREFIX_PATH } from '@/constants/route.constant';
 moment.locale('pt-br');
 
 const situacaoOptions = [
-    { name: 'Em Cadastramento', value: 'ec', color: 'blue-600' },
-    { name: 'Divulgada', value: 'di', color: 'green-600' },
+    { name: 'Em Cadastramento', value: 'ec', color: 'bg-blue-600' },
+    { name: 'Divulgada', value: 'di', color: 'bg-green-600' },
 ];
 
 const leituraOptions = [
-    { name: 'Lida', value: 'lida', color: 'gray-600' },
-    { name: 'Não Lida', value: 'naoLida', color: 'green-600' },
+    { name: 'Lida', value: 'lida', color: 'bg-gray-600' },
+    { name: 'Não Lida', value: 'naoLida', color: 'bg-green-600' },
 ];
 
 const Anotacoes = () => {
@@ -52,7 +52,7 @@ const Anotacoes = () => {
             name: 'id',
             header: 'ID',
             type: 'number',
-            defaultFlex: 0.6,
+            defaultFlex: 0.2,
             filterEditor: SelectFilter,
         },
         {
@@ -87,6 +87,7 @@ const Anotacoes = () => {
         {
             name: 'situacao',
             header: 'Situação',
+            defaultFlex: 0.5,
             filterEditor: SelectFilter,
             filterEditorProps: {
                 dataSource: situacaoOptions.map(option => ({
@@ -95,23 +96,20 @@ const Anotacoes = () => {
                 })),
             },
             render: ({ value }: any) => {
-                const selectedOption = situacaoOptions.find(
-                    option => option.value === value
-                );
+                const selectedOption = situacaoOptions.find(option => option.value === value);
                 return (
-                    <Button
-                        variant="solid"
-                        color={selectedOption ? selectedOption.color : 'gray-500'}
-                        size="xs"
-                    >
-                        {selectedOption ? selectedOption.name : value}
-                    </Button>
+                    <div className="flex justify-center">
+                        <Tag className={`text-white ${selectedOption ? selectedOption.color : 'bg-gray-500'} border-0 rounded`}>
+                            {selectedOption ? selectedOption.name : value}
+                        </Tag>
+                    </div>
                 );
             },
         },
         {
             name: 'leitura',
             header: 'Leitura',
+            defaultFlex: 0.5,
             filterEditor: SelectFilter,
             filterEditorProps: {
                 dataSource: leituraOptions.map(option => ({
@@ -120,22 +118,17 @@ const Anotacoes = () => {
                 })),
             },
             render: ({ value, data }: any) => {
-                const selectedOption = leituraOptions.find(
-                    option => option.value === value
-                );
+                const selectedOption = leituraOptions.find(option => option.value === value);
                 const isAuthor = data.autor === nucpf;
-                console.log(data, nucpf);
                 return (
-                    <Button
-                        variant="solid"
-                        color={isAuthor ? 'blue-600' : (selectedOption ? selectedOption.color : 'gray-500')}
-                        size="xs"
-                    >
-                        {isAuthor ? 'Você escreveu' : (selectedOption ? selectedOption.name : 'Indisponível')}
-                    </Button>
+                    <div className="flex justify-center">
+                        <Tag className={`text-white ${isAuthor ? 'bg-blue-600' : (selectedOption ? selectedOption.color : 'bg-gray-500')} border-0 rounded`}>
+                            {isAuthor ? 'Você escreveu' : (selectedOption ? selectedOption.name : 'Indisponível')}
+                        </Tag>
+                    </div>
                 );
             },
-        },
+        }
     ];
 
     const { tipoVinculo, idVinculo } = useParams();
