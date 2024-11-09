@@ -229,6 +229,16 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral-nucleos`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
     },
+    {
+        key: 'Contatos.lista',
+        path: `${APP_PREFIX_PATH}/contatos/`,
+        component: lazy(() => import('@/views/sistema/contatos')),
+    },
+    {
+        key: 'Contatos.malaDireta',
+        path: `${APP_PREFIX_PATH}/contatos/mala-direta`,
+        component: lazy(() => import('@/views/sistema/contatos/mala-direta')),
+    },
 ]
 
 export default appsRoute

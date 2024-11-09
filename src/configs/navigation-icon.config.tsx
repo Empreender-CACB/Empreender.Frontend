@@ -27,7 +27,8 @@ import {
     FcSettings,
     FcShop,
     FcBusiness,
-    FcSupport
+    FcSupport,
+    FcConferenceCall
 } from 'react-icons/fc'
 
 export type NavigationIcons = Record<string, JSX.Element>
@@ -58,6 +59,7 @@ export const navigationIcon: NavigationIcons = {
     files: <FcFile />,
     curriculos: <FcDiploma2 />,
     adm: <FcSupport />,
+    contacts: <FcConferenceCall/>
 }
 
 export default navigationIcon
