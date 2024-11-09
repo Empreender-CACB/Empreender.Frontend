@@ -235,6 +235,16 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
     },
     {
+        key: 'Contatos.lista',
+        path: `${APP_PREFIX_PATH}/contatos/`,
+        component: lazy(() => import('@/views/sistema/contatos')),
+    },
+    {
+        key: 'Contatos.malaDireta',
+        path: `${APP_PREFIX_PATH}/contatos/mala-direta`,
+        component: lazy(() => import('@/views/sistema/contatos/mala-direta')),
+    },
+    {
         key: 'Anotacoes.adicionar',
         path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
         component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
