@@ -9,6 +9,7 @@ import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import capitalize from '@/components/ui/utils/capitalize';
 import { HiOutlinePlus } from 'react-icons/hi';
 import { CgClose as CloseIcon } from 'react-icons/cg'
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 const validationSchema = Yup.object().shape({
     descricao: Yup.string().required('Campo obrigatório'),
@@ -244,7 +245,17 @@ const AnotacaoForm = () => {
                             }
 
                             <div className="flex justify-end gap-4">
-                                <Button type="reset" className="bg-gray-300">Cancelar</Button>
+                                <Link
+                                    className="block lg:inline-block md:mb-0 mb-4"
+                                    to={`${APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`}
+                                >
+                                    <Button
+                                        block
+                                        variant="default"
+                                    >
+                                        Cancelar
+                                    </Button>
+                                </Link>
                                 <Button type="submit" disabled={loading} variant="solid">{loading ? 'Salvando...' : 'Salvar'}</Button>
                             </div>
                         </Form>

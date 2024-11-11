@@ -143,16 +143,15 @@ const AdicionarAnexo = () => {
                         tipoVinculo: tipoVinculo || '',
                         idVinculo: idVinculo || ''
                     }}
-                    enableReinitialize // Para garantir que o formulário seja reiniciado quando tipoIdInicial mudar
+                    enableReinitialize
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
                         handleSave(values);
                         setSubmitting(false);
                     }}
                 >
-                    {({ setFieldValue, values, errors, touched }) => {
+                    {({ setFieldValue, errors, touched }) => {
                         useEffect(() => {
-                            // Chama a função de configuração do tipo de arquivo quando tipoIdInicial estiver disponível
                             if (tipoIdInicial) {
                                 buscarTipoArquivo(tipoIdInicial);
                             }
@@ -345,7 +344,17 @@ const AdicionarAnexo = () => {
                                     </div>
 
                                     <div className="flex justify-end gap-4">
-                                        <Button type="reset" className="bg-gray-300">Cancelar</Button>
+                                        <Link
+                                            className="block lg:inline-block md:mb-0 mb-4"
+                                            to={`${redirectUrl}`}
+                                        >
+                                            <Button
+                                                block
+                                                variant="default"
+                                            >
+                                                Cancelar
+                                            </Button>
+                                        </Link>                                        
                                         <Button
                                             type="submit"
                                             variant='solid'
