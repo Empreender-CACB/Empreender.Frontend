@@ -17,6 +17,7 @@ import { capitalize } from 'lodash';
 import AnotacaoModal from './anotacao-modal';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import { AnotacaoCard } from '@/components/shared/TableCards/AnotacoesCard';
 
 moment.locale('pt-br');
 
@@ -206,6 +207,7 @@ const Anotacoes = () => {
                 filename="Anotações"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/anotacoes/lista/${tipoVinculo}/${idVinculo}`}
+                CardLayout={AnotacaoCard}
             />
 
             {selectedAnotacaoId && (
