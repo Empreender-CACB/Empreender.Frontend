@@ -32,6 +32,7 @@ const columns = [
             <Link
                 className="menu-item-link max-w-md text-blue-500 underline"
                 to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(data.id)}`}
+                target='_blank'
             >
                 {value}
             </Link>
@@ -47,7 +48,8 @@ const columns = [
         render: ({ value, data }: any) => (
             <Link
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/download-anexo/${btoa(data.id)}`}
+                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/${btoa(data.id)}`}
+                target='_blank'
                 >
                 {value}
             </Link>
