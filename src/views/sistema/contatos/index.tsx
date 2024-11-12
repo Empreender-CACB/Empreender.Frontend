@@ -117,6 +117,19 @@ const Contatos = () => {
     const [MarcadorType, setMarcadorType] = useState<string[]>([])
 
 
+    const getLabel = (idtipoentidade: string) => {
+        switch (idtipoentidade) {
+            case 'EMP':
+                return 'Empresa';
+            case 'ACE':
+                return 'Entidade';
+            case 'FED':
+                return 'Federação';
+
+        }
+    }
+
+
     useEffect(() => {
         const getVinculos = async () => {
             try {
@@ -127,7 +140,7 @@ const Contatos = () => {
                     const mappedOptions = response.data.map((vinculoItem: any) => {
                         return {
                             value: vinculoItem.idtipoentidade,
-                            label: vinculoItem.idtipoentidade === 'EMP' ? 'Empresa' : 'Entidade',
+                            label: getLabel(vinculoItem.idtipoentidade),
                         }
                     })
                     setOptionsVinculos(mappedOptions)
@@ -181,7 +194,7 @@ const Contatos = () => {
                             placeholder="Todos"
                         >
                         </Select>
-                        <span className="ml-4 pr-2 font-black">Marcadores: </span>
+                        <span className="ml-4 pr-2 font-black">Marcadores do ente: </span>
                         <Select
                             isMulti
                             options={optionsMarcador}
