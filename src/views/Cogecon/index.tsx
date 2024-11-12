@@ -102,11 +102,22 @@ function CadastraProposta() {
     const [cnpj, setCnpj] = useState('');
     const [empresaData, setEmpresaData] = useState(null);
     const [status, setStatus] = useState('');
-    const [statusMessage, setStatusMessage] = useState('');
     const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [tipoCadastro, setTipoCadastro] = useState('');
     const [isManualContact, setIsManualContact] = useState(false);
 
+
+    const handleKeyDown = (event: any) => {
+        if (event.key === 'Enter') {
+            if ((cnpj.length === 11 && tipoCadastro == 'pessoa_fisica' || cnpj.length === 14 && tipoCadastro !== 'pessoa_fisica')) {
+                verify();
+            }
+            else {
+                alert("Insira um número de CNPJ ou CPF válido.")
+            }
+        }
+    }
 
     const [step, setStep] = useState(0)
 
@@ -127,7 +138,7 @@ function CadastraProposta() {
 
     const onNext = () => onChange(step + 1)
 
-    const onPrevious = () => {onChange(0), setError(false)}
+    const onPrevious = () => { onChange(0), setError(false), setIsManualContact(false) }
 
     // const stepConditions: { [key: number]: () => boolean } = {
     //     0: () => tipoCadastro !== '',
@@ -155,10 +166,16 @@ function CadastraProposta() {
         setIsLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/cogecom/status/${cnpj}`);
-            await setEmpresaData(response.data);
-            await setStatus(response.data.status);
-            setError(!response.data.permissao.habil);
-            onNext();
+            if(response.data.permissao.habil === false) {
+                setError(!response.data.permissao.habil);
+                setErrorMessage(response.data.permissao.mensagem);
+            }
+            else{
+                await setEmpresaData(response.data);
+                await setStatus(response.data.status);
+                onNext();
+            }
+            
         } catch (err) {
             setError(true);
         }
@@ -203,12 +220,12 @@ function CadastraProposta() {
                                 <p className=" font-extrabold text-gray-200 text-2xl  mb-2">Projeto COGECOM</p>
 
                                 <p className="mb-4 text-white">
-                                    No âmbito do PDE, o projeto visa facilitar a adesão de empresas e entidades, promovendo o consumo de energia renovável e a redução de custos operacionais.
-                                    Ao integrar-se ao COGECOM, empresas podem reduzir suas despesas com energia, tornar-se mais sustentáveis e investir em outras áreas de crescimento, contribuindo para um futuro mais sustentável.
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde molestias, accusantium expedita adipisci rerum similique nihil? Cupiditate temporibus esse nulla reprehenderit. Temporibus earum neque quas obcaecati eum nam quaerat magni?Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime assumenda vel quibusdam, deserunt voluptas iste earum distinctio in provident beatae, excepturi quidem commodi repudiandae fugiat asperiores, eum debitis quisquam. Quaerat!
+                                    ipsum dolor sit amet consectetur adipisicing elit. Maxime assumenda vel quibusdam, deserunt voluptas iste earum distinctio in provident beatae, excepturi quidem commodi repudiandae fugiat asperiores, eum debitis quisquam. Quaerat!
                                 </p>
 
                                 <div className="flex">
-                                    <a target="_blank" href="#" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MDY3" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
                                         <span className='text-red-600 font-bold'><BsFilePdf /></span>  <i className='text-ms'>Termo de Adesão</i>
                                     </a>
                                 </div>
@@ -217,7 +234,7 @@ function CadastraProposta() {
                         </div>
 
                         <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                            <h1 className="text-2xl font-semibold mb-4">Cadastro de Empresas e Participantes</h1>
+                            <h1 className="text-2xl font-semibold mb-4">Adesão de empresas e pessoas físicas</h1>
 
                             <p className="mb-4">
                                 Nesta página, você poderá iniciar o processo de adesão ao Projeto COGECOM.
@@ -295,6 +312,7 @@ function CadastraProposta() {
                                         <IMaskInput
                                             mask={tipoCadastro === 'pessoa_fisica' ? '000.000.000-00' : '00.000.000/0000-00'}
                                             unmask={true}
+                                            onKeyDown={handleKeyDown}
                                             onAccept={(value) => setCnpj(value)}
                                             placeholder={tipoCadastro === 'pessoa_fisica' ? 'CPF' : 'CNPJ'}
                                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -316,19 +334,31 @@ function CadastraProposta() {
                                                 Avançar
                                             </Button>
 
-
-                                            {error &&
+                                            {error && (
                                                 <Alert showIcon className="mb-4" type="danger">
-                                                    {tipoCadastro === 'pessoa_fisica' ? (
-                                                        <>Essa pessoa não está em nossa base de dados. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                    {errorMessage ? (
+                                                        <>{errorMessage}</>
                                                     ) : (
-                                                        <>Esta empresa não está em nossa base de dados da “Receita Federal”. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                        tipoCadastro === 'pessoa_fisica' ? (
+                                                            <>Essa pessoa não está em nossa base de dados. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                        ) : (
+                                                            <>Esta empresa não está em nossa base de dados da “Receita Federal”. Por favor, entre em contato com <a href="mailto:contato@cacb.org.br">contato@cacb.org.br</a>.</>
+                                                        )
                                                     )}
                                                 </Alert>
-                                            }
+                                            )}
 
-                                            {empresaData && (
-                                                <div className="w-full max-w-4xl mx-auto p-6">
+
+                                        </div>
+
+                                    </div>
+                                )}
+
+                                {step === 2 && (
+                                    
+                                    <div className="">
+{empresaData && (
+                                                <div className="w-full max-w-4xl mx-auto p-2">
                                                     <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
                                                         <div className="p-6">
                                                             <div className="flex justify-between items-center mb-4">
@@ -348,14 +378,9 @@ function CadastraProposta() {
                                                     </div>
                                                 </div>
                                             )}
-                                        </div>
 
-                                    </div>
-                                )}
 
-                                {step === 2 && (
-                                    <div className="mx-auto my-2">
-                                        <div className=" mt-10 py-2 py-2">
+                                        <div className=" mt-5 py-2 py-2">
                                             <div>
                                                 <Formik
                                                     enableReinitialize
