@@ -283,12 +283,15 @@ const AcompanhamentoGeralNucleo = () => {
     };
 
     const user = useAppSelector((state) => state.auth.user);
+    const userAssociacoesIds = user.associacoes.map((entidade) => entidade.idassociacao);
 
-    // Função para renderizar os botões
     const renderButtons = (data: any) => {
         setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
-        setIsGestor(user.nucleos.some((nucleo) => nucleo.idnucleo === data.idnucleo));
 
+        const isGestorDeEntidadeComNucleo = userAssociacoesIds.includes(data.idassociacao || data.relacao_2);
+
+        setIsGestor(user.nucleos.some((nucleo) => nucleo.idnucleo === data.idnucleo) || isGestorDeEntidadeComNucleo);
+        
         return (
             <div className="flex space-x-2">
                 <Tooltip title="Ver">
@@ -358,7 +361,7 @@ const AcompanhamentoGeralNucleo = () => {
                             icon={<FaQuestion />}
                             className="ml-2"
                             onClick={() => {
-                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM4OTE1')
                             }}
                         />
                     </Tooltip>

@@ -62,7 +62,7 @@ const AcompanhamentoNucleos = () => {
         },
         {
             name: 'marcos_criticos.nome',
-            header: 'Nome',
+            header: 'Atividade',
             columnName: 'marcos_criticos.nome',
             type: 'string',
             defaultFlex: 1,
@@ -179,7 +179,6 @@ const AcompanhamentoNucleos = () => {
 
     const { id } = useParams<{ id: string }>();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedMarcoId, setSelectedMarcoId] = useState(null);
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -211,9 +210,6 @@ const AcompanhamentoNucleos = () => {
     const user = useAppSelector((state) => state.auth.user);
 
     const [reload, setReload] = useState(false);
-
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
 
     const handleOpenEditModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
@@ -294,11 +290,18 @@ const AcompanhamentoNucleos = () => {
 
     const handleCloseHistoricoModal = () => setIsHistoricoModalOpen(false);
 
-    // Função para renderizar os botões
+    const userAssociacoesIds = user.associacoes.map((entidade) => entidade.idassociacao);
+    
     const renderButtons = (data: any) => {
         setIsConsultor(recursos.includes('analista_acompanhamento_nucleo'));
-        const isGestorBool = nucleoDetails && user?.nucleos && user?.nucleos.some(nuc => nuc.idnucleo === nucleoDetails.idnucleo);
-
+    
+        const isGestorDeEntidadeComNucleo =
+            nucleoDetails && userAssociacoesIds.includes(nucleoDetails.idassociacao);
+    
+        const isGestorBool =
+            nucleoDetails &&
+            (user?.nucleos.some((nuc) => nuc.idnucleo === nucleoDetails.idnucleo) || isGestorDeEntidadeComNucleo);
+    
         setIsGestor(isGestorBool);
 
         return (
@@ -375,7 +378,7 @@ const AcompanhamentoNucleos = () => {
                                 icon={<FaQuestion />}
                                 className="ml-2"
                                 onClick={() => {
-                                    window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                                    window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM4OTE1')
                                 }}
                             />
                         </Tooltip>
@@ -449,9 +452,6 @@ const AcompanhamentoNucleos = () => {
                 CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
-            <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>
-                <NewMarcoCriticoForm relacao='nucleo' entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
-            </Dialog>
             <Dialog isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal}>
                 <FreezeMarcosCriticosModal tipo="nucleo" isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
             </Dialog>
