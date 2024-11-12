@@ -250,7 +250,7 @@ function CadastraProposta() {
                                 <li>Verificar possíveis restrições aplicáveis.</li>
                                 <li>Incluir a empresa ou pessoa física no cadastro do Portal do Empreender (PDE).</li>
                             </ul>
-
+{/* 
                             <h2 className="text-xl font-semibold mb-2">Termos de Adesão:</h2>
                             <p className="mb-4">
                                 Você também deverá concordar com a manutenção e processamento dos dados fornecidos, conforme a Lei Geral de Proteção de Dados (LGPD).
@@ -258,7 +258,7 @@ function CadastraProposta() {
 
                             <p className="mb-4">
                                 Empresas não cadastradas no PDE serão incluídas automaticamente e identificadas como participantes do projeto através do campo "Origem", marcado como "COGECOM".
-                            </p>
+                            </p> */}
 
 
                         </div>
@@ -562,6 +562,7 @@ function CadastraProposta() {
 
 
                                                                 <FormItem
+                                                                className='mt-5'
                                                                     asterisk
                                                                     label="Inclusão de Documentos"
                                                                     invalid={Boolean(errors.upload && touched.upload)}
