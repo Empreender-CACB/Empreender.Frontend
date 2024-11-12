@@ -146,18 +146,15 @@ const AnotacaoForm = () => {
             <Breadcrumb items={breadcrumbItems} />
             <div className="w-full bg-white p-6 rounded-lg shadow-md">
                 <Formik
-                    initialValues={{
-                        descricao: '',
-                        situacao: '',
-                        privacidade: '',
-                    }}
-                    enableReinitialize
+                    initialValues={initialValues}
+                    enableReinitialize 
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
                         handleSave(values, inputs, tipoVinculo, idVinculo);
                         setSubmitting(false);
                     }}
                 >
+
                     {({ errors, touched }) => (
                         <Form>
                             <div className="mb-6">
