@@ -562,6 +562,7 @@ function CadastraProposta() {
 
 
                                                                 <FormItem
+                                                                className='mt-5'
                                                                     asterisk
                                                                     label="Inclusão de Documentos"
                                                                     invalid={Boolean(errors.upload && touched.upload)}
