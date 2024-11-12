@@ -62,7 +62,6 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
             });
             setIsRead(true);
             window.location.reload();
-
         } catch (error) {
             console.error('Erro ao marcar como lida:', error);
         }
@@ -86,7 +85,7 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
     return (
         <Dialog isOpen={isOpen} onClose={onClose} width={1200}>
             {anotacao && (
-                <>
+                <div className="max-h-[75vh] overflow-y-auto p-6">
                     <div className="flex items-center mb-4">
                         <div className="flex items-center space-x-4 mr-5">
                             <h2 className="text-xl font-bold text-gray-800">Anotação {anotacao.id}</h2>
@@ -129,7 +128,7 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                                     </Button>
                                 </Link>
 
-                                <Button variant="solid" color="red" onClick={handleDelete} size='sm'>
+                                <Button variant="solid" color="red" onClick={handleDelete} size="sm">
                                     Excluir
                                 </Button>
 
@@ -149,18 +148,17 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                                         Anexar Arquivo
                                     </Button>
                                 </Link>
-
                             </div>
                         )}
 
                         {!isRead && anotacao.situacao === situacaoDivulgada && !isAuthor && (
-                            <Button variant="solid" color="green" onClick={handleMarkAsRead} size='sm'>
+                            <Button variant="solid" color="green" onClick={handleMarkAsRead} size="sm">
                                 Marcar como lida
                             </Button>
                         )}
                     </div>
 
-                    <section className="p-6 mt-4 bg-white rounded-lg shadow-lg max-w-full border-2">
+                    <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
                         <h2 className="text-xl font-bold text-gray-800">Documentos</h2>
 
                         <AnexosComponent
@@ -169,7 +167,7 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                             minHeight={300}
                         />
                     </section>
-                </>
+                </div>
             )}
         </Dialog>
     );
