@@ -86,77 +86,80 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
         <Dialog isOpen={isOpen} onClose={onClose} width={1200}>
             {anotacao && (
                 <div className="max-h-[75vh] overflow-y-auto p-6">
-                    <div className="flex items-center mb-4">
-                        <div className="flex items-center space-x-4 mr-5">
-                            <h2 className="text-xl font-bold text-gray-800">Anotação {anotacao.id}</h2>
-                            <span className="text-gray-600">
-                                {anotacao.situacao === situacaoDivulgada ? (
-                                    `Criado em ${moment(anotacao.data_inclusao).format('DD/MM/YYYY HH:mm')}`
-                                ) : (
-                                    <Tag className={`${situacaoLabels[anotacao.situacao]?.color || 'bg-gray-400'} text-white border-0 rounded`}>
-                                        {situacaoLabels[anotacao.situacao]?.label || 'Indisponível'}
-                                    </Tag>
-                                )}
-                            </span>
-                        </div>
-                        <div className="flex space-x-4">
-                            <div>
-                                <strong>Privacidade: </strong>
-                                {privacidadeLabels[anotacao.privacidade] || 'Indisponível'}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mb-4">
-                        <p className="text-gray-700">{anotacao.descricao}</p>
-                    </div>
-
-                    <div className="flex justify-end space-x-2 mt-4">
-                        {isAuthor && (
-                            <div className="flex space-x-2">
-                                <Link
-                                    className="block lg:inline-block md:mb-0 mb-4"
-                                    to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}/${anotacao.id}`}
-                                >
-                                    <Button
-                                        block
-                                        variant="solid"
-                                        size="sm"
-                                        icon={<HiPencil />}
+                    <div className="bg-white rounded-lg shadow-lg border-2 p-4 relative mb-4">
+                        <div className="absolute top-2 right-2 flex space-x-2">
+                            {isAuthor && (
+                                <>
+                                    <Link
+                                        className="block lg:inline-block md:mb-0 mb-4"
+                                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}/${anotacao.id}`}
                                     >
-                                        Editar
-                                    </Button>
-                                </Link>
+                                        <Button
+                                            block
+                                            variant="solid"
+                                            size="sm"
+                                            icon={<HiPencil />}
+                                        >
+                                            Editar
+                                        </Button>
+                                    </Link>
 
-                                <Button variant="solid" color="red" onClick={handleDelete} size="sm">
-                                    Excluir
+                                    <Button variant="solid" color="red" onClick={handleDelete} size="sm">
+                                        Excluir
+                                    </Button>
+
+                                    <Link
+                                        className="block lg:inline-block md:mb-0 mb-4"
+                                        to={{
+                                            pathname: `${APP_PREFIX_PATH}/anexos/adicionar/anotacao/${anotacao.id}`,
+                                            search: `?redirectUrl=${encodeURIComponent(`${APP_PREFIX_PATH}/anotacoes/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}`)}`,
+                                        }}
+                                    >
+                                        <Button
+                                            block
+                                            variant="solid"
+                                            size="sm"
+                                            icon={<HiPlusCircle />}
+                                        >
+                                            Anexar Arquivo
+                                        </Button>
+                                    </Link>
+                                </>
+                            )}
+                            {!isRead && anotacao.situacao === situacaoDivulgada && !isAuthor && (
+                                <Button variant="solid" color="green" onClick={handleMarkAsRead} size="sm">
+                                    Marcar como lida
                                 </Button>
+                            )}
+                        </div>
 
-                                <Link
-                                    className="block lg:inline-block md:mb-0 mb-4"
-                                    to={{
-                                        pathname: `${APP_PREFIX_PATH}/anexos/adicionar/anotacao/${anotacao.id}`,
-                                        search: `?redirectUrl=${encodeURIComponent(`${APP_PREFIX_PATH}/anotacoes/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}`)}`,
-                                    }}
-                                >
-                                    <Button
-                                        block
-                                        variant="solid"
-                                        size="sm"
-                                        icon={<HiPlusCircle />}
-                                    >
-                                        Anexar Arquivo
-                                    </Button>
-                                </Link>
+                        {/* Conteúdo da anotação */}
+                        <div className="flex items-center mb-4">
+                            <div className="flex items-center space-x-4 mr-5">
+                                <h2 className="text-xl font-bold text-gray-800">Anotação {anotacao.id}</h2>
+                                <span className="text-gray-600">
+                                    {anotacao.situacao === situacaoDivulgada ? (
+                                        `Criado em ${moment(anotacao.data_inclusao).format('DD/MM/YYYY HH:mm')}`
+                                    ) : (
+                                        <Tag className={`${situacaoLabels[anotacao.situacao]?.color || 'bg-gray-400'} text-white border-0 rounded`}>
+                                            {situacaoLabels[anotacao.situacao]?.label || 'Indisponível'}
+                                        </Tag>
+                                    )}
+                                </span>
                             </div>
-                        )}
+                            <div className="flex space-x-4">
+                                <div>
+                                    <strong>Privacidade: </strong>
+                                    {privacidadeLabels[anotacao.privacidade] || 'Indisponível'}
+                                </div>
+                            </div>
+                        </div>
 
-                        {!isRead && anotacao.situacao === situacaoDivulgada && !isAuthor && (
-                            <Button variant="solid" color="green" onClick={handleMarkAsRead} size="sm">
-                                Marcar como lida
-                            </Button>
-                        )}
+                        <div className="mb-4">
+                            <p className="text-gray-700">{anotacao.descricao}</p>
+                        </div>
                     </div>
+
 
                     <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
                         <h2 className="text-xl font-bold text-gray-800">Documentos</h2>
