@@ -22,6 +22,11 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'Anexos.adicionar',
+        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo/:substitutoId?`,
+        component: lazy(() => import('@/views/sistema/anexos/adicionar')),
+    },
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
@@ -228,6 +233,16 @@ const appsRoute: Routes = [
         key: 'representatividade.marcosCriticosGeralNucleos',
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral-nucleos`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
+    },
+    {
+        key: 'Anotacoes.adicionar',
+        path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
+        component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
+    },    
+    {
+        key: 'Anotacoes.index',
+        path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
+        component: lazy(() => import('@/views/sistema/anotacao/index')),
     },
 ]
 
