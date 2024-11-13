@@ -377,30 +377,30 @@ function CadastraProposta() {
                                             <div>
                                                 <Formik
                                                     enableReinitialize
-    initialValues={{
-        segment: '',
-        nomeContato: '',
-        cpfContato: '',
-        emailContato: '',
-        celularContato: '',
-        isManualContact: false,
-        tipoCadastro: tipoCadastro,
-        upload: {
-            faturaEnergia: null,
-            documentoIdentidade: null,
-            contratoSocial: null,
-            cartaoCnpj: null,
-            ataAssembleia: null,
-        },
-    }}
-    validationSchema={validationSchema}
-    onSubmit={(values, { setSubmitting }) => {
-        console.log('values', values);
-        setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-        }, 400);
-    }}
+                                                    initialValues={{
+                                                        segment: '',
+                                                        nomeContato: '',
+                                                        cpfContato: '',
+                                                        emailContato: '',
+                                                        celularContato: '',
+                                                        isManualContact: false,
+                                                        tipoCadastro: tipoCadastro,
+                                                        upload: {
+                                                            faturaEnergia: null,
+                                                            documentoIdentidade: null,
+                                                            contratoSocial: null,
+                                                            cartaoCnpj: null,
+                                                            ataAssembleia: null,
+                                                        },
+                                                    }}
+                                                    validationSchema={validationSchema}
+                                                    onSubmit={(values, { setSubmitting }) => {
+                                                        console.log('values', values);
+                                                        setTimeout(() => {
+                                                            alert(JSON.stringify(values, null, 2));
+                                                            setSubmitting(false);
+                                                        }, 400);
+                                                    }}
                                                 >
                                                     {({ values, touched, setFieldValue, errors }: any) => (
                                                         <Form>
@@ -553,93 +553,115 @@ function CadastraProposta() {
                                                                     </div>
                                                                 )}
 
-
                                                                 <FormItem
-                                                                    className='mt-5'
+                                                                    label="Cópia da Fatura de Energia"
                                                                     asterisk
-                                                                    label="Inclusão de Documentos"
-                                                                    invalid={Boolean(errors.upload && touched.upload)}
+                                                                    invalid={!!errors.upload?.faturaEnergia && touched.upload?.faturaEnergia}
+                                                                    errorMessage={errors.upload?.faturaEnergia}
+                                                                    className="flex-1 w-full md:w-auto"
                                                                 >
                                                                     <Field name="upload.faturaEnergia">
-                                                                        {({ field }: any) => (
+                                                                        {({ field }) => (
                                                                             <Upload
-                                                                                fileList={values.upload.faturaEnergia}
-                                                                                onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                onFileRemove={() => setFieldValue(field.name, [])}
-                                                                            >
-                                                                                <Button variant="solid">Cópia da Fatura de Energia</Button>
-                                                                            </Upload>
+                                                                                uploadLimit={1}
+                                                                                onChange={(files) => setFieldValue('upload.faturaEnergia', files[0])}
+                                                                            />
                                                                         )}
                                                                     </Field>
-
-                                                                    <Field name="upload.documentoIdentidade">
-                                                                        {({ field }: any) => (
-                                                                            <Upload
-                                                                                fileList={values.upload.documentoIdentidade}
-                                                                                onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                onFileRemove={() => setFieldValue(field.name, [])}
-                                                                            >
-                                                                                <Button variant="solid">Documento de Identidade</Button>
-                                                                            </Upload>
-                                                                        )}
-                                                                    </Field>
-
-                                                                    {tipoCadastro === 'empresa' && (
-                                                                        <>
-                                                                            <Field name="upload.contratoSocial">
-                                                                                {({ field }: any) => (
-                                                                                    <Upload
-                                                                                        fileList={values.upload.contratoSocial}
-                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                                                                    >
-                                                                                        <Button variant="solid">Contrato Social</Button>
-                                                                                    </Upload>
-                                                                                )}
-                                                                            </Field>
-
-                                                                            <Field name="upload.cartaoCnpj">
-                                                                                {({ field }: any) => (
-                                                                                    <Upload
-                                                                                        fileList={values.upload.cartaoCnpj}
-                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                                                                    >
-                                                                                        <Button variant="solid">Cartão do CNPJ</Button>
-                                                                                    </Upload>
-                                                                                )}
-                                                                            </Field>
-                                                                        </>
-                                                                    )}
-
-                                                                    {tipoCadastro === 'condominio' && (
-                                                                        <>
-                                                                            <Field name="upload.ataAssembleia">
-                                                                                {({ field }: any) => (
-                                                                                    <Upload
-                                                                                        fileList={values.upload.ataAssembleia}
-                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                                                                    >
-                                                                                        <Button variant="solid">Ata da Assembleia de Eleição</Button>
-                                                                                    </Upload>
-                                                                                )}
-                                                                            </Field>
-
-                                                                            <Field name="upload.cartaoCnpj">
-                                                                                {({ field }: any) => (
-                                                                                    <Upload
-                                                                                        fileList={values.upload.cartaoCnpj}
-                                                                                        onChange={(file) => setFieldValue(field.name, [file])}
-                                                                                        onFileRemove={() => setFieldValue(field.name, [])}
-                                                                                    >
-                                                                                        <Button variant="solid">Cartão do CNPJ</Button>
-                                                                                    </Upload>
-                                                                                )}
-                                                                            </Field>
-                                                                        </>
-                                                                    )}
                                                                 </FormItem>
+
+                                                                <FormItem
+                                                                    label="Documento de Identidade"
+                                                                    asterisk
+                                                                    invalid={!!errors.upload?.documentoIdentidade && touched.upload?.documentoIdentidade}
+                                                                    errorMessage={errors.upload?.documentoIdentidade}
+                                                                    className="flex-1 w-full md:w-auto"
+                                                                >
+                                                                    <Field name="upload.documentoIdentidade">
+                                                                        {({ field }) => (
+                                                                            <Upload
+                                                                                uploadLimit={1}
+                                                                                onChange={(files) => setFieldValue('upload.documentoIdentidade', files[0])}
+                                                                            />
+                                                                        )}
+                                                                    </Field>
+                                                                </FormItem>
+
+                                                                {tipoCadastro === 'empresa' && (
+                                                                    <>
+                                                                        <FormItem
+                                                                            label="Contrato Social"
+                                                                            asterisk
+                                                                            invalid={!!errors.upload?.contratoSocial && touched.upload?.contratoSocial}
+                                                                            errorMessage={errors.upload?.contratoSocial}
+                                                                            className="flex-1 w-full md:w-auto"
+                                                                        >
+                                                                            <Field name="upload.contratoSocial">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        uploadLimit={1}
+                                                                                        onChange={(files) => setFieldValue('upload.contratoSocial', files[0])}
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
+
+                                                                        <FormItem
+                                                                            label="Cartão do CNPJ"
+                                                                            asterisk
+                                                                            invalid={!!errors.upload?.cartaoCnpj && touched.upload?.cartaoCnpj}
+                                                                            errorMessage={errors.upload?.cartaoCnpj}
+                                                                            className="flex-1 w-full md:w-auto"
+                                                                        >
+                                                                            <Field name="upload.cartaoCnpj">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        uploadLimit={1}
+                                                                                        onChange={(files) => setFieldValue('upload.cartaoCnpj', files[0])}
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
+                                                                    </>
+                                                                )}
+
+                                                                {tipoCadastro === 'condominio' && (
+                                                                    <>
+                                                                        <FormItem
+                                                                            label="Ata da Assembleia"
+                                                                            asterisk
+                                                                            invalid={!!errors.upload?.ataAssembleia && touched.upload?.ataAssembleia}
+                                                                            errorMessage={errors.upload?.ataAssembleia}
+                                                                            className="flex-1 w-full md:w-auto"
+                                                                        >
+                                                                            <Field name="upload.ataAssembleia">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        uploadLimit={1}
+                                                                                        onChange={(files) => setFieldValue('upload.ataAssembleia', files[0])}
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
+
+                                                                        <FormItem
+                                                                            label="Cartão do CNPJ"
+                                                                            asterisk
+                                                                            invalid={!!errors.upload?.cartaoCnpj && touched.upload?.cartaoCnpj}
+                                                                            errorMessage={errors.upload?.cartaoCnpj}
+                                                                            className="flex-1 w-full md:w-auto"
+                                                                        >
+                                                                            <Field name="upload.cartaoCnpj">
+                                                                                {({ field }) => (
+                                                                                    <Upload
+                                                                                        uploadLimit={1}
+                                                                                        onChange={(files) => setFieldValue('upload.cartaoCnpj', files[0])}
+                                                                                    />
+                                                                                )}
+                                                                            </Field>
+                                                                        </FormItem>
+                                                                    </>
+                                                                )}
                                                                 <FormItem
                                                                     invalid={
                                                                         errors.singleCheckbox &&
