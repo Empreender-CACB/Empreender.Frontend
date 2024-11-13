@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
-import { Button, Tag } from '@/components/ui';
+import { Button, Tag, Tooltip } from '@/components/ui';
 import { AdaptableCard } from '@/components/shared';
 import { useEffect, useState } from 'react';
 import 'moment/locale/pt-br';
@@ -18,6 +18,7 @@ import AnotacaoModal from './anotacao-modal';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import { AnotacaoCard } from '@/components/shared/TableCards/AnotacoesCard';
+import { FaQuestion } from 'react-icons/fa';
 
 moment.locale('pt-br');
 
@@ -185,6 +186,17 @@ const Anotacoes = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
                     <h3 className="mb-4 lg:mb-0">Anotações</h3>
+                    <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
+                        <Button
+                            shape="circle"
+                            size="xs"
+                            icon={<FaQuestion />}
+                            className="ml-2"
+                            onClick={() => {
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5Mg==')
+                            }}
+                        />
+                    </Tooltip>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
