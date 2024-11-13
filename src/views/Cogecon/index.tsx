@@ -20,10 +20,6 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { BsTelephone, BsFilePdf } from 'react-icons/bs';
 import { MdWork } from 'react-icons/md'
 
-
-
-
-
 const validationSchema = Yup.object().shape({
     singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
     segment: Yup.array().min(1, 'Selecione um contato.'),
@@ -53,7 +49,7 @@ const validationSchema = Yup.object().shape({
             then: (schema) => schema.required('Contrato social é obrigatório para empresas'),
         }),
         cartaoCnpj: Yup.mixed().when('tipoCadastro', {
-            is: (value) => value === 'empresa' || value === 'condominio',
+            is: (value: any) => value === 'empresa' || value === 'condominio',
             then: (schema) => schema.required('Cartão do CNPJ é obrigatório para empresas e condomínios'),
         }),
         ataAssembleia: Yup.mixed().when('tipoCadastro', {
@@ -63,33 +59,32 @@ const validationSchema = Yup.object().shape({
     }),
 });
 
+// const ErrorComponent = ({ errors }: any) => {
+//     if (!errors || errors.length === 0) {
+//         return null; // Não há erros, não renderiza nada
+//     }
 
-const ErrorComponent = ({ errors }: any) => {
-    if (!errors || errors.length === 0) {
-        return null; // Não há erros, não renderiza nada
-    }
-
-    return (
-        <div className="rounded-lg bg-red-50 p-4">
-            <div className="flex">
-                <div className="flex-shrink-0">
-                    <CloseIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
-                </div>
-                <div className="ml-3">
-                    <h3 className="text-sm font-strong text-red-800">{`Há ${errors.length === 1 ? '' : ''
-                        } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
-                    <div className="mt-2 text-sm text-red-700">
-                        <ul role="list" className="list-disc space-y-1 pl-5">
-                            {errors.map((error, index) => (
-                                <li key={index}>{error.message}</li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
+//     return (
+//         <div className="rounded-lg bg-red-50 p-4">
+//             <div className="flex">
+//                 <div className="flex-shrink-0">
+//                     <CloseIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+//                 </div>
+//                 <div className="ml-3">
+//                     <h3 className="text-sm font-strong text-red-800">{`Há ${errors.length === 1 ? '' : ''
+//                         } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
+//                     <div className="mt-2 text-sm text-red-700">
+//                         <ul role="list" className="list-disc space-y-1 pl-5">
+//                             {errors.map((error, index) => (
+//                                 <li key={index}>{error.message}</li>
+//                             ))}
+//                         </ul>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
 
 
 function CadastraProposta() {
@@ -100,7 +95,7 @@ function CadastraProposta() {
     const [isLoading, setIsLoading] = useState(false);
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
     const [cnpj, setCnpj] = useState('');
-    const [empresaData, setEmpresaData] = useState(null);
+    const [empresaData, setEmpresaData] = useState<any>(null);
     const [status, setStatus] = useState('');
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -166,16 +161,16 @@ function CadastraProposta() {
         setIsLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/cogecom/status/${cnpj}`);
-            if(response.data.permissao.habil === false) {
+            if (response.data.permissao.habil === false) {
                 setError(!response.data.permissao.habil);
                 setErrorMessage(response.data.permissao.mensagem);
             }
-            else{
+            else {
                 await setEmpresaData(response.data);
                 await setStatus(response.data.status);
                 onNext();
             }
-            
+
         } catch (err) {
             setError(true);
         }
@@ -250,7 +245,7 @@ function CadastraProposta() {
                                 <li>Verificar possíveis restrições aplicáveis.</li>
                                 <li>Incluir a empresa ou pessoa física no cadastro do Portal do Empreender (PDE).</li>
                             </ul>
-{/* 
+                            {/* 
                             <h2 className="text-xl font-semibold mb-2">Termos de Adesão:</h2>
                             <p className="mb-4">
                                 Você também deverá concordar com a manutenção e processamento dos dados fornecidos, conforme a Lei Geral de Proteção de Dados (LGPD).
@@ -355,61 +350,59 @@ function CadastraProposta() {
                                 )}
 
                                 {step === 2 && (
-                                    
                                     <div className="">
-{empresaData && (
-                                                <div className="w-full max-w-4xl mx-auto p-2">
-                                                    <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
-                                                        <div className="p-6">
-                                                            <div className="flex justify-between items-center mb-4">
-                                                                <h2 className="text-2xl font-bold text-gray-800">{empresaData.empresa.nurazaosocial}</h2>
-                                                                <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                                                                    {'fonte: ' + empresaData.fonte}
-                                                                </span>
-                                                            </div>
-
-                                                            <div className="text-gray-700 space-y-2">
-                                                                <p><strong>Nome Fantasia:</strong>{empresaData.empresa.nmfantasia}</p>
-                                                                <p><strong>CNPJ:</strong>{empresaData.empresa.nucnpjcpf}</p>
-                                                                <p>{empresaData.empresa.iduf} - {empresaData.empresa.nmcidade}  </p>
-                                                            </div>
+                                        {empresaData && (
+                                            <div className="w-full max-w-4xl mx-auto p-2">
+                                                <div className="bg-white shadow-md rounded-lg overflow-hidden w-full">
+                                                    <div className="p-6">
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <h2 className="text-2xl font-bold text-gray-800">{empresaData.empresa.nurazaosocial}</h2>
+                                                            <span className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                                                                {'fonte: ' + empresaData.fonte}
+                                                            </span>
                                                         </div>
 
+                                                        <div className="text-gray-700 space-y-2">
+                                                            <p><strong>Nome Fantasia:</strong>{empresaData.empresa.nmfantasia}</p>
+                                                            <p><strong>CNPJ:</strong>{empresaData.empresa.nucnpjcpf}</p>
+                                                            <p>{empresaData.empresa.iduf} - {empresaData.empresa.nmcidade}  </p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )}
 
+                                                </div>
+                                            </div>
+                                        )}
 
                                         <div className=" mt-5 py-2 py-2">
                                             <div>
                                                 <Formik
                                                     enableReinitialize
-                                                    initialValues={{
-                                                        segment: '',
-                                                        nomeContato: '',
-                                                        cpfContato: '',
-                                                        emailContato: '',
-                                                        celularContato: '',
-                                                        isManualContact: false,
-                                                        tipoCadastro: tipoCadastro,
-                                                        upload: {
-                                                            faturaEnergia: [],
-                                                            documentoIdentidade: [],
-                                                            contratoSocial: [],
-                                                            cartaoCnpj: [],
-                                                            ataAssembleia: [],
-                                                        },
-                                                    }}
-                                                    validationSchema={validationSchema}
-                                                    onSubmit={(values, { setSubmitting }) => {
-                                                        console.log('values', values)
-                                                        setTimeout(() => {
-                                                            alert(JSON.stringify(values, null, 2))
-                                                            setSubmitting(false)
-                                                        }, 400)
-                                                    }}
+    initialValues={{
+        segment: '',
+        nomeContato: '',
+        cpfContato: '',
+        emailContato: '',
+        celularContato: '',
+        isManualContact: false,
+        tipoCadastro: tipoCadastro,
+        upload: {
+            faturaEnergia: null,
+            documentoIdentidade: null,
+            contratoSocial: null,
+            cartaoCnpj: null,
+            ataAssembleia: null,
+        },
+    }}
+    validationSchema={validationSchema}
+    onSubmit={(values, { setSubmitting }) => {
+        console.log('values', values);
+        setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+        }, 400);
+    }}
                                                 >
-                                                    {({ values, touched, setFieldValue, errors, resetForm }) => (
+                                                    {({ values, touched, setFieldValue, errors }: any) => (
                                                         <Form>
                                                             <FormContainer>
 
@@ -420,7 +413,7 @@ function CadastraProposta() {
                                                                     errorMessage={errors.segment as string}
                                                                 >
                                                                     <Field name="segment">
-                                                                        {({ field, form }) => (
+                                                                        {({ field, form }: any) => (
                                                                             <Segment
                                                                                 className="w-full"
                                                                                 value={field.value}
@@ -455,8 +448,8 @@ function CadastraProposta() {
 
                                                                                     {/* Segmentos Dinâmicos */}
                                                                                     {empresaData?.contatos?.length > 0 &&
-                                                                                        empresaData.contatos.map((segment) => (
-                                                                                            <Segment.Item key={segment.nmcontato} value={Number(segment.idcontato)}>
+                                                                                        empresaData.contatos.map((segment: any) => (
+                                                                                            <Segment.Item key={segment.nmcontato} value={segment.idcontato}>
                                                                                                 {({ active, onSegmentItemClick, disabled }) => (
                                                                                                     <div className="text-center">
                                                                                                         <SegmentItemOption
@@ -515,7 +508,7 @@ function CadastraProposta() {
                                                                             errorMessage={errors.cpfContato}
                                                                         >
                                                                             <Field name="cpfContato">
-                                                                                {({ field, form }) => (
+                                                                                {({ field, form }: any) => (
                                                                                     <IMaskInput
                                                                                         {...field}
                                                                                         mask={'000.000.000-00'}
@@ -546,7 +539,7 @@ function CadastraProposta() {
                                                                             errorMessage={errors.celularContato}
                                                                         >
                                                                             <Field name="celularContato">
-                                                                                {({ field, form }) => (
+                                                                                {({ field, form }: any) => (
                                                                                     <IMaskInput
                                                                                         {...field}
                                                                                         mask={'(00) 00000-0000'}
@@ -562,15 +555,13 @@ function CadastraProposta() {
 
 
                                                                 <FormItem
-                                                                className='mt-5'
+                                                                    className='mt-5'
                                                                     asterisk
                                                                     label="Inclusão de Documentos"
                                                                     invalid={Boolean(errors.upload && touched.upload)}
-                                                                    errorMessage={errors.upload}
                                                                 >
-                                                                    {/* Fatura de Energia */}
                                                                     <Field name="upload.faturaEnergia">
-                                                                        {({ field }) => (
+                                                                        {({ field }: any) => (
                                                                             <Upload
                                                                                 fileList={values.upload.faturaEnergia}
                                                                                 onChange={(file) => setFieldValue(field.name, [file])}
@@ -581,9 +572,8 @@ function CadastraProposta() {
                                                                         )}
                                                                     </Field>
 
-                                                                    {/* Documento de Identidade */}
                                                                     <Field name="upload.documentoIdentidade">
-                                                                        {({ field }) => (
+                                                                        {({ field }: any) => (
                                                                             <Upload
                                                                                 fileList={values.upload.documentoIdentidade}
                                                                                 onChange={(file) => setFieldValue(field.name, [file])}
@@ -594,11 +584,10 @@ function CadastraProposta() {
                                                                         )}
                                                                     </Field>
 
-                                                                    {/* Campos específicos para empresas */}
                                                                     {tipoCadastro === 'empresa' && (
                                                                         <>
                                                                             <Field name="upload.contratoSocial">
-                                                                                {({ field }) => (
+                                                                                {({ field }: any) => (
                                                                                     <Upload
                                                                                         fileList={values.upload.contratoSocial}
                                                                                         onChange={(file) => setFieldValue(field.name, [file])}
@@ -610,7 +599,7 @@ function CadastraProposta() {
                                                                             </Field>
 
                                                                             <Field name="upload.cartaoCnpj">
-                                                                                {({ field }) => (
+                                                                                {({ field }: any) => (
                                                                                     <Upload
                                                                                         fileList={values.upload.cartaoCnpj}
                                                                                         onChange={(file) => setFieldValue(field.name, [file])}
@@ -623,11 +612,10 @@ function CadastraProposta() {
                                                                         </>
                                                                     )}
 
-                                                                    {/* Campos específicos para condomínios */}
                                                                     {tipoCadastro === 'condominio' && (
                                                                         <>
                                                                             <Field name="upload.ataAssembleia">
-                                                                                {({ field }) => (
+                                                                                {({ field }: any) => (
                                                                                     <Upload
                                                                                         fileList={values.upload.ataAssembleia}
                                                                                         onChange={(file) => setFieldValue(field.name, [file])}
@@ -639,7 +627,7 @@ function CadastraProposta() {
                                                                             </Field>
 
                                                                             <Field name="upload.cartaoCnpj">
-                                                                                {({ field }) => (
+                                                                                {({ field }: any) => (
                                                                                     <Upload
                                                                                         fileList={values.upload.cartaoCnpj}
                                                                                         onChange={(file) => setFieldValue(field.name, [file])}
