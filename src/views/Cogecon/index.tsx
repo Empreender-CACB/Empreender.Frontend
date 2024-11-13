@@ -24,7 +24,7 @@ import ApiService from '@/services/ApiService'
 
 const validationSchema = Yup.object().shape({
     singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
-    segment: Yup.array().min(1, 'Selecione um contato.'),
+    idContato: Yup.array().min(1, 'Selecione um contato.'),
     nomeContato: Yup.string().when('isManualContact', {
         is: true,
         then: (schema) => schema.required('Nome do contato é obrigatório'),
@@ -106,31 +106,30 @@ function CadastraProposta() {
     const [loading, setLoading] = useState(false);
 
     const handleSave = async (values: any) => {
-
-        console.log('entrou aqui')
         setLoading(true);
         toast.push(<Notification title="Salvando arquivo, aguarde..." type="success" />);
 
         const formData = new FormData();
+
         Object.entries(values.upload).forEach(([key, file]) => {
             if (file instanceof File) {
                 formData.append(key, file);
             }
         });
 
+        formData.append('idContato', values.idContato || '');
         formData.append('nomeContato', values.nomeContato || '');
         formData.append('cpfContato', values.cpfContato || '');
         formData.append('emailContato', values.emailContato || '');
         formData.append('celularContato', values.celularContato || '');
 
         try {
-            const response = await await ApiService.fetchData({
+            const response = await ApiService.fetchData({
                 url: `/cogecom`,
                 method: 'post',
                 data: formData,
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-
             window.location.href = `/success/${response.data.anexoId}`;
         } catch (error) {
             toast.push(<Notification title="Erro ao salvar arquivo." type="danger" />);
@@ -349,9 +348,6 @@ function CadastraProposta() {
                                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         />
 
-
-
-
                                         <div className='mt-6'>
                                             <Button
                                                 variant="solid"
@@ -414,7 +410,7 @@ function CadastraProposta() {
                                                 <Formik
                                                     enableReinitialize
                                                     initialValues={{
-                                                        segment: '',
+                                                        idContato: '',
                                                         nomeContato: '',
                                                         cpfContato: '',
                                                         emailContato: '',
@@ -434,8 +430,8 @@ function CadastraProposta() {
                                                     {({ setFieldValue, values, errors, touched }) => {
                                                         // useEffect para preencher automaticamente o contato selecionado
                                                         useEffect(() => {
-                                                            if (values.segment && values.segment !== "Novo Contato") {
-                                                                const selectedContact = empresaData?.contatos.find(c => c.idcontato === values.segment);
+                                                            if (values.idContato && values.idContato !== "Novo Contato") {
+                                                                const selectedContact = empresaData?.contatos.find((c: any) => c.idcontato === values.idContato);
                                                                 if (selectedContact) {
                                                                     setFieldValue('nomeContato', selectedContact.nome);
                                                                     setFieldValue('cpfContato', selectedContact.cpf);
@@ -444,7 +440,7 @@ function CadastraProposta() {
                                                                     setIsManualContact(false);
                                                                 }
                                                             }
-                                                        }, [values.segment, setFieldValue]);
+                                                        }, [values.idContato, setFieldValue]);
 
                                                         return (
                                                             <Form>
@@ -453,20 +449,21 @@ function CadastraProposta() {
                                                                     <FormItem
                                                                         asterisk
                                                                         label="Contato"
-                                                                        invalid={Boolean(errors.segment && touched.segment)}
-                                                                        errorMessage={errors.segment as string}
+                                                                        invalid={Boolean(errors.idContato && touched.idContato)}
+                                                                        errorMessage={errors.idContato as string}
                                                                     >
-                                                                        <Field name="segment">
+                                                                        <Field name="idContato">
                                                                             {({ field, form }: any) => (
                                                                                 <Segment
                                                                                     className="w-full"
                                                                                     value={field.value}
                                                                                     onChange={(val) => {
                                                                                         form.setFieldValue(field.name, val);
-                                                                                        setIsManualContact(val == "Informar contato");
                                                                                         const isManual = val === "Informar contato";
-                                                                                        setFieldValue('isManualContact', isManual);
-                                                                                    }}                                                                            >
+                                                                                        setIsManualContact(isManual);
+                                                                                        form.setFieldValue('isManualContact', isManual); 
+                                                                                    }}
+                                                                                >
                                                                                     <div className="grid grid-cols-3 gap-4 w-full">
                                                                                         <Segment.Item value="Informar contato">
                                                                                             {({ active, onSegmentItemClick, disabled }) => (
@@ -480,7 +477,7 @@ function CadastraProposta() {
                                                                                                         customCheck={
                                                                                                             <HiCheckCircle className="text-indigo-600 absolute top-2 right-2 text-lg" />
                                                                                                         }
-                                                                                                        onSegmentItemClick={(onSegmentItemClick)}
+                                                                                                        onSegmentItemClick={onSegmentItemClick}
                                                                                                     >
                                                                                                         <div className="flex flex-col items-start mx-4">
                                                                                                             <h6>Informar um novo contato</h6>
@@ -518,7 +515,6 @@ function CadastraProposta() {
                                                                                                                     <p className="flex items-center">
                                                                                                                         <MdWork className="mr-2" /> {segment.cargo || '-'}
                                                                                                                     </p>
-
                                                                                                                 </div>
                                                                                                             </SegmentItemOption>
                                                                                                         </div>
@@ -530,6 +526,7 @@ function CadastraProposta() {
                                                                             )}
                                                                         </Field>
                                                                     </FormItem>
+
 
                                                                     {isManualContact && (
                                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
