@@ -186,14 +186,14 @@ const Anotacoes = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
                     <h3 className="mb-4 lg:mb-0">Anotações</h3>
-                    <Tooltip title="Para saber mais sobre o uso da Lista de Empresas clique aqui" placement="right-end">
+                    <Tooltip title="Para saber mais sobre o módulo de anotações, clique aqui" placement="right-end">
                         <Button
                             shape="circle"
                             size="xs"
                             icon={<FaQuestion />}
                             className="ml-2"
                             onClick={() => {
-                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5Mg==')
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MTEy')
                             }}
                         />
                     </Tooltip>
