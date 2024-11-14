@@ -22,44 +22,40 @@ import { MdWork } from 'react-icons/md'
 import { toast } from '@/components/ui'
 import ApiService from '@/services/ApiService'
 
-const validationSchema = Yup.object().shape({
-    singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
-    idContato: Yup.array().min(1, 'Selecione um contato.'),
-    nomeContato: Yup.string().when('isManualContact', {
-        is: true,
-        then: (schema) => schema.required('Nome do contato é obrigatório'),
-    }),
-    cpfContato: Yup.string().when('isManualContact', {
-        is: true,
-        then: (schema) => schema.required('CPF é obrigatório'),
-    }),
-    emailContato: Yup.string().when('isManualContact', {
-        is: true,
-        then: (schema) => schema.email('Email inválido').required('Email é obrigatório'),
-    }),
-    celularContato: Yup.string().when('isManualContact', {
-        is: true,
-        then: (schema) => schema.required('Celular é obrigatório'),
-    }),
-    tipoCadastro: Yup.string().required('Tipo de cadastro é obrigatório'),
-    upload: Yup.object().shape({
-        faturaEnergia: Yup.mixed().required('Cópia da Fatura de Energia é obrigatória'),
-        documentoIdentidade: Yup.mixed().required('Documento de Identidade é obrigatória'),
-        contratoSocial: Yup.mixed().when('tipoCadastro', {
-            is: 'empresa',
-            then: (schema) => schema.required('Contrato social é obrigatório para empresas'),
-        }),
-        cartaoCnpj: Yup.mixed().when('tipoCadastro', {
-            is: (value) => value === 'empresa' || value === 'condominio',
-            then: (schema) => schema.required('Cartão do CNPJ é obrigatório para empresas e condomínios'),
-        }),
-        ataAssembleia: Yup.mixed().when('tipoCadastro', {
-            is: 'condominio',
-            then: (schema) => schema.required('Ata da assembleia é obrigatória para condomínios'),
-        }),
-    }),
-});
+// const validationSchema = Yup.object().shape({
+//     singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
+//     idContato: Yup.array().min(1, 'Selecione um contato.'),
+//     nomeContato: Yup.string().when('isManualContact', {
+//         is: true,
+//         then: (schema) => schema.required('Nome do contato é obrigatório'),
+//     }),
+//     cpfContato: Yup.string().when('isManualContact', {
+//         is: true,
+//         then: (schema) => schema.required('CPF é obrigatório'),
+//     }),
+//     emailContato: Yup.string().when('isManualContact', {
+//         is: true,
+//         then: (schema) => schema.email('Email inválido').required('Email é obrigatório'),
+//     }),
+//     celularContato: Yup.string().when('isManualContact', {
+//         is: true,
+//         then: (schema) => schema.required('Celular é obrigatório'),
+//     }),
+//     termos: false,
+// });
 
+const SectionDivider = ({ label }: { label: string }) => {
+    return (
+        <div className="relative py-5 pb-7 mx-5">
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-gray-400"></div>
+            </div>
+            <div className="relative flex justify-center">
+                <span className="bg-gray-50 uppercase font-thin px-2 text-sm text-gray-800">{label}</span>
+            </div>
+        </div>
+    );
+}
 // const ErrorComponent = ({ errors }: any) => {
 //     if (!errors || errors.length === 0) {
 //         return null; // Não há erros, não renderiza nada
@@ -101,7 +97,7 @@ function CadastraProposta() {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [tipoCadastro, setTipoCadastro] = useState('');
-    const [isManualContact, setIsManualContact] = useState(false);
+    const [isManualContact, setIsManualContact] = useState('true');
 
     const [loading, setLoading] = useState(false);
 
@@ -110,9 +106,10 @@ function CadastraProposta() {
         toast.push(<Notification title="Salvando arquivo, aguarde..." type="success" />);
 
         const formData = new FormData();
-
+        console.log(values.upload);
         Object.entries(values.upload).forEach(([key, file]) => {
             if (file instanceof File) {
+                console.log('to aqui',key, file);
                 formData.append(key, file);
             }
         });
@@ -122,6 +119,7 @@ function CadastraProposta() {
         formData.append('cpfContato', values.cpfContato || '');
         formData.append('emailContato', values.emailContato || '');
         formData.append('celularContato', values.celularContato || '');
+        formData.append('tipo_cadastro', values.tipoCadastro || '');
 
         try {
             const response = await ApiService.fetchData({
@@ -302,7 +300,7 @@ function CadastraProposta() {
                                 <Steps.Item title="Dados" />
                                 <Steps.Item title="Cadastro" />
                             </Steps>
-                            <div className="mt-6  bg-gray-50 dark:bg-gray-700 rounded ">
+                            <div className="mt-6  bg-gray-50 dark:bg-gray-700 rounded px-3 ">
                                 {step === 0 && (
                                     <div className="mt-6 grid grid-cols-3 gap-6 pt-8 flex items-center justify-center">
                                         <div
@@ -415,8 +413,12 @@ function CadastraProposta() {
                                                         cpfContato: '',
                                                         emailContato: '',
                                                         celularContato: '',
-                                                        isManualContact: false,
+                                                        concessionaria_energia: '',
+                                                        usuario_concessionaria: '',
+                                                        senha_concessionaria: '',
+                                                        isManualContact: true,
                                                         tipoCadastro: tipoCadastro,
+                                                        termos:false,
                                                         upload: {
                                                             faturaEnergia: null,
                                                             documentoIdentidade: null,
@@ -428,19 +430,6 @@ function CadastraProposta() {
                                                     onSubmit={(values) => handleSave(values)}
                                                 >
                                                     {({ setFieldValue, values, errors, touched }) => {
-                                                        // useEffect para preencher automaticamente o contato selecionado
-                                                        useEffect(() => {
-                                                            if (values.idContato && values.idContato !== "Novo Contato") {
-                                                                const selectedContact = empresaData?.contatos.find((c: any) => c.idcontato === values.idContato);
-                                                                if (selectedContact) {
-                                                                    setFieldValue('nomeContato', selectedContact.nome);
-                                                                    setFieldValue('cpfContato', selectedContact.cpf);
-                                                                    setFieldValue('emailContato', selectedContact.email);
-                                                                    setFieldValue('celularContato', selectedContact.celular);
-                                                                    setIsManualContact(false);
-                                                                }
-                                                            }
-                                                        }, [values.idContato, setFieldValue]);
 
                                                         return (
                                                             <Form>
@@ -453,19 +442,20 @@ function CadastraProposta() {
                                                                         errorMessage={errors.idContato as string}
                                                                     >
                                                                         <Field name="idContato">
+
                                                                             {({ field, form }: any) => (
                                                                                 <Segment
+                                                                                    defaultValue={["00"]}
                                                                                     className="w-full"
-                                                                                    value={field.value}
                                                                                     onChange={(val) => {
                                                                                         form.setFieldValue(field.name, val);
-                                                                                        const isManual = val === "Informar contato";
+                                                                                        const isManual = val[0] == "00";
                                                                                         setIsManualContact(isManual);
-                                                                                        form.setFieldValue('isManualContact', isManual); 
+                                                                                        form.setFieldValue('isManualContact', isManual);
                                                                                     }}
                                                                                 >
                                                                                     <div className="grid grid-cols-3 gap-4 w-full">
-                                                                                        <Segment.Item value="Informar contato">
+                                                                                        <Segment.Item key={'00'} value={'00'} >
                                                                                             {({ active, onSegmentItemClick, disabled }) => (
                                                                                                 <div className="text-center">
                                                                                                     <SegmentItemOption
@@ -487,7 +477,6 @@ function CadastraProposta() {
                                                                                             )}
                                                                                         </Segment.Item>
 
-                                                                                        {/* Segmentos Dinâmicos */}
                                                                                         {empresaData?.contatos?.length > 0 &&
                                                                                             empresaData.contatos.map((segment: any) => (
                                                                                                 <Segment.Item key={segment.nmcontato} value={segment.idcontato}>
@@ -528,71 +517,125 @@ function CadastraProposta() {
                                                                     </FormItem>
 
 
+
                                                                     {isManualContact && (
-                                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                                            <FormItem
-                                                                                label="Nome do Contato"
-                                                                                invalid={Boolean(errors.nomeContato && touched.nomeContato)}
-                                                                                errorMessage={errors.nomeContato}
-                                                                            >
-                                                                                <Field
-                                                                                    name="nomeContato"
-                                                                                    as={Input}
-                                                                                    placeholder="Nome do Contato"
+                                                                        <>
+                                                                            <SectionDivider label="Dados do Contato" />
 
-                                                                                />
-                                                                            </FormItem>
+                                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                                <FormItem
+                                                                                    label="Nome do Contato"
+                                                                                    invalid={Boolean(errors.nomeContato && touched.nomeContato)}
+                                                                                    errorMessage={errors.nomeContato}
+                                                                                >
+                                                                                    <Field
+                                                                                        required={isManualContact!='true'}
+                                                                                        name="nomeContato"
+                                                                                        as={Input}
+                                                                                        placeholder="Nome do Contato"
 
-                                                                            <FormItem
-                                                                                label="CPF"
-                                                                                invalid={Boolean(errors.cpfContato && touched.cpfContato)}
-                                                                                errorMessage={errors.cpfContato}
-                                                                            >
-                                                                                <Field name="cpfContato">
-                                                                                    {({ field, form }: any) => (
-                                                                                        <IMaskInput
-                                                                                            {...field}
-                                                                                            mask={'000.000.000-00'}
-                                                                                            unmask={true}
-                                                                                            onAccept={(value) => form.setFieldValue('cpfContato', value)}
-                                                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                        />
-                                                                                    )}
-                                                                                </Field>
-                                                                            </FormItem>
+                                                                                    />
+                                                                                </FormItem>
 
-                                                                            <FormItem
-                                                                                label="Email"
-                                                                                invalid={Boolean(errors.emailContato && touched.emailContato)}
-                                                                                errorMessage={errors.emailContato}
-                                                                            >
-                                                                                <Field
-                                                                                    name="emailContato"
-                                                                                    type="email"
-                                                                                    as={Input}
-                                                                                    placeholder="Email"
-                                                                                />
-                                                                            </FormItem>
+                                                                                <FormItem
+                                                                                    label="CPF"
+                                                                                    invalid={Boolean(errors.cpfContato && touched.cpfContato)}
+                                                                                    errorMessage={errors.cpfContato}
+                                                                                >
+                                                                                    <Field name="cpfContato">
+                                                                                        {({ field, form }: any) => (
+                                                                                            <IMaskInput
+                                                                                                {...field}
+                                                                                                mask={'000.000.000-00'}
+                                                                                                required={isManualContact!='true'}
+                                                                                                unmask={true}
+                                                                                                onAccept={(value) => form.setFieldValue('cpfContato', value)}
+                                                                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                                            />
+                                                                                        )}
+                                                                                    </Field>
+                                                                                </FormItem>
 
-                                                                            <FormItem
-                                                                                label="Celular"
-                                                                                invalid={Boolean(errors.celularContato && touched.celularContato)}
-                                                                                errorMessage={errors.celularContato}
-                                                                            >
-                                                                                <Field name="celularContato">
-                                                                                    {({ field, form }: any) => (
-                                                                                        <IMaskInput
-                                                                                            {...field}
-                                                                                            mask={'(00) 00000-0000'}
-                                                                                            unmask={true}
-                                                                                            onAccept={(value) => form.setFieldValue('celularContato', value)}
-                                                                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                        />
-                                                                                    )}
-                                                                                </Field>
-                                                                            </FormItem>
-                                                                        </div>
+                                                                                <FormItem
+                                                                                    label="Email"
+                                                                                    invalid={Boolean(errors.emailContato && touched.emailContato)}
+                                                                                    errorMessage={errors.emailContato}
+                                                                                >
+                                                                                    <Field
+                                                                                        required={isManualContact!='true'}
+                                                                                        name="emailContato"
+                                                                                        type="email"
+                                                                                        as={Input}
+                                                                                        placeholder="Email"
+                                                                                    />
+                                                                                </FormItem>
+
+                                                                                <FormItem
+                                                                                    label="Celular"
+                                                                                    invalid={Boolean(errors.celularContato && touched.celularContato)}
+                                                                                    errorMessage={errors.celularContato}
+                                                                                >
+                                                                                    <Field name="celularContato">
+                                                                                        {({ field, form }: any) => (
+                                                                                            <IMaskInput
+                                                                                                {...field}
+                                                                                                required={isManualContact!='true'}
+                                                                                                mask={'(00) 00000-0000'}
+                                                                                                unmask={true}
+                                                                                                onAccept={(value) => form.setFieldValue('celularContato', value)}
+                                                                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                                                            />
+                                                                                        )}
+                                                                                    </Field>
+                                                                                </FormItem>
+                                                                            </div>
+                                                                        </>
+
                                                                     )}
+
+                                                                    <SectionDivider label="Dados da Concessionária" />
+
+                                                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                                                        <FormItem
+                                                                            label="Concessionária de energia"
+                                                                            invalid={Boolean(errors.concessionaria_energia && touched.concessionaria_energia)}
+                                                                            errorMessage={errors.concessionaria_energia}
+                                                                        >
+                                                                            <Field
+                                                                                name="concessionaria_energia"
+                                                                                as={Input}
+                                                                                placeholder="Concessionária de energia"
+
+                                                                            />
+                                                                        </FormItem>
+                                                                        <FormItem
+                                                                            label="Usuário da concessionária"
+                                                                            invalid={Boolean(errors.usuario_concessionaria && touched.usuario_concessionaria)}
+                                                                            errorMessage={errors.usuario_concessionaria}
+                                                                        >
+                                                                            <Field
+                                                                                name="usuario_concessionaria"
+                                                                                as={Input}
+                                                                                placeholder="Usuário da concessionária"
+
+                                                                            />
+                                                                        </FormItem>
+                                                                        <FormItem
+                                                                            label="Senha da concessionária"
+                                                                            invalid={Boolean(errors.senha_concessionaria && touched.senha_concessionaria)}
+                                                                            errorMessage={errors.senha_concessionaria}
+                                                                        >
+                                                                            <Field
+                                                                                name="senha_concessionaria"
+                                                                                as={Input}
+                                                                                placeholder="Senha da concessionária"
+
+                                                                            />
+                                                                        </FormItem>
+                                                                    </div>
+
+                                                                    <SectionDivider label="Documentos" />
+
 
                                                                     <FormItem
                                                                         label="Cópia da Fatura de Energia"
