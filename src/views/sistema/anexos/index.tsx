@@ -6,7 +6,7 @@ import moment from 'moment'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button} from '@/components/ui'
+import { Button } from '@/components/ui'
 import { HiOutlineReply } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 import { useState } from 'react'
@@ -43,9 +43,8 @@ const columns = [
             return (
                 <Link
                     className="menu-item-link max-w-md"
-                    to={`${
-                        import.meta.env.VITE_PHP_URL
-                    }/sistema/anexo/detalhe/bid/${btoa(data.id)}`}
+                    to={`${import.meta.env.VITE_PHP_URL
+                        }/sistema/anexo/detalhe/bid/${btoa(data.id)}`}
                 >
                     {value}
                 </Link>
@@ -58,12 +57,16 @@ const columns = [
         type: 'string',
         operator: 'contains',
         value: '',
-        render: ({ value }) => (
-            <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', height: 'auto', lineHeight: '1.5' }}>
-              {value}
-            </div>
-          ),
-            },
+        render: ({ value, data }: any) => (
+            <Link
+                className="menu-item-link max-w-md text-blue-500 underline"
+                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(data.id)}`}
+                target='_blank'
+            >
+                {value}
+            </Link>
+        )
+    },
     {
         name: 'id_vinculo',
         header: 'ID vínculo',
@@ -99,7 +102,7 @@ const columns = [
         filterEditorProps: ({ index }: any) => {
             return {
                 dateFormat: 'DD-MM-YYYY',
-                placeholder:'DD-MM-AAAA'
+                placeholder: 'DD-MM-AAAA'
             }
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -170,6 +173,11 @@ const Anexos = () => {
     const radioGroup = (
         <div>
             <div className="flex items-center">
+                <Button variant='solid' size='sm'
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==')
+                    }}
+                >Painel</Button>
                 <span className="font-black mr-2 ml-4">Arquivos: </span>
 
                 <label className="mr-4">
@@ -217,9 +225,8 @@ const Anexos = () => {
                     <Button size="sm" icon={<HiOutlineReply />} className='mr-4'>
                         <Link
                             className="menu-item-link"
-                            to={`${
-                                import.meta.env.VITE_PHP_URL
-                            }/sistema/anexo/`}
+                            to={`${import.meta.env.VITE_PHP_URL
+                                }/sistema/anexo/`}
                         >
                             Versão antiga
                         </Link>
@@ -235,9 +242,8 @@ const Anexos = () => {
                 filename="Anexos"
                 columns={columns}
                 options={radioGroup}
-                url={`${
-                    import.meta.env.VITE_API_URL
-                }/anexo?filtroVencimento=${filtroVencimento}`}
+                url={`${import.meta.env.VITE_API_URL
+                    }/anexo?filtroVencimento=${filtroVencimento}`}
                 CardLayout={AnexoCard}
             />
         </AdaptableCard>
