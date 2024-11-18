@@ -31,12 +31,6 @@ const validationSchema = Yup.object().shape({
         then: (schema) => schema.required('Versão é obrigatória'),
         otherwise: (schema) => schema.notRequired(),
     }),
-    direitos: Yup.string()
-    .when('tipoVinculo', {
-        is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
-        then: (schema) => schema.notRequired(),
-        otherwise: (schema) => schema.notRequired(),
-    }),
     grupo: Yup.string().when('tipoVinculo', {
         is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
         then: (schema) => schema.required('Grupo é obrigatório'),
@@ -54,20 +48,22 @@ const validationSchema = Yup.object().shape({
     }),
 });
 
-const breadcrumbItems = [
-    { label: 'Início', link: '/' },
-    { label: 'Adicionar documento', link: '/sistema/insert-excel' },
-]
-
 const AdicionarAnexo = () => {
     const [arquivosTipos, setArquivosTipos] = useState<any>([]);
     const [recursos, setRecursos] = useState<any>([]);
     const [nomeArquivoSubstituto, setNomeArquivoSubstituto] = useState('');
     const [nomeEnte, setNomeEnte] = useState('');
+    const [nomeEnteSencundario, setNomeEnteSecundario] = useState('');
     const [mostrarVencimento, setMostrarVencimento] = useState(true);
     const [loading, setLoading] = useState(false);
     const [necessitaAprovacaoDisabled, setNecessitaAprovacaoDisabled] = useState(false);
-    const { tipoVinculo, idVinculo, substitutoId } = useParams<string>();
+
+    const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
+
+    const [breadcrumbItems, setBreadcrumbItems] = useState([
+        { label: 'Início', link: '/' },
+        { label: 'Adicionar documento', link: '#' }
+    ]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,11 +75,30 @@ const AdicionarAnexo = () => {
                 setArquivosTipos(tiposResponse.data);
 
                 if (tipoVinculo && idVinculo) {
+                    const url = tipoVinculoSecundario && idVinculoSecundario
+                        ? `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
+                        : `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`;
+
                     const enteResponse = await ApiService.fetchData({
-                        url: `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
+                        url,
                         method: 'get',
                     });
-                    setNomeEnte(enteResponse.data.nomeVinculo);
+
+                    setNomeEnte(enteResponse.data.nomeVinculoPrimario || enteResponse.data.nomeVinculo);
+                    if (tipoVinculoSecundario && idVinculoSecundario) {
+                        setNomeEnteSecundario(enteResponse.data.nomeVinculoSecundario || '');
+                    }
+
+                    const { breadcrumb } = enteResponse.data;
+
+                    setBreadcrumbItems([
+                        { label: 'Início', link: '/' },
+                        ...breadcrumb.map((item: any) => ({
+                            label: item.label,
+                            link: item.url,
+                        })),
+                        { label: 'Anotações', link: '#' },
+                    ]);
                 }
 
                 if (substitutoId) {
@@ -124,6 +139,7 @@ const AdicionarAnexo = () => {
     const redirectUrl = query.get("redirectUrl");
 
     const handleSave = async (values: any) => {
+        console.log('Valores recebidos no submit:', values);
         setLoading(true);
         toast.push(
             <Notification title="Salvando arquivo, aguarde..." type="success" />
@@ -146,20 +162,24 @@ const AdicionarAnexo = () => {
             formData.append('versao', values.versao || '');
             formData.append('grupo', values.grupo || '');
             formData.append('status_doc', values.status_doc || '1');
-            formData.append('direitos', values.direitos || ''); 
-            formData.append('referencia', values.referencia || ''); 
-
+            formData.append('direitos', values.direitos || '');
+            formData.append('referencia', values.referencia || '');
         } else {
             formData.append('idVinculo', idVinculo || '');
+            if (tipoVinculoSecundario && idVinculoSecundario) {
+                formData.append('tipoVinculoSecundario', tipoVinculoSecundario);
+                formData.append('idVinculoSecundario', idVinculoSecundario);
+            }
         }
     
         if (substitutoId) {
             formData.append('substitutoId', substitutoId);
         }
     
+        console.log('FormData:', Array.from(formData.entries()));
         try {
-            const url = tipoVinculo === 'documentacao'
-                ? `/anexos/storeAnexo/${tipoVinculo}/${substitutoId || ''}`
+            const url = tipoVinculoSecundario && idVinculoSecundario
+                ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
                 : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`;
     
             const response = await ApiService.fetchData({
@@ -174,11 +194,9 @@ const AdicionarAnexo = () => {
             toast.push(
                 <Notification title="Arquivo salvo com sucesso!" type="success" />
             );
-        
+    
             if (redirectUrl) {
                 window.location.href = `${redirectUrl}`;
-            } else if (tipoVinculo == 'documentacao') {
-                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/ajuda/index-adm`;
             } else {
                 window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
             }
@@ -218,13 +236,18 @@ const AdicionarAnexo = () => {
                         idVinculo: idVinculo || '',
                     }}
                     validationSchema={validationSchema}
+                    validate={(values) => {
+                        console.log('Validation step - values:', values);
+                        const errors = {};
+                        // Optionally, you can add custom validation logic here for debugging
+                        return errors;
+                    }}
                     onSubmit={(values, { setSubmitting }) => {
                         console.log('Submitted values:', values);
                         handleSave(values);
                         setSubmitting(false);
                     }}
                 >
-
                     {({ setFieldValue, errors, touched }) => {
                         useEffect(() => {
                             if (tipoIdInicial) {
@@ -349,7 +372,7 @@ const AdicionarAnexo = () => {
                                                             onChange={() => { }}
                                                         />
                                                     )}
-                                                </Field>                                                
+                                                </Field>
                                                 <Field type="hidden" name="tipoVinculo" value={tipoVinculo} />
                                             </FormItem>
 
@@ -382,7 +405,7 @@ const AdicionarAnexo = () => {
                                                 name="vinculado"
                                                 as={Input}
                                                 disabled
-                                                value={nomeEnte}
+                                                value={`${nomeEnte} ${nomeEnteSencundario != null ? " - " + nomeEnteSencundario : ''}`}
                                                 className="w-full"
                                             />
                                         </FormItem>
@@ -449,7 +472,7 @@ const AdicionarAnexo = () => {
                                                 </FormItem>
                                             </div>
 
-                                            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">                                                
+                                            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <FormItem
                                                     label="Direitos"
                                                 >
