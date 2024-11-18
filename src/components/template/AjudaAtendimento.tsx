@@ -143,17 +143,9 @@ A CACB está em constante processo de adequação à LGPD. Quaisquer dúvidas so
                         </Dropdown.Item>
                             )
                     }                
-
                     </>
-
-                    
                 ))}
-                {recursos.includes('doc_consul') ? (
-                    <DocumentosAjudaAtendimento />
-                    
-                    
-                ) : null}
-                
+                <DocumentosAjudaAtendimento />
             </Dropdown>
         </div>
     )
