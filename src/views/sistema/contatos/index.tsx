@@ -237,6 +237,7 @@ const Contatos = () => {
                     data: { 
                         filtro: vinculoType,  
                         marcador: MarcadorType,
+                        entidade: EntidadeType,
                         tablefilters: filters
                     }
                 })
@@ -260,6 +261,7 @@ const Contatos = () => {
                     data: { 
                         filtro: vinculoType, 
                         marcador: MarcadorType,
+                        entidade: EntidadeType,
                         tablefilters: filters
                     }
                 })
