@@ -70,20 +70,18 @@
     });
   </script>
 
-<script>
-  window.onload = function() {
-    if (window.location.hostname === 'beta.cacbempreenderapp.org.br') {
+  <script>
+    window.onload = function () {
       var banner = document.createElement('div');
-          banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
-          banner.textContent = 'Navegando pela versão de testes.';
-          document.body.prepend(banner);
+      banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+      banner.textContent = 'O sistema apresentará instabilidades no dia 20/11/2024 devido a manutenções programadas.';
+      document.body.prepend(banner);
 
-          var spacer = document.createElement('div');
-          spacer.style.height = '2rem';
-          document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
+      var spacer = document.createElement('div');
+      spacer.style.height = '2rem';
+      document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
     }
-  }
-</script>
+  </script>
 
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
