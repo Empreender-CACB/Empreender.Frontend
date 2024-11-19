@@ -67,11 +67,11 @@ const columns = [
         },
     },    
     {
-        name: 'tipo', header: 'Tipo', type: 'string', operator:'contains', defaultFlex: 0.12
+        name: 'tipo', header: 'Vínculo', type: 'string', operator:'contains', defaultFlex: 0.14
     },
     {
         name: 'entidade_vinculada',
-        header: 'Vínculo',
+        header: 'Razão Social',
         type: 'string',
         defaultFlex: 0.55,
         operator:'contains'
@@ -237,6 +237,7 @@ const Contatos = () => {
                     data: { 
                         filtro: vinculoType,  
                         marcador: MarcadorType,
+                        entidade: EntidadeType,
                         tablefilters: filters
                     }
                 })
@@ -260,6 +261,7 @@ const Contatos = () => {
                     data: { 
                         filtro: vinculoType, 
                         marcador: MarcadorType,
+                        entidade: EntidadeType,
                         tablefilters: filters
                     }
                 })
@@ -276,9 +278,28 @@ const Contatos = () => {
         }
 
         if (option === 'excel') {
-            
-
-        }
+            try {
+                const response = await ApiService.fetchData({
+                    url: 'contatos/download/excel',
+                    method: 'post', 
+                    data: { 
+                        filtro: vinculoType, 
+                        marcador: MarcadorType,
+                        entidade: EntidadeType,
+                        tablefilters: filters
+                    }
+                })
+    
+                if (response?.data?.url) {
+                    url = `${import.meta.env.VITE_API_URL}${response.data.url}`
+                    window.open(url, '_blank')
+                } else {
+                    console.error('URL não encontrada na resposta')
+                }
+            } catch (error) {
+                console.error('Erro ao obter a URL para download', error)
+            }
+            }
 
     }
         
