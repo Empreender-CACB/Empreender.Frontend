@@ -186,7 +186,7 @@ const Empresas = () => {
                             </Link>
                         </Tooltip>
                     </div>
-                );
+                )
             },
         },                   
         {

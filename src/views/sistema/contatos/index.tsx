@@ -74,8 +74,33 @@ const columns = [
         header: 'Razão Social',
         type: 'string',
         defaultFlex: 0.55,
-        operator:'contains'
-    },
+        operator: 'contains',
+        render: ({ data }: any) => {
+            const text = data.entidade_vinculada
+            const tooltipText = data.entidade_vinculada
+    
+            let linkTo = ''
+    
+            if (data.tipo === 'Empresa') { 
+                linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.id_ente))}`
+            } else {
+                linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.id_ente))}`
+            }
+    
+            return (
+                <div>
+                    <Tooltip
+                        placement="left"
+                        title={<div>{tooltipText}</div>}
+                    >
+                        <Link to={linkTo}>
+                            {text}
+                        </Link>
+                    </Tooltip>
+                </div>
+            )
+        },
+    },    
     {
         name: 'iduf',
         header: 'UF',
@@ -131,19 +156,21 @@ const Contatos = () => {
     const [MarcadorType, setMarcadorType] = useState<string[]>([])
     const [optionsEntidade, setOptionsEntidade] = useState([])
     const [EntidadeType, setEntidadeType] = useState<string[]>([])
-    const [filters, setFilters] = useState<any>(null);
+    const [filters, setFilters] = useState<any>(null)
+    const [loading, setLoading] = useState(false)
+
 
     const handleFiltersChange = (newFilters: any) => {
         setFilters(newFilters);
-    };
+    }
 
 
     const getLabel = (idtipoentidade: string) => {
         switch (idtipoentidade) {
             case 'EMP':
-                return 'Empresa';
+                return 'Empresa'
             case 'ENT':
-                return 'Entidade';
+                return 'Entidade'
         }
     }
 
@@ -181,7 +208,7 @@ const Contatos = () => {
                         })
                     })
                     setOptionsMarcador(mappedOptions)
-                });
+                })
             } catch (error) {
                 console.error(error);
             }
@@ -200,7 +227,7 @@ const Contatos = () => {
                         })
                     })
                     setOptionsEntidade(mappedOptions)
-                });
+                })
             } catch (error) {
                 console.error(error);
             }
@@ -227,81 +254,39 @@ const Contatos = () => {
     }
 
     const handleExportOptionClick = async (option: string) => {
+        setLoading(true)
         let url = ''
     
-        if (option === 'vcard') {
-            try {
-                const response = await ApiService.fetchData({
-                    url: 'contatos/download/vcard',
-                    method: 'post', 
-                    data: { 
-                        filtro: vinculoType,  
-                        marcador: MarcadorType,
-                        entidade: EntidadeType,
-                        tablefilters: filters
-                    }
-                })
+        try {
+            let endpoint = ''
+            if (option === 'vcard') endpoint = 'contatos/download/vcard'
+            if (option === 'csv') endpoint = 'contatos/download/csv'
+            if (option === 'excel') endpoint = 'contatos/download/excel'
     
-                if (response?.data?.url) {
-                    url = `${import.meta.env.VITE_API_URL}${response.data.url}`
-                    window.open(url, '_blank')
-                } else {
-                    console.error('URL não encontrada na resposta')
-                }
-            } catch (error) {
-                console.error('Erro ao obter a URL para download', error)
+            const response = await ApiService.fetchData({
+                url: endpoint,
+                method: 'post',
+                data: {
+                    filtro: vinculoType,
+                    marcador: MarcadorType,
+                    entidade: EntidadeType,
+                    tablefilters: filters,
+                },
+            })
+    
+            if (response?.data?.url) {
+                url = `${import.meta.env.VITE_API_URL}${response.data.url}`
+                window.open(url, '_blank')
+            } else {
+                console.error('URL não encontrada na resposta')
             }
+        } catch (error) {
+            console.error('Erro ao obter a URL para download', error)
+        } finally {
+            setLoading(false)
         }
-    
-        if (option === 'csv') {
-            try {
-                const response = await ApiService.fetchData({
-                    url: 'contatos/download/csv',
-                    method: 'post', 
-                    data: { 
-                        filtro: vinculoType, 
-                        marcador: MarcadorType,
-                        entidade: EntidadeType,
-                        tablefilters: filters
-                    }
-                })
-    
-                if (response?.data?.url) {
-                    url = `${import.meta.env.VITE_API_URL}${response.data.url}`
-                    window.open(url, '_blank')
-                } else {
-                    console.error('URL não encontrada na resposta')
-                }
-            } catch (error) {
-                console.error('Erro ao obter a URL para download', error)
-            }
-        }
-
-        if (option === 'excel') {
-            try {
-                const response = await ApiService.fetchData({
-                    url: 'contatos/download/excel',
-                    method: 'post', 
-                    data: { 
-                        filtro: vinculoType, 
-                        marcador: MarcadorType,
-                        entidade: EntidadeType,
-                        tablefilters: filters
-                    }
-                })
-    
-                if (response?.data?.url) {
-                    url = `${import.meta.env.VITE_API_URL}${response.data.url}`
-                    window.open(url, '_blank')
-                } else {
-                    console.error('URL não encontrada na resposta')
-                }
-            } catch (error) {
-                console.error('Erro ao obter a URL para download', error)
-            }
-            }
-
     }
+    
         
     const radioGroup = (
         <div className='flex items-center'>
@@ -349,7 +334,7 @@ const Contatos = () => {
 
                 <Dropdown
                         renderTitle={
-                            <Button block variant="solid" size="sm" icon={<HiDownload />}>
+                            <Button block variant="solid" size="sm" loading={loading} icon={<HiDownload />}>
                                 Exportar contatos
                             </Button>
                         }
