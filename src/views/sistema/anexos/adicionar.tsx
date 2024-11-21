@@ -97,7 +97,7 @@ const AdicionarAnexo = () => {
                             label: item.label,
                             link: item.url,
                         })),
-                        { label: 'Anotações', link: '#' },
+                        { label: 'Documentos', link: '#' },
                     ]);
                 }
 
@@ -139,7 +139,6 @@ const AdicionarAnexo = () => {
     const redirectUrl = query.get("redirectUrl");
 
     const handleSave = async (values: any) => {
-        console.log('Valores recebidos no submit:', values);
         setLoading(true);
         toast.push(
             <Notification title="Salvando arquivo, aguarde..." type="success" />
@@ -176,7 +175,6 @@ const AdicionarAnexo = () => {
             formData.append('substitutoId', substitutoId);
         }
     
-        console.log('FormData:', Array.from(formData.entries()));
         try {
             const url = tipoVinculoSecundario && idVinculoSecundario
                 ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
