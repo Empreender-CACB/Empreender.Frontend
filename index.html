@@ -71,18 +71,26 @@
   </script>
 
 <script>
-  window.onload = function() {
-    if (window.location.hostname === 'beta.cacbempreenderapp.org.br') {
-      var banner = document.createElement('div');
-          banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
-          banner.textContent = 'Navegando pela versão de testes.';
-          document.body.prepend(banner);
+  // window.onload = function() {
+  //   if (window.location.hostname === 'beta.cacbempreenderapp.org.br') {
+  //     var banner = document.createElement('div');
+  //         banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+  //         banner.textContent = 'Navegando pela versão de testes.';
+  //         document.body.prepend(banner);
 
-          var spacer = document.createElement('div');
-          spacer.style.height = '2rem';
-          document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
-    }
-  }
+  //         var spacer = document.createElement('div');
+  //         spacer.style.height = '2rem';
+  //         document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
+  //   }
+  // }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var banner = document.createElement('div');
+    banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+    spacer.style.height = '2rem';
+    banner.textContent = 'Sábado 23/11 - Estaremos em manutenção. Poderão ocorrer instabilidades ou demoras momentâneas.';
+    document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
+  });
 </script>
 
   <noscript>You need to enable JavaScript to run this app.</noscript>
