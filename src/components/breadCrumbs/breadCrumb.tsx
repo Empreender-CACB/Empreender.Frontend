@@ -2,11 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { HiChevronRight } from 'react-icons/hi'
 
-const Breadcrumb = ({ items }) => {
+const Breadcrumb = ({ items } : any) => {
     return (
         <nav className="breadcrumb py-2 mb-4">
             <ol className="flex space-x-2 text-sm text-gray-700">
-                {items.map((item, index) => (
+                {items.map((item: any, index: any) => (
                     <li key={index} className="flex items-center">
                         {item.link ? (
                             <Link to={item.link} className="hover:underline text-blue-500">
