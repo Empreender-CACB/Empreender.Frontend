@@ -6,10 +6,11 @@ import { HiPlusCircle } from 'react-icons/hi'
 import { Button, Select, Tooltip, Dropdown } from '@/components/ui'
 import { AdaptableCard } from '@/components/shared'
 import { useState, useEffect } from 'react'
-import { NucleosCard } from '@/components/shared/TableCards/NucleosCard'
+import { ContatoCard } from '@/components/shared/TableCards/contatoCard'
 import ApiService from '@/services/ApiService'
 //import { FaEye, FaPen } from 'react-icons/fa'
 import { HiDownload } from 'react-icons/hi'
+import { FaQuestion } from "react-icons/fa"
 
 
 moment.locale('pt-br')
@@ -165,15 +166,6 @@ const Contatos = () => {
     }
 
 
-    const getLabel = (idtipoentidade: string) => {
-        switch (idtipoentidade) {
-            case 'EMP':
-                return 'Empresa'
-            case 'ENT':
-                return 'Entidade'
-        }
-    }
-
 
     useEffect(() => {
         const getVinculos = async () => {
@@ -185,7 +177,7 @@ const Contatos = () => {
                     const mappedOptions = response.data.map((vinculoItem: any) => {
                         return {
                             value: vinculoItem.idtipoentidade,
-                            label: getLabel(vinculoItem.idtipoentidade),
+                            label: vinculoItem.dstipoentidade,
                         }
                     })
                     setOptionsVinculos(mappedOptions)
@@ -255,8 +247,6 @@ const Contatos = () => {
 
     const handleExportOptionClick = async (option: string) => {
         setLoading(true)
-        let url = ''
-    
         try {
             let endpoint = ''
             if (option === 'vcard') endpoint = 'contatos/download/vcard'
@@ -275,8 +265,13 @@ const Contatos = () => {
             })
     
             if (response?.data?.url) {
-                url = `${import.meta.env.VITE_API_URL}${response.data.url}`
-                window.open(url, '_blank')
+                const url = `${import.meta.env.VITE_API_URL}${response.data.url}`
+                
+                const link = document.createElement('a')
+                link.href = url                
+                document.body.appendChild(link)
+                link.click() 
+                document.body.removeChild(link)
             } else {
                 console.error('URL não encontrada na resposta')
             }
@@ -286,6 +281,7 @@ const Contatos = () => {
             setLoading(false)
         }
     }
+    
     
         
     const radioGroup = (
@@ -328,6 +324,17 @@ const Contatos = () => {
             <div className="lg:flex items-center justify-between mb-4">
             <div className="flex items-center">
                 <h3 className="mb-4 lg:mb-0">Contatos</h3>
+                <Tooltip title="Para saber mais sobre o uso da Lista de Contatos clique aqui" placement="right-end">
+                <Button
+                    shape="circle"
+                    size="xs"
+                    icon={<FaQuestion />}
+                    className="ml-2"
+                    onClick={() => {
+                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MjQ4')
+                    }}
+                />
+            </Tooltip>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-4">
 
@@ -371,7 +378,7 @@ const Contatos = () => {
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/contatos?vinculoType=${vinculoType}&marcador=${MarcadorType}&entidade=${EntidadeType}`}
                 options={radioGroup}
-                CardLayout={NucleosCard}
+                CardLayout={ContatoCard}
                 autorizeExport={false}
                 onFilterChange={handleFiltersChange}
             />
