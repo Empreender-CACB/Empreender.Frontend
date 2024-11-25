@@ -64,7 +64,7 @@ const columns = [
                 >
                     <span className="cursor-pointer">{text}</span>
                 </Tooltip>
-            );
+            )
         },
     },    
     {
@@ -94,7 +94,7 @@ const columns = [
                         placement="left"
                         title={<div>{tooltipText}</div>}
                     >
-                        <Link to={linkTo}>
+                        <Link to={linkTo} className='text-blue-500'>
                             {text}
                         </Link>
                     </Tooltip>
@@ -356,8 +356,7 @@ const Contatos = () => {
                             Exportar como Vcard
                         </Dropdown.Item>
                     </Dropdown>
-
-                    <Link
+{/*                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
                         to={`/contatos/adicionar/`}
                     >
@@ -371,7 +370,8 @@ const Contatos = () => {
                             Adicionar contato
                         </Button>
                     </Link>
-                </div>
+                    */}
+                </div> 
             </div>
             <CustomReactDataGrid
                 filename='Contatos'
