@@ -73,6 +73,7 @@ const AdicionarAnexo = () => {
                     method: 'get',
                 });
                 setArquivosTipos(tiposResponse.data);
+                
 
                 if (tipoVinculo && idVinculo) {
                     const url = tipoVinculoSecundario && idVinculoSecundario
@@ -137,6 +138,8 @@ const AdicionarAnexo = () => {
 
     const query = new URLSearchParams(window.location.search);
     const redirectUrl = query.get("redirectUrl");
+    
+    console.log('redirect',redirectUrl);
 
     const handleSave = async (values: any) => {
         setLoading(true);
@@ -176,9 +179,14 @@ const AdicionarAnexo = () => {
         }
     
         try {
-            const url = tipoVinculoSecundario && idVinculoSecundario
+            let url = '';
+            if (tipoVinculo === 'documentacao') {
+                url = '/anexos/storeAnexo/documentacao';
+            } else {
+                url = tipoVinculoSecundario && idVinculoSecundario
                 ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
                 : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`;
+            }
     
             const response = await ApiService.fetchData({
                 url,
@@ -207,6 +215,8 @@ const AdicionarAnexo = () => {
             setLoading(false);
         }
     };    
+    
+    console.log(nomeEnte, nomeEnteSencundario);
 
     return (
         <Container>
@@ -403,7 +413,7 @@ const AdicionarAnexo = () => {
                                                 name="vinculado"
                                                 as={Input}
                                                 disabled
-                                                value={`${nomeEnte} ${nomeEnteSencundario != null ? " - " + nomeEnteSencundario : ''}`}
+                                                value={`${nomeEnte != null ? nomeEnte : capitalize(tipoVinculo || '')} ${nomeEnteSencundario != null ? " - " + nomeEnteSencundario : ''}`}
                                                 className="w-full"
                                             />
                                         </FormItem>
