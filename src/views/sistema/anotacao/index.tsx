@@ -147,9 +147,9 @@ const Anotacoes = () => {
                     url: `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
                     method: 'get',
                 });
-                const { nomeVinculo, breadcrumb } = response.data;
+                const { nomeVinculoPrimario, breadcrumb } = response.data;
 
-                setNomeVinculo(nomeVinculo);
+                setNomeVinculo(nomeVinculoPrimario);
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
                     ...breadcrumb.map((item: any) => ({

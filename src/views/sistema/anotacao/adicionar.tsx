@@ -54,8 +54,8 @@ const AnotacaoForm = () => {
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
                     method: 'get',
                 });
-                const { nomeVinculo, breadcrumb } = vinculoResponse.data;
-                setNomeVinculo(nomeVinculo);
+                const { nomeVinculoPrimario, breadcrumb } = vinculoResponse.data;
+                setNomeVinculo(nomeVinculoPrimario);
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
                     ...breadcrumb.map((item: any) => ({

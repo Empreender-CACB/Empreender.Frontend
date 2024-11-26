@@ -25,23 +25,45 @@ const validationSchema = Yup.object().shape({
     vencimento: Yup.date().nullable(),
     necessitaAprovacao: Yup.string().required('Campo obrigatório'),
     descricao: Yup.string(),
-    tipoVinculo: Yup.string(),
-    idVinculo: Yup.string().required('ID de vínculo obrigatório'),
+    status: Yup.string(),
+    versao: Yup.string().when('tipoVinculo', {
+        is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
+        then: (schema) => schema.required('Versão é obrigatória'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    grupo: Yup.string().when('tipoVinculo', {
+        is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
+        then: (schema) => schema.required('Grupo é obrigatório'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    referencia: Yup.string().when('tipoVinculo', {
+        is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
+        then: (schema) => schema.required('Referência obrigatória'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    status_doc: Yup.string().when('tipoVinculo', {
+        is: (tipoVinculo: string) => tipoVinculo === 'documentacao',
+        then: (schema) => schema.required('Status é obrigatório'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
 });
-
-const breadcrumbItems = [
-    { label: 'Início', link: '/' },
-    { label: 'Adicionar documento', link: '/sistema/insert-excel' },
-]
 
 const AdicionarAnexo = () => {
     const [arquivosTipos, setArquivosTipos] = useState<any>([]);
+    const [recursos, setRecursos] = useState<any>([]);
     const [nomeArquivoSubstituto, setNomeArquivoSubstituto] = useState('');
     const [nomeEnte, setNomeEnte] = useState('');
+    const [nomeEnteSencundario, setNomeEnteSecundario] = useState('');
     const [mostrarVencimento, setMostrarVencimento] = useState(true);
     const [loading, setLoading] = useState(false);
     const [necessitaAprovacaoDisabled, setNecessitaAprovacaoDisabled] = useState(false);
-    const { tipoVinculo, idVinculo, substitutoId } = useParams<string>();
+
+    const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
+
+    const [breadcrumbItems, setBreadcrumbItems] = useState([
+        { label: 'Início', link: '/' },
+        { label: 'Adicionar documento', link: '#' }
+    ]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,13 +73,33 @@ const AdicionarAnexo = () => {
                     method: 'get',
                 });
                 setArquivosTipos(tiposResponse.data);
+                
 
                 if (tipoVinculo && idVinculo) {
+                    const url = tipoVinculoSecundario && idVinculoSecundario
+                        ? `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
+                        : `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`;
+
                     const enteResponse = await ApiService.fetchData({
-                        url: `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
+                        url,
                         method: 'get',
                     });
-                    setNomeEnte(enteResponse.data.nomeVinculo);
+
+                    setNomeEnte(enteResponse.data.nomeVinculoPrimario || enteResponse.data.nomeVinculo);
+                    if (tipoVinculoSecundario && idVinculoSecundario) {
+                        setNomeEnteSecundario(enteResponse.data.nomeVinculoSecundario || '');
+                    }
+
+                    const { breadcrumb } = enteResponse.data;
+
+                    setBreadcrumbItems([
+                        { label: 'Início', link: '/' },
+                        ...breadcrumb.map((item: any) => ({
+                            label: item.label,
+                            link: item.url,
+                        })),
+                        { label: 'Documentos', link: '#' },
+                    ]);
                 }
 
                 if (substitutoId) {
@@ -67,10 +109,23 @@ const AdicionarAnexo = () => {
                     });
                     setNomeArquivoSubstituto(substitutoResponse.data.nome);
 
-                    // Definir o tipoId e passar para o formik
                     const tipoId = substitutoResponse.data.tipo_id;
                     setTipoIdInicial(tipoId);
                 }
+
+                if (tipoVinculo === 'documentacao') {
+                    setNomeEnte("Documentação");
+                    const recursosResponse = await ApiService.fetchData({
+                        url: '/recursos',
+                        method: 'get',
+                    });
+                    const formattedRecursos = recursosResponse.data.map((recurso: any) => ({
+                        value: recurso.idrecurso,
+                        label: recurso.nome,
+                    }));
+                    setRecursos(formattedRecursos);
+                }
+
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
             }
@@ -83,46 +138,85 @@ const AdicionarAnexo = () => {
 
     const query = new URLSearchParams(window.location.search);
     const redirectUrl = query.get("redirectUrl");
+    
+    console.log('redirect',redirectUrl);
 
     const handleSave = async (values: any) => {
         setLoading(true);
         toast.push(
             <Notification title="Salvando arquivo, aguarde..." type="success" />
         );
-
+    
         const formData = new FormData();
+        formData.append('status', values.status);
         formData.append('nome', values.nome);
         formData.append('descricao', values.descricao);
         formData.append('tipoId', values.tipoId);
         formData.append('vencimento', values.vencimento ? values.vencimento.toString() : '');
         formData.append('necessitaAprovacao', values.necessitaAprovacao);
         formData.append('tipoVinculo', tipoVinculo || '');
-        formData.append('idVinculo', idVinculo || '');
-        if (substitutoId) formData.append('substitutoId', substitutoId);
-        if (values.nomeArquivo) formData.append('nomeArquivo', values.nomeArquivo);
-
+    
+        if (values.nomeArquivo) {
+            formData.append('nomeArquivo', values.nomeArquivo);
+        }
+    
+        if (tipoVinculo === 'documentacao') {
+            formData.append('versao', values.versao || '');
+            formData.append('grupo', values.grupo || '');
+            formData.append('status_doc', values.status_doc || '1');
+            formData.append('direitos', values.direitos || '');
+            formData.append('referencia', values.referencia || '');
+        } else {
+            formData.append('idVinculo', idVinculo || '');
+            if (tipoVinculoSecundario && idVinculoSecundario) {
+                formData.append('tipoVinculoSecundario', tipoVinculoSecundario);
+                formData.append('idVinculoSecundario', idVinculoSecundario);
+            }
+        }
+    
+        if (substitutoId) {
+            formData.append('substitutoId', substitutoId);
+        }
+    
         try {
+            let url = '';
+            if (tipoVinculo === 'documentacao') {
+                url = '/anexos/storeAnexo/documentacao';
+            } else {
+                url = tipoVinculoSecundario && idVinculoSecundario
+                ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
+                : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`;
+            }
+    
             const response = await ApiService.fetchData({
-                url: `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`,
+                url,
                 method: 'post',
                 data: formData,
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-
+    
             const anexoId = response.data.anexo.id;
-
+    
+            toast.push(
+                <Notification title="Arquivo salvo com sucesso!" type="success" />
+            );
+    
             if (redirectUrl) {
                 window.location.href = `${redirectUrl}`;
             } else {
                 window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
             }
         } catch (error) {
+            console.error('Erro ao salvar arquivo:', error);
             toast.push(
                 <Notification title="Erro ao salvar arquivo." type="danger" />
             );
+        } finally {
             setLoading(false);
         }
-    };
+    };    
+    
+    console.log(nomeEnte, nomeEnteSencundario);
 
     return (
         <Container>
@@ -136,16 +230,28 @@ const AdicionarAnexo = () => {
                     initialValues={{
                         nome: '',
                         nomeArquivo: null,
-                        tipoId: tipoIdInicial || '',
+                        tipoId: '',
                         vencimento: null,
                         necessitaAprovacao: '',
                         descricao: '',
-                        tipoVinculo: tipoVinculo || '',
-                        idVinculo: idVinculo || ''
+                        versao: '',
+                        direitos: [],
+                        grupo: '',
+                        referencia: '',
+                        status: '',
+                        status_doc: '1',
+                        tipoVinculo: tipoVinculo,
+                        idVinculo: idVinculo || '',
                     }}
-                    enableReinitialize
                     validationSchema={validationSchema}
+                    validate={(values) => {
+                        console.log('Validation step - values:', values);
+                        const errors = {};
+                        // Optionally, you can add custom validation logic here for debugging
+                        return errors;
+                    }}
                     onSubmit={(values, { setSubmitting }) => {
+                        console.log('Submitted values:', values);
                         handleSave(values);
                         setSubmitting(false);
                     }}
@@ -302,13 +408,12 @@ const AdicionarAnexo = () => {
                                     </div>
 
                                     <div className="mb-6">
-                                        <h5 className="text-lg font-semibold mb-4">Vincular</h5>
                                         <FormItem label="Vinculado a" asterisk>
                                             <Field
                                                 name="vinculado"
                                                 as={Input}
                                                 disabled
-                                                value={nomeEnte}
+                                                value={`${nomeEnte != null ? nomeEnte : capitalize(tipoVinculo || '')} ${nomeEnteSencundario != null ? " - " + nomeEnteSencundario : ''}`}
                                                 className="w-full"
                                             />
                                         </FormItem>
@@ -329,8 +434,77 @@ const AdicionarAnexo = () => {
                                         </div>
                                     )}
 
+                                    {tipoVinculo === 'documentacao' && (
+                                        <>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <FormItem
+                                                    label="Versão"
+                                                    asterisk
+                                                    invalid={!!errors.versao && touched.versao}
+                                                    errorMessage={errors.versao}
+                                                >
+                                                    <Field name="versao" as={Input} placeholder="Versão do documento" />
+                                                </FormItem>
+
+                                                <FormItem
+                                                    label="Grupo"
+                                                    asterisk
+                                                    invalid={!!errors.grupo && touched.grupo}
+                                                    errorMessage={errors.grupo}
+                                                >
+                                                    <Field name="grupo" as={Input} placeholder="Grupo do documento" />
+                                                </FormItem>
+
+                                                <FormItem
+                                                    label="Status"
+                                                    asterisk
+                                                    invalid={!!errors.status_doc && touched.status_doc}
+                                                    errorMessage={errors.status_doc}
+                                                >
+                                                    <Field name="status_doc">
+                                                        {({ form }: any) => (
+                                                            <Select
+                                                                placeholder="Define se o documento será exibido ou não."
+                                                                options={[
+                                                                    { value: '1', label: 'Ativo' },
+                                                                    { value: '0', label: 'Inativo' },
+                                                                ]}
+                                                                value={{
+                                                                    value: form.values.status_doc || '1',
+                                                                    label: form.values.status_doc === '0' ? 'Inativo' : 'Ativo',
+                                                                }}
+                                                                onChange={(option) => form.setFieldValue('status_doc', option?.value)}
+                                                            />
+                                                        )}
+                                                    </Field>
+                                                </FormItem>
+                                            </div>
+
+                                            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <FormItem
+                                                    label="Direitos"
+                                                >
+                                                    <Select
+                                                        options={recursos}
+                                                        placeholder="Caso queira esconder um documento para usuários que possuam certo direito."
+                                                        onChange={(option: { value: string } | null) => {
+                                                            setFieldValue('direitos', option?.value || '');
+                                                        }}
+                                                    />
+                                                </FormItem>
+                                                <FormItem
+                                                    label="Referência"
+                                                    asterisk
+                                                    invalid={!!errors.referencia && touched.referencia}
+                                                    errorMessage={errors.referencia}
+                                                >
+                                                    <Field name="referencia" as={Input} placeholder="A referência é utilizada para arquivos que podem ter várias versões." />
+                                                </FormItem>
+                                            </div>
+                                        </>
+                                    )}
+
                                     <div className="mb-6">
-                                        <h5 className="text-lg font-semibold mb-4">Descrição</h5>
                                         <FormItem label="Descrição">
                                             <Field
                                                 name="descricao"
@@ -354,7 +528,7 @@ const AdicionarAnexo = () => {
                                             >
                                                 Cancelar
                                             </Button>
-                                        </Link>                                        
+                                        </Link>
                                         <Button
                                             type="submit"
                                             variant='solid'
