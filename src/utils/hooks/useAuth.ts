@@ -31,6 +31,7 @@ function useAuth() {
         | {
             status: Status
             message: string
+            token?: string
           }
         | undefined
     > => {
@@ -56,6 +57,7 @@ function useAuth() {
                         empresas: resp.data.user.empresas,
                         nucleos: resp.data.user.nucleos,
                         projetos: resp.data.user.projetos,
+                        token: token.token
                     }
                     
                     localStorage.setItem('lista_geral', resp.data.user.preferencias.lista_geral);
@@ -74,6 +76,7 @@ function useAuth() {
                 return {
                     status: 'success',
                     message: '',
+                    token: token.token
                 }
             }
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
