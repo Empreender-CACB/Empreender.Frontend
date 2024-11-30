@@ -254,11 +254,6 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
         component: lazy(() => import('@/views/sistema/anotacao/index')),
     },
-    {
-        key: 'Download.index',
-        path: `${APP_PREFIX_PATH}/anexo/download/:id`,
-        component: lazy(() => import('@/views/sistema/anexos/download')),
-    },
 ]
 
 export default appsRoute

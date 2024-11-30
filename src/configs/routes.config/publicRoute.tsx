@@ -112,6 +112,13 @@ const publicRoute: Routes = [
             layout: 'blank',
         },
     },
+
+    {
+        key: 'Download.index',
+        path: `/anexo/download/:id`,
+        component: lazy(() => import('@/views/anexos/download')),
+        meta: { layout: 'blank'},
+    },
 ]
 
 export default publicRoute
