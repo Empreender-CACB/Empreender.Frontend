@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import moment from 'moment'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
 import { HiPlusCircle } from 'react-icons/hi'
-import { Button, Select, Tooltip, Dropdown } from '@/components/ui'
+import { GrCloudDownload } from 'react-icons/gr'
+import { Button, Select, Tooltip, Dropdown, Notification } from '@/components/ui'
+import toast from '@/components/ui/toast'
 import { AdaptableCard } from '@/components/shared'
 import { useState, useEffect } from 'react'
 import { ContatoCard } from '@/components/shared/TableCards/contatoCard'
@@ -245,8 +247,15 @@ const Contatos = () => {
         setEntidadeType(values)
     }
 
+    const notify_download = (
+        <Notification title="Download" customIcon={<GrCloudDownload className="text-2xl text-indigo-600" />        }>
+            Download iniciado
+        </Notification>
+    )
+
     const handleExportOptionClick = async (option: string) => {
         setLoading(true)
+        toast.push(notify_download)
         try {
             let endpoint = ''
             if (option === 'vcard') endpoint = 'contatos/download/vcard'
