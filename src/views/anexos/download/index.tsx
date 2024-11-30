@@ -16,9 +16,14 @@ const DownloadAnexo = () => {
                 setLoading(false);
                 return;
             }
+            const newTab = window.open('', '_blank');
+            if (!newTab) {
+                setError('Falha ao abrir a nova aba. Verifique o bloqueador de pop-ups.');
+                setLoading(false);
+                return;
+            }
 
             try {
-                // Solicita a assinatura do anexo
                 const response = await ApiService.fetchData({
                     url: `/anexo/${id}/sign`,
                     method: 'get',
@@ -29,12 +34,9 @@ const DownloadAnexo = () => {
                     throw new Error('Token não foi retornado pela API.');
                 }
 
-                await window.open(
-                    `${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`,
-                    '_blank'
-                );
-                window.close();
+                newTab.location.href = `${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`;
             } catch (err: any) {
+                newTab.close(); // Fecha a aba em caso de erro
                 if (err.response?.status === 404) {
                     setError('Erro 404: Anexo não encontrado.');
                     setCode('404');
