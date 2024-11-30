@@ -33,8 +33,9 @@ const DownloadAnexo = () => {
                     `${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`,
                     '_blank'
                 );
-
-                window.close();
+                setTimeout(() => {
+                    window.close(); // Close the current page after a delay
+                }, 5000);
             } catch (err: any) {
                 if (err.response?.status === 404) {
                     setError('Erro 404: Anexo não encontrado.');
