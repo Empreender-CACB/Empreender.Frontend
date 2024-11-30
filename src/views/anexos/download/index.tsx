@@ -29,7 +29,8 @@ const DownloadAnexo = () => {
                 if (!token) {
                     throw new Error('Token não foi retornado pela API.');
                 }
-                window.location.href = ` ${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`
+                window.location.href = ` ${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`;
+                window.close();
             } catch (err: any) {
                 if (err.response?.status === 404) {
                     setError('Erro 404: Anexo não encontrado.');
