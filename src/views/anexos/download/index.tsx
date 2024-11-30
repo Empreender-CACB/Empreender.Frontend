@@ -1,6 +1,6 @@
 import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ErrorPage from './error';
 
 const DownloadAnexo = () => {
@@ -8,7 +8,6 @@ const DownloadAnexo = () => {
     const [error, setError] = useState<string | null>(null);
     const [code, setCode] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +28,12 @@ const DownloadAnexo = () => {
                 if (!token) {
                     throw new Error('Token não foi retornado pela API.');
                 }
-                window.location.href = ` ${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`;
+
+                await window.open(
+                    `${import.meta.env.VITE_API_URL}/anexo/${id}/download?token=${token}`,
+                    '_blank'
+                );
+
                 window.close();
             } catch (err: any) {
                 if (err.response?.status === 404) {
@@ -38,7 +42,6 @@ const DownloadAnexo = () => {
                 } else if (err.response?.status === 401) {
                     setError('Erro 401: Acesso não autorizado.');
                     setCode('401');
-
                 } else {
                     setError(err.message || 'Ocorreu um erro inesperado.');
                 }
