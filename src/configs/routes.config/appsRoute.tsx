@@ -244,6 +244,16 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
         component: lazy(() => import('@/views/sistema/anotacao/index')),
     },
+    {
+        key: 'Contatos.lista',
+        path: `${APP_PREFIX_PATH}/contatos/`,
+        component: lazy(() => import('@/views/sistema/contatos')),
+    },
+    {
+        key: 'Contatos.malaDireta',
+        path: `${APP_PREFIX_PATH}/contatos/mala-direta`,
+        component: lazy(() => import('@/views/sistema/contatos/mala-direta')),
+    },
 ]
 
 export default appsRoute
