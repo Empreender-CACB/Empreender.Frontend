@@ -9,9 +9,10 @@ import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import capitalize from '@/components/ui/utils/capitalize';
 import { Notification, toast } from '@/components/ui';
+import { VscFile } from 'react-icons/vsc';
 
 const optionsSimNao = [
     { value: 's', label: 'Sim' },
@@ -57,8 +58,14 @@ const AdicionarAnexo = () => {
     const [mostrarVencimento, setMostrarVencimento] = useState(true);
     const [loading, setLoading] = useState(false);
     const [necessitaAprovacaoDisabled, setNecessitaAprovacaoDisabled] = useState(false);
-
+    const [params] = useSearchParams();
+    const [isTransferenciaLancamentoAcao, setIsTransferenciaLancamentoAcao] = useState(false);
+    const [nomeArquivo, setNomeArquivo] = useState('');
+    const [disableAnexoTransferencia, setDisableAnexoTransferencia] = useState(false);
+    const [labelDocumento, setLabelDocumento] = useState('Adição de Documento');
     const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
+    const idAnexoLancamento = params.get('idAnexoLancamento')
+
 
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         { label: 'Início', link: '/' },
@@ -75,18 +82,33 @@ const AdicionarAnexo = () => {
                 setArquivosTipos(tiposResponse.data);
 
                 if (tipoVinculo && idVinculo) {
-                    const url = tipoVinculoSecundario && idVinculoSecundario
-                        ? `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
-                        : `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`;
-
+                    
+                    let url:string;
+                    if(tipoVinculoSecundario && idVinculoSecundario && (idAnexoLancamento !== null || idAnexoLancamento !== 'null'))
+                    {
+                        url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}?idAnexoLancamento=${idAnexoLancamento}`
+                    }else if(tipoVinculoSecundario && idVinculoSecundario) 
+                    {
+                        url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
+                    }else{
+                        url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`
+                    }
                     const enteResponse = await ApiService.fetchData({
                         url,
                         method: 'get',
                     });
-
                     setNomeEnte(enteResponse.data.nomeVinculoPrimario || enteResponse.data.nomeVinculo);
                     if (tipoVinculoSecundario && idVinculoSecundario) {
                         setNomeEnteSecundario(enteResponse.data.nomeVinculoSecundario || '');
+                    }
+
+                    if(enteResponse.data.arquivoLancamento !== null)
+                    {
+                        const anexoLancamento = enteResponse.data.arquivoLancamento;
+                        setIsTransferenciaLancamentoAcao(true);
+                        setNomeArquivo(anexoLancamento.nomeArquivo);
+                        setDisableAnexoTransferencia(true);
+                        setLabelDocumento('Transferência de anexo para ação');
                     }
 
                     const { breadcrumb } = enteResponse.data;
@@ -174,6 +196,10 @@ const AdicionarAnexo = () => {
         if (substitutoId) {
             formData.append('substitutoId', substitutoId);
         }
+        if(isTransferenciaLancamentoAcao && (idAnexoLancamento !== null || idAnexoLancamento !== 'null'))
+        {
+            formData.append('idAnexoLancamento', idAnexoLancamento!);
+        }
     
         try {
             const url = tipoVinculoSecundario && idVinculoSecundario
@@ -212,7 +238,7 @@ const AdicionarAnexo = () => {
         <Container>
             <div className="w-full max-w-4xl mb-4">
                 <Breadcrumb items={breadcrumbItems} />
-                <h1 className="text-2xl font-semibold text-gray-800">Adição de Documento</h1>
+                <h1 className="text-2xl font-semibold text-gray-800">{labelDocumento}</h1>
             </div>
 
             <div className="w-full bg-white p-6 rounded-lg shadow-md">
@@ -251,7 +277,12 @@ const AdicionarAnexo = () => {
                             if (tipoIdInicial) {
                                 buscarTipoArquivo(tipoIdInicial);
                             }
-                        }, [tipoIdInicial]);
+                            if(nomeArquivo)
+                            {
+                                setFieldValue('nome', nomeArquivo);
+                                setFieldValue('nomeArquivo', nomeArquivo);
+                            }
+                        }, [tipoIdInicial, nomeArquivo]);
 
                         const buscarTipoArquivo = (tipoId: string) => {
                             const tipoArquivo = arquivosTipos.find((tipo: any) => tipo.id === tipoId);
@@ -273,6 +304,7 @@ const AdicionarAnexo = () => {
 
                             setMostrarVencimento(tipoArquivo.vencimento_obrigatorio !== 'nao_aplica');
                         };
+
 
                         return (
                             <Form>
@@ -310,10 +342,22 @@ const AdicionarAnexo = () => {
                                                             isFullWidth={true}
                                                             variant='solid'
                                                             uploadLimit={1}
+                                                            disabled={disableAnexoTransferencia}
+
                                                             onChange={(files) => setFieldValue('nomeArquivo', files[0])}
                                                         />
                                                     )}
                                                 </Field>
+                                                {isTransferenciaLancamentoAcao && 
+                                                    <div className="upload-file">
+                                                        <div className="flex">
+                                                            <div className="upload-file-thumbnail"><span className="text-4xl"><VscFile /></span> </div>
+                                                            <div className="upload-file-info">
+                                                                <h6 className="upload-file-name">{nomeArquivo}</h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                } 
                                             </FormItem>
 
                                             <FormItem
