@@ -76,7 +76,7 @@ const AdicionarAnexo = () => {
         const fetchData = async () => {
             try {
                 const tiposResponse = await ApiService.fetchData({
-                    url: '/anexos/getArquivosTipo',
+                    url: '/anexos/tipo',
                     method: 'get',
                 });
                 setArquivosTipos(tiposResponse.data);
