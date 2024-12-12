@@ -62,8 +62,10 @@ const columns = [
         render: ({ data }: any) => {
             const text = data.nmnucleo
             
-            const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(data.idnucleo))}`
+            // const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(data.idnucleo))}`
             
+            const linkTo = `/sistema/nucleos/${data.idnucleo}`
+
             return (
                 <div>
                 <Link to={linkTo}>
