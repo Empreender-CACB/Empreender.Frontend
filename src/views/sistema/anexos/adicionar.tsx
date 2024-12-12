@@ -86,7 +86,7 @@ const AdicionarAnexo = () => {
                 if (tipoVinculo && idVinculo) {
                     
                     let url:string;
-                    if(tipoVinculoSecundario && idVinculoSecundario && (idAnexoLancamento !== null || idAnexoLancamento !== 'null'))
+                    if(tipoVinculoSecundario && idVinculoSecundario && (idAnexoLancamento !== null && idAnexoLancamento !== 'null'))
                     {
                         url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}?idAnexoLancamento=${idAnexoLancamento}`
                     }else if(tipoVinculoSecundario && idVinculoSecundario) 
@@ -104,7 +104,7 @@ const AdicionarAnexo = () => {
                         setNomeEnteSecundario(enteResponse.data.nomeVinculoSecundario || '');
                     }
 
-                    if(enteResponse.data.arquivoLancamento !== null || !isEmpty(enteResponse.data.arquivoLancamento))
+                    if(enteResponse.data.arquivoLancamento !== null && enteResponse.data.arquivoLancamento !== undefined)
                     {
                         const anexoLancamento = enteResponse.data.arquivoLancamento;
                         setIsTransferenciaLancamentoAcao(true);
@@ -200,7 +200,7 @@ const AdicionarAnexo = () => {
         if (substitutoId) {
             formData.append('substitutoId', substitutoId);
         }
-        if(isTransferenciaLancamentoAcao && (idAnexoLancamento !== null || idAnexoLancamento !== 'null'))
+        if(isTransferenciaLancamentoAcao && (idAnexoLancamento !== null && idAnexoLancamento !== 'null'))
         {
             formData.append('idAnexoLancamento', idAnexoLancamento!);
         }

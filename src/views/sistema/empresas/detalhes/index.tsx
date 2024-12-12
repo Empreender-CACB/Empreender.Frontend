@@ -19,6 +19,7 @@ import ContatosEmpresa from './contatos'
 import { Empresa } from '@/@types/generalTypes'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
 import axios from 'axios'
+import ApiService from '@/services/ApiService'
 
 
 const { TabNav, TabList, TabContent } = Tabs
@@ -32,9 +33,10 @@ const EmpresaDetalhes = () => {
     useEffect(() => {
         async function fetchEmpresa() {
             try {
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/empresas/${params.id}`
-                );
+                const response = await ApiService.fetchData({
+                    url: `/empresas/${params.id}`,
+                    method: 'get',
+                });
                 
                 setEmpresa(response.data);
                 setLoading(false);

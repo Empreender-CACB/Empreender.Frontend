@@ -254,6 +254,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
         component: lazy(() => import('@/views/sistema/anotacao/index')),
     },
+    {
+        key: 'Projetos.vincularEmpresasNucleo',
+        path: `${APP_PREFIX_PATH}/projetos/vincular-empresas-nucleo`,
+        component: lazy(() => import('@/views/sistema/projetos/vincularEmpresasNucleo')),
+    },
 ]
 
 export default appsRoute
