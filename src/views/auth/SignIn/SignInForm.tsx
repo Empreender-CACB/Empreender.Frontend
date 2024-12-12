@@ -52,7 +52,7 @@ const SignInForm = (props: SignInFormProps) => {
         if (result?.status === 'failed') {
             setMessage(result.message)
         } else {
-            const encodedCredentials = btoa(`${login}:${password}`);
+            const encodedCredentials = btoa(`${login}:${password}:${result?.token}`);
             window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/login/index?credentials=${encodedCredentials}`;
         }
 
