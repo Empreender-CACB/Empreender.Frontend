@@ -1,25 +1,46 @@
-import Dropdown from '@/components/ui/Dropdown'
-import HorizontalMenuItem from './HorizontalMenuItem'
-import HorizontalMenuDropdownItem from './HorizontalMenuDropdownItem'
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import Dropdown from '@/components/ui/Dropdown';
+import HorizontalMenuItem from './HorizontalMenuItem';
+import HorizontalMenuDropdownItem from './HorizontalMenuDropdownItem';
 import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_COLLAPSE,
     NAV_ITEM_TYPE_ITEM,
-} from '@/constants/navigation.constant'
-import type { NavMode } from '@/@types/theme'
-import type { NavigationTree } from '@/@types/navigation' // Import NavigationTree type
-import { useNavigationConfig } from '@/utils/hooks/useNavigation'
+} from '@/constants/navigation.constant';
+import type { NavMode } from '@/@types/theme';
+import type { NavigationTree } from '@/@types/navigation';
+import { useNavigationConfig } from '@/utils/hooks/useNavigation';
 
 type HorizontalMenuContentProps = {
-    manuVariant: NavMode
-    userAuthority?: string[]
-}
+    manuVariant: NavMode;
+    userAuthority?: string[];
+};
 
-const HorizontalMenuContent = ({
-    manuVariant
-}: HorizontalMenuContentProps) => {
+const HorizontalMenuContent = ({ manuVariant }: HorizontalMenuContentProps) => {
+    const { navigationConfig, loading } = useNavigationConfig();
 
-    const { navigationConfig } = useNavigationConfig();
+    const renderSkeleton = () => {
+        return (
+            <div className="flex gap-4">
+                {Array(7)
+                    .fill(null)
+                    .map((_, index) => (
+                        <div key={index} className="flex flex-col">
+                            <Skeleton
+                                width={90}
+                                height={25}
+                                style={{
+                                    marginRight: '15px',
+                                    opacity: 0.7,
+                                }}
+                            />
+                        </div>
+                    ))}
+            </div>
+
+        );
+    };
 
     const renderSubMenuItems = (subMenu: NavigationTree[]) => {
         return subMenu.map((subNavItem) => {
@@ -29,20 +50,17 @@ const HorizontalMenuContent = ({
                         key={subNavItem.key}
                         nav={subNavItem}
                     />
-                )
+                );
             } else if (subNavItem.type === NAV_ITEM_TYPE_COLLAPSE) {
                 return (
-                    <Dropdown.Menu
-                        key={subNavItem.key}
-                        title={subNavItem.title}
-                    >
+                    <Dropdown.Menu key={subNavItem.key} title={subNavItem.title}>
                         {renderSubMenuItems(subNavItem.subMenu)}
                     </Dropdown.Menu>
-                )
+                );
             }
-            return null
-        })
-    }
+            return null;
+        });
+    };
 
     const renderMenuItems = (navItems: NavigationTree[]) => {
         return navItems.map((navItem) => {
@@ -63,7 +81,7 @@ const HorizontalMenuContent = ({
                     >
                         {renderSubMenuItems(navItem.subMenu)}
                     </Dropdown>
-                )
+                );
             } else if (navItem.type === NAV_ITEM_TYPE_ITEM) {
                 return (
                     <HorizontalMenuItem
@@ -72,17 +90,17 @@ const HorizontalMenuContent = ({
                         nav={navItem}
                         manuVariant={manuVariant}
                     />
-                )
+                );
             }
-            return null
-        })
-    }
+            return null;
+        });
+    };
 
     return (
         <span className="flex items-center">
-            {navigationConfig && renderMenuItems(navigationConfig)}
+            {loading ? renderSkeleton() : renderMenuItems(navigationConfig)}
         </span>
-    )
-}
+    );
+};
 
-export default HorizontalMenuContent
+export default HorizontalMenuContent;
