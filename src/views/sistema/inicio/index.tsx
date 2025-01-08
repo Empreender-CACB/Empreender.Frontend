@@ -181,24 +181,22 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className={`grid grid-cols-1 md:grid-cols-${noticiasBlog.length} gap-4`}>
-
+                        <div
+                            className={`grid grid-cols-1 ${
+                                noticiasBlog.length < 6 ? 'md:grid-cols-1' : 'md:grid-cols-3'
+                            } gap-4`}
+                        >
                             {noticiasBlog.map((news, index) => (
-                                <Card key={index}>
+                                <Card key={index} className={`${noticiasBlog.length < 6 ? '' : 'h-48'} overflow-hidden`}>
                                     <a
                                         href={news.link}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        <h3 className="font-medium mb-2">
-                                            {news.titulo}
-                                        </h3>
+                                        <h3 className="font-medium mb-2">{news.titulo}</h3>
                                     </a>
                                     {news.descricao && (
-                                        <p>
-                                            {news.descricao.substr(0, 100) +
-                                                '...'}
-                                        </p>
+                                        <p className="text-sm line-clamp-3">{news.descricao}</p>
                                     )}
                                 </Card>
                             ))}
@@ -206,7 +204,7 @@ const Inicio = () => {
                     </div>
 
                     {/* Bloco de boas-vindas */}
-
+                    
                 </div>
 
                 {/* Segunda Coluna: Carrossel de Imagens */}
