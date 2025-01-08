@@ -181,24 +181,22 @@ const Inicio = () => {
                                 </Button>
                             </a>
                         </div>
-                        <div className={`grid grid-cols-1 md:grid-cols-${noticiasBlog.length} gap-4`}>
-
+                        <div
+                            className={`grid grid-cols-1 ${
+                                noticiasBlog.length < 6 ? 'md:grid-cols-1' : 'md:grid-cols-3'
+                            } gap-4`}
+                        >
                             {noticiasBlog.map((news, index) => (
-                                <Card key={index}>
+                                <Card key={index} className={`${noticiasBlog.length < 6 ? '' : 'h-48'} overflow-hidden`}>
                                     <a
                                         href={news.link}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
-                                        <h3 className="font-medium mb-2">
-                                            {news.titulo}
-                                        </h3>
+                                        <h3 className="font-medium mb-2">{news.titulo}</h3>
                                     </a>
                                     {news.descricao && (
-                                        <p>
-                                            {news.descricao.substr(0, 100) +
-                                                '...'}
-                                        </p>
+                                        <p className="text-sm line-clamp-3">{news.descricao}</p>
                                     )}
                                 </Card>
                             ))}
@@ -206,40 +204,7 @@ const Inicio = () => {
                     </div>
 
                     {/* Bloco de boas-vindas */}
-                    <div
-                        className="bg-no-repeat bg-cover py-6 px-12 min-h-[360px] pb-4 flex flex-col rounded-lg"
-                        style={{
-                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url('/img/others/ipe.jpg')`
-                        }}
-                    >
-                        <div className="text-white bg-black bg-opacity-10 shadow-sm font-bold mt-4 flex-grow w-full  rounded-lg p-4">
-                            <h2 className="text-white text-shadow-lg [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] mb-4">
-                                Estamos em obras!
-                            </h2>
-                            <h6 className="text-white mb-4">
-                                Vamos trocar de pneu. Andando.
-                            </h6>
-                            <h6 className="text-white mb-4">
-                                A viagem levará algum tempo, precisamos ir
-                                devagar, mas confiamos que chegaremos bem. Aos
-                                poucos teremos um novo portal.
-                            </h6>
-
-                            <h6 className="text-white mb-4">
-                                Bom momento para enviar críticas e sugestões. São muito bem-vindas.
-                            </h6>
-
-                            <Link target='__blank' to="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NzQzMA==">
-                                <Button
-                                    className="w-full lg:w-auto"
-                                    variant="solid"
-                                    size="sm"
-                                >
-                                    Saiba mais
-                                </Button>
-                            </Link>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 {/* Segunda Coluna: Carrossel de Imagens */}
