@@ -13,7 +13,7 @@ interface LayoutDetailSimpleProps {
     subtitle?: string
     status: string
     children: React.ReactNode
-    paymentStatus: Record<string, StatusProperties>
+    paymentStatus?: Record<string, StatusProperties>
     actions?: React.ReactNode
 }
 
@@ -35,14 +35,16 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                         <h3>
                             <span>{title}</span>
                         </h3>
-                        <Tag
-                            className={classNames(
-                                'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                                paymentStatus[status].class
-                            )}
-                        >
-                            {paymentStatus[status].label}
-                        </Tag>
+                        {paymentStatus &&
+                            <Tag
+                                className={classNames(
+                                    'border-0 rounded-md ltr:ml-2 rtl:mr-2',
+                                    paymentStatus[status].class
+                                )}
+                            >
+                                {paymentStatus[status].label}
+                            </Tag>
+                        }
                     </div>
                     {actions}
                 </div>
