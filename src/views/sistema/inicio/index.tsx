@@ -196,7 +196,9 @@ const Inicio = () => {
                                         <h3 className="font-medium mb-2">{news.titulo}</h3>
                                     </a>
                                     {news.descricao && (
-                                        <p className="text-sm line-clamp-3">{news.descricao}</p>
+                                        <p className="text-sm line-clamp-3">
+                                            {news.descricao.replace('[&#8230;]', '...')}
+                                        </p>
                                     )}
                                 </Card>
                             ))}
