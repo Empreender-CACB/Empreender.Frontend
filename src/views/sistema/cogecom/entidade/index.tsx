@@ -4,12 +4,13 @@ import Tabs from '@/components/ui/Tabs';
 import Loading from '@/components/shared/Loading';
 import Button from '@/components/ui/Button';
 
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple';
-import axios from 'axios';
 import ApiService from '@/services/ApiService';
 import { Associacao } from '@/@types/generalTypes';
 import ConfirmarInscricao from './modalConfirmarInscricao';
+import AnexosComponent from '../../anexos/AnexosComponent';
+import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -21,6 +22,7 @@ const CogecomEntidade = () => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isInscrito, setIsInscrito] = useState(false); 
+    const [dadosCogecom, setDadosCogecom] = useState<any>([]); 
 
     useEffect(() => {
         async function fetchDetalhes() {
@@ -40,13 +42,14 @@ const CogecomEntidade = () => {
 
                 setArquivos(listaResponse.data);
 
-                const isInscritoResponse = await ApiService.fetchData({
-                    url: `cogecom/isInscrito/${params.id}`,
+                const cogecomResponse = await ApiService.fetchData({
+                    url: `cogecom/${params.id}`,
                     method: 'get',
                 });
 
-                if (isInscritoResponse.data.isInscrito) {
+                if (cogecomResponse.data.id) {
                     setIsInscrito(true);
+                    setDadosCogecom(cogecomResponse.data);
                 }
 
                 setLoading(false);
@@ -59,10 +62,22 @@ const CogecomEntidade = () => {
         fetchDetalhes();
     }, [params.id]);
 
-    const handleInscricaoConfirmada = () => {
-        setIsInscrito(true); 
-        setIsModalOpen(false);
-    };
+    const handleInscricaoConfirmada = async () => {
+        try {
+            const cogecomResponse = await ApiService.fetchData({
+                url: `cogecom/${params.id}`,
+                method: 'get',
+            });
+    
+            if (cogecomResponse.data.id) {
+                setIsInscrito(true);
+                setDadosCogecom(cogecomResponse.data);
+            }
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Erro ao atualizar dados do COGECOM:', error);
+        }
+    };    
 
     return (
         <Loading loading={loading}>
@@ -70,6 +85,7 @@ const CogecomEntidade = () => {
                 title={`${detalhes?.nmrazao} - COGECOM`}
                 status={isInscrito ? 'Cadastrado' : 'Não cadastrado'}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
+                
                 actions={
                     <div className="flex-wrap inline-flex xl:flex items-center gap-2">
                         {isInscrito ? (
@@ -82,7 +98,7 @@ const CogecomEntidade = () => {
                                 </Button>
                             </>
                         ) : (
-                            <Button type="button" size="md" variant="solid" onClick={() => setIsModalOpen(true)}>
+                             <Button type="button" size="md" variant="solid" onClick={() => setIsModalOpen(true)}>
                                 Inscreva-se no COGECOM
                             </Button>
                         )}
@@ -93,7 +109,6 @@ const CogecomEntidade = () => {
                     <TabList>
                         <TabNav value="detalhes">Detalhes</TabNav>
                         <TabNav value="anotacoes">Anotações</TabNav>
-                        <TabNav value="pendencias">Pendências</TabNav>
                         <TabNav value="documentos">Documentos</TabNav>
                     </TabList>
 
@@ -131,9 +146,22 @@ const CogecomEntidade = () => {
                             </div>
                         </TabContent>
 
-                        <TabContent value="anotacoes">{/* Conteúdo vazio */}</TabContent>
-                        <TabContent value="pendencias">{/* Conteúdo vazio */}</TabContent>
-                        <TabContent value="documentos">{/* Conteúdo vazio */}</TabContent>
+                        <TabContent value="anotacoes">
+                            {dadosCogecom?.id && params.id ? (
+                                <AnotacoesComponent 
+                                    idVinculo={params.id} 
+                                    tipoVinculo="entidade" 
+                                    idVinculoAux={dadosCogecom.id}
+                                    tipoVinculoAux="cogecom" 
+                                />
+                            ) : (
+                                <div className="text-center text-gray-500">
+                                    <p>Nenhum dado encontrado para exibir anotações relacionadas ao COGECOM.</p>
+                                </div>
+                            )}
+                        </TabContent>
+
+                        <TabContent value="documentos"><AnexosComponent url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/anotacao/1`} /></TabContent>
                     </div>
                 </Tabs>
             </LayoutDetailSimple>
