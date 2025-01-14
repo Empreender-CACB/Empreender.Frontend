@@ -41,6 +41,7 @@ export type Associacao = {
     dtultimaatualizacao: string
     dtatualizacao: string
     idgestorassociacao: null | string
+    gestor: Gestor | null
     id_tipo_entidade: number
     id_antigo: null | number
     sigla: string
@@ -54,6 +55,7 @@ export type Associacao = {
     idpais: number
     nmrassociados: null | number
     cidade: Cidade
+    situacao: string
 }
 
 export type Nucleo = {

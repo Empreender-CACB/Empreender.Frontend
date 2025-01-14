@@ -68,7 +68,7 @@ const columns = [
         defaultFlex: 0.1,
         value: '',
         textAlign: 'center',
-        render: ({ data }: any) => (AcoesTransferencaisPagamentos(data)),
+        render: ({ data } : any) => (AcoesTransferencaisPagamentos(data)),
     
     },
     { name: 'nmcredor', header: 'Beneficiário', type:'string', defaultFlex: 0.2},
@@ -172,7 +172,7 @@ const Lancamentos = () => {
                 <Radio value={'todos'}></Radio>
             </Radio.Group>
             <Radio.Group className="lg:mb-0" value={nameValue} onChange={onChange}>
-                <span className="pr-2 font-black">Mostrar Lançamentos Pagos: </span>
+                <span className="pr-2 font-black">Apresentar lançamentos de projetos concluídos: </span>
                 <Radio value={'todos'}></Radio>
             </Radio.Group>
         </div>

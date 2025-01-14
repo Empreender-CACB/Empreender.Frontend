@@ -22,6 +22,11 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'Anexos.adicionar',
+        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?/:substitutoId?`,
+        component: lazy(() => import('@/views/sistema/anexos/adicionar')),
+    },    
+    {
         key: 'Empresas.detalhes',
         path: `${APP_PREFIX_PATH}/empresas/:id`,
         component: lazy(() => import('@/views/sistema/empresas/detalhes')),
@@ -40,6 +45,16 @@ const appsRoute: Routes = [
         key: 'Entidades.lista',
         path: `${APP_PREFIX_PATH}/entidades/`,
         component: lazy(() => import('@/views/sistema/entidades')),
+    },
+    {
+        key: 'Entidades.detalhes',
+        path: `${APP_PREFIX_PATH}/entidades/:id`,
+        component: lazy(() => import('@/views/sistema/entidades/detalhes')),
+
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
     },
     {
         key: 'sistemaPreferencias.index',
@@ -194,6 +209,55 @@ const appsRoute: Routes = [
         key: 'representatividade.marcosCriticosGeral',
         path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral`,
         component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral')),
+    },
+    {
+        key: 'sistemaLancamento.transferenciasPagamentos',
+        path: `${APP_PREFIX_PATH}/lancamentos/transferencias-pagamentos`,
+        component: lazy(() => import('@/views/sistema/lancamentos/transferencias-pagamentos')),
+    },
+    {
+        key: 'sistema.versaoRfb',
+        path: `${APP_PREFIX_PATH}/rfb`,
+        component: lazy(() => import('@/views/sistema/empresas/versao-rfb')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
+        key: 'representatividade.marcosCriticosNucleos',
+        path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-nucleo/:id`,
+        component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-nucleo')),
+    },
+    {
+        key: 'representatividade.marcosCriticosGeralNucleos',
+        path: `${APP_PREFIX_PATH}/representatividade/acompanhamento-geral-nucleos`,
+        component: lazy(() => import('@/views/sistema/representatividade/acompanhamento-geral-nucleos')),
+    },
+    {
+        key: 'Anotacoes.adicionar',
+        path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
+        component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
+    },    
+    {
+        key: 'Anotacoes.index',
+        path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
+        component: lazy(() => import('@/views/sistema/anotacao/index')),
+    },
+    {
+        key: 'Contatos.lista',
+        path: `${APP_PREFIX_PATH}/contatos/`,
+        component: lazy(() => import('@/views/sistema/contatos')),
+    },
+    {
+        key: 'Contatos.malaDireta',
+        path: `${APP_PREFIX_PATH}/contatos/mala-direta`,
+        component: lazy(() => import('@/views/sistema/contatos/mala-direta')),
+    },
+    {
+        key: 'Projetos.vincularEmpresasNucleo',
+        path: `${APP_PREFIX_PATH}/projetos/vincular-empresas-nucleo`,
+        component: lazy(() => import('@/views/sistema/projetos/vincularEmpresasNucleo')),
     },
 ]
 

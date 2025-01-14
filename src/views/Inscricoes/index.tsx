@@ -302,8 +302,8 @@ function CadastraProposta() {
                             <span className="text-xl text-gray-800 dark:text-gray-100 font-bold">
                                 Inscrições encerradas. Para acessar o resultado,&nbsp;
                                 <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM1MTM4" rel="noreferrer" className="text-blue-600 hover:text-blue-800">
-                                    clique aqui
-                                </a> ou informe o CPF.
+                                    clique aqui.
+                                </a>
                             </span>
                         </div>
 
@@ -311,13 +311,13 @@ function CadastraProposta() {
                         <>
                             <div className='center text-center pb-5'>
                                 {/* <h3 className='mb-2'>Complementar dados</h3> */}
-                                <IMaskInput
+                                {/* <IMaskInput
                                     className='input input-md h-11 focus:ring-sky-900 focus-within:ring-sky-900 focus-within:border-sky-900 focus:border-sky-900 mb-2'
                                     mask={'000.000.000-00'}
                                     name='cpf'
                                     placeholder='Informe o seu CPF'
                                     onAccept={verifyCPF}
-                                />
+                                /> */}
 
                                 {inapto === true && (
                                     <Alert showIcon className="mb-4">

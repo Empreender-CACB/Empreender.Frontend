@@ -11,7 +11,7 @@ interface Anexo {
     descricao: string;
 }
 
-const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => void, marcoId: number, onUpdate: () => void }) => {
+const AnexoMarcoCriticoForm = ({ tipo, onClose, marcoId, onUpdate }: { tipo:string, onClose: () => void, marcoId: number, onUpdate: () => void }) => {
     const [loading, setLoading] = useState(false);
 
     const initialValues = {
@@ -48,7 +48,7 @@ const AnexoMarcoCriticoForm = ({ onClose, marcoId, onUpdate }: { onClose: () => 
             formData.append('marcoId', String(marcoId));
 
             await ApiService.fetchData({
-                url: 'representatividade/adicionar-anexo-marco-critico',
+                url: `representatividade/adicionar-anexo-marco-critico/${tipo}`,
                 method: 'post',
                 data: formData,
                 headers: {

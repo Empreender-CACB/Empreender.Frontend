@@ -277,7 +277,7 @@ const AcompanhamentoMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/${selectedMarcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/entidade/${selectedMarcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -312,7 +312,7 @@ const AcompanhamentoMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status == "Em análise" && (isGestor || isConsultor) &&
+                {data.status == "Em análise" && isConsultor &&
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -367,7 +367,7 @@ const AcompanhamentoMarcosCriticos = () => {
             <div className="lg:flex items-center justify-between mb-4">
                 <div>
                     <div className="flex items-center">
-                        <h3 className="mb-4 lg:mb-0">Acompanhamento Geral - Marcos Críticos</h3>
+                        <h3 className="mb-4 lg:mb-0">Acompanhamento de Entidade - Marcos Críticos</h3>
                         <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
                             <Button
                                 shape="circle"
@@ -432,26 +432,26 @@ const AcompanhamentoMarcosCriticos = () => {
             <CustomReactDataGrid
                 filename="Marcos_Criticos"
                 columns={columns}
-                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/${id}?reload=${reload}`}
+                url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento/marco_critico/${id}?reload=${reload}`}
                 CardLayout={AcompanhamentoCard}
                 defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
             />
             <Dialog isOpen={isModalOpen} onClose={handleCloseModal}>
-                <NewMarcoCriticoForm entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
+                <NewMarcoCriticoForm relacao='entidade' entidadeId={id ?? ''} onClose={handleCloseModal} onUpdate={handleUpdate} />
             </Dialog>
             <Dialog isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal}>
-                <FreezeMarcosCriticosModal isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
+                <FreezeMarcosCriticosModal tipo="entidade" isCongelado={isCongelado} entidadeId={id ?? ''} isOpen={isFreezeModalOpen} onClose={handleCloseFreezeModal} onUpdate={handleUpdate} />
             </Dialog>
             {selectedMarcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor || isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="entidade" entidadeId={associacaoDetails?.idassociacao} isGestor={isGestor} isConsultor={isConsultor} marcoId={selectedMarcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarcoDetails?.data_encerramento} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm tipo="entidade" marcoId={selectedMarcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}

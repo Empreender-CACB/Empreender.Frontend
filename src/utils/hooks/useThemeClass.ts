@@ -9,6 +9,7 @@ function useThemeClass() {
         borderTheme: `border-${color}`,
         bgTheme: `bg-${color}`,
         textTheme: `text-${color}`,
+        color: color,
     }
 }
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useCallback, FC, useEffect } from 'react'
+import '@inovua/reactdatagrid-community/index.css'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import Spinner from '@/components/ui/Spinner'
@@ -25,6 +26,8 @@ import CTableCards from './CTableCards'
 //import './theme.css'
 import i18n from './i18n'
 import { TableConfigType, apiDataTable } from '@/services/DataTableService'
+import ReactGA from 'react-ga4'
+
 interface CustomReactDataGridPropsBasic {
     filename: string
     columns: any[]
@@ -36,6 +39,8 @@ interface CustomReactDataGridPropsBasic {
     onSelectedRowsChange?: any
     widthSize?: number
     defaultSortInfo?: any
+    onFilterChange?: (filters: any) => void;
+    minHeight?: number
 }
 
 interface CustomReactDataGridPropsUrl extends CustomReactDataGridPropsBasic{
@@ -91,7 +96,9 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
     isSelectable,
     onSelectedRowsChange,
     autorizeExport = true,
-    defaultSortInfo
+    defaultSortInfo,
+    onFilterChange,
+    minHeight
 }) => {
     const [larguraDaTela, setLarguraDaTela] = useState(window.innerWidth)
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -167,6 +174,11 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+    
+    useEffect(() => {
+    ReactGA.initialize('G-9380D60LWF')
+    }, [])
+
 
     const openDialog = () => {
         setIsOpen(true)
@@ -343,14 +355,18 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
 
     const dataSource = useCallback(loadData, [url])
 
-    const gridStyle = { minHeight: 750, width: '100%' }
+    const gridStyle = { minHeight: minHeight ? minHeight : 750, width: '100%' }
 
     const handleFilterValueChange = (newFilterValue: any) => {
+        if (onFilterChange) {
+            onFilterChange(newFilterValue);
+        }
+        
         setQueryParams((prevParams) => ({
             ...prevParams,
             filterValue: newFilterValue,
-        }))
-    }
+        }));
+    };
 
     const notification = (
         <Notification
@@ -530,8 +546,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 ))}
             </Drawer>
 
-            {/* Descomentar para os cards funcionarem (e tambem o className da props do ReactDataGrid) */}
-{/* 
             {(loadedData && hideTable) || view === 'grid' ? (
                 <>
                     <CTableCards data={loadedData} renderItem={CardLayout} />
@@ -546,10 +560,10 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                         </div>
                     </div>                
                 </>
-            ) : null} */}
+            ) : null}
             
             <ReactDataGrid
-                // className={`${hideClass}`}
+                className={`${hideClass}`}
                 renderPaginationToolbar={renderPaginationToolbar}
                 i18n={i18n}
                 wrapMultiple={false}
@@ -576,7 +590,6 @@ const CustomReactDataGrid: FC<CustomReactDataGridProps> = ({
                 onReady={setGridRef}
                 checkboxColumn={isSelectable}
                 selected={selected}
-                // reorderColumns={true}
                 onSelectionChange={handleSelectionChange}
                 showColumnMenuTool={false}
                 theme={isDark ? 'blue-dark' : 'blue-light'}

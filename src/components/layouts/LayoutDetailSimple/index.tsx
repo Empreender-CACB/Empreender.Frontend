@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import Tag from '@/components/ui/Tag'
 import { Card } from '@/components/ui'
+import useThemeClass from '@/utils/hooks/useThemeClass'
 
 interface StatusProperties {
     label: string
@@ -24,9 +25,11 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
     paymentStatus,
     actions,
 }) => {
+    const { borderTheme } = useThemeClass()
+
     return (
-        <Card className="h-full">
-            <div>
+        <Card className= {`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
+                <div>
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2">
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
                         <h3>

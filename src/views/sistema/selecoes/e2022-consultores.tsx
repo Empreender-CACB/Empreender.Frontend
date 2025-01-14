@@ -4,14 +4,14 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button, Notification, Select } from '@/components/ui'
+import { Button, Dropdown, Notification, Select } from '@/components/ui'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
 
 import 'moment/locale/pt-br'
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ApiService from '@/services/ApiService'
 import moment from 'moment'
 import { CandidaturaCard } from '@/components/shared/TableCards/CandidaturaCard'
@@ -128,33 +128,66 @@ const E2022Consultores = () => {
         },
     ];
 
+    const [origem, setOrigem] = useState<any>(['2']);
+    const [origemOptions, setOrigemOptions] = useState<string[]>([]);
+    const [isDownloading, setIsDownloading] = useState(false);
     const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const handleSelectedRowsChange = (selectedIds: number[]) => {
         setSelectedRows(selectedIds);
     };
 
+    const [filters, setFilters] = useState<any>(null);
+
+    const handleFiltersChange = (newFilters: any) => {
+        setFilters(newFilters);
+    };
+
     const handleExportDocuments = async () => {
+        setIsDownloading(true);
+        toast.push(
+            <Notification title="O download será iniciado em instantes." type="info" />
+        );
+
         await ApiService.fetchData<Blob>({
             url: '/selecoes/e2022-consultores-download',
             method: 'post',
             data: { candidaturaIds: selectedRows }
         }).then((data: any) => {
             window.open(import.meta.env.VITE_API_URL + data.data.url);
-            toast.push(
-                <Notification title="O download será iniciado em instantes." type="info" />
-            );
         }).catch((error: any) => {
             toast.push(
                 <Notification title="Erro ao realizar download." type="danger">
                     {error.response.data}
                 </Notification>
             );
+        }).finally(() => {
+            setIsDownloading(false);
         });
     };
 
-    const [origem, setOrigem] = useState<any>(['2']);
-    const [origemOptions, setOrigemOptions] = useState<string[]>([]);
+    const handleExportAllDocuments = async () => {
+        setIsDownloading(true);
+        toast.push(
+            <Notification title="O download será iniciado em instantes." type="info" />
+        );
+
+        await ApiService.fetchData<Blob>({
+            url: `/selecoes/e2022-consultores-download-todos/${origem}`,
+            method: 'post',
+            data: { filters },
+        }).then((data: any) => {
+            window.open(import.meta.env.VITE_API_URL + data.data.url);
+        }).catch((error: any) => {
+            toast.push(
+                <Notification title="Erro ao realizar download." type="danger">
+                    {error.response.data}
+                </Notification>
+            );
+        }).finally(() => {
+            setIsDownloading(false);
+        });
+    };
 
     const url = `${import.meta.env.VITE_API_URL}/selecoes/e2022-consultores?origem=${origem}`;
 
@@ -206,6 +239,8 @@ const E2022Consultores = () => {
         </div>
     );
 
+
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
@@ -238,20 +273,43 @@ const E2022Consultores = () => {
                         </Link>
                     </Button>
 
-                    <Tooltip title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos'}>
-                        <span>
+                    <Dropdown
+                        renderTitle={
                             <Button
                                 block
                                 variant="solid"
                                 size="sm"
                                 icon={<HiPlusCircle />}
-                                onClick={handleExportDocuments}
-                                disabled={selectedRows.length === 0}
                             >
                                 Exportar Documentos
                             </Button>
-                        </span>
-                    </Tooltip>
+                        }
+                        trigger="hover"
+                        className="mr-2"
+                    >
+                        <Dropdown.Item
+                            disabled={selectedRows.length === 0 || isDownloading}
+                            onClick={handleExportDocuments}
+                        >
+                            <Tooltip
+                                placement='left-start'
+                                title={selectedRows.length === 0 ? 'É necessário selecionar uma ou mais linhas' : 'Exportar Documentos (exporta apenas as linhas selecionadas, considerando paginação)'}
+                            >
+                                <span>Exportar documentos selecionados</span>
+                            </Tooltip>
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                            disabled={true}
+                            onClick={handleExportAllDocuments}
+                        >
+                            <Tooltip
+                                placement='left-start'
+                                title={'Temporariamente desativado'}
+                            >
+                                Exportar todos os documentos
+                            </Tooltip>
+                        </Dropdown.Item>
+                    </Dropdown>
                 </div>
             </div>
             <CustomReactDataGrid
@@ -262,6 +320,7 @@ const E2022Consultores = () => {
                 isSelectable
                 onSelectedRowsChange={handleSelectedRowsChange}
                 CardLayout={CandidaturaCard}
+                onFilterChange={handleFiltersChange}
             />
         </AdaptableCard>
     );

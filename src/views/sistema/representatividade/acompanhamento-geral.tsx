@@ -112,9 +112,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'marcos_criticos.nome',
-            header: 'Nome',
-            columnName: 'marcos_criticos.nome',
+            name: 'nome',
+            header: ' Nome',
+            columnName: 'nome',
             type: 'string',
             defaultFlex: 0.6,
             operator: 'contains',
@@ -268,7 +268,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
     const handleSaveStatusChange = async (status: string, comentario: string, dataTermino?: Date) => {
         try {
             await ApiService.fetchData({
-                url: `/representatividade/alterar-status-marco-critico/${selectedMarco.marcoId}`,
+                url: `/representatividade/alterar-status-marco-critico/entidade/${selectedMarco.marcoId}`,
                 method: 'put',
                 data: {
                     status,
@@ -311,7 +311,7 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     />
                 </Tooltip>
 
-                {data.status === "Em análise" && (isGestor || isConsultor) && (
+                {data.status === "Em análise" && isConsultor && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -429,9 +429,8 @@ const AcompanhamentoGeralMarcosCriticos = () => {
                     <CustomReactDataGrid
                         filename="Marcos_Criticos"
                         columns={columns}
-                        url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral?reload=${reload}`}
+                        url={`${import.meta.env.VITE_API_URL}/representatividade/acompanhamento-geral/marco_critico?reload=${reload}`}
                         CardLayout={AcompanhamentoCard}
-                        defaultSortInfo={{ dir: 1, id: 'nova_data_prevista', name: 'nova_data_prevista', columnName: 'nova_data_prevista', type: 'date' }}
                     />
                 )}
             </div>
@@ -439,13 +438,13 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             {selectedMarco.marcoId && (
                 <>
                     <Dialog isOpen={isEditModalOpen} onClose={handleCloseEditModal} width={800}>
-                        <EditMarcoCriticoForm entidadeId={selectedMarco.idassociacao} isConsultor={isConsultor} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
+                        <EditMarcoCriticoForm tipoRelacao="entidade" isGestor={isGestor} isConsultor={isConsultor} entidadeId={selectedMarco.idassociacao} marcoId={selectedMarco.marcoId} onClose={handleCloseEditModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <Dialog isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} width={500}>
                         <AnalysisModal isOpen={isAnalysisModalOpen} onClose={handleCloseAnalysisModal} onSave={handleSaveStatusChange} dataTerminoInicial={selectedMarco?.data_termino} />
                     </Dialog>
                     <Dialog isOpen={isAnexoModalOpen} onClose={handleCloseAnexoModal} width={500}>
-                        <AnexoMarcoCriticoForm marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
+                        <AnexoMarcoCriticoForm tipo="entidade" marcoId={selectedMarco.marcoId} onClose={handleCloseAnexoModal} onUpdate={handleUpdate} />
                     </Dialog>
                     <StatusChangeModal
                         isOpen={isStatusModalOpen}

@@ -24,6 +24,8 @@ export interface UploadProps extends CommonProps {
     uploadLimit?: number
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field?: any
+    isFullWidth?: any
+    variant?: any
 }
 
 const filesToArray = (files: File[]) =>
@@ -46,6 +48,8 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
         children,
         className,
         field,
+        isFullWidth,
+        variant,
         ...rest
     } = props
 
@@ -65,7 +69,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
     const triggerMessage = (msg: string | ReactNode = '') => {
         toast.push(
             <Notification type="danger" duration={2000}>
-                {msg || 'Upload Failed!'}
+                {msg || 'Erro no upload!'}
             </Notification>,
             {
                 placement: 'top-center',
@@ -140,8 +144,14 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
     const renderChildren = () => {
         if (!draggable && !children) {
             return (
-                <Button disabled={disabled} onClick={(e) => e.preventDefault()}>
-                    Upload
+                <Button
+                    disabled={disabled}
+                    onClick={(e) => e.preventDefault()}
+                    className='w-full'
+                    variant={variant}
+                    block
+                >
+                    Carregar Arquivo
                 </Button>
             )
         }
@@ -221,19 +231,20 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>((props, ref) => {
                 <div className="upload-file-list">
                     {files.map((file, index) => {
                         return (
-                        <FileItem key={file.name + index} file={file}>
-                            <CloseButton
-                                className="upload-file-remove"
-                                onClick={() => removeFile(index)}
-                            />
-                        </FileItem>
-                    )})}
+                            <FileItem key={file.name + index} file={file}>
+                                <CloseButton
+                                    className="upload-file-remove"
+                                    onClick={() => removeFile(index)}
+                                />
+                            </FileItem>
+                        )
+                    })}
                 </div>
             )}
         </>
     )
 })
 
-Upload.displayName = 'Upload'
+Upload.displayName = 'Carregar arquivo'
 
 export default Upload
