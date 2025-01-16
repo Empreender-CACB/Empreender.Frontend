@@ -4,7 +4,7 @@ import '@inovua/reactdatagrid-community/index.css'
 import { Link } from 'react-router-dom'
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter'
 import NumberFilter from '@inovua/reactdatagrid-community/NumberFilter'
-import { Button, Dropdown, Notification, Select } from '@/components/ui'
+import { Alert, Button, Dropdown, Notification, Select } from '@/components/ui'
 
 import { HiOutlineReply, HiPlusCircle } from 'react-icons/hi'
 import { AdaptableCard } from '@/components/shared'
@@ -243,6 +243,9 @@ const E2022Consultores = () => {
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
+            <Alert showIcon className="mb-4" type="info">
+                Devido a migração de arquivos, a função de exportar documentos está temporariamente desativada. Para verificar os arquivos, utilize a  <a href="http://https://v5.empreender.org.br/sistema/anexos" target="_blank" rel="noopener noreferrer">lista geral de anexos.</a>
+            </Alert>
             <div className="lg:flex items-center justify-between mb-4">
                 <h3 className="mb-4 lg:mb-0">Lista de inscrição de consultores - E2022</h3>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
