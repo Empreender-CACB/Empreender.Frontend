@@ -10,6 +10,9 @@ import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
 import { AnexoCard } from '@/components/shared/TableCards/AnexoCard';
+import { AdaptableCard } from '@/components/shared';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import { HiPlusCircle } from 'react-icons/hi';
 
 moment.locale('pt-br');
 
@@ -50,11 +53,11 @@ const columns = [
                 className="menu-item-link max-w-md text-blue-500 underline"
                 to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(data.id)}`}
                 target='_blank'
-                >
+            >
                 {value}
             </Link>
         ),
-    },    
+    },
     {
         name: 'data_inclusao',
         header: 'Carga',
@@ -116,14 +119,57 @@ interface AnexosProps {
     url: string;
     title?: string;
     minHeight?: number;
+    tipoVinculo: string;
+    idVinculo: string;
+    tipoVinculoAux?: string;
+    idVinculoAux?: string;
 }
 
-const AnexosComponent: React.FC<AnexosProps> = ({ url, title = 'Anexos', minHeight }) => {
+const AnexosComponent: React.FC<AnexosProps> = ({
+    url,
+    title = 'Anexos',
+    minHeight,
+    tipoVinculo,
+    idVinculo,
+    tipoVinculoAux,
+    idVinculoAux,
+}) => {
     const [filtroVencimento, setFiltroVencimento] = useState('todos');
 
     const handleFiltroChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFiltroVencimento(event.target.value);
     };
+
+    const generateUrl = (
+        baseUrl: string,
+        tipoVinculo: string,
+        idVinculo: string,
+        tipoVinculoAux?: string,
+        idVinculoAux?: string,
+        queryParams: Record<string, string | undefined> = {}
+    ): string => {
+        let url = `${baseUrl}/${tipoVinculo}/${idVinculo}`;
+        
+        if (tipoVinculoAux && idVinculoAux) {
+            url += `/${tipoVinculoAux}/${idVinculoAux}`;
+        }
+    
+        const validQueryParams = Object.entries(queryParams).reduce((acc, [key, value]) => {
+            if (value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {} as Record<string, string>);
+    
+        const queryString = new URLSearchParams(validQueryParams).toString();
+        if (queryString) {
+            url += `?${queryString}`;
+        }
+        
+        return url;
+    };
+    
+
 
     const radioGroup = (
         <div className="flex items-center pt-2">
@@ -168,14 +214,43 @@ const AnexosComponent: React.FC<AnexosProps> = ({ url, title = 'Anexos', minHeig
     );
 
     return (
-        <CustomReactDataGrid
-            filename={title}
-            columns={columns}
-            options={radioGroup}
-            url={`${url}?filtroVencimento=${filtroVencimento}`}
-            CardLayout={AnexoCard}
-            minHeight={minHeight}
-        />
+        <AdaptableCard>
+            <div className="lg:flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                    <h3 className="mb-4 lg:mb-0">Anexos</h3>
+                </div>
+                <div className="flex flex-col lg:flex-row lg:items-center">
+                    <Link
+                        className="block lg:inline-block md:mb-0 mb-4"
+                        to={generateUrl(
+                            `${APP_PREFIX_PATH}/anexos/adicionar`,
+                            tipoVinculo,
+                            idVinculo,
+                            tipoVinculoAux,
+                            idVinculoAux,
+                            { redirectUrl: window.location.href }
+                        )}
+                    >
+                        <Button
+                            block
+                            variant="solid"
+                            size="sm"
+                            icon={<HiPlusCircle />}
+                        >
+                            Adicionar documento
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+            <CustomReactDataGrid
+                filename={title}
+                columns={columns}
+                options={radioGroup}
+                url={`${url}?filtroVencimento=${filtroVencimento}`}
+                CardLayout={AnexoCard}
+                minHeight={minHeight}
+            />
+        </AdaptableCard>
     );
 };
 
