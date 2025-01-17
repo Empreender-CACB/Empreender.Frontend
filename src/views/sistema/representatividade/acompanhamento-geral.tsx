@@ -112,9 +112,9 @@ const AcompanhamentoGeralMarcosCriticos = () => {
             value: '',
         },
         {
-            name: 'nome',
+            name: 'marcos_criticos.nome',
             header: ' Nome',
-            columnName: 'nome',
+            columnName: 'marcos_criticos.nome',
             type: 'string',
             defaultFlex: 0.6,
             operator: 'contains',
