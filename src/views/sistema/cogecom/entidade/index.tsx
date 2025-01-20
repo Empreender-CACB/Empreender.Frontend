@@ -21,8 +21,8 @@ const CogecomEntidade = () => {
     const [arquivos, setArquivos] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isInscrito, setIsInscrito] = useState(false); 
-    const [dadosCogecom, setDadosCogecom] = useState<any>([]); 
+    const [isInscrito, setIsInscrito] = useState(false);
+    const [dadosCogecom, setDadosCogecom] = useState<any>([]);
 
     useEffect(() => {
         async function fetchDetalhes() {
@@ -68,7 +68,7 @@ const CogecomEntidade = () => {
                 url: `cogecom/${params.id}`,
                 method: 'get',
             });
-    
+
             if (cogecomResponse.data.id) {
                 setIsInscrito(true);
                 setDadosCogecom(cogecomResponse.data);
@@ -77,7 +77,7 @@ const CogecomEntidade = () => {
         } catch (error) {
             console.error('Erro ao atualizar dados do COGECOM:', error);
         }
-    };    
+    };
 
     return (
         <Loading loading={loading}>
@@ -85,7 +85,7 @@ const CogecomEntidade = () => {
                 title={`${detalhes?.nmrazao} - COGECOM`}
                 status={isInscrito ? 'Cadastrado' : 'Não cadastrado'}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
-                
+
                 actions={
                     <div className="flex-wrap inline-flex xl:flex items-center gap-2">
                         {isInscrito ? (
@@ -98,7 +98,7 @@ const CogecomEntidade = () => {
                                 </Button>
                             </>
                         ) : (
-                             <Button type="button" size="md" variant="solid" onClick={() => setIsModalOpen(true)}>
+                            <Button type="button" size="md" variant="solid" onClick={() => setIsModalOpen(true)}>
                                 Inscreva-se no COGECOM
                             </Button>
                         )}
@@ -148,11 +148,11 @@ const CogecomEntidade = () => {
 
                         <TabContent value="anotacoes">
                             {dadosCogecom?.id && params.id ? (
-                                <AnotacoesComponent 
-                                    idVinculo={params.id} 
-                                    tipoVinculo="entidade" 
+                                <AnotacoesComponent
+                                    idVinculo={params.id}
+                                    tipoVinculo="entidade"
                                     idVinculoAux={dadosCogecom.id}
-                                    tipoVinculoAux="cogecom" 
+                                    tipoVinculoAux="cogecom"
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
@@ -161,7 +161,15 @@ const CogecomEntidade = () => {
                             )}
                         </TabContent>
 
-                        <TabContent value="documentos"><AnexosComponent url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/anotacao/1`} /></TabContent>
+                        <TabContent value="documentos">
+                            <AnexosComponent 
+                                url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                                idVinculo={params.id}
+                                tipoVinculo="entidade"
+                                idVinculoAux={dadosCogecom.id}
+                                tipoVinculoAux="cogecom" 
+                            />
+                        </TabContent>
                     </div>
                 </Tabs>
             </LayoutDetailSimple>

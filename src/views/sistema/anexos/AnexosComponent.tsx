@@ -120,7 +120,7 @@ interface AnexosProps {
     title?: string;
     minHeight?: number;
     tipoVinculo: string;
-    idVinculo: string;
+    idVinculo: string | undefined;
     tipoVinculoAux?: string;
     idVinculoAux?: string;
 }
@@ -146,29 +146,30 @@ const AnexosComponent: React.FC<AnexosProps> = ({
         idVinculo: string,
         tipoVinculoAux?: string,
         idVinculoAux?: string,
-        queryParams: Record<string, string | undefined> = {}
-    ): string => {
+        queryParams?: Record<string, string | undefined>
+    ) => {
         let url = `${baseUrl}/${tipoVinculo}/${idVinculo}`;
-        
+    
         if (tipoVinculoAux && idVinculoAux) {
             url += `/${tipoVinculoAux}/${idVinculoAux}`;
         }
     
-        const validQueryParams = Object.entries(queryParams).reduce((acc, [key, value]) => {
-            if (value !== undefined) {
-                acc[key] = value;
+        if (queryParams) {
+            const filteredParams = Object.fromEntries(
+                Object.entries(queryParams)
+                    .filter(([_, v]) => v !== undefined && v !== '')
+                    .map(([key, value]) => [key, value || ''])
+            );
+    
+            const queryString = new URLSearchParams(filteredParams as Record<string, string>).toString();
+    
+            if (queryString) {
+                url += `?${queryString}`;
             }
-            return acc;
-        }, {} as Record<string, string>);
-    
-        const queryString = new URLSearchParams(validQueryParams).toString();
-        if (queryString) {
-            url += `?${queryString}`;
         }
-        
-        return url;
-    };
     
+        return url;
+    };    
 
 
     const radioGroup = (
@@ -225,7 +226,7 @@ const AnexosComponent: React.FC<AnexosProps> = ({
                         to={generateUrl(
                             `${APP_PREFIX_PATH}/anexos/adicionar`,
                             tipoVinculo,
-                            idVinculo,
+                            idVinculo || '',
                             tipoVinculoAux,
                             idVinculoAux,
                             { redirectUrl: window.location.href }
@@ -246,7 +247,14 @@ const AnexosComponent: React.FC<AnexosProps> = ({
                 filename={title}
                 columns={columns}
                 options={radioGroup}
-                url={`${url}?filtroVencimento=${filtroVencimento}`}
+                url={generateUrl(
+                    url,
+                    tipoVinculo,
+                    idVinculo || '',
+                    tipoVinculoAux || '',
+                    idVinculoAux || '',
+                    { filtroVencimento: filtroVencimento }
+                )}
                 CardLayout={AnexoCard}
                 minHeight={minHeight}
             />
