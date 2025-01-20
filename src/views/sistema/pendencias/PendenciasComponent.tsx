@@ -1,53 +1,49 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css';
 
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
 import { Button, Tag, Tooltip } from '@/components/ui';
 import { AdaptableCard } from '@/components/shared';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
-import ApiService from '@/services/ApiService';
-import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
-import { useAppSelector } from '@/store';
-import { capitalize } from 'lodash';
-import AnotacaoModal from './anotacao-modal';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
-import { AnotacaoCard } from '@/components/shared/TableCards/AnotacoesCard';
 import { FaQuestion } from 'react-icons/fa';
+import PendenciaModal from './pendencia-modal';
 
 moment.locale('pt-br');
 
-const situacaoOptions = [
-    { name: 'Em Cadastramento', value: 'ec', color: 'bg-blue-600' },
-    { name: 'Divulgada', value: 'di', color: 'bg-green-600' },
+const statusOptions = [
+    { name: 'Aberta', value: 'aberta', color: 'bg-blue-600' },
+    { name: 'Em andamento', value: 'andamento', color: 'bg-yellow-600' },
+    { name: 'Concluída', value: 'concluida', color: 'bg-green-600' },
 ];
 
-const leituraOptions = [
-    { name: 'Lida', value: 'lida', color: 'bg-gray-600' },
-    { name: 'Não Lida', value: 'naoLida', color: 'bg-green-600' },
-];
+interface PendenciasProps {
+    idVinculo: string | undefined;
+    tipoVinculo: string;
+    idVinculoAux?: string;
+    tipoVinculoAux?: string;
+}
 
-const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string; idVinculoAux: string }) => {
-
-    const { nucpf } = useAppSelector((state) => state.auth.user);
-
+const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux }) => {
+    const [selectedPendenciaId, setSelectedPendenciaId] = useState<number | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [selectedAnotacaoId, setSelectedAnotacaoId] = useState<number | null>(null);
 
     const openModal = (id: number) => {
-        setSelectedAnotacaoId(id);
+        setSelectedPendenciaId(id);
         setModalIsOpen(true);
     };
 
     const closeModal = () => {
+        setSelectedPendenciaId(null);
         setModalIsOpen(false);
-        setSelectedAnotacaoId(null);
     };
+
 
     const columns = [
         {
@@ -58,15 +54,15 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
             filterEditor: SelectFilter,
         },
         {
-            name: 'descricao',
-            header: 'Resumo',
+            name: 'titulo',
+            header: 'Título',
             defaultFlex: 1.5,
             render: ({ value, data }: any) => (
                 <button
                     className="menu-item-link max-w-md text-blue-600 underline"
                     onClick={() => openModal(data.id)}
                 >
-                    {value.length > 140 ? `${value.substring(0, 140)}...` : value}
+                    {value.length > 50 ? `${value.substring(0, 50)}...` : value}
                 </button>
             ),
         },
@@ -77,7 +73,7 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
         },
         {
             name: 'data_inclusao',
-            header: 'Data',
+            header: 'Criação',
             dateFormat: 'DD-MM-YYYY',
             type: 'date',
             filterEditor: DateFilter,
@@ -87,18 +83,29 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                     : moment(value).format(dateFormat),
         },
         {
-            name: 'situacao',
-            header: 'Situação',
+            name: 'data_prevista',
+            header: 'Data Prevista',
+            dateFormat: 'DD-MM-YYYY',
+            type: 'date',
+            filterEditor: DateFilter,
+            render: ({ value, cellProps: { dateFormat } }: any) =>
+                moment(value).format(dateFormat) === 'Invalid date'
+                    ? '-'
+                    : moment(value).format(dateFormat),
+        },
+        {
+            name: 'status',
+            header: 'Status',
             defaultFlex: 0.5,
             filterEditor: SelectFilter,
             filterEditorProps: {
-                dataSource: situacaoOptions.map(option => ({
+                dataSource: statusOptions.map(option => ({
                     id: option.value,
                     label: option.name,
                 })),
             },
             render: ({ value }: any) => {
-                const selectedOption = situacaoOptions.find(option => option.value === value);
+                const selectedOption = statusOptions.find(option => option.value === value);
                 return (
                     <div className="flex justify-center">
                         <Tag className={`text-white ${selectedOption ? selectedOption.color : 'bg-gray-500'} border-0 rounded`}>
@@ -108,52 +115,21 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                 );
             },
         },
-        {
-            name: 'leitura',
-            header: 'Leitura',
-            defaultFlex: 0.5,
-            filterEditor: SelectFilter,
-            filterEditorProps: {
-                dataSource: leituraOptions.map(option => ({
-                    id: option.value,
-                    label: option.name,
-                })),
-            },
-            render: ({ value, data }: any) => {
-                const selectedOption = leituraOptions.find(option => option.value === value);
-                const isAuthor = data.autor === nucpf;
-                return (
-                    <div className="flex justify-center">
-                        <Tag className={`text-white ${isAuthor ? 'bg-blue-600' : (selectedOption ? selectedOption.color : 'bg-gray-500')} border-0 rounded`}>
-                            {isAuthor ? 'Você escreveu' : (selectedOption ? selectedOption.name : 'Indisponível')}
-                        </Tag>
-                    </div>
-                );
-            },
-        }
     ];
-
-    const generateUrl = (tipoVinculo: string, idVinculo: string, tipoVinculoAux?: string, idVinculoAux?: string) => {
-        let baseUrl = `${import.meta.env.VITE_API_URL}/anotacoes/lista/${tipoVinculo}/${idVinculo}`;
-        if (tipoVinculoAux && idVinculoAux) {
-            baseUrl += `/${tipoVinculoAux}/${idVinculoAux}`;
-        }
-        return baseUrl;
-    };
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                    <h3 className="mb-4 lg:mb-0">Anotações</h3>
-                    <Tooltip title="Para saber mais sobre o módulo de anotações, clique aqui" placement="right-end">
+                    <h3 className="mb-4 lg:mb-0">Pendências</h3>
+                    <Tooltip title="Para saber mais sobre o módulo de pendências, clique aqui" placement="right-end">
                         <Button
                             shape="circle"
                             size="xs"
                             icon={<FaQuestion />}
                             className="ml-2"
                             onClick={() => {
-                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MTEy')
+                                window.open('https://www.empreender.org.br/sistema/pendencias');
                             }}
                         />
                     </Tooltip>
@@ -161,7 +137,7 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${tipoVinculo}/${idVinculo}?redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''
+                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''
                             }`}
                     >
                         <Button
@@ -170,29 +146,29 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                             size="sm"
                             icon={<HiPlusCircle />}
                         >
-                            Adicionar anotação
+                            Nova Pendência
                         </Button>
                     </Link>
                 </div>
             </div>
 
             <CustomReactDataGrid
-                filename="Anotações"
+                filename="Pendências"
                 columns={columns}
-                url={generateUrl(tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux)}
-                CardLayout={AnotacaoCard}
+                url={`${import.meta.env.VITE_API_URL}/pendencias/lista/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''
+                    }`}
             />
 
-
-            {selectedAnotacaoId && (
-                <AnotacaoModal
-                    idAnotacao={selectedAnotacaoId}
+            {selectedPendenciaId && (
+                <PendenciaModal
+                    idPendencia={selectedPendenciaId}
                     isOpen={modalIsOpen}
                     onClose={closeModal}
                 />
             )}
         </AdaptableCard>
+
     );
 };
 
-export default AnotacoesComponent;
+export default PendenciasComponent;

@@ -11,6 +11,7 @@ import { Associacao } from '@/@types/generalTypes';
 import ConfirmarInscricao from './modalConfirmarInscricao';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
+import PendenciasComponent from '../../pendencias/PendenciasComponent';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -173,6 +174,12 @@ const CogecomEntidade = () => {
                         </TabContent>
 
                         <TabContent value="pendencias">
+                            <PendenciasComponent
+                                idVinculo={params.id}
+                                tipoVinculo="entidade"
+                                idVinculoAux={dadosCogecom.id}
+                                tipoVinculoAux="cogecom"
+                            />
                         </TabContent>
                     </div>
                 </Tabs>

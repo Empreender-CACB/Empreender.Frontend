@@ -264,6 +264,12 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/cogecom/entidade/:id`,
         component: lazy(() => import('@/views/sistema/cogecom/entidade')),
     },
+    {
+        key: 'Pendencias.adicionarPendencia',
+        path: `${APP_PREFIX_PATH}/pendencias/adicionar/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
+    },
+    
 ]
 
 export default appsRoute
