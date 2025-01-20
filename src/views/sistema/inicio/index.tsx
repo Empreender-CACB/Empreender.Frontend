@@ -215,31 +215,35 @@ const Inicio = () => {
                     <>
                     <div className="navigation-wrapper">
                         <div ref={sliderRef} className="keen-slider">
-                        {images.map((image: { link: string, id_anexo: string }, index: Key) => (
-                            <div key={index} className="keen-slider__slide number-slide1">
-                                {image.link ? (
-                                    <a
-                                        target="_blank"
-                                        href={image.link}
-                                        rel="noopener noreferrer"
-                                    >
-                                        <img
-                                            style={{
-                                                border: '2px solid black',
-                                            }}
-                                            src={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
-                                            alt={`Slide ${index}`}
-                                        />
-                                    </a>
-                                ) : (
+                        {images.map((image: { link: string }, index: Key) => (   
+                                                            
+                
+                            <div key={index} className={`keen-slider__slide number-slide1`}>
+                            {image.link ? (
+                                <a
+                                    target="_blank"
+                                    href={image.link}
+                                    rel="noopener noreferrer"
+                                >
                                     <img
-                                        style={{ border: '2px solid black' }}
-                                        src={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
+                                        style={{
+                                            border: '2px solid black',
+                                        }}
+                                        src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
                                         alt={`Slide ${index}`}
                                     />
-                                )}
-                            </div>
-                        ))}
+                                </a>
+                            ) : (
+                                <img
+                                    style={{ border: '2px solid black' }}
+                                    src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
+                                    alt={`Slide ${index}`}
+                                />
+                            )}
+                        </div>
+                            
+
+                    ))}
                         </div>
                         {loaded && instanceRef.current && (
                             <>
