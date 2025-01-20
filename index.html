@@ -71,7 +71,16 @@
   </script>
 
 <script>
+  window.onload = function() {
+    var banner = document.createElement('div');
+        banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+        banner.textContent = 'Devido à migração dos arquivos, o acesso pode apresentar lentidão temporária. Estamos empenhados em resolver essa situação o mais rápido possível.';
+        document.body.prepend(banner);
 
+        var spacer = document.createElement('div');
+        spacer.style.height = '2rem';
+        document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
+  }
 </script>
 
   <noscript>You need to enable JavaScript to run this app.</noscript>
