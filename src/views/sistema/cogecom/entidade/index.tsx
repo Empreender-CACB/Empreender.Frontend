@@ -110,6 +110,7 @@ const CogecomEntidade = () => {
                         <TabNav value="detalhes">Detalhes</TabNav>
                         <TabNav value="anotacoes">Anotações</TabNav>
                         <TabNav value="documentos">Documentos</TabNav>
+                        <TabNav value="pendencias">Pendências</TabNav>
                     </TabList>
 
                     <div className="p-4">
@@ -169,6 +170,9 @@ const CogecomEntidade = () => {
                                 idVinculoAux={dadosCogecom.id}
                                 tipoVinculoAux="cogecom" 
                             />
+                        </TabContent>
+
+                        <TabContent value="pendencias">
                         </TabContent>
                     </div>
                 </Tabs>
