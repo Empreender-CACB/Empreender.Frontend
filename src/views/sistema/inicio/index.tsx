@@ -227,14 +227,14 @@ const Inicio = () => {
                                             style={{
                                                 border: '2px solid black',
                                             }}
-                                            src={`https://www.empreender.org.br/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
+                                            src={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
                                             alt={`Slide ${index}`}
                                         />
                                     </a>
                                 ) : (
                                     <img
                                         style={{ border: '2px solid black' }}
-                                        src={`https://www.empreender.org.br/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
+                                        src={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(String(image.id_anexo))}`}
                                         alt={`Slide ${index}`}
                                     />
                                 )}
