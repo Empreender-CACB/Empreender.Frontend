@@ -137,7 +137,7 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''
+                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${tipoVinculo}/${idVinculo}?redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''
                             }`}
                     >
                         <Button
