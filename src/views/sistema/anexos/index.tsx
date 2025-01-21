@@ -59,8 +59,9 @@ const columns = [
         value: '',
         render: ({ value, data }: any) => (
             <Link
+
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(data.id)}`}
+                to={`${import.meta.env.VITE_API_URL}/anexo/${data.id}/download`}
                 target='_blank'
             >
                 {value}
