@@ -7,6 +7,8 @@ import { Button, FormItem, Input, Notification, Select, Tag, toast } from '@/com
 import { Container } from '@/components/shared';
 import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import capitalize from '@/components/ui/utils/capitalize';
+import { HiOutlinePlus } from 'react-icons/hi';
+import { CgClose as CloseIcon } from 'react-icons/cg';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
 const validationSchema = Yup.object().shape({
@@ -17,17 +19,20 @@ const validationSchema = Yup.object().shape({
 });
 
 const bloqueioOptions = [
-    { value: 'sim', label: 'Sim' },
-    { value: 'nao', label: 'Não' },
+    { value: 'de', label: 'Desbloqueado' },
+    { value: 'bo', label: 'Bloqueado' },
 ];
 
 const PendenciaForm = () => {
+    const [loading, setLoading] = useState(false);
     const [nomeVinculo, setNomeVinculo] = useState('');
     const [nomeVinculoSecundario, setNomeVinculoSecundario] = useState('');
+    const [inputs, setInputs] = useState([{}]);
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         { label: 'Início', link: '/' },
         { label: 'Pendências', link: '#' },
     ]);
+
     const [initialValues, setInitialValues] = useState({
         titulo: '',
         descricao: '',
@@ -35,13 +40,13 @@ const PendenciaForm = () => {
         bloqueioFinanceiro: '',
     });
 
-    const { tipoVinculo, idVinculo } = useParams();
+    const { tipoVinculo, idVinculo, idPendencia } = useParams();
     const searchParams = new URLSearchParams(window.location.search);
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/pendencias/${tipoVinculo}/${idVinculo}`;
     const idVinculoAux = searchParams.get('idVinculoAux');
     const tipoVinculoAux = searchParams.get('tipoVinculoAux');
 
-    const navigate = useNavigate();
+    const isEditMode = Boolean(idPendencia);
 
     useEffect(() => {
         const fetchVinculo = async () => {
@@ -50,11 +55,11 @@ const PendenciaForm = () => {
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`,
                     method: 'get',
                 });
-
+    
                 const { nomeVinculo, nomeVinculoAux, breadcrumb } = vinculoResponse.data;
                 setNomeVinculo(nomeVinculo);
                 setNomeVinculoSecundario(nomeVinculoAux);
-
+    
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
                     ...breadcrumb.map((item: any) => ({
@@ -67,35 +72,77 @@ const PendenciaForm = () => {
                 console.error('Erro ao buscar dados do vínculo:', error);
             }
         };
-
-        fetchVinculo();
-    }, [tipoVinculo, idVinculo]);
-
-    const handleSave = async (values: any) => {
-        toast.push(
-            <Notification title="Salvando pendência, aguarde..." type="success" />
-        );
-
-        const formData = {
-            ...values,
-            tipoVinculo,
-            idVinculo,
-            tipoVinculoAux,
-            idVinculoAux,
+    
+        const fetchPendencia = async () => {
+            if (!isEditMode) return;
+            try {
+                const response = await ApiService.fetchData({
+                    url: `/pendencias/fetchPendencia/${idPendencia}`,
+                    method: 'get',
+                });
+                setInitialValues({
+                    titulo: response.data.titulo,
+                    descricao: response.data.descricao,
+                    dataPrevistaSolucao: response.data.dataPrevistaSolucao,
+                    bloqueioFinanceiro: response.data.bloqueioFinanceiro,
+                });
+            } catch (error) {
+                console.error('Erro ao buscar dados da pendência:', error);
+            }
         };
+    
+        fetchVinculo();
+        fetchPendencia();
+    }, [tipoVinculo, idVinculo, idPendencia, isEditMode]);    
+
+    const handleSave = async (values: any, filesData: any) => {
+        toast.push(<Notification title="Salvando pendência, aguarde..." type="success" />);
+        setLoading(true);
+
+        const formData = new FormData();
+        Object.entries(values).forEach(([key, value]) => formData.append(key, value as string));
+
+        filesData.forEach(({ file, fileName }: { file: File; fileName: string }) => {
+            formData.append('files', file);
+            formData.append('fileNames', fileName);
+        });
+
+        formData.append('tipoVinculo', tipoVinculo || '');
+        formData.append('idVinculo', idVinculo || '');
+        formData.append('tipoVinculoAux', tipoVinculoAux || '');
+        formData.append('idVinculoAux', idVinculoAux || '');
 
         try {
+            const url = idPendencia ? `/pendencias/editar/${idPendencia}` : '/pendencias/adicionar';
+            const method = idPendencia ? 'put' : 'post';
+
             await ApiService.fetchData({
-                url: '/pendencias/adicionar',
-                method: 'post',
+                url,
+                method,
                 data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
 
             toast.push(<Notification title="Pendência salva com sucesso!" type="success" />);
             window.location.href = redirectUrl;
         } catch (error) {
             toast.push(<Notification title="Erro ao salvar pendência." type="danger" />);
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const handleAddInput = () => {
+        setInputs([...inputs, {}]);
+    };
+
+    const handleDeleteInput = (index: any) => {
+        const newArray = [...inputs];
+        newArray.splice(index, 1);
+        setInputs(newArray);
+        index.preventDefault();
+        index.stopPropagation();
+        return false;
     };
 
     return (
@@ -106,7 +153,10 @@ const PendenciaForm = () => {
                     initialValues={initialValues}
                     enableReinitialize
                     validationSchema={validationSchema}
-                    onSubmit={(values) => handleSave(values)}
+                    onSubmit={(values, { setSubmitting }) => {
+                        handleSave(values, inputs);
+                        setSubmitting(false);
+                    }}
                 >
                     {({ errors, touched }) => (
                         <Form>
@@ -156,11 +206,47 @@ const PendenciaForm = () => {
                                 </FormItem>
                             </div>
 
+                            <div className="sm:col-span-2 pt-5">
+                                <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
+                                <div className="mt-2 container">
+                                    {inputs.map((input, index) => (
+                                        <div key={index} className="input_container flex items-center space-x-4 mb-2 flex-wrap space-y-1">
+                                            <label className="bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
+                                                <input
+                                                    type="file"
+                                                    name="files"
+                                                    className="w-50"
+                                                    accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
+                                                    onChange={(e: any) => setInputs(prev => prev.map((item, i) => i === index ? { ...item, file: e.target.files[0] } : item))}
+                                                />
+                                            </label>
+                                            <input type="text" name="file_name" placeholder="Nome do documento" className="border p-2 rounded-md w-1/2" />
+                                            {inputs.length > 1 && <span onClick={() => handleDeleteInput(index)}><CloseIcon /></span>}
+                                        </div>
+                                    ))}
+                                    <div
+                                        onClick={handleAddInput}
+                                        className="mr-2 inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                                    >
+                                        <HiOutlinePlus className="mr-1" />
+                                        Adicionar mais arquivos
+                                    </div>                                
+                                </div>
+                            </div>
+
                             <div className="flex justify-end gap-4">
-                                <Link className="block lg:inline-block md:mb-0 mb-4" to={redirectUrl}>
-                                    <Button block variant="default">Cancelar</Button>
+                                <Link
+                                    className="block lg:inline-block md:mb-0 mb-4"
+                                    to={`${redirectUrl}`}
+                                >
+                                    <Button
+                                        block
+                                        variant="default"
+                                    >
+                                        Cancelar
+                                    </Button>
                                 </Link>
-                                <Button type="submit" variant="solid">Salvar</Button>
+                                <Button type="submit" disabled={loading} variant="solid">{loading ? 'Salvando...' : 'Salvar'}</Button>
                             </div>
                         </Form>
                     )}

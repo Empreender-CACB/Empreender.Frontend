@@ -45,16 +45,12 @@ const AnotacaoForm = () => {
         privacidade: '',
     });
 
-    // Obtendo parâmetros da URL
     const { tipoVinculo, idVinculo, idAnotacao } = useParams();
     const searchParams = new URLSearchParams(window.location.search);
 
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`;
     const idVinculoAux = searchParams.get('idVinculoAux');
     const tipoVinculoAux = searchParams.get('tipoVinculoAux');
-
-    console.log(redirectUrl);
-
 
     const navigate = useNavigate();
     const isEditMode = Boolean(idAnotacao);
@@ -70,8 +66,6 @@ const AnotacaoForm = () => {
 
                 setNomeVinculo(nomeVinculo);
                 setNomeVinculoSecundario(nomeVinculoAux);
-
-                console.log(vinculoResponse, nomeVinculoSecundario);
 
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
