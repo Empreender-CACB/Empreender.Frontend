@@ -9,14 +9,13 @@ import AnexosComponent from '../anexos/AnexosComponent';
 import { HiPencil } from 'react-icons/hi';
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-    ab: { label: 'Aberta', color: 'bg-yellow-600' },
-    re: { label: 'Resolvida', color: 'bg-green-600' },
-    ca: { label: 'Cancelada', color: 'bg-gray-600' },
+    nr: { label: 'Não Resolvido', color: 'bg-red-600' },
+    re: { label: 'Resolvido', color: 'bg-green-600' },
 };
 
 const bloqueioLabels: Record<string, string> = {
-    sim: 'Sim',
-    nao: 'Não',
+    bo: 'Bloqueado',
+    de: 'Desbloqueado',
 };
 
 interface PendenciaModalProps {
@@ -107,19 +106,19 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                         </div>
 
                         <div className="mb-4">
-                            <strong>Data Prevista para Solução:</strong>
+                            <strong className="mr-2">Data Prevista para Solução:</strong>
                             <p>{moment(pendencia.data_prevista_solucao).format('DD/MM/YYYY')}</p>
                         </div>
 
                         <div className="mb-4">
-                            <strong>Status:</strong>
+                            <strong className="mr-2">Status:</strong>
                             <Tag className={`${statusLabels[pendencia.status]?.color || 'bg-gray-400'} text-white border-0 rounded`}>
                                 {statusLabels[pendencia.status]?.label || 'Indisponível'}
                             </Tag>
                         </div>
 
                         <div className="mb-4">
-                            <strong>Bloqueio Financeiro:</strong>
+                            <strong className="mr-2">Bloqueio Financeiro:</strong>
                             <Tag className="bg-red-600 text-white border-0 rounded">
                                 {bloqueioLabels[pendencia.bloqueio_financeiro] || 'Indisponível'}
                             </Tag>

@@ -5,22 +5,20 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
-import { Button, Tag, Tooltip } from '@/components/ui';
+import { Button, Tag } from '@/components/ui';
 import { AdaptableCard } from '@/components/shared';
 import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
-import { FaQuestion } from 'react-icons/fa';
 import PendenciaModal from './pendencia-modal';
 
 moment.locale('pt-br');
 
 const statusOptions = [
-    { name: 'Aberta', value: 'aberta', color: 'bg-blue-600' },
-    { name: 'Em andamento', value: 'andamento', color: 'bg-yellow-600' },
-    { name: 'Concluída', value: 'concluida', color: 'bg-green-600' },
+    { name: 'Não Resolvido', value: 'nr', color: 'bg-red-600' },
+    { name: 'Resolvido', value: 're', color: 'bg-green-600' },
 ];
 
 interface PendenciasProps {
@@ -122,17 +120,6 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
                     <h3 className="mb-4 lg:mb-0">Pendências</h3>
-                    <Tooltip title="Para saber mais sobre o módulo de pendências, clique aqui" placement="right-end">
-                        <Button
-                            shape="circle"
-                            size="xs"
-                            icon={<FaQuestion />}
-                            className="ml-2"
-                            onClick={() => {
-                                window.open('https://www.empreender.org.br/sistema/pendencias');
-                            }}
-                        />
-                    </Tooltip>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link

@@ -93,7 +93,7 @@ const PendenciaForm = () => {
     
         fetchVinculo();
         fetchPendencia();
-    }, [tipoVinculo, idVinculo, idPendencia, isEditMode]);    
+    }, [tipoVinculo, idVinculo, idPendencia, isEditMode]);
 
     const handleSave = async (values: any, filesData: any) => {
         toast.push(<Notification title="Salvando pendência, aguarde..." type="success" />);
