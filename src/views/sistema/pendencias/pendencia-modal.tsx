@@ -66,7 +66,6 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                             </Link>
                         </div>
 
-                        {/* Título e informações principais */}
                         <div className="flex items-center mb-4">
                             <div className="flex items-center space-x-4 mr-5">
                                 <h2 className="text-xl font-bold text-gray-800">Pendência {pendencia.id}</h2>
@@ -84,25 +83,6 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                         <div className="mb-4">
                             <strong>Descrição:</strong>
                             <p className="text-gray-700">{pendencia.descricao}</p>
-                        </div>
-
-                        <div className="flex items-center space-x-4 mb-4">
-                            <Tag className="bg-gray-400 text-white border-0 rounded">
-                                {pendencia.tipo_vinculo}
-                            </Tag>
-                            <Tag className="bg-indigo-600 text-white border-0 rounded">
-                                {pendencia.nome_vinculo}
-                            </Tag>
-                            {pendencia.tipo_vinculo_aux && (
-                                <Tag className="bg-gray-400 text-white border-0 rounded">
-                                    {pendencia.tipo_vinculo_aux}
-                                </Tag>
-                            )}
-                            {pendencia.nome_vinculo_aux && (
-                                <Tag className="bg-indigo-600 text-white border-0 rounded">
-                                    {pendencia.nome_vinculo_aux}
-                                </Tag>
-                            )}
                         </div>
 
                         <div className="mb-4">
@@ -150,12 +130,10 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                         <h2 className="text-xl font-bold text-gray-800">Documentos</h2>
                         <AnexosComponent
                             url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/pendencia/${pendencia.id}`}
-                            title="Documentos Importantes"
+                            title="Documentos"
                             minHeight={300}
-                            tipoVinculo={pendencia.tipo_vinculo}
+                            tipoVinculo={'pendencia'}
                             idVinculo={pendencia.id_vinculo}
-                            tipoVinculoAux={pendencia.tipo_vinculo_aux || undefined}
-                            idVinculoAux={pendencia.id_vinculo_aux || undefined}
                         />
                     </section>
                 </div>
