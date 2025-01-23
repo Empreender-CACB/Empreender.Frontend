@@ -164,22 +164,36 @@ const CogecomEntidade = () => {
                         </TabContent>
 
                         <TabContent value="documentos">
-                            <AnexosComponent 
-                                url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
-                                idVinculo={params.id}
-                                tipoVinculo="entidade"
-                                idVinculoAux={dadosCogecom.id}
-                                tipoVinculoAux="cogecom" 
-                            />
+                            {dadosCogecom?.id && params.id ? (
+                                <AnexosComponent
+                                    url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                                    idVinculo={params.id}
+                                    tipoVinculo="entidade"
+                                    idVinculoAux={dadosCogecom.id}
+                                    tipoVinculoAux="cogecom"
+                                />
+                            ) : (
+                                <div className="text-center text-gray-500">
+                                    <p>Nenhum dado encontrado para exibir documentos relacionadas ao COGECOM.</p>
+                                </div>
+                            )}
+
                         </TabContent>
 
                         <TabContent value="pendencias">
-                            <PendenciasComponent
-                                idVinculo={params.id}
-                                tipoVinculo="entidade"
-                                idVinculoAux={dadosCogecom.id}
-                                tipoVinculoAux="cogecom"
-                            />
+                            {dadosCogecom?.id && params.id ? (
+                                <PendenciasComponent
+                                    idVinculo={params.id}
+                                    tipoVinculo="entidade"
+                                    idVinculoAux={dadosCogecom.id}
+                                    tipoVinculoAux="cogecom"
+                                />
+                            ) : (
+                                <div className="text-center text-gray-500">
+                                    <p>Nenhum dado encontrado para exibir pendencias relacionadas ao COGECOM.</p>
+                                </div>
+                            )}
+
                         </TabContent>
                     </div>
                 </Tabs>
