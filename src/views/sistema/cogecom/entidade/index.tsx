@@ -92,10 +92,10 @@ const CogecomEntidade = () => {
                         {isInscrito ? (
                             <>
                                 <Button type="button" size="md" variant="solid" color="blue-600">
-                                    Acessar Materiais
+                                    Botão exemplo 1
                                 </Button>
                                 <Button type="button" size="md" variant="solid" color="gray-600">
-                                    Ver Status
+                                    Botão exemplo 2
                                 </Button>
                             </>
                         ) : (
