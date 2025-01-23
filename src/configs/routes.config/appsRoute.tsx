@@ -259,6 +259,24 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/projetos/vincular-empresas-nucleo`,
         component: lazy(() => import('@/views/sistema/projetos/vincularEmpresasNucleo')),
     },
+    {
+        key: 'sistema.atualizaRfb',
+        path: `${APP_PREFIX_PATH}/rfb/atualiza-empresa`,
+        component: lazy(() => import('@/views/sistema/empresas/atualizacao-rfb')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
+        key: 'sistema.atualizaTblRfb',
+        path: `${APP_PREFIX_PATH}/rfb/atualiza-tbl-rfb`,
+        component: lazy(() => import('@/views/sistema/empresas/atualiza-tbl-rfb')),
+        meta: {
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
 ]
 
 export default appsRoute
