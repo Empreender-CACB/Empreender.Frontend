@@ -266,7 +266,7 @@ const appsRoute: Routes = [
     },
     {
         key: 'Pendencias.adicionarPendencia',
-        path: `${APP_PREFIX_PATH}/pendencias/adicionar/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        path: `${APP_PREFIX_PATH}/pendencias/adicionar/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?/:idPendencia?`,
         component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
     },
     

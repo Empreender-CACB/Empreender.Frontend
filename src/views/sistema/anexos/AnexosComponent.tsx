@@ -218,7 +218,7 @@ const AnexosComponent: React.FC<AnexosProps> = ({
         <AdaptableCard>
             <div className="lg:flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                    <h3 className="mb-4 lg:mb-0">Anexos</h3>
+                    <h3 className="mb-4 lg:mb-0">{title}</h3>
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link

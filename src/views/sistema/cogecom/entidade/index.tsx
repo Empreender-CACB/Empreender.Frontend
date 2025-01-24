@@ -22,25 +22,24 @@ const CogecomEntidade = () => {
     const [arquivos, setArquivos] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isInscrito, setIsInscrito] = useState(false);
-    const [dadosCogecom, setDadosCogecom] = useState<any>([]);
+    const [dadosCogecom, setDadosCogecom] = useState<any>(null);
+    const [status, setStatus] = useState<string>('Novo');
 
     useEffect(() => {
         async function fetchDetalhes() {
             try {
                 setLoading(true);
+
                 const response = await ApiService.fetchData({
                     url: `entidade/${params.id}`,
                     method: 'get',
                 });
-
                 setDetalhes(response.data);
 
                 const listaResponse = await ApiService.fetchData({
                     url: `getArquivosLista/10`,
                     method: 'get',
                 });
-
                 setArquivos(listaResponse.data);
 
                 const cogecomResponse = await ApiService.fetchData({
@@ -49,8 +48,8 @@ const CogecomEntidade = () => {
                 });
 
                 if (cogecomResponse.data.id) {
-                    setIsInscrito(true);
                     setDadosCogecom(cogecomResponse.data);
+                    setStatus(cogecomResponse.data.status);
                 }
 
                 setLoading(false);
@@ -63,20 +62,17 @@ const CogecomEntidade = () => {
         fetchDetalhes();
     }, [params.id]);
 
-    const handleInscricaoConfirmada = async () => {
+    const handleStatusUpdate = async (novoStatus: string) => {
         try {
-            const cogecomResponse = await ApiService.fetchData({
-                url: `cogecom/${params.id}`,
-                method: 'get',
+            await ApiService.fetchData({
+                url: `cogecom/confirmar/${params.id}`,
+                method: 'put',
+                data: { status: novoStatus },
             });
 
-            if (cogecomResponse.data.id) {
-                setIsInscrito(true);
-                setDadosCogecom(cogecomResponse.data);
-            }
-            setIsModalOpen(false);
+            setStatus(novoStatus);
         } catch (error) {
-            console.error('Erro ao atualizar dados do COGECOM:', error);
+            console.error('Erro ao atualizar status do COGECOM:', error);
         }
     };
 
@@ -84,12 +80,12 @@ const CogecomEntidade = () => {
         <Loading loading={loading}>
             <LayoutDetailSimple
                 title={`${detalhes?.nmrazao} - COGECOM`}
-                status={isInscrito ? 'Cadastrado' : 'Não cadastrado'}
+                status={status ? 'Cadastrado' : 'Não cadastrado'}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
 
                 actions={
                     <div className="flex-wrap inline-flex xl:flex items-center gap-2">
-                        {isInscrito ? (
+                        {status != "Novo" ? (
                             <>
                                 <Button type="button" size="md" variant="solid" color="blue-600">
                                     Botão exemplo 1
@@ -183,6 +179,7 @@ const CogecomEntidade = () => {
                         <TabContent value="pendencias">
                             {dadosCogecom?.id && params.id ? (
                                 <PendenciasComponent
+                                    temBloqueio={false}
                                     idVinculo={params.id}
                                     tipoVinculo="entidade"
                                     idVinculoAux={dadosCogecom.id}
@@ -203,7 +200,7 @@ const CogecomEntidade = () => {
                 isOpen={isModalOpen}
                 idEntidade={params.id}
                 onClose={() => setIsModalOpen(false)}
-                onConfirm={handleInscricaoConfirmada}
+                onConfirm={() => handleStatusUpdate('Confirmada')}
             />
         </Loading>
     );
