@@ -24,13 +24,13 @@ const statusOptions = [
 
 interface PendenciasProps {
     idVinculo: string | undefined;
-    temBloqueio: boolean
     tipoVinculo: string;
     idVinculoAux?: string;
     tipoVinculoAux?: string;
+    temBloqueio: boolean
 }
 
-const PendenciasComponent: React.FC<PendenciasProps> = ({ temBloqueio, idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux }) => {
+const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux, temBloqueio }) => {
     const [selectedPendenciaId, setSelectedPendenciaId] = useState<number | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 

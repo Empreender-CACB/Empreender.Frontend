@@ -94,7 +94,7 @@ const NucleoReunioes = () => {
                         title={nucleo.nmnucleo}
                         status={nucleo.flativo}
                         subtitle={`Cód. ${nucleo.idnucleo}`}
-                        paymentStatus={{
+                        statusTags={{
                             S: {
                                 label: 'Ativo',
                                 class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',

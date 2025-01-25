@@ -13,7 +13,7 @@ interface LayoutDetailSimpleProps {
     subtitle?: string
     status: string
     children: React.ReactNode
-    paymentStatus?: Record<string, StatusProperties>
+    statusTags?: Record<string, StatusProperties>
     actions?: React.ReactNode
 }
 
@@ -22,36 +22,36 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
     subtitle,
     status,
     children,
-    paymentStatus,
+    statusTags,
     actions,
 }) => {
     const { borderTheme } = useThemeClass()
 
     return (
-        <Card className= {`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
-                <div>
+        <Card className={`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
+            <div>
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2">
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
                         <h3>
                             <span>{title}</span>
                         </h3>
-                        {paymentStatus && 
+                        {statusTags && statusTags[status] && (
                             <Tag
                                 className={classNames(
                                     'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                                    paymentStatus[status].class
+                                    statusTags[status].class
                                 )}
                             >
-                                {paymentStatus[status].label}
+                                {statusTags[status].label}
                             </Tag>
-                        }
+                        )}
                     </div>
                     {actions}
                 </div>
                 {subtitle && (
                     <span className="flex items-center">{subtitle}</span>
                 )}
-                <div className='mt-4'>
+                <div className="mt-4">
                     {children}
                 </div>
             </div>
