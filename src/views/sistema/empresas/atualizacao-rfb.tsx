@@ -28,16 +28,36 @@ const AtualizarEmpresas = () => {
     ]
 
     const downloadLog = (logContent: string, scriptName: string) => {
-        const blob = new Blob([logContent], { type: 'text/plain;charset=utf-8' })
+        const today = new Date()
+
+        const year = today.getFullYear()
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0')
+        const hours = today.getHours().toString().padStart(2, '0')
+        const minutes = today.getMinutes().toString().padStart(2, '0')
+        const seconds = today.getSeconds().toString().padStart(2, '0')
+        
+        const formattedDate = `${year}_${month}_${day}_${hours}_${minutes}_${seconds}`
+        
+        const cleanContent = logContent
+        .replace(/\\/g, "")
+        .replace(/{"output":"/g,"")
+        .replace(/"}/,"")
+
+        scriptName = scriptName.slice(0, -3)
+      
+        const fileName = `log_${scriptName}_${formattedDate}.json`
+      
+        const blob = new Blob([cleanContent], { type: 'text/plain;charset=utf-8' })
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = `log_${scriptName}.txt`
+        link.download = fileName
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
-    }
+      }
 
     const iniciarAtualizacaoParcial = async () => {
         setIsRunning(true)
