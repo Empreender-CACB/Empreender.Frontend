@@ -26,7 +26,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
     return (
         <div className="flex-wrap inline-flex xl:flex items-center gap-2">
             {status === 'Novo' && (
-                <Button type="button" size="md" variant="solid" onClick={() => openStatusModal('Solicitada')}>
+                <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Solicitada')}>
                     Adesão COGECOM
                 </Button>
             )}
