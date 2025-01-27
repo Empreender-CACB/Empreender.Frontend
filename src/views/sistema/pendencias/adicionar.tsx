@@ -19,8 +19,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const bloqueioOptions = [
-    { value: 'de', label: 'Desbloqueado' },
-    { value: 'bo', label: 'Bloqueado' },
+    { value: 'de', label: 'Não bloquear' },
+    { value: 'bo', label: 'Bloquear' },
 ];
 
 interface FileInput {

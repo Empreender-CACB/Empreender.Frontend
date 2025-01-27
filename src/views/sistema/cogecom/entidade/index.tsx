@@ -2,13 +2,11 @@
 import { useState, useEffect } from 'react';
 import Tabs from '@/components/ui/Tabs';
 import Loading from '@/components/shared/Loading';
-import Button from '@/components/ui/Button';
 
 import { useParams } from 'react-router-dom';
 import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple';
 import ApiService from '@/services/ApiService';
 import { Associacao } from '@/@types/generalTypes';
-import ConfirmarInscricao from './modalConfirmarInscricao';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 import PendenciasComponent from '../../pendencias/PendenciasComponent';
@@ -55,7 +53,6 @@ const CogecomEntidade = () => {
     const [detalhes, setDetalhes] = useState<Associacao>();
     const [arquivos, setArquivos] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [dadosCogecom, setDadosCogecom] = useState<any>(null);
     const [status, setStatus] = useState<string>('Novo');
 
@@ -77,7 +74,7 @@ const CogecomEntidade = () => {
             setArquivos(listaResponse.data);
 
             const cogecomResponse = await ApiService.fetchData({
-                url: `cogecom/${params.id}`,
+                url: `cogecom-entidade/${params.id}`,
                 method: 'get',
             });
 
@@ -107,7 +104,6 @@ const CogecomEntidade = () => {
 
         isGestorOrAnalista();
     }, []);
-
 
     useEffect(() => {
         fetchDetalhes();
@@ -243,13 +239,6 @@ const CogecomEntidade = () => {
                     </div>
                 </Tabs>
             </LayoutDetailSimple>
-
-            <ConfirmarInscricao
-                isOpen={isModalOpen}
-                idEntidade={params.id}
-                onClose={() => setIsModalOpen(false)}
-                onConfirm={fetchDetalhes}
-            />
 
         </Loading>
     );
