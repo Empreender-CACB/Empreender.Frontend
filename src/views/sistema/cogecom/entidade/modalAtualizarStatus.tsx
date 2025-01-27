@@ -47,7 +47,7 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
 
                 {isConfirmed ? (
                     <p className="my-4 text-green-700">
-                        O status foi atualizado com sucesso! Acompanhe as mudanças no portal.
+                        O status foi atualizado com sucesso! Acompanhe as alterações no portal.
                     </p>
                 ) : (
                     <>
@@ -59,7 +59,7 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
                                 Cancelar
                             </Button>
                             <Button type="button" onClick={handleConfirm} color="blue-600" variant="solid">
-                                Confirmar alteração
+                                Confirmar
                             </Button>
                         </div>
                     </>
