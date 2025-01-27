@@ -69,8 +69,9 @@ const CogecomEntidade = () => {
             });
             setDetalhes(response.data);
 
+            const listaNome = encodeURIComponent('Cogecom - Adesão de Entidades');
             const listaResponse = await ApiService.fetchData({
-                url: `getArquivosLista/10`,
+                url: `getArquivosListaByNome/${listaNome}`,
                 method: 'get',
             });
             setArquivos(listaResponse.data);
@@ -95,14 +96,16 @@ const CogecomEntidade = () => {
     const user = useAppSelector((state) => state.auth.user);
     
     const [isGestor, setIsGestor] = useState(false);
-    const [isAnalista, setIsAnalista] = useState(true);
+    const [isAnalista, setIsAnalista] = useState(false);
 
     useEffect(() => {
-        async function fetcIsGestor() {
+
+        async function isGestorOrAnalista() {
             setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
+            setIsAnalista(user.recursos?.includes('analista-cogecom'));
         }
 
-        fetcIsGestor();
+        isGestorOrAnalista();
     }, []);
 
 

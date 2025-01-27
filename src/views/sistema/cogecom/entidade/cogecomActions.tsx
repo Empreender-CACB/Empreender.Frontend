@@ -36,7 +36,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {(isGestor || isAnalista) && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="blue-600"
                             onClick={() => openStatusModal('Em avaliação')}
@@ -47,7 +47,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {isGestor && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="red-600"
                             onClick={() => openStatusModal('Cancelada')}
@@ -63,7 +63,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {isAnalista && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="yellow-600"
                             onClick={() => openStatusModal('Pendente')}
@@ -74,7 +74,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {(isGestor || isAnalista) && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="green-600"
                             onClick={() => openStatusModal('Vinculada')}
@@ -90,7 +90,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {isGestor && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="green-600"
                             onClick={() => openStatusModal('Vinculada')}
@@ -101,7 +101,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {isAnalista && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="green-600"
                             onClick={() => openStatusModal('Em avaliação')}
@@ -112,7 +112,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {(isGestor || isAnalista) && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="gray-600"
                             onClick={() => openStatusModal('Cancelada')}
@@ -128,7 +128,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                     {(isGestor || isAnalista) && (
                         <Button
                             type="button"
-                            size="md"
+                            size="sm"
                             variant="solid"
                             color="red-600"
                             onClick={() => openStatusModal('Desvinculada')}
