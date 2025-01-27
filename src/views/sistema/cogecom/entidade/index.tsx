@@ -12,98 +12,125 @@ import ConfirmarInscricao from './modalConfirmarInscricao';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 import PendenciasComponent from '../../pendencias/PendenciasComponent';
+import { useAppSelector } from '@/store';
+import CogecomActions from './cogecomActions';
+import { VscFile } from 'react-icons/vsc';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
+const cogecomStatusTags = {
+    Novo: {
+        label: 'Novo',
+        class: 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100',
+    },
+    Solicitada: {
+        label: 'Solicitada',
+        class: 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100',
+    },
+    'Em avaliação': {
+        label: 'Em Avaliação',
+        class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
+    },
+    Pendente: {
+        label: 'Pendente',
+        class: 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100',
+    },
+    Cancelada: {
+        label: 'Cancelada',
+        class: 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100',
+    },
+    Vinculada: {
+        label: 'Vinculada',
+        class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
+    },
+    Desvinculada: {
+        label: 'Desvinculada',
+        class: 'bg-gray-300 text-gray-700 dark:bg-gray-600/20 dark:text-gray-200',
+    },
+};
+
+
 const CogecomEntidade = () => {
     const params = useParams();
-
     const [detalhes, setDetalhes] = useState<Associacao>();
     const [arquivos, setArquivos] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isInscrito, setIsInscrito] = useState(false);
-    const [dadosCogecom, setDadosCogecom] = useState<any>([]);
+    const [dadosCogecom, setDadosCogecom] = useState<any>(null);
+    const [status, setStatus] = useState<string>('Novo');
 
-    useEffect(() => {
-        async function fetchDetalhes() {
-            try {
-                setLoading(true);
-                const response = await ApiService.fetchData({
-                    url: `entidade/${params.id}`,
-                    method: 'get',
-                });
-
-                setDetalhes(response.data);
-
-                const listaResponse = await ApiService.fetchData({
-                    url: `getArquivosLista/10`,
-                    method: 'get',
-                });
-
-                setArquivos(listaResponse.data);
-
-                const cogecomResponse = await ApiService.fetchData({
-                    url: `cogecom/${params.id}`,
-                    method: 'get',
-                });
-
-                if (cogecomResponse.data.id) {
-                    setIsInscrito(true);
-                    setDadosCogecom(cogecomResponse.data);
-                }
-
-                setLoading(false);
-            } catch (error) {
-                console.error('Erro na requisição', error);
-                setLoading(false);
-            }
-        }
-
-        fetchDetalhes();
-    }, [params.id]);
-
-    const handleInscricaoConfirmada = async () => {
+    const fetchDetalhes = async () => {
         try {
+            setLoading(true);
+
+            const response = await ApiService.fetchData({
+                url: `entidade/${params.id}`,
+                method: 'get',
+            });
+            setDetalhes(response.data);
+
+            const listaNome = encodeURIComponent('Cogecom - Adesão de Entidades');
+            const listaResponse = await ApiService.fetchData({
+                url: `getArquivosListaByNome/${listaNome}`,
+                method: 'get',
+            });
+            setArquivos(listaResponse.data);
+
             const cogecomResponse = await ApiService.fetchData({
                 url: `cogecom/${params.id}`,
                 method: 'get',
             });
 
             if (cogecomResponse.data.id) {
-                setIsInscrito(true);
                 setDadosCogecom(cogecomResponse.data);
+                setStatus(cogecomResponse.data.status);
             }
-            setIsModalOpen(false);
+
+            setLoading(false);
         } catch (error) {
-            console.error('Erro ao atualizar dados do COGECOM:', error);
+            console.error('Erro na requisição', error);
+            setLoading(false);
         }
     };
+
+    const user = useAppSelector((state) => state.auth.user);
+    
+    const [isGestor, setIsGestor] = useState(false);
+    const [isAnalista, setIsAnalista] = useState(false);
+
+    useEffect(() => {
+
+        async function isGestorOrAnalista() {
+            setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
+            setIsAnalista(user.recursos?.includes('analista-cogecom'));
+        }
+
+        isGestorOrAnalista();
+    }, []);
+
+
+    useEffect(() => {
+        fetchDetalhes();
+    }, [params.id]);
 
     return (
         <Loading loading={loading}>
             <LayoutDetailSimple
                 title={`${detalhes?.nmrazao} - COGECOM`}
-                status={isInscrito ? 'Cadastrado' : 'Não cadastrado'}
+                status={status}
+                statusTags={cogecomStatusTags}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
                 actions={
-                    <div className="flex-wrap inline-flex xl:flex items-center gap-2">
-                        {isInscrito ? (
-                            <>
-                                <Button type="button" size="md" variant="solid" color="blue-600">
-                                    Botão exemplo 1
-                                </Button>
-                                <Button type="button" size="md" variant="solid" color="gray-600">
-                                    Botão exemplo 2
-                                </Button>
-                            </>
-                        ) : (
-                            <Button type="button" size="md" variant="solid" onClick={() => setIsModalOpen(true)}>
-                                Inscreva-se no COGECOM
-                            </Button>
-                        )}
-                    </div>
-                }>
+                    <CogecomActions 
+                        status={status}
+                        isGestor={isGestor}
+                        isAnalista={isAnalista}
+                        idEntidade={Number(params.id)}
+                        idCogecom={dadosCogecom?.id}
+                        fetchDetalhes={fetchDetalhes}
+                    />
+                }
+            >
 
                 <Tabs defaultValue="detalhes">
                     <TabList>
@@ -129,7 +156,7 @@ const CogecomEntidade = () => {
 
                             {/* Lista de arquivos */}
                             <div className="mt-5">
-                                <h3 className="text-lg font-bold mb-3">Arquivos Relacionados:</h3>
+                                <h3 className="text-lg font-bold mb-3">Documentos necessários para adesão</h3>
                                 {arquivos.length > 0 ? (
                                     <ul className="list-none p-0">
                                         {arquivos.map((arquivo) => (
@@ -145,6 +172,24 @@ const CogecomEntidade = () => {
                                     <p className="text-gray-500">Nenhum arquivo encontrado.</p>
                                 )}
                             </div>
+
+                            <div className="mt-5">
+                                <h3 className="text-lg font-bold mb-3">Termo de adesão</h3>
+                                <div 
+                                    className="upload-file cursor-pointer"
+                                    onClick={() => window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTQxNDY3', '_blank')}
+                                >
+                                    <div className="flex">
+                                        <div className="upload-file-thumbnail">
+                                            <span className="text-4xl"><VscFile /></span>
+                                        </div>
+                                        <div className="upload-file-info">
+                                            <h6 className="upload-file-name">Termo de adesão para entidades</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </TabContent>
 
                         <TabContent value="anotacoes">
@@ -186,6 +231,7 @@ const CogecomEntidade = () => {
                                     tipoVinculo="entidade"
                                     idVinculoAux={dadosCogecom.id}
                                     tipoVinculoAux="cogecom"
+                                    temBloqueio={false}
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
@@ -202,8 +248,9 @@ const CogecomEntidade = () => {
                 isOpen={isModalOpen}
                 idEntidade={params.id}
                 onClose={() => setIsModalOpen(false)}
-                onConfirm={handleInscricaoConfirmada}
+                onConfirm={fetchDetalhes}
             />
+
         </Loading>
     );
 };

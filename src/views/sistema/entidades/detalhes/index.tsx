@@ -170,7 +170,7 @@ const NucleoDetalhes = () => {
                         title={associacao.nmrazao}
                         status={associacao.flativo}
                         subtitle={`Cód. ${associacao.idassociacao}`}
-                        paymentStatus={{
+                        statusTags={{
                             S: {
                                 label: 'Ativo',
                                 class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',

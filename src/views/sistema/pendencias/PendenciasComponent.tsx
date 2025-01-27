@@ -13,6 +13,7 @@ import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import PendenciaModal from './pendencia-modal';
+import { PendenciaCard } from '@/components/shared/TableCards/PendenciaCard';
 
 moment.locale('pt-br');
 
@@ -26,9 +27,10 @@ interface PendenciasProps {
     tipoVinculo: string;
     idVinculoAux?: string;
     tipoVinculoAux?: string;
+    temBloqueio: boolean
 }
 
-const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux }) => {
+const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux, temBloqueio }) => {
     const [selectedPendenciaId, setSelectedPendenciaId] = useState<number | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -124,7 +126,7 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${tipoVinculo}/${idVinculo}?redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''
+                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${temBloqueio}/${tipoVinculo}/${idVinculo}?redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''
                             }`}
                     >
                         <Button
@@ -144,6 +146,7 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/pendencias/lista/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''
                     }`}
+                CardLayout={PendenciaCard}                    
             />
 
             {selectedPendenciaId && (

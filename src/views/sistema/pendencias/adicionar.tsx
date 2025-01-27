@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
     titulo: Yup.string().required('Campo obrigatório'),
     descricao: Yup.string().required('Campo obrigatório'),
     dataPrevistaSolucao: Yup.string().required('Campo obrigatório'),
-    bloqueioFinanceiro: Yup.string().required('Campo obrigatório'),
+    bloqueioFinanceiro: Yup.string(),
 });
 
 const bloqueioOptions = [
@@ -23,11 +23,16 @@ const bloqueioOptions = [
     { value: 'bo', label: 'Bloqueado' },
 ];
 
+interface FileInput {
+    file?: File;
+    fileName?: string;
+}
+
 const PendenciaForm = () => {
     const [loading, setLoading] = useState(false);
     const [nomeVinculo, setNomeVinculo] = useState('');
     const [nomeVinculoSecundario, setNomeVinculoSecundario] = useState('');
-    const [inputs, setInputs] = useState([{}]);
+    const [inputs, setInputs] = useState<FileInput[]>([{ fileName: '' }]);
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         { label: 'Início', link: '/' },
         { label: 'Pendências', link: '#' },
@@ -40,7 +45,7 @@ const PendenciaForm = () => {
         bloqueioFinanceiro: '',
     });
 
-    const { tipoVinculo, idVinculo, idPendencia } = useParams();
+    const { temBloqueio, tipoVinculo, idVinculo, idPendencia } = useParams();
     const searchParams = new URLSearchParams(window.location.search);
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/pendencias/${tipoVinculo}/${idVinculo}`;
     const idVinculoAux = searchParams.get('idVinculoAux');
@@ -55,11 +60,11 @@ const PendenciaForm = () => {
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`,
                     method: 'get',
                 });
-    
+
                 const { nomeVinculo, nomeVinculoAux, breadcrumb } = vinculoResponse.data;
                 setNomeVinculo(nomeVinculo);
                 setNomeVinculoSecundario(nomeVinculoAux);
-    
+
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
                     ...breadcrumb.map((item: any) => ({
@@ -72,7 +77,7 @@ const PendenciaForm = () => {
                 console.error('Erro ao buscar dados do vínculo:', error);
             }
         };
-    
+
         const fetchPendencia = async () => {
             if (!isEditMode) return;
             try {
@@ -90,7 +95,7 @@ const PendenciaForm = () => {
                 console.error('Erro ao buscar dados da pendência:', error);
             }
         };
-    
+
         fetchVinculo();
         fetchPendencia();
     }, [tipoVinculo, idVinculo, idPendencia, isEditMode]);
@@ -115,7 +120,7 @@ const PendenciaForm = () => {
         try {
             const url = idPendencia ? `/pendencias/editar/${idPendencia}` : '/pendencias/adicionar';
             const method = idPendencia ? 'put' : 'post';
-
+            console.log(formData);
             await ApiService.fetchData({
                 url,
                 method,
@@ -144,6 +149,30 @@ const PendenciaForm = () => {
         index.stopPropagation();
         return false;
     };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const fileName = file.name;
+    
+            setInputs((prev) =>
+                prev.map((item, i) =>
+                    i === index ? { ...item, file, fileName } : item
+                )
+            );
+        }
+    };
+    
+    const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const value = e.target.value;
+    
+        setInputs((prev) =>
+            prev.map((item, i) =>
+                i === index ? { ...item, fileName: value } : item
+            )
+        );
+    };    
+
 
     return (
         <Container>
@@ -190,21 +219,23 @@ const PendenciaForm = () => {
                                 </FormItem>
                             </div>
 
-                            <div className="mb-6">
-                                <FormItem asterisk label="Bloqueio Financeiro" invalid={!!errors.bloqueioFinanceiro && touched.bloqueioFinanceiro} errorMessage={errors.bloqueioFinanceiro}>
-                                    <Field name="bloqueioFinanceiro">
-                                        {({ field, form }: any) => (
-                                            <Select
-                                                {...field}
-                                                options={bloqueioOptions}
-                                                placeholder="Selecione o bloqueio"
-                                                value={bloqueioOptions.find(option => option.value === form.values.bloqueioFinanceiro)}
-                                                onChange={(option: any) => form.setFieldValue('bloqueioFinanceiro', option?.value)}
-                                            />
-                                        )}
-                                    </Field>
-                                </FormItem>
-                            </div>
+                            {temBloqueio &&
+                                <div className="mb-6">
+                                    <FormItem asterisk label="Bloqueio Financeiro" invalid={!!errors.bloqueioFinanceiro && touched.bloqueioFinanceiro} errorMessage={errors.bloqueioFinanceiro}>
+                                        <Field name="bloqueioFinanceiro">
+                                            {({ field, form }: any) => (
+                                                <Select
+                                                    {...field}
+                                                    options={bloqueioOptions}
+                                                    placeholder="Selecione o bloqueio"
+                                                    value={bloqueioOptions.find(option => option.value === form.values.bloqueioFinanceiro)}
+                                                    onChange={(option: any) => form.setFieldValue('bloqueioFinanceiro', option?.value)}
+                                                />
+                                            )}
+                                        </Field>
+                                    </FormItem>
+                                </div>
+                            }
 
                             <div className="sm:col-span-2 pt-5">
                                 <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
@@ -214,14 +245,25 @@ const PendenciaForm = () => {
                                             <label className="bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
                                                 <input
                                                     type="file"
-                                                    name="files"
+                                                    name={`file-${index}`}
                                                     className="w-50"
                                                     accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                                                    onChange={(e: any) => setInputs(prev => prev.map((item, i) => i === index ? { ...item, file: e.target.files[0] } : item))}
+                                                    onChange={(e) => handleFileChange(e, index)}
                                                 />
                                             </label>
-                                            <input type="text" name="file_name" placeholder="Nome do documento" className="border p-2 rounded-md w-1/2" />
-                                            {inputs.length > 1 && <span onClick={() => handleDeleteInput(index)}><CloseIcon /></span>}
+                                            <input
+                                                type="text"
+                                                name={`file_name-${index}`}
+                                                placeholder="Nome do documento"
+                                                className="border p-2 rounded-md w-1/2"
+                                                value={input.fileName || ''}
+                                                onChange={(e) => handleFileNameChange(e, index)}
+                                            />
+                                            {inputs.length > 1 && (
+                                                <span onClick={() => handleDeleteInput(index)}>
+                                                    <CloseIcon />
+                                                </span>
+                                            )}
                                         </div>
                                     ))}
                                     <div
@@ -230,9 +272,10 @@ const PendenciaForm = () => {
                                     >
                                         <HiOutlinePlus className="mr-1" />
                                         Adicionar mais arquivos
-                                    </div>                                
+                                    </div>
                                 </div>
                             </div>
+
 
                             <div className="flex justify-end gap-4">
                                 <Link

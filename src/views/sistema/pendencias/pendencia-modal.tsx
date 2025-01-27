@@ -53,7 +53,7 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                         <div className="absolute top-2 right-2 flex space-x-2">
                             <Link
                                 className="block lg:inline-block md:mb-0 mb-4"
-                                to={`${APP_PREFIX_PATH}/pendencias/editar/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.id}`}
+                                to={`${APP_PREFIX_PATH}/pendencias/adicionar/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.tipo_vinculo_aux}/${pendencia.id_vinculo_aux}/${pendencia.id}`}
                             >
                                 <Button
                                     block
@@ -64,6 +64,9 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                                     Editar
                                 </Button>
                             </Link>
+                            <Tag className={`${statusLabels[pendencia.status]?.color || 'bg-gray-400'} text-white border-0 rounded`}>
+                                {statusLabels[pendencia.status]?.label || 'Indisponível'}
+                            </Tag>
                         </div>
 
                         <div className="flex items-center mb-4">
@@ -75,65 +78,60 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                             </div>
                         </div>
 
-                        <div className="mb-4">
-                            <strong>Título:</strong>
-                            <p className="text-gray-700">{pendencia.titulo}</p>
-                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="flex flex-col">
+                                <strong className="text-gray-900">Título:</strong>
+                                <p className="text-gray-700">{pendencia.titulo}</p>
+                            </div>
 
-                        <div className="mb-4">
-                            <strong>Descrição:</strong>
-                            <p className="text-gray-700">{pendencia.descricao}</p>
-                        </div>
+                            <div className="flex flex-col">
+                                <strong className="text-gray-900">Descrição:</strong>
+                                <p className="text-gray-700">{pendencia.descricao}</p>
+                            </div>
 
-                        <div className="mb-4">
-                            <strong className="mr-2">Data Prevista para Solução:</strong>
-                            <p>{moment(pendencia.data_prevista_solucao).format('DD/MM/YYYY')}</p>
-                        </div>
+                            <div className="flex items-center">
+                                <strong className="text-gray-900 mr-2">Data Prevista para Solução:</strong>
+                                <p>{moment(pendencia.data_prevista_solucao).format('DD/MM/YYYY')}</p>
+                            </div>
 
-                        <div className="mb-4">
-                            <strong className="mr-2">Status:</strong>
-                            <Tag className={`${statusLabels[pendencia.status]?.color || 'bg-gray-400'} text-white border-0 rounded`}>
-                                {statusLabels[pendencia.status]?.label || 'Indisponível'}
-                            </Tag>
-                        </div>
-
-                        <div className="mb-4">
-                            <strong className="mr-2">Bloqueio Financeiro:</strong>
-                            <Tag className="bg-red-600 text-white border-0 rounded">
-                                {bloqueioLabels[pendencia.bloqueio_financeiro] || 'Indisponível'}
-                            </Tag>
+                            <div className="flex items-center">
+                                <strong className="text-gray-900 mr-2">Bloqueio Financeiro:</strong>
+                                <Tag className="bg-red-600 text-white border-0 rounded">
+                                    {bloqueioLabels[pendencia.bloqueio_financeiro] || 'Indisponível'}
+                                </Tag>
+                            </div>
                         </div>
 
                         {pendencia.status === 're' && (
-                            <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                                <strong>Resolvida em:</strong> {moment(pendencia.data_solucao).format('DD/MM/YYYY')}
+                            <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm">
+                                <strong className="text-gray-900">Resolvida em:</strong> {moment(pendencia.data_solucao).format('DD/MM/YYYY')}
                                 <div className="text-gray-600">Por: {pendencia.usuario_solucao}</div>
                             </div>
                         )}
 
                         {pendencia.usuario_bloqueio && (
-                            <div className="mt-4 p-4 bg-yellow-100 rounded-lg">
-                                <strong>Bloqueada em:</strong> {moment(pendencia.data_bloqueio).format('DD/MM/YYYY HH:mm')}
+                            <div className="mt-4 p-4 bg-yellow-100 rounded-lg shadow-sm">
+                                <strong className="text-gray-900">Bloqueada em:</strong> {moment(pendencia.data_bloqueio).format('DD/MM/YYYY HH:mm')}
                                 <div className="text-gray-600">Por: {pendencia.usuario_bloqueio}</div>
                             </div>
                         )}
 
                         {pendencia.usuario_liberacao && (
-                            <div className="mt-4 p-4 bg-green-100 rounded-lg">
-                                <strong>Liberada em:</strong> {moment(pendencia.data_liberacao).format('DD/MM/YYYY HH:mm')}
+                            <div className="mt-4 p-4 bg-green-100 rounded-lg shadow-sm">
+                                <strong className="text-gray-900">Liberada em:</strong> {moment(pendencia.data_liberacao).format('DD/MM/YYYY HH:mm')}
                                 <div className="text-gray-600">Por: {pendencia.usuario_liberacao}</div>
                             </div>
                         )}
+
                     </div>
 
                     <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
-                        <h2 className="text-xl font-bold text-gray-800">Documentos</h2>
                         <AnexosComponent
-                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/pendencia/${pendencia.id}`}
+                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
                             title="Documentos"
                             minHeight={300}
                             tipoVinculo={'pendencia'}
-                            idVinculo={pendencia.id_vinculo}
+                            idVinculo={pendencia.id}
                         />
                     </section>
                 </div>
