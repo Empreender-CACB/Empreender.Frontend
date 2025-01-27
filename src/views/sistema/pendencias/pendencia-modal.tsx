@@ -15,7 +15,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 
 const bloqueioLabels: Record<string, string> = {
     bo: 'Bloqueado',
-    de: 'Desbloqueado',
+    de: 'Não bloqueado',
 };
 
 interface PendenciaModalProps {

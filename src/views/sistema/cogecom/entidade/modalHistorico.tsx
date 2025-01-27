@@ -20,7 +20,7 @@ const HistoricoCogecomModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose,
             const fetchHistorico = async () => {
                 try {
                     const response: AxiosResponse = await ApiService.fetchData({
-                        url: `/cogecom/historico/${idObjeto}`,
+                        url: `/cogecom-entidade/historico/${idObjeto}`,
                         method: 'get',
                         params: { order: orderBy },
                     });

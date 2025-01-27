@@ -6,6 +6,8 @@ interface AtualizarStatusProps {
     isOpen: boolean;
     idEntidade: number;
     novoStatus: string;
+    title: string;
+    message?: string;
     onClose: () => void;
     onConfirm: () => void;
 }
@@ -20,13 +22,13 @@ const statusLabels: Record<string, string> = {
     'Desvinculada': 'Desvinculada',
 };
 
-const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntidade, novoStatus, onClose, onConfirm }) => {
+const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntidade, novoStatus, title, message, onClose, onConfirm }) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const handleConfirm = async () => {
         try {
             await ApiService.fetchData({
-                url: `cogecom/status/${idEntidade}`,
+                url: `cogecom-entidade/status/${idEntidade}`,
                 method: 'put',
                 data: { status: novoStatus },
             });
@@ -41,9 +43,7 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div className="p-4">
-                <h5 className="text-lg font-bold mb-4">
-                    {isConfirmed ? 'Status Atualizado' : 'Alteração de Status'}
-                </h5>
+                <h5 className="text-lg font-bold mb-4">{isConfirmed ? 'Status Atualizado' : title}</h5>
 
                 {isConfirmed ? (
                     <p className="my-4 text-green-700">
@@ -52,8 +52,15 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
                 ) : (
                     <>
                         <p className="my-4">
-                            Deseja realmente alterar o status para <strong>{statusLabels[novoStatus]}</strong>?
+                            {message ? (
+                                message
+                            ) : (
+                                <>
+                                    Deseja realmente alterar o status para <strong>{statusLabels[novoStatus]}</strong>?
+                                </>
+                            )}
                         </p>
+
                         <div className="w-full flex justify-between">
                             <Button type="button" onClick={onClose} variant="default">
                                 Cancelar
