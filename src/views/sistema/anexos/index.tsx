@@ -59,8 +59,9 @@ const columns = [
         value: '',
         render: ({ value, data }: any) => (
             <Link
+
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(data.id)}`}
+                to={`${import.meta.env.VITE_API_URL}/anexo/${data.id}/download`}
                 target='_blank'
             >
                 {value}
@@ -94,15 +95,15 @@ const columns = [
         name: 'data_inclusao',
         header: 'Carga',
         defaultFlex: 1,
-        dateFormat: 'DD-MM-YYYY',
+        dateFormat: 'DD/MM/YYYY',
         type: 'date',
         operator: 'eq',
         value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'DD-MM-YYYY',
-                placeholder: 'DD-MM-AAAA'
+                dateFormat: 'DD/MM/YYYY',
+                placeholder: 'dia/mês/ano'
             }
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>
@@ -142,19 +143,17 @@ const columns = [
         name: 'vencimento',
         header: 'Vencimento',
         defaultFlex: 1,
-        dateFormat: 'DD-MM-YYYY',
+        dateFormat: 'DD/MM/YYYY',
         type: 'date',
         operator: 'eq',
         value: '',
         filterEditor: DateFilter,
         filterEditorProps: ({ index }: any) => {
             return {
-                dateFormat: 'DD-MM-YYYY',
-                placeholder:
-                    index === 1
-                        ? 'A data é anterior à...'
-                        : 'A data é posterior à',
-            }
+                dateFormat: 'DD/MM/YYYY',
+                placeholder: 'dia/mês/ano'
+            } 
+            
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>
             moment(value).format(dateFormat) === 'Invalid date'
