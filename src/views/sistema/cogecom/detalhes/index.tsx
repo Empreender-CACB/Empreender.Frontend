@@ -26,14 +26,14 @@ const CustomerDetail = () => {
 <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Detalhes da inscrição - #0077b5</h1>
           <div className="flex space-x-2">
-          <Button className="mb-2 flex items-center"  size="sm" variant="solid" color="green-600">
+          <Button className="mb-2 flex items-center"  size="xs" variant="solid" color="green-700">
               <AiOutlineCheck className="mr-2" /> Aprovar Candidatura
             </Button>
 
-            <Button className="mb-2 flex items-center" size="sm"  variant="solid" color="yellow-600">
+            <Button className="mb-2 flex items-center" size="xs"  variant="solid" color="yellow-600">
               <AiOutlineExclamationCircle className="mr-2" /> Informar Pendência
             </Button>
-            <Button className="mb-2 flex items-center" size="sm"  variant="solid" color="red-600">
+            <Button className="mb-2 flex items-center" size="xs"  variant="solid" color="red-900">
               <AiOutlineClose className="mr-2" /> Recusar Candidatura
             </Button>
 
