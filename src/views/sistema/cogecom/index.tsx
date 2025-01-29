@@ -133,7 +133,7 @@ const columns = [
 
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${import.meta.env.VITE_PHP_URL}/sistema/cogecom/${value}`}
+                        to={`/sistema/cogecom/detalhes/${value}`}
                     >
                         <AiOutlineEye />
                     </Link>
