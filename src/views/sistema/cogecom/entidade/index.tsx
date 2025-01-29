@@ -106,7 +106,7 @@ const CogecomEntidade = () => {
         }
 
         isGestorOrAnalista();
-    }, []);
+    }, [detalhes]);
 
     useEffect(() => {
         fetchDetalhes();
