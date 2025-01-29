@@ -116,6 +116,7 @@ const CogecomEntidade = () => {
         <Loading loading={loading}>
             <LayoutDetailSimple
                 title={`${detalhes?.nmrazao}`}
+                titleLink={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(detalhes?.idassociacao))}`}
                 status={status}
                 statusTags={cogecomStatusTags}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
@@ -193,8 +194,7 @@ const CogecomEntidade = () => {
                                 ) : (
                                     <p className="text-gray-500">Nenhum arquivo encontrado.</p>
                                 )}
-                            </div>                           
-
+                            </div>
                         </TabContent>
 
                         <TabContent value="anotacoes">

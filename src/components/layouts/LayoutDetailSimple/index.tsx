@@ -10,6 +10,7 @@ interface StatusProperties {
 
 interface LayoutDetailSimpleProps {
     title: string
+    titleLink?: string
     subtitle?: string
     status: string
     children: React.ReactNode
@@ -19,6 +20,7 @@ interface LayoutDetailSimpleProps {
 
 const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
     title,
+    titleLink,
     subtitle,
     status,
     children,
@@ -33,8 +35,15 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2">
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
                         <h3>
-                            <span>{title}</span>
+                            {titleLink ? (
+                                <a href={titleLink} target="_blank" rel="noopener noreferrer">
+                                    {title}
+                                </a>
+                            ) : (
+                                <span>{title}</span>
+                            )}
                         </h3>
+
                         {statusTags && statusTags[status] && (
                             <Tag
                                 className={classNames(
@@ -47,11 +56,15 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                             </Tag>
                         )}
                     </div>
+                    
+                    {/* Ações */}
                     {actions}
                 </div>
-                {subtitle && (
-                    <span className="flex items-center">{subtitle}</span>
-                )}
+
+                {/* Subtítulo */}
+                {subtitle && <span className="flex items-center">{subtitle}</span>}
+
+                {/* Conteúdo Principal */}
                 <div className="mt-4">
                     {children}
                 </div>
