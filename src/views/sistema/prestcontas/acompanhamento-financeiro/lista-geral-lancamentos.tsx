@@ -214,9 +214,9 @@ const columns = [
 
     },
     {
-        name: 'prlancamento.stlancamento',
+        name: 'stlancamento',
         header: 'Status Lançamento',
-        columnName: 'prlancamento.stlancamento',
+        columnName: 'stlancamento',
         defaultFlex: 0.4,
         type: 'select',
         operator: 'equals',
@@ -230,9 +230,9 @@ const columns = [
         render: ({ data }: any) => <LancamentoStatusTag statusKey={data.stlancamento} />,
     },
     {
-        name: 'prlancamento.vllanc',
+        name: 'vllanc',
         header: 'Valor',
-        columnName: 'prlancamento.vllanc',
+        columnName: 'vllanc',
         type: 'number',
         defaultFlex: 0.4,
         operator: 'eq',
@@ -257,7 +257,7 @@ const columns = [
     {
         name: 'flecofin',
         header: 'E/F',
-        columnName: 'prlancamento.flecofin',
+        columnName: 'flecofin',
         type: 'string',
         operator: 'equals',
         defaultFlex: 0.4,
