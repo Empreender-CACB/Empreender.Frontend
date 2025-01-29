@@ -8,21 +8,14 @@ const { Tr, Th, Td, THead, TBody } = Table
 const mockPaymentHistoryData = [
     {
         id: 'INV001',
-        item: 'Inscrição realizada',
-        status: 'realizada',
+        item: 'Adesão em análise',
+        status: 'analise',
         date: "	31/12/2024",
         amount: 29.99,
     },
     {
         id: 'INV002',
-        item: 'Arquivo de contrato negado   ',
-        status: 'pendente',
-        date: "	31/12/2024",
-        amount: 99.99,
-    },
-    {
-        id: 'INV002',
-        item: 'Candidatura negada',
+        item: 'Adesão negada',
         status: 'negada',
         date: "	04/01/2025",
         amount: 99.99,
@@ -30,8 +23,8 @@ const mockPaymentHistoryData = [
 ]
 
 const statusColor = {
-    realizada: 'bg-emerald-500',
-    pendente: 'bg-amber-400',
+    analise: 'bg-yellow-500',
+    aprovada: 'bg-green-400',
     negada: 'bg-red-400',
 }
 
