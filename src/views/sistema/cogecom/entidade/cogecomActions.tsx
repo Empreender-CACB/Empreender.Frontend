@@ -29,65 +29,48 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
 
     return (
         <div className="flex-wrap inline-flex xl:flex items-center gap-2">
-            {status === 'Novo' && (
-                <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Solicitada', 'Confirmar Adesão')}>
+            {status === 'Novo' && isGestor && (
+                <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processor de adesão ao COGECOM?')}>
                     Adesão COGECOM
                 </Button>
             )}
 
-            {status === 'Solicitada' && (
+            {status === 'Em avaliação' && isAnalista && (
                 <>
-                    {(isGestor || isAnalista) && (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="solid"
-                            color="blue-600"
-                            onClick={() => openStatusModal('Em avaliação', 'Colocar em Avaliação', 'Deseja enviar esta adesão para avaliação?')}
-                        >
-                            Em Avaliação
-                        </Button>
-                    )}
-                    {isGestor && (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="solid"
-                            color="red-600"
-                            onClick={() => openStatusModal('Cancelada', 'Cancelar Adesão', 'Tem certeza que deseja cancelar a adesão?')}
-                        >
-                            Cancelar Adesão
-                        </Button>
-                    )}
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant="solid"
+                        color="yellow-600"
+                        onClick={() => openStatusModal('Pendente', 'Indicar Pendências', 'Deseja indicar pendências para esta adesão?')}
+                    >
+                        Indicar Pendências
+                    </Button>
+
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant="solid"
+                        color="green-600"
+                        onClick={() => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
+                    >
+                        Aprovar Adesão
+                    </Button>
                 </>
             )}
 
-            {status === 'Em avaliação' && (
-                <>
-                    {isAnalista && (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="solid"
-                            color="yellow-600"
-                            onClick={() => openStatusModal('Pendente', 'Indicar Pendências', 'Deseja indicar pendências para esta adesão?')}
-                        >
-                            Indicar Pendências
-                        </Button>
-                    )}
-                    {(isGestor || isAnalista) && (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="solid"
-                            color="green-600"
-                            onClick={() => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
-                        >
-                            Aprovar Adesão
-                        </Button>
-                    )}
-                </>
+            {status === 'Em avaliação' && isGestor && (
+                <Button
+                    type="button"
+                    size="sm"
+                    variant="solid"
+                    color="gray-600"
+                    onClick={() => openStatusModal('Cancelada', 'Cancelar Adesão', 'Tem certeza que deseja cancelar a adesão?')}
+                >
+                    Cancelar Adesão
+                </Button>
             )}
+
 
             {status === 'Pendente' && (
                 <>
@@ -99,19 +82,21 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                             color="green-600"
                             onClick={() => openStatusModal('Vinculada', 'Vincular Entidade', 'Confirma a vinculação desta entidade?')}
                         >
-                            Vincular Entidade
+                            Vincular
                         </Button>
                     )}
                     {isGestor && (
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant="solid"
-                            color="green-600"
-                            onClick={() => openStatusModal('Em avaliação', 'Voltar para Avaliação', 'Deseja retornar esta adesão para avaliação?')}
-                        >
-                            Voltar para "Em avaliação"
-                        </Button>
+                        <Tooltip title="Essa ação devolve a adesão para o status de avaliação.">
+                            <Button
+                                type="button"
+                                size="sm"
+                                variant="solid"
+                                color="green-600"
+                                onClick={() => openStatusModal('Em avaliação', 'Voltar para Avaliação', 'Deseja retornar esta adesão para avaliação?')}
+                            >
+                                Devolver
+                            </Button>
+                        </Tooltip>
                     )}
                     {(isGestor || isAnalista) && (
                         <Button
@@ -137,10 +122,24 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                             color="red-600"
                             onClick={() => openStatusModal('Desvinculada', 'Desvincular Entidade', 'Deseja desvincular esta entidade?')}
                         >
-                            Desvincular Entidade
+                            Desvincular
                         </Button>
                     )}
                 </>
+            )}
+
+            {status === 'Cancelada' && isGestor && (
+                <Tooltip title="Essa ação devolve a adesão para o status de avaliação.">
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant="solid"
+                        color="purple-600"
+                        onClick={() => openStatusModal('Em avaliação', 'Voltar para Avaliação', 'Deseja retornar esta adesão para avaliação?')}
+                    >
+                        Retomar
+                    </Button>
+                </Tooltip>
             )}
 
             <Tooltip title="Visualizar histórico">

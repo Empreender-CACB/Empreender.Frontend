@@ -39,6 +39,7 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                             <Tag
                                 className={classNames(
                                     'border-0 rounded-md ltr:ml-2 rtl:mr-2',
+                                    'px-4 py-2 text-sm',
                                     statusTags[status].class
                                 )}
                             >

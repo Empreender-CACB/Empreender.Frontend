@@ -19,7 +19,7 @@ const { TabNav, TabList, TabContent } = Tabs;
 const cogecomStatusTags = {
     Novo: {
         label: 'Novo',
-        class: 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-100',
+        class: 'bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-100',
     },
     Solicitada: {
         label: 'Solicitada',
@@ -70,6 +70,10 @@ const CogecomEntidade = () => {
             const listaResponse = await ApiService.fetchData({
                 url: `getArquivosListaByNome/${listaNome}`,
                 method: 'get',
+                params: {
+                    idVinculo: params.id,
+                    tipoVinculo: 'entidade',
+                },
             });
             setArquivos(listaResponse.data);
 
@@ -96,7 +100,6 @@ const CogecomEntidade = () => {
     const [isAnalista, setIsAnalista] = useState(false);
 
     useEffect(() => {
-
         async function isGestorOrAnalista() {
             setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
             setIsAnalista(user.recursos?.includes('analista-cogecom'));
@@ -112,7 +115,7 @@ const CogecomEntidade = () => {
     return (
         <Loading loading={loading}>
             <LayoutDetailSimple
-                title={`${detalhes?.nmrazao} - COGECOM`}
+                title={`${detalhes?.nmrazao}`}
                 status={status}
                 statusTags={cogecomStatusTags}
                 subtitle={`${detalhes?.cidade.nmcidade} - ${detalhes?.cidade.iduf}`}
@@ -127,7 +130,6 @@ const CogecomEntidade = () => {
                     />
                 }
             >
-
                 <Tabs defaultValue="detalhes">
                     <TabList>
                         <TabNav value="detalhes">Detalhes</TabNav>
@@ -150,25 +152,6 @@ const CogecomEntidade = () => {
                                 </p>
                             </div>
 
-                            {/* Lista de arquivos */}
-                            <div className="mt-5">
-                                <h3 className="text-lg font-bold mb-3">Documentos necessários para adesão</h3>
-                                {arquivos.length > 0 ? (
-                                    <ul className="list-none p-0">
-                                        {arquivos.map((arquivo) => (
-                                            <li
-                                                key={arquivo.id}
-                                                className="p-3 mb-3 border border-gray-300 rounded-md bg-gray-100"
-                                            >
-                                                <strong>{arquivo.nome}</strong>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-gray-500">Nenhum arquivo encontrado.</p>
-                                )}
-                            </div>
-
                             <div className="mt-5">
                                 <h3 className="text-lg font-bold mb-3">Termo de adesão</h3>
                                 <div 
@@ -185,6 +168,32 @@ const CogecomEntidade = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Lista de arquivos */}
+                            <div className="mt-5">
+                                <h3 className="text-lg font-bold mb-3">Documentos necessários para adesão</h3>
+                                {arquivos.length > 0 ? (
+                                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0">
+                                        {arquivos.map((arquivo) => (
+                                            <div
+                                                key={arquivo.id}
+                                                className={`p-4 border rounded-md ${
+                                                    arquivo.temArquivoAssociado ? 'bg-green-100' : 'bg-gray-100'
+                                                }`}
+                                            >
+                                                <strong>{arquivo.nome}</strong>
+                                                {arquivo.temArquivoAssociado ? (
+                                                    <p className="text-green-600 mt-2 font-semibold">Arquivo já anexado</p>
+                                                ) : (
+                                                    <p className="text-red-600 mt-2 font-semibold">Arquivo pendente</p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-gray-500">Nenhum arquivo encontrado.</p>
+                                )}
+                            </div>                           
 
                         </TabContent>
 
@@ -209,8 +218,6 @@ const CogecomEntidade = () => {
                                     url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
                                     idVinculo={params.id}
                                     tipoVinculo="entidade"
-                                    idVinculoAux={dadosCogecom.id}
-                                    tipoVinculoAux="cogecom"
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
