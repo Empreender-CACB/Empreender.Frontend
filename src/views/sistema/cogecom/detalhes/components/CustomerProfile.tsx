@@ -22,39 +22,6 @@ const CustomerInfoField = ({ title, value }) => {
     );
 };
 
-const CustomerProfileAction = () => {
-    const onDelete = () => {
-        alert('Ir até a página de contato');
-    };
-
-    const onEdit = () => {
-        alert('Email reenviado com sucesso.');
-    };
-
-    return (
-        <>
-            <Button block icon={<HiEye />} onClick={onDelete}>
-                Visualizar
-            </Button>
-            <Button
-                block
-                icon={<HiPencilAlt />}
-                variant="solid"
-                onClick={onEdit}
-            >
-                enviar email
-            </Button>
-            <ConfirmDialog
-                isOpen={false}
-                type="danger"
-                title="Delete customer"
-                confirmButtonColor="red-600"
-            >
-                <p>Are you sure you want to delete this customer?</p>
-            </ConfirmDialog>
-        </>
-    );
-};
 
 const CustomerProfile = () => {
     const mockCustomerData = {
@@ -94,9 +61,7 @@ const CustomerProfile = () => {
                         value={mockCustomerData.personalInfo.title}
                     />
                 </div>
-                <div className="mt-4 flex flex-col xl:flex-row gap-2">
-                    <CustomerProfileAction />
-                </div>
+
             </div>
         </Card>
     );

@@ -1,7 +1,7 @@
 import Button from '@/components/ui/Button'
 import Tag from '@/components/ui/Tag'
 import classNames from 'classnames'
-import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
+import { AiOutlineDownload } from 'react-icons/ai'
 
 const mockFiles = [
     {
@@ -25,13 +25,8 @@ const mockFiles = [
 const FileList = () => {
     const handleApprove = (file) => {
         console.log('Arquivo aprovado:', file.nomeOriginal)
-        // Lógica para aprovar o arquivo
     }
 
-    const handleReject = (file) => {
-        console.log('Arquivo recusado:', file.nomeOriginal)
-        // Lógica para recusar o arquivo
-    }
 
     return (
         <>
@@ -57,39 +52,20 @@ const FileList = () => {
                                             Tipo: {file.tipo}
                                         </span>
                                     </div>
-                                    {file.status === 'aprovado' && (
-                                        <Tag className="bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100 rounded-md border-0 mx-2">
-                                            <span className="capitalize"> Aprovado </span>
-                                        </Tag>
-                                    )}
-                                    {file.status === 'recusado' && (
-                                        <Tag className="bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100 rounded-md border-0 mx-2">
-                                            <span className="capitalize"> Recusado </span>
-                                        </Tag>
-                                    )}
                                 </div>
                                 <div className="flex">
                                     <Button
                                         className="mr-2 rtl:ml-2"
                                         variant="solid"
                                         size="sm"
-                                        icon={<AiOutlineCheck />}
-                                        color='green-800'
+                                        icon={<AiOutlineDownload />}
+                                        color='blue-800'
                                         onClick={() => handleApprove(file)}
                                         disabled={file.status !== 'pendente'}
                                     >
-                                        Aprovar
+                                        Visualizar
                                     </Button>
-                                    <Button
-                                        variant="solid"
-                                        size="sm"
-                                        color='red-800'
-                                        icon={<AiOutlineClose />}
-                                        onClick={() => handleReject(file)}
-                                        disabled={file.status !== 'pendente'}
-                                    >
-                                        Recusar
-                                    </Button>
+
                                 </div>
                             </div>
                         ))}
