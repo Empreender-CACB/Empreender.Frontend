@@ -19,9 +19,8 @@ moment.locale('pt-br')
 
 const tipoValue = [
     { name: 'Em análise', value: 'analise', color: 'yellow-600' },
-    { name: 'Incompleta', value: 'incompleta', color: 'red-600' },
     { name: 'Aprovada', value: 'aprovada', color: 'green-600' },
-    { name: 'Recusada', value: 'recusada', color: 'orange-600' },
+    { name: 'Negada', value: 'recusada', color: 'orange-600' },
 ]
 
 const columns = [
@@ -65,8 +64,39 @@ const columns = [
         },
     },
     {
+        name: 'nmcidade',
+        header: 'Cidade',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+        render: ({ data }: any) => {
+            const text = data.nmcidade
+            return (
+                <Tooltip
+                    placement='left'
+                    title={
+                        <div>
+                            {text}
+                        </div>
+                    }
+                >
+                    <span className="cursor-pointer">{text}</span>
+                </Tooltip>
+            );
+        },
+    },
+    {
+        name: 'iduf',
+        header: 'UF',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+    {
         name: 'concessionaria_energia',
-        header: 'Conessionária',
+        header: 'Concessionária',
         defaultFlex: 0.8,
         type: 'string',
         operator: 'contains',
@@ -158,7 +188,7 @@ const Anexos = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Cogecom - lista de candidaturas</h3>
+                <h3 className="mb-4 lg:mb-0">Cogecom - adesões</h3>
 
             </div>
             <CustomReactDataGrid
