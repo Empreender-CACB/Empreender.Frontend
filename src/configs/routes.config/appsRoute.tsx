@@ -259,6 +259,19 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/projetos/vincular-empresas-nucleo`,
         component: lazy(() => import('@/views/sistema/projetos/vincularEmpresasNucleo')),
     },
+    {
+        key: 'Cogecom.lista',
+        path: `${APP_PREFIX_PATH}/cogecom/`,
+        component: lazy(() => import('@/views/sistema/cogecom')),
+        meta: {
+            pageContainerType: 'default',
+        },
+    },
+    {
+        key: 'Cogecom.detalhe',
+        path: `${APP_PREFIX_PATH}/cogecom/detalhes/:id/`,
+        component: lazy(() => import('@/views/sistema/cogecom/detalhes')),
+    },
 ]
 
 export default appsRoute
