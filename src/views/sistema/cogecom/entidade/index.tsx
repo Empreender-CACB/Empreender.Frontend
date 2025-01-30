@@ -19,31 +19,31 @@ const { TabNav, TabList, TabContent } = Tabs;
 const cogecomStatusTags = {
     Novo: {
         label: 'Novo',
-        class: 'bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-100',
+        class: 'bg-purple-500 text-white dark:bg-purple-600 dark:text-purple-50',
     },
     Solicitada: {
         label: 'Solicitada',
-        class: 'bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100',
+        class: 'bg-blue-500 text-white dark:bg-blue-600 dark:text-blue-50',
     },
     'Em avaliação': {
         label: 'Em Avaliação',
-        class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
+        class: 'bg-yellow-500 text-white dark:bg-yellow-600 dark:text-yellow-50',
     },
     Pendente: {
         label: 'Pendente',
-        class: 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100',
+        class: 'bg-orange-500 text-white dark:bg-orange-600 dark:text-orange-50',
     },
     Cancelada: {
         label: 'Cancelada',
-        class: 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100',
+        class: 'bg-red-500 text-white dark:bg-red-600 dark:text-red-50',
     },
     Vinculada: {
         label: 'Vinculada',
-        class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
+        class: 'bg-green-500 text-white dark:bg-green-600 dark:text-green-50',
     },
     Desvinculada: {
         label: 'Desvinculada',
-        class: 'bg-gray-300 text-gray-700 dark:bg-gray-600/20 dark:text-gray-200',
+        class: 'bg-gray-500 text-white dark:bg-gray-600 dark:text-gray-50',
     },
 };
 
@@ -142,11 +142,15 @@ const CogecomEntidade = () => {
                     <div className="p-4">
                         <TabContent value="detalhes">
                             <div className="mb-8">
-                                <img
-                                    src="/img/cogecom.png"
-                                    alt="Banner do projeto COGECOM"
-                                    className="w-full h-72 max-h-[400px] object-contain rounded-lg"
-                                />
+                                <div className="mb-4 flex justify-center">
+                                    <div className="rounded-2xl overflow-hidden w-full">
+                                        <img
+                                            src="/img/cogecom.png"
+                                            alt="Banner do projeto COGECOM"
+                                            className="w-full max-h-[300px] object-contain rounded-2xl"
+                                        />
+                                    </div>
+                                </div>
                                 <h1 className="mb-4 text-xl font-bold">Projeto COGECOM</h1>
                                 <p className="mb-5 text-justify">
                                     Bem-vindo ao projeto COGECOM! Este projeto inovador tem como objetivo conectar entidades e transformar o setor por meio de soluções colaborativas e tecnológicas. Participar do COGECOM significa fazer parte de uma iniciativa que busca promover a eficiência e a sustentabilidade no setor de eletricidade, enquanto fortalece a integração entre as partes envolvidas.
@@ -161,7 +165,7 @@ const CogecomEntidade = () => {
                                 >
                                     <div className="flex">
                                         <div className="upload-file-thumbnail">
-                                            <span className="text-4xl"><VscFile /></span>
+                                            <span className="text-4xl rounded-lg"><VscFile /></span>
                                         </div>
                                         <div className="upload-file-info">
                                             <h6 className="upload-file-name">Termo de adesão para entidades</h6>
