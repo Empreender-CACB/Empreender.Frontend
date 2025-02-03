@@ -32,7 +32,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
 
     const actionItems = [];
 
-    if ((data.status === 'Novo' || data.status === 'Desvinculada') && data.isGestor) {
+    if (data.status === 'Novo' || data.status === 'Desvinculada') {
         actionItems.push({
             label: 'Adesão COGECOM',
             icon: <IoArrowForward />,
@@ -40,7 +40,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         });
     }
 
-    if (data.status === 'Em avaliação' && data.isAnalista) {
+    if (data.status === 'Em avaliação') {
         actionItems.push(
             {
                 label: 'Indicar Pendências',
@@ -55,7 +55,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         );
     }
 
-    if (data.status === 'Em avaliação' && data.isGestor) {
+    if (data.status === 'Em avaliação') {
         actionItems.push({
             label: 'Cancelar Adesão',
             icon: <IoCloseCircle />,
@@ -78,7 +78,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
                 onClick: () => openStatusModal('Em avaliação', 'Voltar para Avaliação', 'Deseja retornar esta adesão para avaliação?')
             });
         }
-        if (data.isGestor || data.isAnalista) {
+        if (data.isGestor) {
             actionItems.push({
                 label: 'Cancelar Adesão',
                 icon: <IoCloseCircle />,
@@ -87,7 +87,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         }
     }
 
-    if (data.status === 'Vinculada' && (data.isGestor || data.isAnalista)) {
+    if (data.status === 'Vinculada') {
         actionItems.push({
             label: 'Desvincular Entidade',
             icon: <IoUnlinkSharp />,
@@ -95,7 +95,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         });
     }
 
-    if (data.status === 'Cancelada' && data.isGestor) {
+    if (data.status === 'Cancelada') {
         actionItems.push({
             label: 'Retomar Adesão',
             icon: <IoRefresh />,

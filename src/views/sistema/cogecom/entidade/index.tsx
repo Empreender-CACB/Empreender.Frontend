@@ -13,6 +13,7 @@ import PendenciasComponent from '../../pendencias/PendenciasComponent';
 import { useAppSelector } from '@/store';
 import CogecomActions from './cogecomActions';
 import { VscFile } from 'react-icons/vsc';
+import { Tooltip } from '@/components/ui';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -96,17 +97,17 @@ const CogecomEntidade = () => {
 
     const user = useAppSelector((state) => state.auth.user);
     
-    const [isGestor, setIsGestor] = useState(false);
-    const [isAnalista, setIsAnalista] = useState(false);
+    const [isGestor, setIsGestor] = useState(true);
+    const [isAnalista, setIsAnalista] = useState(true);
 
-    useEffect(() => {
-        async function isGestorOrAnalista() {
-            setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
-            setIsAnalista(user.recursos?.includes('analista-cogecom'));
-        }
+    // useEffect(() => {
+    //     async function isGestorOrAnalista() {
+    //         setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
+    //         setIsAnalista(user.recursos?.includes('analista-cogecom'));
+    //     }
 
-        isGestorOrAnalista();
-    }, [detalhes]);
+    //     isGestorOrAnalista();
+    // }, [detalhes]);
 
     useEffect(() => {
         fetchDetalhes();
@@ -147,14 +148,10 @@ const CogecomEntidade = () => {
                                         <img
                                             src="/img/cogecom.png"
                                             alt="Banner do projeto COGECOM"
-                                            className="w-full max-h-[300px] object-contain rounded-2xl"
+                                            className="w-full max-h-[200px] object-contain rounded-2xl"
                                         />
                                     </div>
                                 </div>
-                                <h1 className="mb-4 text-xl font-bold">Projeto COGECOM</h1>
-                                <p className="mb-5 text-justify">
-                                    Bem-vindo ao projeto COGECOM! Este projeto inovador tem como objetivo conectar entidades e transformar o setor por meio de soluções colaborativas e tecnológicas. Participar do COGECOM significa fazer parte de uma iniciativa que busca promover a eficiência e a sustentabilidade no setor de eletricidade, enquanto fortalece a integração entre as partes envolvidas.
-                                </p>
                             </div>
 
                             <div className="mt-5">
@@ -180,19 +177,21 @@ const CogecomEntidade = () => {
                                 {arquivos.length > 0 ? (
                                     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0">
                                         {arquivos.map((arquivo) => (
-                                            <div
-                                                key={arquivo.id}
-                                                className={`p-4 border rounded-md ${
-                                                    arquivo.temArquivoAssociado ? 'bg-green-100' : 'bg-gray-100'
-                                                }`}
-                                            >
-                                                <strong>{arquivo.nome}</strong>
-                                                {arquivo.temArquivoAssociado ? (
-                                                    <p className="text-green-600 mt-2 font-semibold">Arquivo já anexado</p>
-                                                ) : (
-                                                    <p className="text-red-600 mt-2 font-semibold">Arquivo pendente</p>
-                                                )}
-                                            </div>
+                                            <Tooltip className='w-full' title={arquivo.tipoArquivo ? `Esse documento deve ser do tipo "${arquivo.tipoArquivo.tipo}"` : "Não há um tipo definido para esse documento."}>
+                                                <div
+                                                    key={arquivo.id}
+                                                    className={`p-4 w-full border rounded-md ${
+                                                        arquivo.temArquivoAssociado ? 'bg-green-100' : 'bg-gray-100'
+                                                    }`}
+                                                >
+                                                    <strong>{arquivo.nome}</strong>
+                                                    {arquivo.temArquivoAssociado ? (
+                                                        <p className="text-green-600 mt-2 font-semibold">Arquivo já anexado</p>
+                                                    ) : (
+                                                        <p className="text-red-600 mt-2 font-semibold">Arquivo pendente</p>
+                                                    )}
+                                                </div>
+                                            </Tooltip>
                                         ))}
                                     </ul>
                                 ) : (
