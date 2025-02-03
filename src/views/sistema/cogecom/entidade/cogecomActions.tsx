@@ -42,9 +42,9 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                         size="sm"
                         variant="solid"
                         color="yellow-600"
-                        onClick={() => openStatusModal('Pendente', 'Indicar Pendências', 'Deseja indicar pendências para esta adesão?')}
+                        onClick={() => openStatusModal('Pendente', 'Tornar pendente', 'Deseja tornar essa adesão pendente?')}
                     >
-                        Indicar Pendências
+                        Tornar pendente
                     </Button>
 
                     <Button

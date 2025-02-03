@@ -98,6 +98,14 @@ const columns = [
         },
     },
     {
+        name: 'arquivos_tipos.tipo',
+        header: 'Tipo',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+    {
         name: 'vencimento',
         header: 'Vencimento',
         defaultFlex: 0.5,
