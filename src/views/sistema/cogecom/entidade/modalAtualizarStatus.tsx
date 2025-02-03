@@ -23,7 +23,6 @@ const statusLabels: Record<string, string> = {
 };
 
 const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntidade, novoStatus, title, message, onClose, onConfirm }) => {
-    const [isConfirmed, setIsConfirmed] = useState(false);
 
     const handleConfirm = async () => {
         try {
@@ -32,7 +31,6 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
                 method: 'put',
                 data: { status: novoStatus },
             });
-            setIsConfirmed(true);
             onConfirm();
             onClose();
         } catch (error) {
@@ -43,34 +41,25 @@ const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntida
     return (
         <Dialog isOpen={isOpen} onClose={onClose}>
             <div className="p-4">
-                <h5 className="text-lg font-bold mb-4">{isConfirmed ? 'Status Atualizado' : title}</h5>
-
-                {isConfirmed ? (
-                    <p className="my-4 text-green-700">
-                        O status foi atualizado com sucesso! Acompanhe as alterações no portal.
+                <h5 className="text-lg font-bold mb-4">{title}</h5>
+                    <p className="my-4">
+                        {message ? (
+                            message
+                        ) : (
+                            <>
+                                Deseja realmente alterar o status para <strong>{statusLabels[novoStatus]}</strong>?
+                            </>
+                        )}
                     </p>
-                ) : (
-                    <>
-                        <p className="my-4">
-                            {message ? (
-                                message
-                            ) : (
-                                <>
-                                    Deseja realmente alterar o status para <strong>{statusLabels[novoStatus]}</strong>?
-                                </>
-                            )}
-                        </p>
 
-                        <div className="w-full flex justify-between">
-                            <Button type="button" onClick={onClose} variant="default">
-                                Cancelar
-                            </Button>
-                            <Button type="button" onClick={handleConfirm} color="blue-600" variant="solid">
-                                Confirmar
-                            </Button>
-                        </div>
-                    </>
-                )}
+                    <div className="w-full flex justify-between">
+                        <Button type="button" onClick={onClose} variant="default">
+                            Cancelar
+                        </Button>
+                        <Button type="button" onClick={handleConfirm} color="blue-600" variant="solid">
+                            Confirmar
+                        </Button>
+                    </div>
             </div>
         </Dialog>
     );
