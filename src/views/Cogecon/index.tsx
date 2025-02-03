@@ -251,23 +251,9 @@ function CadastraProposta() {
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md  sm:w-full lg:w-9/12">
                         <div className="flex items-center space-x-4">
 
-                            <div className="mt-5 mx-auto center max-w-7xl pb-5 px-6">
-                                <div className="grid grid-cols-2 gap-4 md:grid-cols-5 lg:grid-cols-6">
-                                    <div className="col-span-1 flex justify-center items-center min-h-16">
-                                        <img className="h-11" src="/img/logo/GLOBALGATEWAY.png" alt="GlobalGateway" />
-                                    </div>
-                                    <div className="col-span-1 flex justify-center items-center ">
-                                        <img className="h-11" src="/img/logo/ALINVEST.png" alt="AL Invest" />
-                                    </div>
-                                    <div className="col-span-1 flex justify-center items-center ">
-                                        <img className="ml-10 h-16" src="/img/logo/UNIAOEUROPEIA.png" alt="União Europeia" />
-                                    </div>
-                                    <div className="col-span-1 flex justify-center items-center ">
-                                        <img className="h-11" src="/img/logo/SEBRAE.png" alt="SEBRAE" />
-                                    </div>
-                                    <div className="col-span-2 md:col-span-2 lg:col-span-2 flex justify-center items-center ">
-                                        <img className="h-11" src="/img/logo/EMPREENDER+CACB.png" alt="Empreender e CACB" />
-                                    </div>                                </div>
+                            <div className="max-w-7xl mx-auto center ">
+                                <img className="w-30" src="https://www.empreender.org.br/img/cogecom/cogecom_original.jpeg" alt="GlobalGateway" />
+
                             </div>
 
                         </div>
@@ -298,14 +284,14 @@ function CadastraProposta() {
                             </p>
 
                             <p className="mb-4">
-                                Para começar, informe o CNPJ ou CPF da sua empresa ou pessoa física. Com base nesses dados, o sistema irá:
+                                Para começar, informe o CNPJ da sua empresa ou condominio. Com base nesses dados, o sistema irá:
                             </p>
 
                             <ul className="list-disc list-inside mb-4">
                                 <li>Exibir informações principais do cadastro na Receita Federal (RFB) para conferência.</li>
                                 <li>Solicitar o preenchimento de informações adicionais, caso necessário.</li>
                                 <li>Verificar possíveis restrições aplicáveis.</li>
-                                <li>Incluir a empresa ou pessoa física no cadastro do Portal do Empreender (PDE).</li>
+                                <li>Incluir a empresa no cadastro do Portal do Empreender (PDE).</li>
                             </ul>
                             {/* 
                             <h2 className="text-xl font-semibold mb-2">Termos de Adesão:</h2>
@@ -325,13 +311,13 @@ function CadastraProposta() {
 
 
                             <Steps current={step} status={error ? 'error' : undefined}>
-                                <Steps.Item title="Tipo de Cadastro" />
+                                <Steps.Item title="Tipo" />
                                 <Steps.Item title="Dados" />
                                 <Steps.Item title="Cadastro" />
                             </Steps>
                             <div className="mt-6  bg-gray-50 dark:bg-gray-700 rounded px-3 ">
                                 {step === 0 && (
-                                    <div className="mt-6 grid grid-cols-3 gap-6 pt-8 flex items-center justify-center">
+                                    <div className="mt-6 grid grid-cols-2 gap-6 pt-8 flex items-center justify-center">
                                         <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-blue-50 transition ${tipoCadastro === 'empresa' ? 'ring-2 ring-blue-500' : ''
                                                 }`}
@@ -341,14 +327,14 @@ function CadastraProposta() {
                                             <h4 className="text-center font-semibold">Empresa</h4>
                                         </div>
 
-                                        <div
+                                        {/* <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-green-50 transition ${tipoCadastro === 'pessoa_fisica' ? 'ring-2 ring-green-500' : ''
                                                 }`}
                                             onClick={() => { setTipoCadastro('pessoa_fisica'), onNext() }}
                                         >
                                             <FaUser className="text-4xl text-green-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Pessoa Física</h4>
-                                        </div>
+                                        </div> */}
 
                                         <div
                                             className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-yellow-50 transition ${tipoCadastro === 'condominio' ? 'ring-2 ring-yellow-500' : ''
@@ -827,7 +813,7 @@ function CadastraProposta() {
 
                         <div className="mt-8 md:order-1 md:mt-0">
                             <p className="text-center leading-5 text-gray-500">
-                                <span className="font-semibold">Portal do Empreender - V5 - 2024</span><br />
+                                <span className="font-semibold">Portal do Empreender - V5 - 2025</span><br />
                             </p>
                         </div>
 
