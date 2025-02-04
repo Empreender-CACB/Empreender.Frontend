@@ -30,11 +30,17 @@ const privacidadeOptions = [
     { value: 'na', label: 'Nacional' },
 ];
 
+interface FileInput {
+    file?: File;
+    fileName?: string;
+}
+
 const AnotacaoForm = () => {
     const [nomeVinculo, setNomeVinculo] = useState('');
     const [nomeVinculoSecundario, setNomeVinculoSecundario] = useState('');
     const [loading, setLoading] = useState(false);
-    const [inputs, setInputs] = useState([{}]);
+    const [inputs, setInputs] = useState<FileInput[]>([{ fileName: '' }]);
+
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         { label: 'Início', link: '/' },
         { label: 'Anotação', link: '#' },
@@ -154,9 +160,32 @@ const AnotacaoForm = () => {
         const newArray = [...inputs];
         newArray.splice(index, 1);
         setInputs(newArray);
-        index.preventDefault()
-        index.stopPropagation()
-        return false
+        index.preventDefault();
+        index.stopPropagation();
+        return false;
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const fileName = file.name;
+
+            setInputs((prev) =>
+                prev.map((item, i) =>
+                    i === index ? { ...item, file, fileName } : item
+                )
+            );
+        }
+    };
+
+    const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const value = e.target.value;
+
+        setInputs((prev) =>
+            prev.map((item, i) =>
+                i === index ? { ...item, fileName: value } : item
+            )
+        );
     };
 
     return (
@@ -238,22 +267,25 @@ const AnotacaoForm = () => {
                                                 <label className="bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
                                                     <input
                                                         type="file"
-                                                        name="files"
+                                                        name={`file-${index}`}
                                                         className="w-50"
                                                         accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                                                        onChange={(e: any) => setInputs(prev => prev.map((item, i) => i === index ? { ...item, file: e.target.files[0] } : item))}
+                                                        onChange={(e) => handleFileChange(e, index)}
                                                     />
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    name="file_name"
+                                                    name={`file_name-${index}`}
                                                     placeholder="Nome do documento"
                                                     className="border p-2 rounded-md w-1/2"
-                                                    onChange={(e) => setInputs(prev => prev.map((item, i) => i === index ? { ...item, fileName: e.target.value } : item))}
+                                                    value={input.fileName || ''}
+                                                    onChange={(e) => handleFileNameChange(e, index)}
                                                 />
-                                                {inputs.length > 1 && <span onClick={() => handleDeleteInput(index)}>
-                                                    <CloseIcon />
-                                                </span>}
+                                                {inputs.length > 1 && (
+                                                    <span onClick={() => handleDeleteInput(index)}>
+                                                        <CloseIcon />
+                                                    </span>
+                                                )}
                                             </div>
                                         ))}
                                         <div

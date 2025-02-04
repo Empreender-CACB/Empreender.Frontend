@@ -162,12 +162,12 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
 
 
                     <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
-                        <h2 className="text-xl font-bold text-gray-800">Documentos</h2>
-
                         <AnexosComponent
-                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado/anotacao/${anotacao.id}`}
-                            title="Documentos Importantes"
+                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                            title="Documentos"
                             minHeight={300}
+                            tipoVinculo={'anotacao'}
+                            idVinculo={anotacao.id}
                         />
                     </section>
                 </div>
