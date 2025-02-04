@@ -40,6 +40,8 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                 method: 'get',
             });
             setPendencia(response.data);
+
+            console.log(response.data)
         } catch (error) {
             console.error('Erro ao buscar pendência:', error);
         }
@@ -53,7 +55,7 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
                         <div className="absolute top-2 right-2 flex space-x-2">
                             <Link
                                 className="block lg:inline-block md:mb-0 mb-4"
-                                to={`${APP_PREFIX_PATH}/pendencias/adicionar/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.tipo_vinculo_aux}/${pendencia.id_vinculo_aux}/${pendencia.id}`}
+                                to={`${APP_PREFIX_PATH}/pendencias/adicionar/false/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.tipo_vinculo_aux}/${pendencia.id_vinculo_aux}/${pendencia.id}`}
                             >
                                 <Button
                                     block
