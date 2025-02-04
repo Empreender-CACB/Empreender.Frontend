@@ -13,6 +13,9 @@ const fileFields = {
     { name: 'ataAssembleia', label: 'Ata da Assembleia' },
     { name: 'cartaoCnpj', label: 'Cartão do CNPJ' },
   ],
+  pessoa_fisica: [
+    { name: 'comprovanteResidencia', label: 'Comprovante de Residência' },
+  ]
 };
 
 const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
