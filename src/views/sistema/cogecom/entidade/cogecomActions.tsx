@@ -80,9 +80,9 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                             size="sm"
                             variant="solid"
                             color="green-600"
-                            onClick={() => openStatusModal('Vinculada', 'Vincular Entidade', 'Confirma a vinculação desta entidade?')}
+                            onClick={() => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
                         >
-                            Vincular
+                            Aprovar Adesão
                         </Button>
                     )}
                     {isGestor && (

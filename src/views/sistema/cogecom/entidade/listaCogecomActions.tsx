@@ -43,9 +43,9 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
     if (data.status === 'Em avaliação') {
         actionItems.push(
             {
-                label: 'Indicar Pendências',
+                label: 'Tornar pendente',
                 icon: <IoWarning />,
-                onClick: () => openStatusModal('Pendente', 'Indicar Pendências', 'Deseja indicar pendências para esta adesão?')
+                onClick: () => openStatusModal('Pendente', 'Tornar pendente', 'Deseja indicar pendências para esta adesão?')
             },
             {
                 label: 'Aprovar Adesão',

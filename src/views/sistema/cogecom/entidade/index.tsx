@@ -97,17 +97,17 @@ const CogecomEntidade = () => {
 
     const user = useAppSelector((state) => state.auth.user);
     
-    const [isGestor, setIsGestor] = useState(true);
-    const [isAnalista, setIsAnalista] = useState(true);
+    const [isGestor, setIsGestor] = useState(false);
+    const [isAnalista, setIsAnalista] = useState(false);
 
-    // useEffect(() => {
-    //     async function isGestorOrAnalista() {
-    //         setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
-    //         setIsAnalista(user.recursos?.includes('analista-cogecom'));
-    //     }
+    useEffect(() => {
+        async function isGestorOrAnalista() {
+            setIsGestor(user.associacoes.some((entidade) => detalhes?.idassociacao === entidade.idassociacao));
+            setIsAnalista(user.recursos?.includes('analista-cogecom'));
+        }
 
-    //     isGestorOrAnalista();
-    // }, [detalhes]);
+        isGestorOrAnalista();
+    }, [detalhes]);
 
     useEffect(() => {
         fetchDetalhes();
@@ -148,14 +148,13 @@ const CogecomEntidade = () => {
                                         <img
                                             src="/img/cogecom.png"
                                             alt="Banner do projeto COGECOM"
-                                            className="w-full max-h-[200px] object-contain rounded-2xl"
+                                            className="w-full max-h-[150px] object-contain rounded-2xl"
                                         />
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-5">
-                                <h3 className="text-lg font-bold mb-3">Termo de adesão</h3>
                                 <div 
                                     className="upload-file cursor-pointer"
                                     onClick={() => window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTQxNDY3', '_blank')}
