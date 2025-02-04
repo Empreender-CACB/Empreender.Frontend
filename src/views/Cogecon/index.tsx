@@ -5,7 +5,7 @@ import Notification from '@/components/ui/Notification'
 import Button from '@/components/ui/Button'
 import ContactForm from './Contactform'
 import { IMaskInput } from 'react-imask';
-import { FaBuilding, FaHome } from 'react-icons/fa';
+import { FaBuilding, FaHome, FaUser } from 'react-icons/fa';
 import Alert from '@/components/ui/Alert'
 import { BsFilePdf } from 'react-icons/bs';
 import { toast } from '@/components/ui'
@@ -193,17 +193,18 @@ function CadastraProposta() {
 
                         </div>
 
-                        <div className="w-full  bg-black border-t border-gray-400 rounded-t-lg">
-                            <div className='p-5 max-w-4xl mx-auto'>
-                                <p className=" font-extrabold text-gray-200 text-2xl  mb-2">Projeto COGECOM</p>
+                        <div className="w-full rounded-t-lg">
+                            {/* <div className='p-5 max-w-4xl mx-auto'> */}
+                            <div className='mx-auto p-5'>
+                                {/* <p className=" font-extrabold text-gray-200 text-2xl  mb-2">Projeto COGECOM</p>
 
                                 <p className="mb-4 text-white">
                                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde molestias, accusantium expedita adipisci rerum similique nihil? Cupiditate temporibus esse nulla reprehenderit. Temporibus earum neque quas obcaecati eum nam quaerat magni?Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime assumenda vel quibusdam, deserunt voluptas iste earum distinctio in provident beatae, excepturi quidem commodi repudiandae fugiat asperiores, eum debitis quisquam. Quaerat!
                                     ipsum dolor sit amet consectetur adipisicing elit. Maxime assumenda vel quibusdam, deserunt voluptas iste earum distinctio in provident beatae, excepturi quidem commodi repudiandae fugiat asperiores, eum debitis quisquam. Quaerat!
-                                </p>
+                                </p> */}
 
                                 <div className="flex">
-                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MDY3" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-white mr-5" rel="noreferrer">
+                                    <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTM5MDY3" className="flex items-center text-base mt-2 font-semibold leading-7 text-black mr-5" rel="noreferrer">
                                         <span className='text-red-600 font-bold'><BsFilePdf /></span>  <i className='text-ms'>Termo de Adesão</i>
                                     </a>
                                 </div>
@@ -215,7 +216,7 @@ function CadastraProposta() {
                             <h1 className="text-2xl font-semibold mb-4">Informações sobre a adesão</h1>
 
                             <p className="mb-4">
-                                Nesta página, você poderá iniciar o processo de adesão ao Projeto COGECOM.
+                                Nesta página, você poderá iniciar o processo de adesão ao Projeto POUP MAX.
                             </p>
 
                             <p className="mb-4">
@@ -228,16 +229,6 @@ function CadastraProposta() {
                                 <li>Verificar possíveis restrições aplicáveis.</li>
                                 <li>Incluir a empresa no cadastro do Portal do Empreender (PDE).</li>
                             </ul>
-                            {/* 
-                            <h2 className="text-xl font-semibold mb-2">Termos de Adesão:</h2>
-                            <p className="mb-4">
-                                Você também deverá concordar com a manutenção e processamento dos dados fornecidos, conforme a Lei Geral de Proteção de Dados (LGPD).
-                            </p>
-
-                            <p className="mb-4">
-                                Empresas não cadastradas no PDE serão incluídas automaticamente e identificadas como participantes do projeto através do campo "Origem", marcado como "COGECOM".
-                            </p> */}
-
 
                         </div>
 
@@ -252,29 +243,38 @@ function CadastraProposta() {
                             </Steps>
                             <div className="mt-6  bg-gray-50 dark:bg-gray-700 rounded px-3 ">
                                 {step === 0 && (
-                                    <div className="mt-6 grid grid-cols-2 gap-6 pt-8 flex items-center justify-center">
+                                    <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
                                         <div
-                                            className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-blue-50 transition ${tipoCadastro === 'empresa' ? 'ring-2 ring-blue-500' : ''
+                                            className={`p-4 md:p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-blue-50 transition ${tipoCadastro === 'empresa' ? 'ring-2 ring-blue-500' : ''
                                                 }`}
-                                            onClick={() => { setTipoCadastro('empresa'), onNext() }}
+                                            onClick={() => {
+                                                setTipoCadastro('empresa');
+                                                onNext();
+                                            }}
                                         >
                                             <FaBuilding className="text-4xl text-blue-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Empresa</h4>
                                         </div>
 
-                                        {/* <div
-                                            className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-green-50 transition ${tipoCadastro === 'pessoa_fisica' ? 'ring-2 ring-green-500' : ''
+                                        <div
+                                            className={`p-4 md:p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-green-50 transition ${tipoCadastro === 'pessoa_fisica' ? 'ring-2 ring-green-500' : ''
                                                 }`}
-                                            onClick={() => { setTipoCadastro('pessoa_fisica'), onNext() }}
+                                            onClick={() => {
+                                                setTipoCadastro('pessoa_fisica');
+                                                onNext();
+                                            }}
                                         >
                                             <FaUser className="text-4xl text-green-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Pessoa Física</h4>
-                                        </div> */}
+                                        </div>
 
                                         <div
-                                            className={`p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-yellow-50 transition ${tipoCadastro === 'condominio' ? 'ring-2 ring-yellow-500' : ''
+                                            className={`p-4 md:p-6 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer shadow-lg hover:bg-yellow-50 transition ${tipoCadastro === 'condominio' ? 'ring-2 ring-yellow-500' : ''
                                                 }`}
-                                            onClick={() => { setTipoCadastro('condominio'), onNext() }}
+                                            onClick={() => {
+                                                setTipoCadastro('condominio');
+                                                onNext();
+                                            }}
                                         >
                                             <FaHome className="text-4xl text-yellow-500 mx-auto mb-4" />
                                             <h4 className="text-center font-semibold">Condomínio</h4>
@@ -354,11 +354,11 @@ function CadastraProposta() {
                                             </div>
                                         )}
                                         {!success && (
-                                            <ContactForm 
-                                            tipoCadastro="empresa"       // ou "condominio", conforme sua lógica
-                                            empresaData={empresaData}    // dados da empresa para preencher os contatos
-                                            handleSave={handleSave}      // função que trata o submit do formulário
-                                          />
+                                            <ContactForm
+                                                tipoCadastro="empresa"       // ou "condominio", conforme sua lógica
+                                                empresaData={empresaData}    // dados da empresa para preencher os contatos
+                                                handleSave={handleSave}      // função que trata o submit do formulário
+                                            />
                                         )}
                                     </div>
 
