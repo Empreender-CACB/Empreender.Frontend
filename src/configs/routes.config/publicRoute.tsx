@@ -13,8 +13,8 @@ const publicRoute: Routes = [
         },
     },
     {
-        key: 'projeto-cogecom',
-        path: `/projeto-cogecom`,
+        key: 'poupmax',
+        path: `/poupmax`,
         component: lazy(() => import('@/views/Cogecon')),
         meta: {
             layout: 'blank',
