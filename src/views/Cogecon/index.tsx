@@ -3,7 +3,7 @@ import axios from 'axios'
 import Steps from '@/components/ui/Steps'
 import Notification from '@/components/ui/Notification'
 import Button from '@/components/ui/Button'
-import ContactForm from './ContactForm'
+import ContactForm from './Contactform'
 import { HiCheckCircle } from 'react-icons/hi'
 import Input from '@/components/ui/Input'
 import { IMaskInput } from 'react-imask';
