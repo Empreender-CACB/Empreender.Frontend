@@ -32,8 +32,9 @@ const privacidadeOptions = [
 
 const AnotacaoForm = () => {
     const [nomeVinculo, setNomeVinculo] = useState('');
+    const [nomeVinculoSecundario, setNomeVinculoSecundario] = useState('');
     const [loading, setLoading] = useState(false);
-    const [inputs, setInputs] = useState([{}])
+    const [inputs, setInputs] = useState([{}]);
     const [breadcrumbItems, setBreadcrumbItems] = useState([
         { label: 'Início', link: '/' },
         { label: 'Anotação', link: '#' },
@@ -43,7 +44,14 @@ const AnotacaoForm = () => {
         situacao: '',
         privacidade: '',
     });
+
     const { tipoVinculo, idVinculo, idAnotacao } = useParams();
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`;
+    const idVinculoAux = searchParams.get('idVinculoAux');
+    const tipoVinculoAux = searchParams.get('tipoVinculoAux');
+
     const navigate = useNavigate();
     const isEditMode = Boolean(idAnotacao);
 
@@ -51,11 +59,14 @@ const AnotacaoForm = () => {
         const fetchVinculo = async () => {
             try {
                 const vinculoResponse = await ApiService.fetchData({
-                    url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}`,
+                    url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`,
                     method: 'get',
                 });
-                const { nomeVinculo, breadcrumb } = vinculoResponse.data;
+                const { nomeVinculo, nomeVinculoAux, breadcrumb } = vinculoResponse.data;
+
                 setNomeVinculo(nomeVinculo);
+                setNomeVinculoSecundario(nomeVinculoAux);
+
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },
                     ...breadcrumb.map((item: any) => ({
@@ -90,7 +101,7 @@ const AnotacaoForm = () => {
         fetchAnotacao();
     }, [tipoVinculo, idVinculo, idAnotacao, isEditMode]);
 
-    const handleSave = async (values: any, filesData: any, tipoVinculo?: string, idVinculo?: string) => {
+    const handleSave = async (values: any, filesData: any, tipoVinculo?: string, idVinculo?: string, tipoVinculoAux?: string, idVinculoAux?: string) => {
         setLoading(true);
         toast.push(
             <Notification title={`${idAnotacao ? 'Editando' : 'Salvando'} anotação, aguarde...`} type="success" />
@@ -106,6 +117,8 @@ const AnotacaoForm = () => {
 
         formData.append('tipoVinculo', tipoVinculo || '');
         formData.append('idVinculo', idVinculo || '');
+        formData.append('tipoVinculoAux', tipoVinculoAux || '');
+        formData.append('idVinculoAux', idVinculoAux || '');
 
         try {
             const url = idAnotacao ? `/anotacoes/editar/${idAnotacao}` : '/anotacoes/adicionar';
@@ -119,7 +132,11 @@ const AnotacaoForm = () => {
             });
 
             toast.push(<Notification title="Anotação salva com sucesso!" type="success" />);
-            navigate(`/sistema/anotacoes/${tipoVinculo}/${idVinculo}`);
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                navigate(`/sistema/anotacoes/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`);
+            }
 
         } catch (error) {
             toast.push(<Notification title="Erro ao salvar anotação." type="danger" />);
@@ -127,6 +144,7 @@ const AnotacaoForm = () => {
             setLoading(false);
         }
     };
+
 
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
@@ -147,14 +165,20 @@ const AnotacaoForm = () => {
             <div className="w-full bg-white p-6 rounded-lg shadow-md">
                 <Formik
                     initialValues={initialValues}
-                    enableReinitialize 
+                    enableReinitialize
                     validationSchema={validationSchema}
                     onSubmit={(values, { setSubmitting }) => {
-                        handleSave(values, inputs, tipoVinculo, idVinculo);
+                        handleSave(
+                            values,
+                            inputs,
+                            tipoVinculo,
+                            idVinculo,
+                            tipoVinculoAux || undefined,
+                            idVinculoAux || undefined
+                        );
                         setSubmitting(false);
                     }}
                 >
-
                     {({ errors, touched }) => (
                         <Form>
                             <div className="mb-6">
@@ -164,6 +188,8 @@ const AnotacaoForm = () => {
                                 <div className="flex items-center space-x-2">
                                     <Tag className="bg-gray-400 text-white border-0 rounded">{capitalize(tipoVinculo || '')}</Tag>
                                     <Tag className="bg-indigo-600 text-white border-0 rounded">{nomeVinculo}</Tag>
+                                    {tipoVinculoAux && <Tag className="bg-gray-400 text-white border-0 rounded">{capitalize(tipoVinculoAux || '')}</Tag>}
+                                    {nomeVinculoSecundario && <Tag className="bg-indigo-600 text-white border-0 rounded">{nomeVinculoSecundario}</Tag>}
                                 </div>
                             </div>
 
@@ -244,7 +270,7 @@ const AnotacaoForm = () => {
                             <div className="flex justify-end gap-4">
                                 <Link
                                     className="block lg:inline-block md:mb-0 mb-4"
-                                    to={`${APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`}
+                                    to={`${redirectUrl ? redirectUrl : APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`}
                                 >
                                     <Button
                                         block

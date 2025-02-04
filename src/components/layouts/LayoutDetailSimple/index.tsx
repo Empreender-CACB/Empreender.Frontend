@@ -10,46 +10,62 @@ interface StatusProperties {
 
 interface LayoutDetailSimpleProps {
     title: string
+    titleLink?: string
     subtitle?: string
     status: string
     children: React.ReactNode
-    paymentStatus: Record<string, StatusProperties>
+    statusTags?: Record<string, StatusProperties>
     actions?: React.ReactNode
 }
 
 const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
     title,
+    titleLink,
     subtitle,
     status,
     children,
-    paymentStatus,
+    statusTags,
     actions,
 }) => {
     const { borderTheme } = useThemeClass()
 
     return (
-        <Card className= {`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
-                <div>
+        <Card className={`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
+            <div>
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2">
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
                         <h3>
-                            <span>{title}</span>
-                        </h3>
-                        <Tag
-                            className={classNames(
-                                'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                                paymentStatus[status].class
+                            {titleLink ? (
+                                <a href={titleLink} target="_blank" rel="noopener noreferrer">
+                                    {title}
+                                </a>
+                            ) : (
+                                <span>{title}</span>
                             )}
-                        >
-                            {paymentStatus[status].label}
-                        </Tag>
+                        </h3>
+
+                        {statusTags && statusTags[status] && (
+                            <Tag
+                                className={classNames(
+                                    'border-0 rounded-md ltr:ml-2 rtl:mr-2',
+                                    'px-4 py-2 text-sm',
+                                    statusTags[status].class
+                                )}
+                            >
+                                {statusTags[status].label}
+                            </Tag>
+                        )}
                     </div>
+                    
+                    {/* Ações */}
                     {actions}
                 </div>
-                {subtitle && (
-                    <span className="flex items-center">{subtitle}</span>
-                )}
-                <div className='mt-4'>
+
+                {/* Subtítulo */}
+                {subtitle && <span className="flex items-center">{subtitle}</span>}
+
+                {/* Conteúdo Principal */}
+                <div className="mt-4">
                     {children}
                 </div>
             </div>

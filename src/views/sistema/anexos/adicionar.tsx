@@ -13,7 +13,6 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import capitalize from '@/components/ui/utils/capitalize';
 import { Notification, toast } from '@/components/ui';
 import { VscFile } from 'react-icons/vsc';
-import isEmpty from 'lodash/isEmpty';
 
 const optionsSimNao = [
     { value: 's', label: 'Sim' },

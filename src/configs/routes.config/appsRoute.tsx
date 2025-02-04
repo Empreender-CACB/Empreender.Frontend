@@ -238,7 +238,7 @@ const appsRoute: Routes = [
         key: 'Anotacoes.adicionar',
         path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
         component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
-    },    
+    },     
     {
         key: 'Anotacoes.index',
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
@@ -272,6 +272,22 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/cogecom/detalhes/:id/`,
         component: lazy(() => import('@/views/sistema/cogecom/detalhes')),
     },
+    {
+        key: 'Cogecom.cogecomEntidade',
+        path: `${APP_PREFIX_PATH}/cogecom/entidade/:id`,
+        component: lazy(() => import('@/views/sistema/cogecom/entidade')),
+    },
+    {
+        key: 'Cogecom.cogecomLista',
+        path: `${APP_PREFIX_PATH}/cogecom/entidade/lista-geral`,
+        component: lazy(() => import('@/views/sistema/cogecom/entidade/listaGeral')),
+    },
+    {
+        key: 'Pendencias.adicionarPendencia',
+        path: `${APP_PREFIX_PATH}/pendencias/adicionar/:temBloqueio/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?/:idPendencia?`,
+        component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
+    },
+    
 ]
 
 export default appsRoute
