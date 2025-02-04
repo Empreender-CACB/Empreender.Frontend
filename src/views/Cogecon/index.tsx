@@ -3,46 +3,23 @@ import axios from 'axios'
 import Steps from '@/components/ui/Steps'
 import Notification from '@/components/ui/Notification'
 import Button from '@/components/ui/Button'
+import ContactForm from './ContactForm'
 import { HiCheckCircle } from 'react-icons/hi'
-import { CgClose as CloseIcon } from 'react-icons/cg'
 import Input from '@/components/ui/Input'
 import { IMaskInput } from 'react-imask';
-import { FaBuilding, FaUser, FaHome } from 'react-icons/fa';
+import { FaBuilding, FaHome } from 'react-icons/fa';
 import Alert from '@/components/ui/Alert'
 import { FormItem, FormContainer } from '@/components/ui/Form'
-import Checkbox from '@/components/ui/Checkbox'
 import Segment from '@/components/ui/Segment'
 import Upload from '@/components/ui/Upload'
 import SegmentItemOption from '@/components/shared/SegmentItemOption'
 import { Field, Form, Formik } from 'formik'
-import * as Yup from 'yup'
 import { AiOutlineMail } from 'react-icons/ai';
 import { BsTelephone, BsFilePdf } from 'react-icons/bs';
 import { MdWork } from 'react-icons/md'
 import { toast } from '@/components/ui'
 import ApiService from '@/services/ApiService'
 
-// const validationSchema = Yup.object().shape({
-//     singleCheckbox: Yup.boolean().oneOf([true], 'Você deve aceitar os termos.'),
-//     idContato: Yup.array().min(1, 'Selecione um contato.'),
-//     nomeContato: Yup.string().when('isManualContact', {
-//         is: true,
-//         then: (schema) => schema.required('Nome do contato é obrigatório'),
-//     }),
-//     cpfContato: Yup.string().when('isManualContact', {
-//         is: true,
-//         then: (schema) => schema.required('CPF é obrigatório'),
-//     }),
-//     emailContato: Yup.string().when('isManualContact', {
-//         is: true,
-//         then: (schema) => schema.email('Email inválido').required('Email é obrigatório'),
-//     }),
-//     celularContato: Yup.string().when('isManualContact', {
-//         is: true,
-//         then: (schema) => schema.required('Celular é obrigatório'),
-//     }),
-//     termos: false,
-// });
 
 const SectionDivider = ({ label }: { label: string }) => {
     return (
@@ -56,33 +33,6 @@ const SectionDivider = ({ label }: { label: string }) => {
         </div>
     );
 }
-// const ErrorComponent = ({ errors }: any) => {
-//     if (!errors || errors.length === 0) {
-//         return null; // Não há erros, não renderiza nada
-//     }
-
-//     return (
-//         <div className="rounded-lg bg-red-50 p-4">
-//             <div className="flex">
-//                 <div className="flex-shrink-0">
-//                     <CloseIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
-//                 </div>
-//                 <div className="ml-3">
-//                     <h3 className="text-sm font-strong text-red-800">{`Há ${errors.length === 1 ? '' : ''
-//                         } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
-//                     <div className="mt-2 text-sm text-red-700">
-//                         <ul role="list" className="list-disc space-y-1 pl-5">
-//                             {errors.map((error, index) => (
-//                                 <li key={index}>{error.message}</li>
-//                             ))}
-//                         </ul>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
 
 function CadastraProposta() {
     const [errors, setErrors] = useState(null)
@@ -173,14 +123,6 @@ function CadastraProposta() {
 
     const onPrevious = () => { onChange(0), setError(false), setIsManualContact(false) }
 
-    // const stepConditions: { [key: number]: () => boolean } = {
-    //     0: () => tipoCadastro !== '',
-    //     1: () => empresaData?.permissao?.habil === true,
-    //     2: () => false,
-    // };
-
-
-    // const canAdvance = stepConditions[step]();
 
     const toastNotification = (
         <Notification title="Falha na submissão." type="danger">
@@ -277,7 +219,7 @@ function CadastraProposta() {
                         </div>
 
                         <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                            <h1 className="text-2xl font-semibold mb-4">Adesão de empresas e pessoas físicas</h1>
+                            <h1 className="text-2xl font-semibold mb-4">Informações sobre a adesão</h1>
 
                             <p className="mb-4">
                                 Nesta página, você poderá iniciar o processo de adesão ao Projeto COGECOM.
@@ -419,368 +361,11 @@ function CadastraProposta() {
                                             </div>
                                         )}
                                         {!success && (
-                                            <div className=" mt-5 py-2 py-2">
-                                                <div>
-                                                    <Formik
-                                                        enableReinitialize
-                                                        initialValues={{
-                                                            idContato: '',
-                                                            nomeContato: '',
-                                                            cpfContato: '',
-                                                            emailContato: '',
-                                                            celularContato: '',
-                                                            concessionaria_energia: '',
-                                                            usuario_concessionaria: '',
-                                                            senha_concessionaria: '',
-                                                            isManualContact: true,
-                                                            tipoCadastro: tipoCadastro,
-                                                            termos: false,
-                                                            upload: {
-                                                                faturaEnergia: null,
-                                                                documentoIdentidade: null,
-                                                                contratoSocial: null,
-                                                                cartaoCnpj: null,
-                                                                ataAssembleia: null,
-                                                            },
-                                                        }}
-                                                        onSubmit={(values) => handleSave(values)}
-                                                    >
-                                                        {({ setFieldValue, values, errors, touched }) => {
-
-                                                            return (
-                                                                <Form>
-                                                                    <FormContainer>
-
-                                                                        <FormItem
-                                                                            asterisk
-                                                                            label="Contato"
-                                                                            invalid={Boolean(errors.idContato && touched.idContato)}
-                                                                            errorMessage={errors.idContato as string}
-                                                                        >
-                                                                            <Field name="idContato">
-
-                                                                                {({ field, form }: any) => (
-                                                                                    <Segment
-                                                                                        defaultValue={["00"]}
-                                                                                        className="w-full"
-                                                                                        onChange={(val) => {
-                                                                                            form.setFieldValue(field.name, val);
-                                                                                            const isManual = val[0] == "00";
-                                                                                            setIsManualContact(isManual);
-                                                                                            form.setFieldValue('isManualContact', isManual);
-                                                                                        }}
-                                                                                    >
-                                                                                        <div className="grid grid-cols-3 gap-4 w-full">
-                                                                                            <Segment.Item key={'00'} value={'00'} >
-                                                                                                {({ active, onSegmentItemClick, disabled }) => (
-                                                                                                    <div className="text-center">
-                                                                                                        <SegmentItemOption
-                                                                                                            hoverable
-                                                                                                            active={active}
-                                                                                                            disabled={disabled}
-                                                                                                            defaultGutter={false}
-                                                                                                            className="relative min-h-[80px] w-full"
-                                                                                                            customCheck={
-                                                                                                                <HiCheckCircle className="text-indigo-600 absolute top-2 right-2 text-lg" />
-                                                                                                            }
-                                                                                                            onSegmentItemClick={onSegmentItemClick}
-                                                                                                        >
-                                                                                                            <div className="flex flex-col items-start mx-4">
-                                                                                                                <h6>Informar um novo contato</h6>
-                                                                                                            </div>
-                                                                                                        </SegmentItemOption>
-                                                                                                    </div>
-                                                                                                )}
-                                                                                            </Segment.Item>
-
-                                                                                            {empresaData?.contatos?.length > 0 &&
-                                                                                                empresaData.contatos.map((segment: any) => (
-                                                                                                    <Segment.Item key={segment.nmcontato} value={segment.idcontato}>
-                                                                                                        {({ active, onSegmentItemClick, disabled }) => (
-                                                                                                            <div className="text-center">
-                                                                                                                <SegmentItemOption
-                                                                                                                    hoverable
-                                                                                                                    active={active}
-                                                                                                                    disabled={disabled}
-                                                                                                                    defaultGutter={false}
-                                                                                                                    className="relative min-h-[80px] w-full"
-                                                                                                                    customCheck={
-                                                                                                                        <HiCheckCircle className="text-indigo-600 absolute top-2 right-2 text-lg" />
-                                                                                                                    }
-                                                                                                                    onSegmentItemClick={onSegmentItemClick}
-                                                                                                                >
-                                                                                                                    <div className="flex flex-col items-start mx-4">
-                                                                                                                        <h6>{segment.nmcontato}</h6>
-                                                                                                                        <p className="flex items-center">
-                                                                                                                            <AiOutlineMail className="mr-2" /> {segment.dsemail || '-'}
-                                                                                                                        </p>
-                                                                                                                        <p className="flex items-center">
-                                                                                                                            <BsTelephone className="mr-2" /> {segment.nucel || '-'}
-                                                                                                                        </p>
-                                                                                                                        <p className="flex items-center">
-                                                                                                                            <MdWork className="mr-2" /> {segment.cargo || '-'}
-                                                                                                                        </p>
-                                                                                                                    </div>
-                                                                                                                </SegmentItemOption>
-                                                                                                            </div>
-                                                                                                        )}
-                                                                                                    </Segment.Item>
-                                                                                                ))}
-                                                                                        </div>
-                                                                                    </Segment>
-                                                                                )}
-                                                                            </Field>
-                                                                        </FormItem>
-
-
-
-                                                                        {isManualContact && (
-                                                                            <>
-                                                                                <SectionDivider label="Dados do Contato" />
-
-                                                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                                                    <FormItem
-                                                                                        asterisk
-                                                                                        label="Nome do Contato"
-                                                                                        invalid={Boolean(errors.nomeContato && touched.nomeContato)}
-                                                                                        errorMessage={errors.nomeContato}
-                                                                                    >
-                                                                                        <Field
-                                                                                        
-                                                                                            required={isManualContact != 'true'}
-                                                                                            name="nomeContato"
-                                                                                            as={Input}
-                                                                                            placeholder="Nome do Contato"
-
-                                                                                        />
-                                                                                    </FormItem>
-
-                                                                                    <FormItem
-                                                                                        label="CPF"
-                                                                                        invalid={Boolean(errors.cpfContato && touched.cpfContato)}
-                                                                                        errorMessage={errors.cpfContato}
-                                                                                    >
-                                                                                        <Field name="cpfContato">
-                                                                                            {({ field, form }: any) => (
-                                                                                                <IMaskInput
-                                                                                                    {...field}
-                                                                                                    mask={'000.000.000-00'}
-                                                                                                    required={isManualContact != 'true'}
-                                                                                                    unmask={true}
-                                                                                                    onAccept={(value) => form.setFieldValue('cpfContato', value)}
-                                                                                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                                />
-                                                                                            )}
-                                                                                        </Field>
-                                                                                    </FormItem>
-
-                                                                                    <FormItem
-                                                                                        label="Email"
-                                                                                        invalid={Boolean(errors.emailContato && touched.emailContato)}
-                                                                                        errorMessage={errors.emailContato}
-                                                                                    >
-                                                                                        <Field
-                                                                                            required={isManualContact != 'true'}
-                                                                                            name="emailContato"
-                                                                                            type="email"
-                                                                                            as={Input}
-                                                                                            placeholder="Email"
-                                                                                        />
-                                                                                    </FormItem>
-
-                                                                                    <FormItem
-                                                                                        label="Celular"
-                                                                                        invalid={Boolean(errors.celularContato && touched.celularContato)}
-                                                                                        errorMessage={errors.celularContato}
-                                                                                    >
-                                                                                        <Field name="celularContato">
-                                                                                            {({ field, form }: any) => (
-                                                                                                <IMaskInput
-                                                                                                    {...field}
-                                                                                                    required={isManualContact != 'true'}
-                                                                                                    mask={'(00) 00000-0000'}
-                                                                                                    unmask={true}
-                                                                                                    onAccept={(value) => form.setFieldValue('celularContato', value)}
-                                                                                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                                                                                />
-                                                                                            )}
-                                                                                        </Field>
-                                                                                    </FormItem>
-                                                                                </div>
-                                                                            </>
-
-                                                                        )}
-
-                                                                        <SectionDivider label="Dados da Concessionária" />
-
-                                                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                                                            <FormItem
-                                                                                asterisk
-                                                                                label="Concessionária de energia"
-                                                                                invalid={Boolean(errors.concessionaria_energia && touched.concessionaria_energia)}
-                                                                                errorMessage={errors.concessionaria_energia}
-                                                                            >
-                                                                                <Field
-                                                                                    required={'true'}
-                                                                                    name="concessionaria_energia"
-                                                                                    as={Input}
-                                                                                    placeholder="Concessionária de energia"
-
-                                                                                />
-                                                                            </FormItem>
-                                                                            <FormItem
-                                                                                label="Usuário da concessionária"
-                                                                                invalid={Boolean(errors.usuario_concessionaria && touched.usuario_concessionaria)}
-                                                                                errorMessage={errors.usuario_concessionaria}
-                                                                            >
-                                                                                <Field
-                                                                                    name="usuario_concessionaria"
-                                                                                    as={Input}
-                                                                                    placeholder="Usuário da concessionária"
-
-                                                                                />
-                                                                            </FormItem>
-                                                                            <FormItem
-                                                                                label="Senha da concessionária"
-                                                                                invalid={Boolean(errors.senha_concessionaria && touched.senha_concessionaria)}
-                                                                                errorMessage={errors.senha_concessionaria}
-                                                                            >
-                                                                                <Field
-                                                                                    name="senha_concessionaria"
-                                                                                    as={Input}
-                                                                                    placeholder="Senha da concessionária"
-
-                                                                                />
-                                                                            </FormItem>
-                                                                        </div>
-
-                                                                        <SectionDivider label="Documentos" />
-
-
-                                                                        <FormItem
-                                                                            label="Cópia da Fatura de Energia"
-                                                                            asterisk
-                                                                            invalid={!!errors.upload?.faturaEnergia && touched.upload?.faturaEnergia}
-                                                                            errorMessage={errors.upload?.faturaEnergia}
-                                                                            className="flex-1 w-full md:w-auto"
-                                                                        >
-                                                                            <Field name="upload.faturaEnergia">
-                                                                                {({ field }) => (
-                                                                                    <Upload
-                                                                                        uploadLimit={1}
-                                                                                        onChange={(files) => setFieldValue('upload.faturaEnergia', files[0])}
-                                                                                    />
-                                                                                )}
-                                                                            </Field>
-                                                                        </FormItem>
-
-                                                                        <FormItem
-                                                                            label="Documento de Identidade"
-                                                                            asterisk
-                                                                            invalid={!!errors.upload?.documentoIdentidade && touched.upload?.documentoIdentidade}
-                                                                            errorMessage={errors.upload?.documentoIdentidade}
-                                                                            className="flex-1 w-full md:w-auto"
-                                                                        >
-                                                                            <Field name="upload.documentoIdentidade">
-                                                                                {({ field }) => (
-                                                                                    <Upload
-                                                                                        uploadLimit={1}
-                                                                                        onChange={(files) => setFieldValue('upload.documentoIdentidade', files[0])}
-                                                                                    />
-                                                                                )}
-                                                                            </Field>
-                                                                        </FormItem>
-
-                                                                        {tipoCadastro === 'empresa' && (
-                                                                            <>
-                                                                                <FormItem
-                                                                                    label="Contrato Social"
-                                                                                    asterisk
-                                                                                    invalid={!!errors.upload?.contratoSocial && touched.upload?.contratoSocial}
-                                                                                    errorMessage={errors.upload?.contratoSocial}
-                                                                                    className="flex-1 w-full md:w-auto"
-                                                                                >
-                                                                                    <Field name="upload.contratoSocial">
-                                                                                        {({ field }) => (
-                                                                                            <Upload
-                                                                                                uploadLimit={1}
-                                                                                                onChange={(files) => setFieldValue('upload.contratoSocial', files[0])}
-                                                                                            />
-                                                                                        )}
-                                                                                    </Field>
-                                                                                </FormItem>
-
-                                                                                <FormItem
-                                                                                    label="Cartão do CNPJ"
-                                                                                    asterisk
-                                                                                    invalid={!!errors.upload?.cartaoCnpj && touched.upload?.cartaoCnpj}
-                                                                                    errorMessage={errors.upload?.cartaoCnpj}
-                                                                                    className="flex-1 w-full md:w-auto"
-                                                                                >
-                                                                                    <Field name="upload.cartaoCnpj">
-                                                                                        {({ field }) => (
-                                                                                            <Upload
-                                                                                                uploadLimit={1}
-                                                                                                onChange={(files) => setFieldValue('upload.cartaoCnpj', files[0])}
-                                                                                            />
-                                                                                        )}
-                                                                                    </Field>
-                                                                                </FormItem>
-                                                                            </>
-                                                                        )}
-
-                                                                        {tipoCadastro === 'condominio' && (
-                                                                            <>
-                                                                                <FormItem
-                                                                                    label="Ata da Assembleia"
-                                                                                    asterisk
-                                                                                    invalid={!!errors.upload?.ataAssembleia && touched.upload?.ataAssembleia}
-                                                                                    errorMessage={errors.upload?.ataAssembleia}
-                                                                                    className="flex-1 w-full md:w-auto"
-                                                                                >
-                                                                                    <Field name="upload.ataAssembleia">
-                                                                                        {({ field }) => (
-                                                                                            <Upload
-                                                                                                uploadLimit={1}
-                                                                                                onChange={(files) => setFieldValue('upload.ataAssembleia', files[0])}
-                                                                                            />
-                                                                                        )}
-                                                                                    </Field>
-                                                                                </FormItem>
-
-                                                                                <FormItem
-                                                                                    label="Cartão do CNPJ"
-                                                                                    asterisk
-                                                                                    invalid={!!errors.upload?.cartaoCnpj && touched.upload?.cartaoCnpj}
-                                                                                    errorMessage={errors.upload?.cartaoCnpj}
-                                                                                    className="flex-1 w-full md:w-auto"
-                                                                                >
-                                                                                    <Field name="upload.cartaoCnpj">
-                                                                                        {({ field }) => (
-                                                                                            <Upload
-                                                                                                uploadLimit={1}
-                                                                                                onChange={(files) => setFieldValue('upload.cartaoCnpj', files[0])}
-                                                                                            />
-                                                                                        )}
-                                                                                    </Field>
-                                                                                </FormItem>
-                                                                            </>
-                                                                        )}
-
-
-                                                                        <FormItem>
-                                                                            <Button variant="solid" type="submit">
-                                                                                Cadastrar
-                                                                            </Button>
-                                                                        </FormItem>
-                                                                    </FormContainer>
-                                                                </Form>
-                                                            );
-                                                        }}
-                                                    </Formik>
-                                                </div>
-
-                                            </div>
+                                            <ContactForm 
+                                            tipoCadastro="empresa"       // ou "condominio", conforme sua lógica
+                                            empresaData={empresaData}    // dados da empresa para preencher os contatos
+                                            handleSave={handleSave}      // função que trata o submit do formulário
+                                          />
                                         )}
                                     </div>
 
