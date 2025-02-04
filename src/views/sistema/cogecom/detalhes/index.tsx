@@ -58,16 +58,18 @@ const CustomerDetail = () => {
       const formData = new FormData()
       formData.append('status', newStatus)
 
-      const response = await ApiService.fetchData({
-        url: `/cogecom/status/${id}`,
-        method: 'patch',
-        data: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      try {
+        const response = await ApiService.fetchData({
+            url: `/cogecom/status/${id}`,
+            method: 'post',
+            data: formData
+        })
 
-      console.log(`Status atualizado para ${newStatus}:`, response.data)
+        setCogecomData(response.data.data)
+    }catch (err) {
+            console.error(`Erro ao atualizar status para ${newStatus}:`, err)
+        }
+
 
       toast.push(
         <Notification title="Sucesso">
