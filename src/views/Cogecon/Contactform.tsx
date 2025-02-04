@@ -39,7 +39,6 @@ const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
     }));
   };
 
-  // Atualiza os inputs do tipo file
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormData((prev) => ({
@@ -48,7 +47,6 @@ const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
     }));
   };
 
-  // Manipula a seleção do contato (novo ou existente)
   const handleContactChange = (e) => {
     const value = e.target.value;
     setFormData((prev) => ({
@@ -71,10 +69,10 @@ const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="bg-white shadow-lg rounded-lg p-8">
+    <div className="mmx-auto p-2">
+      <div className="bg-white shadow-lg rounded-lg p-4">
         <h1 className="text-2xl font-bold text-center mb-6">
-          Formulário de Contato
+          Formulário de adesão
         </h1>
         <form onSubmit={onSubmit}>
 
@@ -92,7 +90,7 @@ const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
                   onChange={handleContactChange}
                   className="form-radio h-5 w-5 text-indigo-600"
                 />
-                <span className="ml-2">Novo contato</span>
+                <span className="ml-2 font-black">Novo contato</span>
               </label>
               {/* Contatos existentes */}
               {empresaData?.contatos?.map((contato) => (

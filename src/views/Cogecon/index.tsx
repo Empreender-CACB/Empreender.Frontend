@@ -4,19 +4,10 @@ import Steps from '@/components/ui/Steps'
 import Notification from '@/components/ui/Notification'
 import Button from '@/components/ui/Button'
 import ContactForm from './Contactform'
-import { HiCheckCircle } from 'react-icons/hi'
-import Input from '@/components/ui/Input'
 import { IMaskInput } from 'react-imask';
 import { FaBuilding, FaHome } from 'react-icons/fa';
 import Alert from '@/components/ui/Alert'
-import { FormItem, FormContainer } from '@/components/ui/Form'
-import Segment from '@/components/ui/Segment'
-import Upload from '@/components/ui/Upload'
-import SegmentItemOption from '@/components/shared/SegmentItemOption'
-import { Field, Form, Formik } from 'formik'
-import { AiOutlineMail } from 'react-icons/ai';
-import { BsTelephone, BsFilePdf } from 'react-icons/bs';
-import { MdWork } from 'react-icons/md'
+import { BsFilePdf } from 'react-icons/bs';
 import { toast } from '@/components/ui'
 import ApiService from '@/services/ApiService'
 
@@ -64,7 +55,7 @@ function CadastraProposta() {
             }
         });
 
-        formData.append('nucnpjcpf', cnpj);
+        formData.append('cnpj', cnpj);
         formData.append('tipo_cadastro', tipoCadastro);
         formData.append('idContato', values.idContato || '');
         formData.append('nomeContato', values.nomeContato || '');
@@ -73,7 +64,9 @@ function CadastraProposta() {
         formData.append('celularContato', values.celularContato || '');
         formData.append('tipo_cadastro', values.tipoCadastro || '');
         formData.append('concessionaria_energia', values.concessionaria_energia || '');
-        formData.append('situacao', 'cadastro');
+        formData.append('login_concessionaria', values.usuario_concessionaria || '');
+        formData.append('senha_concessionaria', values.senha_concessionaria || '');
+        formData.append('status', 'analise');
 
         try {
             const response = await ApiService.fetchData({

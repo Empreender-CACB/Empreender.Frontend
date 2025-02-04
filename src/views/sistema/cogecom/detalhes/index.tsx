@@ -29,7 +29,8 @@ const CustomerDetail = () => {
           url: `/cogecom/${id}`,
           method: 'get'
         })
-        setCogecomData(response.data)
+        setCogecomData(response.data.data)
+        console.log('Dados da empresa:', response.data)
       } catch (err) {
         console.error('Erro ao buscar dados da empresa:', err)
         setError(err)
@@ -122,7 +123,7 @@ const CustomerDetail = () => {
             variant="solid"
             color="red-900"
           >
-            <AiOutlineClose className="mr-2" /> Negar Adesão
+            <AiOutlineClose className="mr-2" /> Negar Adesão{}
           </Button>
         </div>
       </div>
