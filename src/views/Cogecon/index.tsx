@@ -220,7 +220,7 @@ function CadastraProposta() {
                             </p>
 
                             <p className="mb-4">
-                                Para começar, informe o CNPJ da sua empresa ou condominio. Com base nesses dados, o sistema irá:
+                                Para começar, informe o CNPJ da empresa ou condominio, ou o CPF da pessoa física. Com base nesses dados, o sistema irá:
                             </p>
 
                             <ul className="list-disc list-inside mb-4">
