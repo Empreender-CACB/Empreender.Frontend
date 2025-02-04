@@ -183,7 +183,6 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                 CardLayout={AnotacaoCard}
             />
 
-
             {selectedAnotacaoId && (
                 <AnotacaoModal
                     idAnotacao={selectedAnotacaoId}

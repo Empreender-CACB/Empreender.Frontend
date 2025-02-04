@@ -45,17 +45,20 @@ const PendenciaForm = () => {
         bloqueioFinanceiro: '',
     });
 
-    const { temBloqueio, tipoVinculo, idVinculo, idPendencia } = useParams();
+    const { temBloqueio, tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, idPendencia } = useParams();
+
     const searchParams = new URLSearchParams(window.location.search);
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/pendencias/${tipoVinculo}/${idVinculo}`;
-    const idVinculoAux = searchParams.get('idVinculoAux');
-    const tipoVinculoAux = searchParams.get('tipoVinculoAux');
 
     const isEditMode = Boolean(idPendencia);
+    const showBloqueio = temBloqueio === 'true';
 
+    console.log(`${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`)
+    
     useEffect(() => {
         const fetchVinculo = async () => {
             try {
+
                 const vinculoResponse = await ApiService.fetchData({
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`,
                     method: 'get',
@@ -71,7 +74,7 @@ const PendenciaForm = () => {
                         label: item.label,
                         link: item.url,
                     })),
-                    { label: 'Pendência', link: '#' },
+                    { label: isEditMode ? 'Editar Pendência' : 'Nova Pendência', link: '#' },
                 ]);
             } catch (error) {
                 console.error('Erro ao buscar dados do vínculo:', error);
@@ -82,23 +85,28 @@ const PendenciaForm = () => {
             if (!isEditMode) return;
             try {
                 const response = await ApiService.fetchData({
-                    url: `/pendencias/fetchPendencia/${idPendencia}`,
+                    url: `pendencias/fetchPendencia/${idPendencia}`,
                     method: 'get',
                 });
-                setInitialValues({
-                    titulo: response.data.titulo,
-                    descricao: response.data.descricao,
-                    dataPrevistaSolucao: response.data.dataPrevistaSolucao,
-                    bloqueioFinanceiro: response.data.bloqueioFinanceiro,
-                });
+                
+                if (response.data) {
+                    setInitialValues({
+                        titulo: response.data.titulo || '',
+                        descricao: response.data.descricao || '',
+                        dataPrevistaSolucao: response.data.dataPrevistaSolucao || '',
+                        bloqueioFinanceiro: response.data.bloqueioFinanceiro || '',
+                    });
+                }
             } catch (error) {
                 console.error('Erro ao buscar dados da pendência:', error);
+                toast.push(<Notification title="Erro ao carregar dados da pendência" type="danger" />);
             }
         };
 
         fetchVinculo();
         fetchPendencia();
-    }, [tipoVinculo, idVinculo, idPendencia, isEditMode]);
+
+    }, [tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, idPendencia, isEditMode]);
 
     const handleSave = async (values: any, filesData: any) => {
         toast.push(<Notification title="Salvando pendência, aguarde..." type="success" />);
@@ -219,7 +227,7 @@ const PendenciaForm = () => {
                                 </FormItem>
                             </div>
 
-                            {temBloqueio &&
+                            {showBloqueio && (
                                 <div className="mb-6">
                                     <FormItem asterisk label="Bloqueio Financeiro" invalid={!!errors.bloqueioFinanceiro && touched.bloqueioFinanceiro} errorMessage={errors.bloqueioFinanceiro}>
                                         <Field name="bloqueioFinanceiro">
@@ -235,7 +243,7 @@ const PendenciaForm = () => {
                                         </Field>
                                     </FormItem>
                                 </div>
-                            }
+                            )}
 
                             <div className="sm:col-span-2 pt-5">
                                 <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
