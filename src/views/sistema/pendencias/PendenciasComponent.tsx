@@ -28,9 +28,11 @@ interface PendenciasProps {
     idVinculoAux?: string;
     tipoVinculoAux?: string;
     temBloqueio: boolean
+    temAnexos: boolean
 }
 
-const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux, temBloqueio }) => {
+
+const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo, idVinculoAux, tipoVinculoAux, temBloqueio, temAnexos }) => {
     const [selectedPendenciaId, setSelectedPendenciaId] = useState<number | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -126,7 +128,7 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${temBloqueio.toString()}/${tipoVinculo}/${idVinculo}${tipoVinculoAux ? `/${tipoVinculoAux}` : ''}${idVinculoAux ? `/${idVinculoAux}` : ''}?redirectUrl=${encodeURIComponent(window.location.href)}`}
+                        to={`${APP_PREFIX_PATH}/pendencias/adicionar/${temBloqueio.toString()}/${tipoVinculo}/${idVinculo}${tipoVinculoAux ? `/${tipoVinculoAux}` : ''}${idVinculoAux ? `/${idVinculoAux}` : ''}?temAnexos=${temAnexos}&redirectUrl=${encodeURIComponent(window.location.href)}`}
                     >
                         <Button
                             block
@@ -153,6 +155,8 @@ const PendenciasComponent: React.FC<PendenciasProps> = ({ idVinculo, tipoVinculo
                     idPendencia={selectedPendenciaId}
                     isOpen={modalIsOpen}
                     onClose={closeModal}
+                    temBloqueio={temBloqueio}
+                    temAnexos={temAnexos}
                 />
             )}
         </AdaptableCard>

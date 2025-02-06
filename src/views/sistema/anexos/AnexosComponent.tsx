@@ -106,6 +106,23 @@ const columns = [
         defaultFlex: 0.7,
     },
     {
+        name: 'tipo_vinculo',
+        header: 'Vínculo',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+    {
+        name: 'tipo_vinculo_aux',
+        header: 'Tipo Vínculo Auxiliar',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+
+    {
         name: 'vencimento',
         header: 'Vencimento',
         defaultFlex: 0.5,

@@ -27,9 +27,10 @@ interface AnotacaoModalProps {
     idAnotacao: number;
     onClose: () => void;
     isOpen: boolean;
+    temAnexos: boolean;
 }
 
-const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOpen }) => {
+const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOpen, temAnexos }) => {
     const [anotacao, setAnotacao] = useState<any>(null);
     const [isAuthor, setIsAuthor] = useState(false);
     const [isRead, setIsRead] = useState(false);
@@ -108,22 +109,24 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                                         Excluir
                                     </Button>
 
-                                    <Link
-                                        className="block lg:inline-block md:mb-0 mb-4"
-                                        to={{
-                                            pathname: `${APP_PREFIX_PATH}/anexos/adicionar/anotacao/${anotacao.id}`,
-                                            search: `?redirectUrl=${encodeURIComponent(`${APP_PREFIX_PATH}/anotacoes/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}`)}`,
-                                        }}
-                                    >
-                                        <Button
-                                            block
-                                            variant="solid"
-                                            size="sm"
-                                            icon={<HiPlusCircle />}
+                                    {Boolean(temAnexos) && (
+                                        <Link
+                                            className="block lg:inline-block md:mb-0 mb-4"
+                                            to={{
+                                                pathname: `${APP_PREFIX_PATH}/anexos/adicionar/anotacao/${anotacao.id}`,
+                                                search: `?redirectUrl=${encodeURIComponent(`${APP_PREFIX_PATH}/anotacoes/${anotacao.tipo_vinculo}/${anotacao.id_vinculo}`)}`,
+                                            }}
                                         >
-                                            Anexar Arquivo
-                                        </Button>
-                                    </Link>
+                                            <Button
+                                                block
+                                                variant="solid"
+                                                size="sm"
+                                                icon={<HiPlusCircle />}
+                                            >
+                                                Anexar Arquivo
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </>
                             )}
                             {!isRead && anotacao.situacao === situacaoDivulgada && !isAuthor && (
@@ -160,16 +163,17 @@ const AnotacaoModal: React.FC<AnotacaoModalProps> = ({ idAnotacao, onClose, isOp
                         </div>
                     </div>
 
-
-                    <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
-                        <AnexosComponent
-                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
-                            title="Documentos"
-                            minHeight={300}
-                            tipoVinculo={'anotacao'}
-                            idVinculo={anotacao.id}
-                        />
-                    </section>
+                    {temAnexos && (
+                        <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
+                            <AnexosComponent
+                                url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                                title="Documentos"
+                                minHeight={300}
+                                tipoVinculo={'anotacao'}
+                                idVinculo={anotacao.id}
+                            />
+                        </section>
+                    )}
                 </div>
             )}
         </Dialog>
