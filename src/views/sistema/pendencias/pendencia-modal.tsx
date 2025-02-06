@@ -22,9 +22,12 @@ interface PendenciaModalProps {
     idPendencia: number;
     onClose: () => void;
     isOpen: boolean;
+    temBloqueio: boolean;
+    temAnexos: boolean;
 }
 
-const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, isOpen }) => {
+
+const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, isOpen, temBloqueio, temAnexos }) => {
     const [pendencia, setPendencia] = useState<any>(null);
 
     useEffect(() => {
@@ -48,14 +51,14 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
     };
 
     return (
-        <Dialog isOpen={isOpen} onClose={onClose} width={900}>
+        <Dialog isOpen={isOpen} onClose={onClose} width={1200}>
             {pendencia && (
                 <div className="max-h-[75vh] overflow-y-auto p-6">
                     <div className="bg-white rounded-lg shadow-lg border-2 p-4 relative mb-4">
                         <div className="absolute top-2 right-2 flex space-x-2">
                             <Link
                                 className="block lg:inline-block md:mb-0 mb-4"
-                                to={`${APP_PREFIX_PATH}/pendencias/adicionar/false/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.tipo_vinculo_aux}/${pendencia.id_vinculo_aux}/${pendencia.id}`}
+                                to={`${APP_PREFIX_PATH}/pendencias/adicionar/${temBloqueio.toString()}/${pendencia.tipo_vinculo}/${pendencia.id_vinculo}/${pendencia.tipo_vinculo_aux}/${pendencia.id_vinculo_aux}/${pendencia.id}?temAnexos=${temAnexos}&redirectUrl=${encodeURIComponent(window.location.href)}`}
                             >
                                 <Button
                                     block
@@ -127,15 +130,17 @@ const PendenciaModal: React.FC<PendenciaModalProps> = ({ idPendencia, onClose, i
 
                     </div>
 
-                    <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
-                        <AnexosComponent
-                            url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
-                            title="Documentos"
-                            minHeight={300}
-                            tipoVinculo={'pendencia'}
-                            idVinculo={pendencia.id}
-                        />
-                    </section>
+                    {temAnexos && (
+                        <section className="p-6 mt-4 bg-white rounded-lg shadow-lg border-2">
+                            <AnexosComponent
+                                url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                                title="Documentos"
+                                minHeight={300}
+                                tipoVinculo={'pendencia'}
+                                idVinculo={pendencia.id}
+                            />
+                        </section>
+                    )}
                 </div>
             )}
         </Dialog>

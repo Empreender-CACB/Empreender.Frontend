@@ -206,6 +206,7 @@ const CogecomEntidade = () => {
                                     tipoVinculo="entidade"
                                     idVinculoAux={dadosCogecom.id}
                                     tipoVinculoAux="cogecom"
+                                    temAnexos={false}
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
@@ -237,6 +238,7 @@ const CogecomEntidade = () => {
                                     idVinculoAux={dadosCogecom.id}
                                     tipoVinculoAux="cogecom"
                                     temBloqueio={false}
+                                    temAnexos={false}
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
