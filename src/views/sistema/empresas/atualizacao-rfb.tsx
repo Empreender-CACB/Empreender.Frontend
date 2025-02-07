@@ -59,111 +59,45 @@ const AtualizarEmpresas = () => {
         URL.revokeObjectURL(url)
       }
 
-    const iniciarAtualizacaoParcial = async () => {
+      const iniciarAtualizacao = async (tipo: string) => {
         setIsRunning(true)
         setErrorMessage(null)
-
-        for (let i = 0; i < scripts.length; i++) {
-            const { script } = scripts[i]
-            const endpoint = `/rfb/execute-update/${script}/partial`
-            try {
-                setProgress((prev) => {
-                    const updated = [...prev]
-                    updated[i].status = 'Em andamento'
-                    return updated
-                })
-
-                const response = await ApiService.fetchData({
-                    url: endpoint,
-                    method: 'get',
-                    timeout: 60000000
-                })
-
-                if (response.data && typeof response.data === 'object') {
-                    let logContent = JSON.stringify(response.data)
-                    logContent = logContent.replace(/\\n/g, '\n')
-                    downloadLog(logContent, script)
-
-                    setProgress((prev) => {
-                        const updated = [...prev]
-                        updated[i].status = 'Concluído'
-                        return updated
-                    })
-                } else {
-                    console.error('Erro: A resposta não contém uma string ou objeto JSON válido.')
-                    setErrorMessage('Erro ao processar o log.')
-                    setProgress((prev) => {
-                        const updated = [...prev]
-                        updated[i].status = 'Erro'
-                        return updated
-                    })
+    
+        const endpoint = `/rfb/execute-update`
+        const scriptsList = scripts.map(script => script.script)
+        try {
+            setProgress(prev => prev.map(item => ({ ...item, status: 'Em andamento' })))
+    
+            const response = await ApiService.fetchData({
+                url: endpoint,
+                method: 'post',
+                data: { scripts: scriptsList, tipo },
+                timeout: 60000000,
+            })
+    
+            if (response.data && response.data.output) {
+                const outputData = response.data.output
+                for (const scriptName of Object.keys(outputData)) {
+                    downloadLog(outputData[scriptName], scriptName)
                 }
-            } catch (error) {
-                console.error('Erro ao executar a atualização:', error)
-                setErrorMessage(`Erro ao processar o endpoint ${endpoint}`)
-                setProgress((prev) => {
-                    const updated = [...prev]
-                    updated[i].status = 'Erro'
-                    return updated
-                })
+    
+                setProgress(prev => prev.map(item => ({ ...item, status: 'Concluído' })))
+            } else {
+                console.error('Erro: A resposta não contém um JSON válido.')
+                setErrorMessage('Erro ao processar o log.')
+                setProgress(prev => prev.map(item => ({ ...item, status: 'Erro' })))
             }
+        } catch (error) {
+            console.error('Erro ao executar a atualização:', error)
+            setErrorMessage('Erro ao processar a atualização.')
+            setProgress(prev => prev.map(item => ({ ...item, status: 'Erro' })))
         }
-
+    
         setIsRunning(false)
     }
-
-    const iniciarAtualizacaoCompleta = async () => {
-        setIsRunning(true)
-        setErrorMessage(null)
-
-        for (let i = 0; i < scripts.length; i++) {
-            const { script } = scripts[i]
-            const endpoint = `/rfb/execute-update/${script}/full`
-            try {
-                setProgress((prev) => {
-                    const updated = [...prev]
-                    updated[i].status = 'Em andamento'
-                    return updated
-                })
-
-                const response = await ApiService.fetchData({
-                    url: endpoint,
-                    method: 'get',
-                    timeout: 60000000
-                })
-
-                if (response.data && typeof response.data === 'object') {
-                    let logContent = JSON.stringify(response.data)
-                    logContent = logContent.replace(/\\n/g, '\n')
-                    downloadLog(logContent, script)
-
-                    setProgress((prev) => {
-                        const updated = [...prev]
-                        updated[i].status = 'Concluído'
-                        return updated
-                    })
-                } else {
-                    console.error('Erro: A resposta não contém uma string ou objeto JSON válido.')
-                    setErrorMessage('Erro ao processar o log.')
-                    setProgress((prev) => {
-                        const updated = [...prev]
-                        updated[i].status = 'Erro'
-                        return updated
-                    })
-                }
-            } catch (error) {
-                console.error('Erro ao executar a atualização:', error)
-                setErrorMessage(`Erro ao processar o endpoint ${endpoint}`)
-                setProgress((prev) => {
-                    const updated = [...prev]
-                    updated[i].status = 'Erro'
-                    return updated
-                })
-            }
-        }
-
-        setIsRunning(false)
-    }
+    
+    const iniciarAtualizacaoParcial = () => iniciarAtualizacao('partial')
+    const iniciarAtualizacaoCompleta = () => iniciarAtualizacao('full')
 
     const getBadgeProps = (status: string) => {
         switch (status) {
