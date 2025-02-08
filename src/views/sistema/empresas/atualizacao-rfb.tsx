@@ -40,7 +40,7 @@ const AtualizarEmpresas = () => {
 
     useEffect(() => {
         monitorarAtualizacao()
-        const interval = setInterval(monitorarAtualizacao, 5000)
+        const interval = setInterval(monitorarAtualizacao, 30000)
 
         return () => clearInterval(interval)
     }, [])
