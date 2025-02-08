@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@inovua/reactdatagrid-community/index.css';
 
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
 import { Button, Tag, Tooltip } from '@/components/ui';
 import { AdaptableCard } from '@/components/shared';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
-import ApiService from '@/services/ApiService';
-import Breadcrumb from '@/components/breadCrumbs/breadCrumb';
 import { useAppSelector } from '@/store';
-import { capitalize } from 'lodash';
 import AnotacaoModal from './anotacao-modal';
 import { HiPlusCircle } from 'react-icons/hi';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
@@ -32,7 +29,7 @@ const leituraOptions = [
     { name: 'Não Lida', value: 'naoLida', color: 'bg-green-600' },
 ];
 
-const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string; idVinculoAux: string }) => {
+const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, temAnexos }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string; idVinculoAux: string; temAnexos: boolean }) => {
 
     const { nucpf } = useAppSelector((state) => state.auth.user);
 
@@ -161,8 +158,7 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                 <div className="flex flex-col lg:flex-row lg:items-center">
                     <Link
                         className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${tipoVinculo}/${idVinculo}?redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''
-                            }`}
+                        to={`${APP_PREFIX_PATH}/anotacoes/adicionar/${tipoVinculo}/${idVinculo}?temAnexos=${temAnexos}&redirectUrl=${encodeURIComponent(window.location.href)}${tipoVinculoAux && idVinculoAux ? `&tipoVinculoAux=${encodeURIComponent(tipoVinculoAux)}&idVinculoAux=${encodeURIComponent(idVinculoAux)}` : ''}`}
                     >
                         <Button
                             block
@@ -188,6 +184,7 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
                     idAnotacao={selectedAnotacaoId}
                     isOpen={modalIsOpen}
                     onClose={closeModal}
+                    temAnexos={temAnexos}
                 />
             )}
         </AdaptableCard>

@@ -57,6 +57,7 @@ const AnotacaoForm = () => {
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/anotacoes/${tipoVinculo}/${idVinculo}`;
     const idVinculoAux = searchParams.get('idVinculoAux');
     const tipoVinculoAux = searchParams.get('tipoVinculoAux');
+    const temAnexos = searchParams.get('temAnexos') === 'true';
 
     const navigate = useNavigate();
     const isEditMode = Boolean(idAnotacao);
@@ -258,7 +259,7 @@ const AnotacaoForm = () => {
                                 </FormItem>
                             </div>
 
-                            {!idAnotacao &&
+                            {!idAnotacao && temAnexos &&
                                 <div className="sm:col-span-2 pt-5">
                                     <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
                                     <div className="mt-2 container">

@@ -23,10 +23,16 @@ const bloqueioOptions = [
     { value: 'bo', label: 'Bloquear' },
 ];
 
+const statusOptions = [
+    { value: 'nr', label: 'Não resolvida' },
+    { value: 're', label: 'Resolvida' },
+];
+
 interface FileInput {
     file?: File;
     fileName?: string;
 }
+
 
 const PendenciaForm = () => {
     const [loading, setLoading] = useState(false);
@@ -43,17 +49,19 @@ const PendenciaForm = () => {
         descricao: '',
         dataPrevistaSolucao: '',
         bloqueioFinanceiro: '',
+        status: 'nr',
     });
 
     const { temBloqueio, tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, idPendencia } = useParams();
 
     const searchParams = new URLSearchParams(window.location.search);
     const redirectUrl = searchParams.get('redirectUrl') || `${APP_PREFIX_PATH}/pendencias/${tipoVinculo}/${idVinculo}`;
+    const temAnexos = searchParams.get('temAnexos') === 'true';
+
+    console.log(searchParams.get('temAnexos'));
 
     const isEditMode = Boolean(idPendencia);
     const showBloqueio = temBloqueio === 'true';
-
-    console.log(`${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`)
     
     useEffect(() => {
         const fetchVinculo = async () => {
@@ -93,8 +101,9 @@ const PendenciaForm = () => {
                     setInitialValues({
                         titulo: response.data.titulo || '',
                         descricao: response.data.descricao || '',
-                        dataPrevistaSolucao: response.data.dataPrevistaSolucao || '',
-                        bloqueioFinanceiro: response.data.bloqueioFinanceiro || '',
+                        dataPrevistaSolucao: response.data.data_prevista_solucao || '',
+                        bloqueioFinanceiro: response.data.bloqueio_financeiro || '',
+                        status: response.data.status || '',
                     });
                 }
             } catch (error) {
@@ -245,44 +254,63 @@ const PendenciaForm = () => {
                                 </div>
                             )}
 
-                            <div className="sm:col-span-2 pt-5">
-                                <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
-                                <div className="mt-2 container">
-                                    {inputs.map((input, index) => (
-                                        <div key={index} className="input_container flex items-center space-x-4 mb-2 flex-wrap space-y-1">
-                                            <label className="bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                <input
-                                                    type="file"
-                                                    name={`file-${index}`}
-                                                    className="w-50"
-                                                    accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                                                    onChange={(e) => handleFileChange(e, index)}
+                            {isEditMode && 
+                                <div className="mb-6">
+                                    <FormItem asterisk label="Status">
+                                        <Field name="status">
+                                            {({ field, form }: any) => (
+                                                <Select
+                                                    {...field}
+                                                    options={statusOptions}
+                                                    value={statusOptions.find(option => option.value === form.values.status)}
+                                                    onChange={(option: any) => form.setFieldValue('status', option?.value)}
                                                 />
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name={`file_name-${index}`}
-                                                placeholder="Nome do documento"
-                                                className="border p-2 rounded-md w-1/2"
-                                                value={input.fileName || ''}
-                                                onChange={(e) => handleFileNameChange(e, index)}
-                                            />
-                                            {inputs.length > 1 && (
-                                                <span onClick={() => handleDeleteInput(index)}>
-                                                    <CloseIcon />
-                                                </span>
                                             )}
+                                        </Field>
+                                    </FormItem>
+                                </div>
+                            }
+
+                            {temAnexos && (
+                                <div className="sm:col-span-2 pt-5">
+                                    <label className="block text-sm font-semibold leading-6 text-gray-600">Documentos</label>
+                                    <div className="mt-2 container">
+                                        {inputs.map((input, index) => (
+                                            <div key={index} className="input_container flex items-center space-x-4 mb-2 flex-wrap space-y-1">
+                                                <label className="bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
+                                                    <input
+                                                        type="file"
+                                                        name={`file-${index}`}
+                                                        className="w-50"
+                                                        accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
+                                                        onChange={(e) => handleFileChange(e, index)}
+                                                    />
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name={`file_name-${index}`}
+                                                    placeholder="Nome do documento"
+                                                    className="border p-2 rounded-md w-1/2"
+                                                    value={input.fileName || ''}
+                                                    onChange={(e) => handleFileNameChange(e, index)}
+                                                />
+                                                {inputs.length > 1 && (
+                                                    <span onClick={() => handleDeleteInput(index)}>
+                                                        <CloseIcon />
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ))}
+                                        <div
+                                            onClick={handleAddInput}
+                                            className="mr-2 inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                                        >
+                                            <HiOutlinePlus className="mr-1" />
+                                            Adicionar mais arquivos
                                         </div>
-                                    ))}
-                                    <div
-                                        onClick={handleAddInput}
-                                        className="mr-2 inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
-                                    >
-                                        <HiOutlinePlus className="mr-1" />
-                                        Adicionar mais arquivos
                                     </div>
                                 </div>
-                            </div>
+                            )}
 
 
                             <div className="flex justify-end gap-4">
