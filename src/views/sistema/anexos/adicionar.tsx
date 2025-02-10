@@ -19,6 +19,12 @@ const optionsSimNao = [
     { value: 'n', label: 'Não' },
 ];
 
+const acessoItems = [
+    { label: 'Livre', value: 'Livre' },
+    { label: 'Limitado', value: 'Limitado' },
+    { label: 'Restrito', value: 'Restrito' },
+]
+
 const validationSchema = Yup.object().shape({
     nome: Yup.string().required('Campo obrigatório'),
     nomeArquivo: Yup.mixed().required('Arquivo obrigatório'),
@@ -47,7 +53,19 @@ const validationSchema = Yup.object().shape({
         then: (schema) => schema.required('Status é obrigatório'),
         otherwise: (schema) => schema.notRequired(),
     }),
+    acesso: Yup.string().required('Acesso é obrigatório'),
+    vinculadosGrupos: Yup.array().when(['acesso'], {
+        is: (acesso: string) => acesso === 'Restrito',
+        then: (schema) => schema,
+        otherwise: (schema) => schema
+    }),
+    vinculadosUsuarios: Yup.array().when(['acesso'], {
+        is: (acesso: string) => acesso === 'Restrito',
+        then: (schema) => schema,
+        otherwise: (schema) => schema
+    })
 });
+
 
 const AdicionarAnexo = () => {
     const [arquivosTipos, setArquivosTipos] = useState<any>([]);
@@ -63,6 +81,9 @@ const AdicionarAnexo = () => {
     const [nomeArquivo, setNomeArquivo] = useState('');
     const [disableAnexoTransferencia, setDisableAnexoTransferencia] = useState(false);
     const [labelDocumento, setLabelDocumento] = useState('Adição de Documento');
+    const [usuarios, setUsuarios] = useState<Array<{label: string, value: string | number}>>([]);
+    const [grupos, setGrupos] = useState<Array<{label: string, value: string | number}>>([]);
+
     const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
     const idAnexoLancamento = params.get('idAnexoLancamento')
 
@@ -81,16 +102,36 @@ const AdicionarAnexo = () => {
                 });
                 setArquivosTipos(tiposResponse.data);
 
+                const usuariosResponse = await ApiService.fetchData({
+                    url: '/usuarios-ativos',
+                    method: 'get',
+                });
+                setUsuarios(
+                    usuariosResponse.data.map((item: any) => ({
+                        label: item.nmusuario,
+                        value: item.nucpf,
+                    }))
+                );
+
+                const gruposResponse = await ApiService.fetchData({
+                    url: '/grupos',
+                    method: 'get',
+                });
+                setGrupos(
+                    gruposResponse.data.map((item: any) => ({
+                        label: item.nome,
+                        value: item.id,
+                    }))
+                );
+
                 if (tipoVinculo && idVinculo) {
-                    
-                    let url:string;
-                    if(tipoVinculoSecundario && idVinculoSecundario && (idAnexoLancamento !== null && idAnexoLancamento !== 'null'))
-                    {
+
+                    let url: string;
+                    if (tipoVinculoSecundario && idVinculoSecundario && (idAnexoLancamento !== null && idAnexoLancamento !== 'null')) {
                         url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}?idAnexoLancamento=${idAnexoLancamento}`
-                    }else if(tipoVinculoSecundario && idVinculoSecundario) 
-                    {
+                    } else if (tipoVinculoSecundario && idVinculoSecundario) {
                         url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
-                    }else{
+                    } else {
                         url = `/anexos/getVinculo/${tipoVinculo}/${idVinculo}`
                     }
                     const enteResponse = await ApiService.fetchData({
@@ -102,8 +143,7 @@ const AdicionarAnexo = () => {
                         setNomeEnteSecundario(enteResponse.data.nomeVinculoSecundario || '');
                     }
 
-                    if(enteResponse.data.arquivoLancamento !== null && enteResponse.data.arquivoLancamento !== undefined)
-                    {
+                    if (enteResponse.data.arquivoLancamento !== null && enteResponse.data.arquivoLancamento !== undefined) {
                         const anexoLancamento = enteResponse.data.arquivoLancamento;
                         setIsTransferenciaLancamentoAcao(true);
                         setNomeArquivo(anexoLancamento.nomeArquivo);
@@ -165,7 +205,7 @@ const AdicionarAnexo = () => {
         toast.push(
             <Notification title="Salvando arquivo, aguarde..." type="success" />
         );
-    
+
         const formData = new FormData();
         formData.append('status', values.status);
         formData.append('nome', values.nome);
@@ -174,11 +214,17 @@ const AdicionarAnexo = () => {
         formData.append('vencimento', values.vencimento ? values.vencimento.toString() : '');
         formData.append('necessitaAprovacao', values.necessitaAprovacao);
         formData.append('tipoVinculo', tipoVinculo || '');
-    
+        formData.append('acesso', values.acesso);
+
+        if (values.acesso === 'Restrito') {
+            formData.append('vinculadosGrupos', JSON.stringify(values.vinculadosGrupos || []));
+            formData.append('vinculadosUsuarios', JSON.stringify(values.vinculadosUsuarios || []));
+        }
+
         if (values.nomeArquivo) {
             formData.append('nomeArquivo', values.nomeArquivo);
         }
-    
+
         if (tipoVinculo === 'documentacao') {
             formData.append('versao', values.versao || '');
             formData.append('grupo', values.grupo || '');
@@ -192,38 +238,37 @@ const AdicionarAnexo = () => {
                 formData.append('idVinculoSecundario', idVinculoSecundario);
             }
         }
-    
+
         if (substitutoId) {
             formData.append('substitutoId', substitutoId);
         }
-        if(isTransferenciaLancamentoAcao && (idAnexoLancamento !== null && idAnexoLancamento !== 'null'))
-        {
+        if (isTransferenciaLancamentoAcao && (idAnexoLancamento !== null && idAnexoLancamento !== 'null')) {
             formData.append('idAnexoLancamento', idAnexoLancamento!);
         }
-    
+
         try {
             const url = tipoVinculoSecundario && idVinculoSecundario
                 ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
                 : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`;
-    
+
             const response = await ApiService.fetchData({
                 url,
                 method: 'post',
                 data: formData,
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-    
+
             const anexoId = response.data.anexo.id;
-    
+
             toast.push(
                 <Notification title="Arquivo salvo com sucesso!" type="success" />
             );
-    
-            if (redirectUrl) {
-                window.location.href = `${redirectUrl}`;
-            } else {
-                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
-            }
+
+            // if (redirectUrl) {
+            //     window.location.href = `${redirectUrl}`;
+            // } else {
+            //     window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
+            // }
         } catch (error) {
             console.error('Erro ao salvar arquivo:', error);
             toast.push(
@@ -232,7 +277,7 @@ const AdicionarAnexo = () => {
         } finally {
             setLoading(false);
         }
-    };    
+    };
 
     return (
         <Container>
@@ -258,6 +303,9 @@ const AdicionarAnexo = () => {
                         status_doc: '1',
                         tipoVinculo: tipoVinculo,
                         idVinculo: idVinculo || '',
+                        acesso: 'Livre',
+                        vinculadosGrupos: [],
+                        vinculadosUsuarios: [],
                     }}
                     validationSchema={validationSchema}
                     validate={(values) => {
@@ -272,13 +320,12 @@ const AdicionarAnexo = () => {
                         setSubmitting(false);
                     }}
                 >
-                    {({ setFieldValue, errors, touched }) => {
+                    {({ setFieldValue, values, errors, touched }) => {
                         useEffect(() => {
                             if (tipoIdInicial) {
                                 buscarTipoArquivo(tipoIdInicial);
                             }
-                            if(nomeArquivo)
-                            {
+                            if (nomeArquivo) {
                                 setFieldValue('nome', nomeArquivo);
                                 setFieldValue('nomeArquivo', nomeArquivo);
                             }
@@ -348,7 +395,7 @@ const AdicionarAnexo = () => {
                                                         />
                                                     )}
                                                 </Field>
-                                                {isTransferenciaLancamentoAcao && 
+                                                {isTransferenciaLancamentoAcao &&
                                                     <div className="upload-file">
                                                         <div className="flex">
                                                             <div className="upload-file-thumbnail"><span className="text-4xl"><VscFile /></span> </div>
@@ -357,7 +404,7 @@ const AdicionarAnexo = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                } 
+                                                }
                                             </FormItem>
 
                                             <FormItem
@@ -386,6 +433,28 @@ const AdicionarAnexo = () => {
                                                                 buscarTipoArquivo(option?.value);
                                                             }}
                                                             isDisabled={!!substitutoId}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            </FormItem>
+
+                                            <FormItem
+                                                label="Acesso"
+                                                asterisk
+                                                invalid={!!errors.acesso && touched.acesso}
+                                                errorMessage={errors.acesso}
+                                                className="flex-1 w-full md:w-auto"
+                                            >
+                                                <Field name="acesso">
+                                                    {({ field, form }: any) => (
+                                                        <Select
+                                                            {...field}
+                                                            placeholder="Selecione o tipo do acesso"
+                                                            options={acessoItems}
+                                                            value={acessoItems.find(option => option.value === form.values.acesso)}
+                                                            onChange={(option: any) => {
+                                                                form.setFieldValue('acesso', option?.value);
+                                                            }}
                                                         />
                                                     )}
                                                 </Field>
@@ -440,6 +509,56 @@ const AdicionarAnexo = () => {
                                             </FormItem>
                                         </div>
                                     </div>
+
+                                    {values.acesso === 'Restrito' && (
+                                        <>
+                                            <div className="mb-6">
+                                                <FormItem
+                                                    label="Grupos Vinculados"
+                                                    asterisk
+                                                >
+                                                    <Field name="vinculadosGrupos">
+                                                        {({ field, form }: any) => (
+                                                            <Select
+                                                                {...field}
+                                                                isMulti
+                                                                placeholder="Selecione os grupos"
+                                                                options={grupos}
+                                                                value={field.value ? grupos.filter(option => field.value.includes(option.value)) : []}
+                                                                onChange={(options: any) =>
+                                                                    setFieldValue('vinculadosGrupos', options ? options.map((opt: any) => opt.value) : [])
+                                                                }
+                                                            />
+                                                        )}
+                                                    </Field>
+                                                </FormItem>
+                                            </div>
+                                            <div className="mb-6">
+                                                <FormItem
+                                                    label="Usuários Vinculados"
+                                                    asterisk
+                                                >
+                                                    <Field name="vinculadosUsuarios">
+                                                        {({ field, form }: any) => (
+                                                            <Select
+                                                                {...field}
+                                                                isMulti
+                                                                placeholder="Selecione os usuários"
+                                                                options={usuarios}
+                                                                value={field.value ? usuarios.filter(option => field.value.includes(option.value)) : []}
+                                                                onChange={(selectedOptions: any) => {
+                                                                    console.log('Selected options:', selectedOptions);
+                                                                    const selectedValues = selectedOptions ? selectedOptions.map((opt: any) => opt.value) : [];
+                                                                    console.log('Setting field value to:', selectedValues);
+                                                                    setFieldValue('vinculadosUsuarios', selectedValues);
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </Field>
+                                                </FormItem>
+                                            </div>
+                                        </>
+                                    )}
 
                                     <div className="mb-6">
                                         <FormItem label="Vinculado a" asterisk>
