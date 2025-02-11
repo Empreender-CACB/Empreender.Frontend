@@ -16,9 +16,20 @@ const scripts = [
 const AtualizarEmpresas = () => {
     const [isRunning, setIsRunning] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [dataAtt, setDataAtt] = useState<string | null>(null)
     const [progress, setProgress] = useState(
         scripts.map(({ name }) => ({ name, status: 'Pendente' }))
     )
+
+    const formatDate = (dateString) => {
+        const [datePart, timePart] = dateString.split('T')
+        const [year, month, day] = datePart.split('-')
+        const [hours, minutes] = timePart.split(':')
+      
+        const shortYear = year.slice(2)
+      
+        return `${day}/${month}/${shortYear} ${hours}:${minutes}`
+      }
 
     const monitorarAtualizacao = async () => {
         try {
@@ -26,6 +37,7 @@ const AtualizarEmpresas = () => {
             const { atAndamento, ultimaAtualizacao } = response.data
     
             atualizarProgresso(ultimaAtualizacao)
+            setDataAtt(formatDate(ultimaAtualizacao.data_fim))
     
             if (atAndamento) {
                 setIsRunning(true)
@@ -56,7 +68,7 @@ const AtualizarEmpresas = () => {
         ])
     }    
 
-    const iniciarAtualizacao = async (tipo: string) => {
+    const iniciarAtualizacao = async (tipo: string, atualizacao: string) => {
         setIsRunning(true)
         setErrorMessage(null)
         const scriptsNames = scripts.map(script => script.script)
@@ -66,8 +78,7 @@ const AtualizarEmpresas = () => {
             await ApiService.fetchData({
                 url: '/rfb/execute-update',
                 method: 'post',
-                data: { scripts: scriptsNames , tipo },
-                timeout: 60000000,
+                data: { scripts: scriptsNames , tipo, atualizacao },
             })
         } catch (error) {
             console.error('Erro ao iniciar atualização:', error)
@@ -77,28 +88,37 @@ const AtualizarEmpresas = () => {
     }
 
     return (
-        <Container className="flex items-center justify-center my-8">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto">
-                <h2 className="text-lg font-bold mb-4">Atualizar Empresas</h2>
-                <div className="space-y-4">
-                    {progress.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                            <span className="font-medium">{item.name}</span>
-                            <Badge content={item.status} className={`ml-4 ${getBadgeClass(item.status)}`} />
-                        </div>
-                    ))}
-                </div>
-                <div className="flex justify-between space-x-4 mt-4">
-                    <Button onClick={() => iniciarAtualizacao('partial')} disabled={isRunning}>
-                        {isRunning ? 'Executando...' : 'Atualização Parcial'}
-                    </Button>
-                    <Button onClick={() => iniciarAtualizacao('full')} disabled={isRunning}>
-                        {isRunning ? 'Executando...' : 'Atualização Completa'}
-                    </Button>
-                </div>
-                {errorMessage && <div className="text-red-600 mt-4">{errorMessage}</div>}
+<Container className="flex items-center justify-center my-8">
+    <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto">
+        <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold">Atualizar Empresas</h2>
+            <div className="text-sm text-gray-500">
+                (Última Atualização: {dataAtt})
             </div>
-        </Container>
+        </div>
+
+        <div className="space-y-4">
+            {progress.map((item, index) => (
+                <div key={index} className="flex items-center justify-between">
+                    <span className="font-medium">{item.name}</span>
+                    <Badge content={item.status} className={`ml-4 ${getBadgeClass(item.status)}`} />
+                </div>
+            ))}
+        </div>
+        
+        <div className="flex justify-between space-x-4 mt-4">
+            <Button onClick={() => iniciarAtualizacao('partial', 'P')} disabled={isRunning}>
+                {isRunning ? 'Executando...' : 'Atualização Parcial'}
+            </Button>
+            <Button onClick={() => iniciarAtualizacao('full', 'F')} disabled={isRunning}>
+                {isRunning ? 'Executando...' : 'Atualização Completa'}
+            </Button>
+        </div>
+        
+        {errorMessage && <div className="text-red-600 mt-4">{errorMessage}</div>}
+    </div>
+</Container>
+
     )
 }
 
