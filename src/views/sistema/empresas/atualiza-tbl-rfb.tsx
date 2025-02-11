@@ -75,7 +75,7 @@ const AtualizarEmpresas = () => {
     return (
         <Container className="flex items-center justify-center my-8">
             <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-auto">
-                <h2 className="text-lg font-bold mb-4">Atualizar Empresas</h2>
+                <h2 className="text-lg font-bold mb-4">Atualizar Tabelas RFB</h2>
                 <div className="space-y-4">
                     {progress.map((item, index) => (
                         <div key={index} className="flex items-center justify-between">
