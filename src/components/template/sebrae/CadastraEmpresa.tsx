@@ -80,7 +80,7 @@ function CadastraEmpresa() {
 
     if (isValidCnpj) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa?cnpj=${newCnpj}`, { method: 'GET' });
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/${newCnpj}`, { method: 'GET' });
         if (response.ok) {
           const data = await response.json();
           setEmpresaData(data[0]);
