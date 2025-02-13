@@ -69,6 +69,13 @@ const columns = [
         )
     },
     {
+        name: 'tipo_vinculo',
+        header: 'Tipo Vinculo',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+    },
+    {
         name: 'id_vinculo',
         header: 'ID vínculo',
         type: 'string',
@@ -82,13 +89,6 @@ const columns = [
         type: 'string',
         operator: 'eq',
         defaultFlex: 0.6,
-        value: '',
-    },
-    {
-        name: 'tipo_vinculo',
-        header: 'Tipo Vinculo',
-        type: 'string',
-        operator: 'contains',
         value: '',
     },
     {
@@ -138,6 +138,22 @@ const columns = [
                 </div>
             )
         },
+    },
+    {
+        name: 'arquivos_tipos.tipo',
+        header: 'Tipo',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+    {
+        name: 'acesso',
+        header: 'Acesso',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
     },
     {
         name: 'vencimento',
@@ -230,11 +246,15 @@ const Anexos = () => {
                             Versão antiga
                         </Link>
                     </Button>
-                    <Button variant='solid' size='sm' 
+                    <Button 
+                        variant='solid' 
+                        size='sm' 
                         onClick={() => {
                             window.open(`${import.meta.env.VITE_PHP_URL}/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==`)
                         }}
-                >Painel</Button>
+                    >
+                        Painel
+                    </Button>
                 </div>
             </div>
             <CustomReactDataGrid
