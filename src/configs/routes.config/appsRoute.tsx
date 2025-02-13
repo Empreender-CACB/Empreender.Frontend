@@ -306,6 +306,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/cogecom/detalhes/:id/`,
         component: lazy(() => import('@/views/sistema/cogecom/detalhes')),
     },
+    {
+        key: 'Anexos.listar',
+        path: `${APP_PREFIX_PATH}/anexos/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/anexos/listar')),
+    },    
 ]
 
 export default appsRoute
