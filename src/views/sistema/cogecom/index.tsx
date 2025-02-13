@@ -176,30 +176,35 @@ const columns = [
 
 ]
 
-const Anexos = () => {
-    const [filtroVencimento, setFiltroVencimento] = useState('todos')
+interface ListaAdesaoCogecomProps {
+    entidade?: string
 
-    const handleFiltroChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFiltroVencimento(event.target.value)
-    }
-
-
+  }
+  
+  const Adesoes = ({ entidade }: ListaAdesaoCogecomProps) => {
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <h3 className="mb-4 lg:mb-0">Cogecom - adesões</h3>
+                <h3 className="mb-4 lg:mb-0">Poup Max - adesões</h3>
+                <Button size="sm" variant='solid'>
+                        <Link
+                            className="menu-item-link"
+                            to={`/sistema/selecoes/painel-inscricoes`}
+                        >
+                            Transferir Documentos
+                        </Link>
+                    </Button>
 
             </div>
             <CustomReactDataGrid
-                filename="Anexos"
+                filename="Poup Max - Inscrições"
                 columns={columns}
-                url={`${import.meta.env.VITE_API_URL
-                    }/cogecom`}
+                url={`${import.meta.env.VITE_API_URL}/cogecom${entidade ? `?entidade=${entidade}` : ""}`}
                 CardLayout={AnexoCard}
             />
         </AdaptableCard>
     )
 }
 
-export default Anexos
+export default Adesoes
