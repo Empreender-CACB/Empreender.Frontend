@@ -10,6 +10,7 @@ import { Associacao } from '@/@types/generalTypes';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 import PendenciasComponent from '../../pendencias/PendenciasComponent';
+import Adesoes from '../index';
 import { useAppSelector } from '@/store';
 import CogecomActions from './cogecomActions';
 import { VscFile } from 'react-icons/vsc';
@@ -138,6 +139,7 @@ const CogecomEntidade = () => {
                         <TabNav value="anotacoes">Anotações</TabNav>
                         <TabNav value="documentos">Documentos</TabNav>
                         <TabNav value="pendencias">Pendências</TabNav>
+                        <TabNav value="empresas">Empresas</TabNav>
                     </TabList>
 
                     <div className="p-4">
@@ -210,7 +212,7 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir anotações relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir anotações relacionadas ao Poup Max.</p>
                                 </div>
                             )}
                         </TabContent>
@@ -224,7 +226,7 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir documentos relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir documentos relacionadas ao Poup Max.</p>
                                 </div>
                             )}
 
@@ -242,10 +244,31 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir pendencias relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir pendencias relacionadas ao Poup Max.</p>
                                 </div>
                             )}
 
+                        </TabContent>
+
+
+                        <TabContent value="empresas">
+                        <Adesoes
+                                    entidade={params.id}
+                               
+                                />
+                            {dadosCogecom?.id && params.id ? (
+                                <AnotacoesComponent
+                                    idVinculo={params.id}
+                                    tipoVinculo="entidade"
+                                    idVinculoAux={dadosCogecom.id}
+                                    tipoVinculoAux="cogecom"
+                                    temAnexos={false}
+                                />
+                            ) : (
+                                <div className="text-center text-gray-500">
+                                    <p>Nenhum dado encontrado para exibir empresas relacionadas ao Poup Max e a associação.</p>
+                                </div>
+                            )}
                         </TabContent>
                     </div>
                 </Tabs>
