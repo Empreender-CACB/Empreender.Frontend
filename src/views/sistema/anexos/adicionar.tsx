@@ -272,11 +272,11 @@ const AdicionarAnexo = () => {
                 <Notification title="Arquivo salvo com sucesso!" type="success" />
             );
 
-            // if (redirectUrl) {
-            //     window.location.href = `${redirectUrl}`;
-            // } else {
-            //     window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
-            // }
+            if (redirectUrl) {
+                window.location.href = `${redirectUrl}`;
+            } else {
+                window.location.href = `${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(anexoId)}`;
+            }
         } catch (error) {
             console.error('Erro ao salvar arquivo:', error);
             toast.push(
