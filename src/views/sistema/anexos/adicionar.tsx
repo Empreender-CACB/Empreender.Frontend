@@ -81,8 +81,8 @@ const AdicionarAnexo = () => {
     const [nomeArquivo, setNomeArquivo] = useState('');
     const [disableAnexoTransferencia, setDisableAnexoTransferencia] = useState(false);
     const [labelDocumento, setLabelDocumento] = useState('Adição de Documento');
-    const [usuarios, setUsuarios] = useState<Array<{label: string, value: string | number}>>([]);
-    const [grupos, setGrupos] = useState<Array<{label: string, value: string | number}>>([]);
+    const [usuarios, setUsuarios] = useState<Array<{ label: string, value: string | number }>>([]);
+    const [grupos, setGrupos] = useState<Array<{ label: string, value: string | number }>>([]);
 
     const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
     const idAnexoLancamento = params.get('idAnexoLancamento')
@@ -381,7 +381,7 @@ const AdicionarAnexo = () => {
                                                 asterisk
                                                 invalid={!!errors.nomeArquivo && touched.nomeArquivo}
                                                 errorMessage={errors.nomeArquivo}
-                                                className="flex-1 w-full md:w-auto"
+                                                className="flex-1 w-full md:w-1/4"
                                             >
                                                 <Field name="nomeArquivo">
                                                     {({ field }: any) => (
@@ -390,7 +390,6 @@ const AdicionarAnexo = () => {
                                                             variant='solid'
                                                             uploadLimit={1}
                                                             disabled={disableAnexoTransferencia}
-
                                                             onChange={(files) => setFieldValue('nomeArquivo', files[0])}
                                                         />
                                                     )}
@@ -412,7 +411,7 @@ const AdicionarAnexo = () => {
                                                 asterisk
                                                 invalid={!!errors.tipoId && touched.tipoId}
                                                 errorMessage={errors.tipoId}
-                                                className="flex-1 w-full md:w-auto"
+                                                className="flex-1 w-full md:w-1/6"
                                             >
                                                 <Field name="tipoId">
                                                     {({ field, form }: any) => (
@@ -443,7 +442,7 @@ const AdicionarAnexo = () => {
                                                 asterisk
                                                 invalid={!!errors.acesso && touched.acesso}
                                                 errorMessage={errors.acesso}
-                                                className="flex-1 w-full md:w-auto"
+                                                className="flex-1 w-full md:w-1/8"
                                             >
                                                 <Field name="acesso">
                                                     {({ field, form }: any) => (
@@ -460,9 +459,11 @@ const AdicionarAnexo = () => {
                                                 </Field>
                                             </FormItem>
 
-
                                             {mostrarVencimento && (
-                                                <FormItem label="Vencimento">
+                                                <FormItem
+                                                    label="Vencimento"
+                                                    className="flex-1 w-full md:w-1/6"
+                                                >
                                                     <Field name="vencimento" type="date" as={Input} className="w-full" />
                                                 </FormItem>
                                             )}
@@ -472,7 +473,7 @@ const AdicionarAnexo = () => {
                                                 asterisk
                                                 invalid={!!errors.tipoVinculo && touched.tipoVinculo}
                                                 errorMessage={errors.tipoVinculo}
-                                                className="w-full md:w-1/4"
+                                                className="flex-1 w-full md:w-1/6"
                                             >
                                                 <Field>
                                                     {({ form }: any) => (
@@ -492,7 +493,7 @@ const AdicionarAnexo = () => {
                                                 asterisk
                                                 invalid={!!errors.necessitaAprovacao && touched.necessitaAprovacao}
                                                 errorMessage={errors.necessitaAprovacao}
-                                                className="w-full md:w-auto"
+                                                className="flex-1 w-full md:w-1/6"
                                             >
                                                 <Field name="necessitaAprovacao">
                                                     {({ field, form }: any) => (
@@ -509,6 +510,7 @@ const AdicionarAnexo = () => {
                                             </FormItem>
                                         </div>
                                     </div>
+
 
                                     {values.acesso === 'Restrito' && (
                                         <>

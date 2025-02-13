@@ -287,7 +287,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/pendencias/adicionar/:temBloqueio/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?/:idPendencia?`,
         component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
     },
-    
+    {
+        key: 'Anexos.listar',
+        path: `${APP_PREFIX_PATH}/anexos/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/anexos/listar')),
+    },    
 ]
 
 export default appsRoute
