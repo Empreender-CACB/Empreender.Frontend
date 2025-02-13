@@ -173,8 +173,8 @@ const Empresas = () => {
                 const text = data.nmfantasia
                 const tooltipText = data.nmfantasia
 
-                // const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
-                const linkTo = `/sistema/empresas/${data.idempresa}`
+                const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/empresa/detalhe/eid/${btoa(String(data.idempresa))}`;
+                // const linkTo = `/sistema/empresas/${data.idempresa}`
 
                 return (
                     <div>
