@@ -25,9 +25,8 @@ const tipoValue = [
 
 const columns = [
     {
-        name: 'id',
+        name: 'anexo.id',
         header: 'ID',
-        columnName: 'empresa.idempresa',
         type: 'number',
         defaultFlex: 0.6,
         operator: 'eq',
