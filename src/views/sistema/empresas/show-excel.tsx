@@ -17,70 +17,7 @@ import Tooltip from '@/components/ui/Tooltip'
 import { useNavigate } from 'react-router-dom'
 import isValidEmail from '@/utils/email'
 
-const columns = [
-    { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.1 },
-    {
-        name: 'cnpj',
-        header: 'CNPJ',
-        defaultFlex: 0.22,
-        type: 'string',
-        operator: 'contains',
-        value: '',
-        render: ({ data }: any) => {
-            const formattedValue = formatCPFCNPJ(data.cnpj)
-            return (
-                <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
-                    {formattedValue || data.cnpj}
-                </div>
-            )
-        },
-    },
-    { name: 'nmcontato', header: 'Contato', type: 'string', value: '', defaultFlex: 0.3 },
-    { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.2 },
-    { name: 'email',
-      header: 'E-mail',
-      type: 'string',
-      value: '',
-      defaultFlex: 0.3,
-      render: ({ data }: any) => {
-        const isValid = isValidEmail(data.email)
-        return (
-            <div style={{ color: isValid ? 'inherit' : 'red' }}>
-                {data.email}
-            </div>
-        )
-    },    
-    },
-    { name: 'idassociacao', header: 'ID da Entidade', type: 'number', value: '', defaultFlex: 0.18, filterEditor: NumberFilter },
-    { name: 'nmrazao', header: 'Nome da Entidade', type: 'string', value: '', defaultFlex: 0.6 },
-    { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.1 },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', value: '', defaultFlex: 0.2 },
-    {
-        name: 'excessao',
-        header: 'Situação',
-        type: 'string',
-        value: '',
-        defaultFlex: 0.3,
-        render: ({ data }: any) => (
-        <div style={{ color: data.excessao && data.excessao.startsWith('Erro') ? 'red' : 'green' }}>
-            {data.excessao}
-        </div>
-        )
-    }
-]
 
-const defaultFilterValue = [
-    { name: 'id', value: '', operator: 'contains' },
-    { name: 'cnpj', value: '', operator: 'contains' },
-    { name: 'nmcontato', value: '', operator: 'contains' },
-    { name: 'telefone', value: '', operator: 'contains' },
-    { name: 'email', value: '', operator: 'contains' },
-    { name: 'idassociacao', value: '', operator: 'contains' },
-    { name: 'iduf', value: '', operator: 'contains' },
-    { name: 'nmcidade', value: '', operator: 'contains' },
-    { name: 'nmrazao', value: '', operator: 'contains' },
-    { name: 'excessao', value: '', operator: 'contains' }
-]
 
 const InsertExcel = () => {
     const [nameValue, setNameValue] = useState('cnpj')
@@ -94,12 +31,185 @@ const InsertExcel = () => {
     const [newOrigem, setNewOrigem] = useState('')
     const user = useAppSelector((state) => state.auth.user)
     const [cpf, setCPF] = useState(user ? user.nucpf : '')
+    const [camposAlinvest, setcamposAlinvest] = useState(false)
 
     const navigate = useNavigate()
 
     const onChange = (val) => {
         setNameValue(val)
     }
+
+    const columns = [
+        { name: 'id', header: 'ID', type: 'number', value: '', defaultFlex: 0.1 },
+        {
+            name: 'cnpj',
+            header: 'CNPJ',
+            defaultFlex: 0.22,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const formattedValue = formatCPFCNPJ(data.cnpj)
+                return (
+                    <div style={{ color: formattedValue ? 'inherit' : 'red' }}>
+                        {formattedValue || data.cnpj}
+                    </div>
+                )
+            },
+        },
+        { name: 'nmcontato', header: 'Contato', type: 'string', value: '', defaultFlex: 0.3 },
+        { name: 'telefone', header: 'Telefone', type: 'string', value: '', defaultFlex: 0.2 },
+        { name: 'email',
+          header: 'E-mail',
+          type: 'string',
+          value: '',
+          defaultFlex: 0.3,
+          render: ({ data }: any) => {
+            const isValid = isValidEmail(data.email)
+            return (
+                <div style={{ color: isValid ? 'inherit' : 'red' }}>
+                    {data.email}
+                </div>
+            )
+        },   
+        },
+        {
+            name: 'st_cnae',
+            header: 'Descrição do CNAE',
+            defaultFlex: 1.6,
+            type: 'string',
+            operator: 'contains',
+            value: '',
+            render: ({ data }: any) => {
+                const text = data.st_cnae
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        { 
+            name: 'idassociacao',
+            header: 'Entidade', 
+            type: 'string', 
+            value: '', 
+            defaultFlex: 0.6,
+            render: ({ data }: any) => {
+                    const text = data.nmrazao
+                    const ide = data.idassociacao
+                    return (
+                        <Tooltip
+                            placement='left'
+                            title={
+                                <div>
+                                    {text}
+                                </div>
+                            }
+                        >
+                            <span className="cursor-pointer">{ide}</span>
+                        </Tooltip>
+                    );
+                },
+        },
+        { name: 'iduf', header: 'UF', type: 'string', value: '', defaultFlex: 0.1 },
+        { name: 'nmcidade', header: 'Cidade', type: 'string', value: '', defaultFlex: 0.2 },
+        { 
+            name: 'idprojeto', 
+            header: 'Projeto', 
+            type: 'string', 
+            value: '', 
+            defaultFlex: 0.6,
+            render: ({ data }: any) => {
+                const text = data.nmprojeto
+                const idp = data.idprojeto
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{idp}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        { 
+            name: 'idnucleo', 
+            header: 'Núcleo', 
+            type: 'string', 
+            value: '', 
+            defaultFlex: 0.6,
+            render: ({ data }: any) => {
+                const text = data.nmnucleo
+                const idn = data.idnucleo
+                return (
+                    <Tooltip
+                        placement='left'
+                        title={
+                            <div>
+                                {text}
+                            </div>
+                        }
+                    >
+                        <span className="cursor-pointer">{idn}</span>
+                    </Tooltip>
+                );
+            },
+         },
+        ...(camposAlinvest ? [
+            { name: 'setor_alinvest', header: 'Setor', type: 'string', value: '', defaultFlex: 0.1 },
+            { name: 'porte_alinvest', header: 'Porte', type: 'string', value: '', defaultFlex: 0.1 },
+            { name: 'instagram', header: 'Instagram', type: 'string', value: '', defaultFlex: 0.6 },
+            { name: 'linkedin', header: 'Linkedin', type: 'string', value: '', defaultFlex: 0.6 },
+            { name: 'facebook', header: 'Facebook', type: 'string', value: '', defaultFlex: 0.6 },
+        ] : []),
+        {
+            name: 'excessao',
+            header: 'Situação',
+            type: 'string',
+            value: '',
+            defaultFlex: 0.3,
+            render: ({ data }: any) => (
+            <div style={{ color: data.excessao && data.excessao.startsWith('Erro') ? 'red' : 'green' }}>
+                {data.excessao}
+            </div>
+            )
+        }
+    ];
+    
+    const defaultFilterValue = [
+        { name: 'id', value: '', operator: 'contains' },
+        { name: 'cnpj', value: '', operator: 'contains' },
+        { name: 'nmcontato', value: '', operator: 'contains' },
+        { name: 'telefone', value: '', operator: 'contains' },
+        { name: 'email', value: '', operator: 'contains' },
+        { name: 'idassociacao', value: '', operator: 'contains' },
+        { name: 'iduf', value: '', operator: 'contains' },
+        { name: 'nmcidade', value: '', operator: 'contains' },
+        { name: 'nmrazao', value: '', operator: 'contains' },
+        { name: 'excessao', value: '', operator: 'contains' },
+        { name: 'idprojeto', value: '', operator: 'contains' },
+        { name: 'nmprojeto', value: '', operator: 'contains' },
+        { name: 'idnucleo', value: '', operator: 'contains' },
+        { name: 'nmnucleo', value: '', operator: 'contains' },
+        { name: 'setor_alinvest', value: '', operator: 'contains' },
+        { name: 'porte_alinvest', value: '', operator: 'contains' },
+        { name: 'instagram', value: '', operator: 'contains' },
+        { name: 'facebook', value: '', operator: 'contains' },
+        { name: 'linkedin', value: '', operator: 'contains' },
+        { name: 'excessao', value: '', operator: 'contains' }
+    ]
 
     const onChangeOrigem = (selectedOption: any) => {
         setSelectedOrigens(selectedOption)
@@ -135,9 +245,23 @@ const InsertExcel = () => {
         }
     }
 
+    const fetchAlinvest = async () => {
+        try {
+            const response = await ApiService.fetchData({
+                url: `empresa-excel/alinvest?cpf=${cpf}`,
+                method: 'get',
+            })
+            const bool = response.data
+            setcamposAlinvest(bool)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
         fetchData()
         fetchOrigens()
+        fetchAlinvest()
     }, [cpf])
 
     const handleInsertClick = async () => {

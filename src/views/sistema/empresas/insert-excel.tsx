@@ -40,7 +40,7 @@ const ExcelUpload = () => {
             user_id: cpf
         }))
 
-        const requiredColumns = ['cnpj', 'contato', 'telefone', 'email', 'idassociacao']
+        const requiredColumns = ['cnpj']
         const missingColumns = requiredColumns.filter((column) => !Object.keys(modifiedData[0]).includes(column))
 
         if (missingColumns.length > 0) {
