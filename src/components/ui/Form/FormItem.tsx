@@ -13,7 +13,7 @@ export interface FormItemProps extends CommonProps {
     extra?: string | ReactNode
     htmlFor?: string
     invalid?: boolean | ''
-    label?: string
+    label?: string | React.ReactNode;
     labelClass?: string
     labelWidth?: string | number
     layout?: TypeAttributes.FormLayout

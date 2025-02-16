@@ -23,7 +23,7 @@ const appsRoute: Routes = [
     },
     {
         key: 'Anexos.adicionar',
-        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?/:substitutoId?`,
+        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?`,
         component: lazy(() => import('@/views/sistema/anexos/adicionar')),
     },    
     {
