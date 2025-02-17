@@ -25,9 +25,8 @@ const tipoValue = [
 
 const columns = [
     {
-        name: 'id',
+        name: 'anexo.id',
         header: 'ID',
-        columnName: 'empresa.idempresa',
         type: 'number',
         defaultFlex: 0.6,
         operator: 'eq',
@@ -57,16 +56,19 @@ const columns = [
         type: 'string',
         operator: 'contains',
         value: '',
-        render: ({ value, data }: any) => (
-            <Link
+        render: ({ value, data }: any) => {
+            const idAnexo = data['anexo.id'];
+            return (
+                <Link
 
-                className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_API_URL}/anexo/${data.id}/download`}
-                target='_blank'
-            >
-                {value}
-            </Link>
-        )
+                    className="menu-item-link max-w-md text-blue-500 underline"
+                    to={`${import.meta.env.VITE_API_URL}/anexo/${idAnexo}/download`}
+                    target='_blank'
+                >
+                    {value}
+                </Link>
+            )
+        }
     },
     {
         name: 'tipo_vinculo',
@@ -168,8 +170,8 @@ const columns = [
             return {
                 dateFormat: 'DD/MM/YYYY',
                 placeholder: 'dia/mês/ano'
-            } 
-            
+            }
+
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>
             moment(value).format(dateFormat) === 'Invalid date'
