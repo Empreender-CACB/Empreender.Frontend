@@ -56,16 +56,19 @@ const columns = [
         type: 'string',
         operator: 'contains',
         value: '',
-        render: ({ value, data }: any) => (
-            <Link
+        render: ({ value, data }: any) => {
+            const idAnexo = data['anexo.id'];
+            return (
+                <Link
 
-                className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_API_URL}/anexo/${data.id}/download`}
-                target='_blank'
-            >
-                {value}
-            </Link>
-        )
+                    className="menu-item-link max-w-md text-blue-500 underline"
+                    to={`${import.meta.env.VITE_API_URL}/anexo/${idAnexo}/download`}
+                    target='_blank'
+                >
+                    {value}
+                </Link>
+            )
+        }
     },
     {
         name: 'id_vinculo',
@@ -151,8 +154,8 @@ const columns = [
             return {
                 dateFormat: 'DD/MM/YYYY',
                 placeholder: 'dia/mês/ano'
-            } 
-            
+            }
+
         },
         render: ({ value, cellProps: { dateFormat } }: any) =>
             moment(value).format(dateFormat) === 'Invalid date'
@@ -229,11 +232,11 @@ const Anexos = () => {
                             Versão antiga
                         </Link>
                     </Button>
-                    <Button variant='solid' size='sm' 
+                    <Button variant='solid' size='sm'
                         onClick={() => {
                             window.open(`${import.meta.env.VITE_PHP_URL}/sistema/adminutils/acompanhamento-geral/quadro/cXVhZHJvMg==`)
                         }}
-                >Painel</Button>
+                    >Painel</Button>
                 </div>
             </div>
             <CustomReactDataGrid
