@@ -250,12 +250,14 @@ const AdicionarAnexo = () => {
         if (isTransferenciaLancamentoAcao && (idAnexoLancamento !== null && idAnexoLancamento !== 'null')) {
             formData.append('idAnexoLancamento', idAnexoLancamento!);
         }
+        
+        console.log(substitutoId, formData);
 
         try {
             const url = tipoVinculoSecundario && idVinculoSecundario
-                ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}/${substitutoId || ''}`
-                : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${substitutoId || ''}`;
-
+                ? `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}/${tipoVinculoSecundario}/${idVinculoSecundario}`
+                : `/anexos/storeAnexo/${tipoVinculo}/${idVinculo}`;
+            
             const response = await ApiService.fetchData({
                 url,
                 method: 'post',
