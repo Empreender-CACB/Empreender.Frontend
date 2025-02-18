@@ -7,8 +7,6 @@ import AnexosComponent from '../anexos/AnexosComponent';
 
 const ListarAnexos = () => {
     const { tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux } = useParams();
-    const [nomeVinculo, setNomeVinculo] = useState('');
-    const [nomeVinculoSecundario, setNomeVinculoSecundario] = useState('');
     const [breadcrumbItems, setBreadcrumbItems] = useState<{ label: string; link: string }[]>([]);
 
     useEffect(() => {
@@ -18,10 +16,7 @@ const ListarAnexos = () => {
                     url: `anexos/getVinculo/${tipoVinculo}/${idVinculo}${tipoVinculoAux && idVinculoAux ? `/${tipoVinculoAux}/${idVinculoAux}` : ''}`,
                     method: 'get',
                 });
-                const { nomeVinculo, nomeVinculoAux, breadcrumb } = vinculoResponse.data;
-
-                setNomeVinculo(nomeVinculo);
-                setNomeVinculoSecundario(nomeVinculoAux);
+                const { breadcrumb } = vinculoResponse.data;
 
                 setBreadcrumbItems([
                     { label: 'Início', link: '/' },

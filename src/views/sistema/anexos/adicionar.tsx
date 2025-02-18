@@ -11,7 +11,7 @@ import ApiService from '@/services/ApiService';
 import { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import capitalize from '@/components/ui/utils/capitalize';
-import { Notification, toast } from '@/components/ui';
+import { Notification, toast, Tooltip } from '@/components/ui';
 import { VscFile } from 'react-icons/vsc';
 
 const optionsSimNao = [
@@ -83,8 +83,10 @@ const AdicionarAnexo = () => {
     const [labelDocumento, setLabelDocumento] = useState('Adição de Documento');
     const [usuarios, setUsuarios] = useState<Array<{ label: string, value: string | number }>>([]);
     const [grupos, setGrupos] = useState<Array<{ label: string, value: string | number }>>([]);
+    const [tipoIdInicial, setTipoIdInicial] = useState('');
 
-    const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario, substitutoId } = useParams<string>();
+    const { tipoVinculo, idVinculo, tipoVinculoSecundario, idVinculoSecundario } = useParams<string>();
+    const substitutoId = params.get('idSubstituto');
     const idAnexoLancamento = params.get('idAnexoLancamento')
 
 
@@ -115,7 +117,7 @@ const AdicionarAnexo = () => {
                 );
 
                 const gruposResponse = await ApiService.fetchData({
-                    url: '/grupos',
+                    url: '/grupos?tipoGrupo=usuario',
                     method: 'get',
                 });
                 setGrupos(
@@ -188,6 +190,10 @@ const AdicionarAnexo = () => {
                     setRecursos(formattedRecursos);
                 }
 
+                if (substitutoId) {
+                    setLabelDocumento("Substituição de anexo");
+                }
+
             } catch (error) {
                 console.error('Erro ao buscar dados:', error);
             }
@@ -196,7 +202,6 @@ const AdicionarAnexo = () => {
         fetchData();
     }, [tipoVinculo, idVinculo, substitutoId]);
 
-    const [tipoIdInicial, setTipoIdInicial] = useState('');
 
     const query = new URLSearchParams(window.location.search);
     const redirectUrl = query.get("redirectUrl");
@@ -299,7 +304,7 @@ const AdicionarAnexo = () => {
                     initialValues={{
                         nome: '',
                         nomeArquivo: null,
-                        tipoId: '',
+                        tipoId: tipoIdInicial || '',
                         vencimento: null,
                         necessitaAprovacao: '',
                         descricao: '',
@@ -316,14 +321,7 @@ const AdicionarAnexo = () => {
                         vinculadosUsuarios: [],
                     }}
                     validationSchema={validationSchema}
-                    validate={(values) => {
-                        console.log('Validation step - values:', values);
-                        const errors = {};
-                        // Optionally, you can add custom validation logic here for debugging
-                        return errors;
-                    }}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log('Submitted values:', values);
                         handleSave(values);
                         setSubmitting(false);
                     }}
@@ -331,6 +329,7 @@ const AdicionarAnexo = () => {
                     {({ setFieldValue, values, errors, touched }) => {
                         useEffect(() => {
                             if (tipoIdInicial) {
+                                setFieldValue('tipoId', tipoIdInicial);
                                 buscarTipoArquivo(tipoIdInicial);
                             }
                             if (nomeArquivo) {
@@ -343,6 +342,7 @@ const AdicionarAnexo = () => {
                             const tipoArquivo = arquivosTipos.find((tipo: any) => tipo.id === tipoId);
 
                             if (!tipoArquivo) return;
+                            console.log('buscarTipoArquivo', tipoArquivo, tipoId);
 
                             if (tipoArquivo.obrigatorio === 'nao_aplica') {
                                 setFieldValue('necessitaAprovacao', 'n');
@@ -422,31 +422,50 @@ const AdicionarAnexo = () => {
                                                 className="flex-1 w-full md:w-1/6"
                                             >
                                                 <Field name="tipoId">
-                                                    {({ field, form }: any) => (
-                                                        <Select
-                                                            {...field}
-                                                            placeholder="Selecione o tipo do documento"
-                                                            options={arquivosTipos.map((tipo: any) => ({
-                                                                label: tipo.tipo,
-                                                                value: tipo.id,
-                                                            }))}
-                                                            value={
-                                                                form.values.tipoId
-                                                                    ? { label: arquivosTipos.find((tipo: any) => tipo.id === form.values.tipoId)?.tipo, value: form.values.tipoId }
-                                                                    : null
-                                                            }
-                                                            onChange={(option: any) => {
-                                                                form.setFieldValue('tipoId', option?.value);
-                                                                buscarTipoArquivo(option?.value);
-                                                            }}
-                                                            isDisabled={!!substitutoId}
-                                                        />
-                                                    )}
+                                                    {({ field, form }: any) => {
+                                                        // Busca a opção correspondente ao valor atual de tipoId
+                                                        const selectedOption = arquivosTipos.find((tipo: any) => tipo.id === form.values.tipoId);
+
+                                                        return (
+                                                            <Select
+                                                                {...field}
+                                                                placeholder="Selecione o tipo do documento"
+                                                                options={arquivosTipos.map((tipo: any) => ({
+                                                                    label: tipo.tipo,
+                                                                    value: tipo.id,
+                                                                }))}
+                                                                value={selectedOption ? { label: selectedOption.tipo, value: selectedOption.id } : null}
+                                                                onChange={(option: any) => {
+                                                                    form.setFieldValue('tipoId', option?.value);
+                                                                    buscarTipoArquivo(option?.value);
+                                                                }}
+                                                                isDisabled={!!substitutoId}
+                                                            />
+                                                        );
+                                                    }}
                                                 </Field>
                                             </FormItem>
 
+
+
                                             <FormItem
-                                                label="Acesso"
+                                                label={
+                                                    <div className="flex items-center">
+                                                        Acesso
+                                                        <Tooltip
+                                                            title={
+                                                                <div className="text-sm">
+                                                                    <p><strong>Livre:</strong> Todos os usuários têm acesso ao documento.</p><br></br>
+                                                                    <p><strong>Limitado:</strong> Somente usuários autorizados ou gestores podem acessar.</p><br></br>
+
+                                                                    <p><strong>Restrito:</strong> Apenas usuários específicos indicados podem acessar.</p>
+                                                                </div>
+                                                            }
+                                                        >
+                                                            <span className="text-gray-500 cursor-pointer ml-2">ℹ️</span>
+                                                        </Tooltip>
+                                                    </div>
+                                                }
                                                 asterisk
                                                 invalid={!!errors.acesso && touched.acesso}
                                                 errorMessage={errors.acesso}
