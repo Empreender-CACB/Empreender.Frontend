@@ -41,19 +41,19 @@ const InsertExcel = () => {
     }
 
     const setores = [
-        { id: 1, nome: "Agrícola, pecuária, pesca, mineração, florestal" },
-        { id: 2, nome: "Industrial, agroindústria, manufatura, transformação, artesanal, farmacêutica" },
-        { id: 3, nome: "Serviços, turismo, software, segurança, consultoria, transporte, comércio (atacado/varejo de bens e/ou serviços)" },
+        { id: 1, nome: "Agrícola, pecuária, pesqueira, mineral ou florestal" },
+        { id: 2, nome: "Industrial, agroindústria, transformação, artesanal ou farmacêutica" },
+        { id: 3, nome: "Serviços, turismo, software, segurança, assessoria, transporte, comércio (atacado ou varejo)" },
         { id: 4, nome: "Inovação, digitalização, conhecimento, gestão da informação" },
         { id: 5, nome: "Outro" }
     ]
     
     const tamanhosEmpresa = [
-        { id: 1, nome: "MEI ou Microempresa" },
-        { id: 2, nome: "Pequena" },
+        { id: 1, nome: "MEI ou microempresa" },
+        { id: 2, nome: "Pequeno porte" },
         { id: 3, nome: "Média" },
         { id: 4, nome: "Grande" },
-        { id: 5, nome: "Outro" }
+        { id: 5, nome: "Outra" }
     ]
     
 
@@ -370,6 +370,8 @@ const InsertExcel = () => {
         try {
             const payload = excelData.map(empresa => ({
                 ...empresa,
+                setor_alinvest: setores.find(setor => setor.id === empresa.setor_alinvest)?.nome || null,
+                porte_alinvest: tamanhosEmpresa.find(setor => setor.id === empresa.porte_alinvest)?.nome || null,
                 origem: selectedOrigens.value,
                 cpf: cpf
             }))
