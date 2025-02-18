@@ -2,9 +2,11 @@ import TagActiveInative from '@/components/ui/Tag/TagActiveInative'
 import { Link } from 'react-router-dom'
 
 export const NucleosCard = ({ data }) => {
+    const link = `${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(data.idnucleo))}`
+
     return (
         <Link
-            to={`./${data.idnucleo}`}
+            to={link}
             smooth={true}
             duration={500}
             offset={-80}
