@@ -30,10 +30,9 @@ const handleDownload = async (id: number, nomeArquivo: string) => {
         const response = await ApiService.fetchData({
             url: `/anexo/${id}/download`,
             method: 'GET',
-            responseType: 'blob', // Garante que a resposta seja tratada como arquivo binário
+            responseType: 'blob',
         });
 
-        // Criando um Blob com o tipo de arquivo correto
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
         const url = window.URL.createObjectURL(blob);
 
@@ -54,12 +53,8 @@ const handleDownload = async (id: number, nomeArquivo: string) => {
             document.body.removeChild(link);
         }
 
-        // Revogando o URL após o uso
         window.URL.revokeObjectURL(url);
     } catch (error) {
-        console.error('Erro ao baixar o arquivo:', error);
-
-        // Exibir notificação para o usuário
         toast.push(
             <Notification title="Acesso negado" type="danger">
                 Você não tem permissão para baixar este arquivo.
