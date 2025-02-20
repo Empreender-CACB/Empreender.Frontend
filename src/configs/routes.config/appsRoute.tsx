@@ -23,7 +23,7 @@ const appsRoute: Routes = [
     },
     {
         key: 'Anexos.adicionar',
-        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?/:substitutoId?`,
+        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?`,
         component: lazy(() => import('@/views/sistema/anexos/adicionar')),
     },    
     {
@@ -287,7 +287,21 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/pendencias/adicionar/:temBloqueio/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?/:idPendencia?`,
         component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
     },
-    
+    {
+        key: 'Pendencias.listar',
+        path: `${APP_PREFIX_PATH}/pendencias/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/pendencias/index')),
+    },    
+    {
+        key: 'Anexos.listar',
+        path: `${APP_PREFIX_PATH}/anexos/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/anexos/listar')),
+    },    
+    {
+        key: 'Anexos.editar',
+        path: `${APP_PREFIX_PATH}/anexos/editar/:idAnexo`,
+        component: lazy(() => import('@/views/sistema/anexos/editar')),
+    },  
 ]
 
 export default appsRoute

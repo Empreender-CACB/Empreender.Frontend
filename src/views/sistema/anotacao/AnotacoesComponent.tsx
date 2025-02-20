@@ -29,7 +29,7 @@ const leituraOptions = [
     { name: 'Não Lida', value: 'naoLida', color: 'bg-green-600' },
 ];
 
-const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, temAnexos }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string; idVinculoAux: string; temAnexos: boolean }) => {
+const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, temAnexos }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string | undefined; idVinculoAux: string |undefined; temAnexos: boolean }) => {
 
     const { nucpf } = useAppSelector((state) => state.auth.user);
 
