@@ -83,7 +83,7 @@ const columns = [
                 <Link
                     className="menu-item-link max-w-md"
                     to={`${import.meta.env.VITE_PHP_URL
-                        }/sistema/anexo/detalhe/bid/${btoa(data.id)}`}
+                        }/sistema/anexo/detalhe/bid/${btoa(data['anexo.id'])}`}
                 >
                     {value}
                 </Link>
@@ -100,7 +100,7 @@ const columns = [
             <div className="flex items-center gap-2">
                 <button
                     className="text-blue-600 underline cursor-pointer"
-                    onClick={() => handleDownload(data.id, value)}
+                    onClick={() => handleDownload(data['anexo.id'], value)}
                 >
                     {value}
                 </button>
