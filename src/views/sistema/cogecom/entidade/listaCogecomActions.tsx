@@ -50,7 +50,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
             {
                 label: 'Aprovar Adesão',
                 icon: <IoCheckmarkCircle />,
-                onClick: () => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')
+                onClick: () => openStatusModal('Habilitada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')
             }
         );
     }
@@ -68,7 +68,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
             actionItems.push({
                 label: 'Aprovar Adesão',
                 icon: <IoCheckmarkCircle />,
-                onClick: () => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')
+                onClick: () => openStatusModal('Habilitada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')
             });
         }
         if (data.isGestor) {
@@ -87,11 +87,11 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         }
     }
 
-    if (data.status === 'Vinculada') {
+    if (data.status === 'Habilitada') {
         actionItems.push({
-            label: 'Desvincular Entidade',
+            label: 'Desabilitar Entidade',
             icon: <IoUnlinkSharp />,
-            onClick: () => openStatusModal('Desvinculada', 'Desvincular Entidade', 'Deseja desvincular esta entidade?')
+            onClick: () => openStatusModal('Não habilitada', 'Desabilitar Entidade', 'Deseja desabilitar esta entidade?')
         });
     }
 
