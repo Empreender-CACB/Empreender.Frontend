@@ -32,12 +32,12 @@ const statusTags: any = {
         label: 'Cancelada', 
         class: 'bg-red-500 text-white dark:bg-red-600 dark:text-red-50' 
     },
-    'Vinculada': { 
-        label: 'Vinculada', 
+    'Habilitada': { 
+        label: 'Habilitada', 
         class: 'bg-green-500 text-white dark:bg-green-600 dark:text-green-50' 
     },
-    'Desvinculada': { 
-        label: 'Desvinculada', 
+    'Não habilitada': { 
+        label: 'Não habilitada', 
         class: 'bg-gray-500 text-white dark:bg-gray-600 dark:text-gray-50' 
     },
 };
@@ -155,7 +155,7 @@ const ListaCogecom = () => {
             </div>
 
             <CustomReactDataGrid
-                filename="COGECOM"
+                filename="PoupMax"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/cogecom-entidade-lista?reload=${reload}`}
             />
