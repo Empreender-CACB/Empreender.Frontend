@@ -31,7 +31,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
         <div className="flex-wrap inline-flex xl:flex items-center gap-2">
             {(status === 'Novo' || status === 'Desvinculada') && isGestor && (
                 <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processor de adesão ao COGECOM?')}>
-                    Adesão COGECOM
+                    Adesão PoupMax
                 </Button>
             )}
 
