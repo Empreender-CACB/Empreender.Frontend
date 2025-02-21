@@ -93,7 +93,7 @@ const columns = [
                 {/* Nome do arquivo como um link para download */}
                 <button
                     className="text-blue-600 underline cursor-pointer"
-                    onClick={() => handleDownload(data.id, value)}
+                    onClick={() => handleDownload(data['anexo.id'], value)}
                 >
                     {value}
                 </button>
