@@ -74,7 +74,7 @@ const columns = [
         render: ({ value, data }: any) => (
             <Link
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${data.id}`}
+                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${data['anexo.id']}`}
                 target='_blank'
             >
                 {value}
@@ -93,7 +93,7 @@ const columns = [
                 {/* Nome do arquivo como um link para download */}
                 <button
                     className="text-blue-600 underline cursor-pointer"
-                    onClick={() => handleDownload(data.id, value)}
+                    onClick={() => handleDownload(data['anexo.id'], value)}
                 >
                     {value}
                 </button>
