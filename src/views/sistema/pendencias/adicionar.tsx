@@ -208,14 +208,14 @@ const PendenciaForm = () => {
                         <Form>
                             <div className="mb-6">
                                 <h5 className="text-xl font-semibold text-gray-700 mb-4">
-                                    Adicionando pendência em:
+                                    Adição de pendência
                                 </h5>
-                                <div className="flex items-center space-x-2">
+                                {/* <div className="flex items-center space-x-2">
                                     <Tag className="bg-gray-400 text-white border-0 rounded">{capitalize(tipoVinculo || '')}</Tag>
                                     <Tag className="bg-indigo-600 text-white border-0 rounded">{nomeVinculo}</Tag>
                                     {tipoVinculoAux && <Tag className="bg-gray-400 text-white border-0 rounded">{capitalize(tipoVinculoAux || '')}</Tag>}
                                     {nomeVinculoSecundario && <Tag className="bg-indigo-600 text-white border-0 rounded">{nomeVinculoSecundario}</Tag>}
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="mb-6">

@@ -34,7 +34,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
 
     if (data.status === 'Novo' || data.status === 'Desvinculada') {
         actionItems.push({
-            label: 'Adesão COGECOM',
+            label: 'Adesão PoupMax',
             icon: <IoArrowForward />,
             onClick: () => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processo de adesão ao COGECOM?')
         });

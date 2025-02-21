@@ -307,6 +307,11 @@ const appsRoute: Routes = [
         component: lazy(() => import('@/views/sistema/cogecom/detalhes')),
     },
     {
+        key: 'Pendencias.listar',
+        path: `${APP_PREFIX_PATH}/pendencias/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/pendencias/index')),
+    },    
+    {
         key: 'Anexos.listar',
         path: `${APP_PREFIX_PATH}/anexos/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
         component: lazy(() => import('@/views/sistema/anexos/listar')),

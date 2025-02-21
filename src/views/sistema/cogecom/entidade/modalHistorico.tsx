@@ -42,7 +42,7 @@ const HistoricoCogecomModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose,
         <Dialog isOpen={isOpen} onClose={onClose} width={800}>
             <div>
                 <div className="flex items-center mb-4">
-                    <h5 className="mr-4">Histórico do COGECOM</h5>
+                    <h5 className="mr-4">Histórico PoupMax</h5>
                     <Button type="button" onClick={toggleOrder} className="flex items-center">
                         {orderBy === 'asc' ? 'Mais antigos' : 'Mais recentes'} <FaSort className="ml-2" />
                     </Button>

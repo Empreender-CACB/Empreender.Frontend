@@ -155,7 +155,7 @@ const ListaCogecom = () => {
             </div>
 
             <CustomReactDataGrid
-                filename="COGECOM"
+                filename="PoupMax"
                 columns={columns}
                 url={`${import.meta.env.VITE_API_URL}/cogecom-entidade-lista?reload=${reload}`}
             />
