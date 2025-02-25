@@ -26,7 +26,6 @@ const AjudaAtendimentoCards = () => {
         {
             label: 'Documentos',
             path: `/sistema/ajuda-atendimento/documentos`,
-            recurso: 'paineis_zoho',
             description: 'Painel com informações do programa Empreender.',
             icon: <HiFolderOpen className="w-12 h-12 text-orange-500" />,
         },
