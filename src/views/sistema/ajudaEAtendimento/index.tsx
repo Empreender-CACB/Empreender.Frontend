@@ -79,13 +79,6 @@ const AjudaAtendimentoCards = () => {
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold mb-2">Ajuda e Atendimento</h1>
                 <p className="text-gray-600">Encontre respostas rapidamente ou entre em contato com nosso suporte.</p>
-                <div className="mt-6 flex justify-center">
-                    <Input
-                        placeholder="Pesquisar..."
-                        className="w-full max-w-md"
-                        suffix={<HiSearch className="text-gray-400" />}
-                    />
-                </div>
             </div>
 
             {/* Cards */}
