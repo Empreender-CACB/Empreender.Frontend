@@ -321,6 +321,16 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/anexos/editar/:idAnexo`,
         component: lazy(() => import('@/views/sistema/anexos/editar')),
     },  
+    {
+        key: 'AjudaAtendimento.index',
+        path: `${APP_PREFIX_PATH}/ajuda-atendimento`,
+        component: lazy(() => import('@/views/sistema/ajudaEAtendimento/index')),
+    }, 
+    {
+        key: 'AjudaAtendimento.documentos',
+        path: `${APP_PREFIX_PATH}/ajuda-atendimento/documentos`,
+        component: lazy(() => import('@/views/sistema/ajudaEAtendimento/documentos')),
+    },   
 ]
 
 export default appsRoute

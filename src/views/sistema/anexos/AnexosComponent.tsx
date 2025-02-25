@@ -74,7 +74,7 @@ const columns = [
         render: ({ value, data }: any) => (
             <Link
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${data['anexo.id']}`}
+                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(data['anexo.id'])}`}
                 target='_blank'
             >
                 {value}
