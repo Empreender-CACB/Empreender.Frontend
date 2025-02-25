@@ -24,16 +24,23 @@ const AjudaAtendimentoCards = () => {
             icon: <HiDocumentText className="w-12 h-12 text-yellow-500" />,
         },
         {
-            label: 'Fale Conosco',
-            path: 'mailto:suportepde@cacb.org.br?subject=Fale%20Conosco',
-            description: 'Entre em contato com nossa equipe de suporte.',
-            icon: <HiChatAlt className="w-12 h-12 text-blue-500" />,
+            label: 'Documentos',
+            path: `/sistema/ajuda-atendimento/documentos`,
+            recurso: 'paineis_zoho',
+            description: 'Painel com informações do programa Empreender.',
+            icon: <HiFolderOpen className="w-12 h-12 text-orange-500" />,
         },
         {
             label: 'FAQ',
             path: `${import.meta.env.VITE_PHP_URL}/sistema/faq/index`,
             description: 'Perguntas frequentes e respostas detalhadas.',
             icon: <HiQuestionMarkCircle className="w-12 h-12 text-green-500" />,
+        },
+        {
+            label: 'Fale Conosco',
+            path: 'mailto:suportepde@cacb.org.br?subject=Fale%20Conosco',
+            description: 'Entre em contato com nossa equipe de suporte.',
+            icon: <HiChatAlt className="w-12 h-12 text-blue-500" />,
         },
         {
             label: 'LGPD',
@@ -60,16 +67,13 @@ const AjudaAtendimentoCards = () => {
             description: 'Painel com informações do programa Empreender.',
             icon: <HiUserGroup className="w-12 h-12 text-pink-500" />,
         },
-        {
-            label: 'Documentos',
-            path: `/sistema/ajuda-atendimento/documentos`,
-            recurso: 'paineis_zoho',
-            description: 'Painel com informações do programa Empreender.',
-            icon: <HiFolderOpen className="w-12 h-12 text-orange-500" />,
-        },
     ]
 
-    const filteredOptions = ajudaOptions.filter(
+    const sortedOptions = [...ajudaOptions].sort((a, b) =>
+        a.label.localeCompare(b.label, 'pt', { sensitivity: 'base' })
+    )
+
+    const filteredOptions = sortedOptions.filter(
         (option) => !option.recurso || recursos.includes(option.recurso)
     )
 
