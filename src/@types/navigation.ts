@@ -15,6 +15,9 @@ export interface Documento {
     nome: string
     id: number
     temNovidade: boolean
+    tipoArquivo: string,
+    dataInclusao: Date,
+    descricao: string
 }
 
 export interface GrupoDocumento {
