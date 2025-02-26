@@ -36,15 +36,29 @@ const handleDownload = async (id: number, nomeArquivo: string) => {
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
         const url = window.URL.createObjectURL(blob);
 
-        // Verifica se o arquivo pode ser visualizado no navegador
         const visualizavelNoNavegador = response.headers['content-type'].includes('pdf') ||
                                          response.headers['content-type'].includes('image') ||
                                          response.headers['content-type'].includes('text');
 
         if (visualizavelNoNavegador) {
-            window.open(url, '_blank'); // Abre no navegador
+            const novaAba = window.open(url, '_blank');
+            if (!novaAba) {
+                alert('Por favor, habilite pop-ups para visualizar o arquivo.');
+                return;
+            }
+
+            setTimeout(() => {
+                novaAba.document.body.innerHTML = `
+                    <div style="position: fixed; top: 10px; right: 15px; padding: 10px; background: rgba(1, 1, 1, 0.9); border: 1px solid white;  border-radius: 5px;">
+                        <a href="${url}" download="${nomeArquivo}" style="color: white; font-weight: bold; text-decoration: none; border-radius: 5px;">
+                            ⬇ Baixar Arquivo
+                        </a>
+                    </div>
+                    <iframe src="${url}" style="width: 100%; height: 100vh; border: none;"></iframe>
+                `;
+            }, 1000);
         } else {
-            // Criando um link temporário para baixar o arquivo
+            // **Baixa diretamente**
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', nomeArquivo);
@@ -52,8 +66,6 @@ const handleDownload = async (id: number, nomeArquivo: string) => {
             link.click();
             document.body.removeChild(link);
         }
-
-        window.URL.revokeObjectURL(url);
     } catch (error) {
         toast.push(
             <Notification title="Acesso negado" type="danger">
