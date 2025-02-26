@@ -119,6 +119,15 @@ const publicRoute: Routes = [
         component: lazy(() => import('@/views/anexos/download')),
         meta: { layout: 'blank'},
     },
+    {
+        key: 'pesquisa-teste',
+        path: `/pesquisa-cef`,
+        component: lazy(() => import('@/views/pesquisa-teste')),
+        meta: {
+            layout: 'blank',
+            footer: false,
+        },
+    },
 ]
 
 export default publicRoute
