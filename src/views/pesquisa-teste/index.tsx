@@ -15,7 +15,7 @@ function PesquisaTeste() {
     }, []);
 
     return (
-        <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }} className=" bg-white py-12 px-4 sm:px-6 lg:px-8">
+        <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }} className=" h-auto bg-white py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto mb-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
             <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" alt="CACB"/>
