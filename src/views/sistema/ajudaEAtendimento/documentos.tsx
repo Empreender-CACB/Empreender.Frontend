@@ -81,11 +81,8 @@ const Documentos = () => {
 
     return (
         <div className="flex h-full p-6 gap-6">
-            {/* Sidebar - Grupos */}
             <div className="w-1/4 border-r border-gray-300 pr-4">
                 <h2 className="text-xl font-semibold mb-4">Grupos</h2>
-
-                {/* Input de Busca */}
                 <div className="relative mb-4">
                     <input
                         type="text"
@@ -97,7 +94,6 @@ const Documentos = () => {
                     <FaSearch className="absolute left-3 top-3 text-gray-400" />
                 </div>
 
-                {/* Lista de Grupos */}
                 <ul className="space-y-2">
                     {filteredGrupos.length > 0 ? (
                         filteredGrupos.map((grupo) => (
@@ -113,7 +109,7 @@ const Documentos = () => {
                                 onClick={() => setSelectedGroupName(grupo.grupo)}
                             >
                                 <span>{grupo.grupo}</span>
-                                {grupo.temNovidade && <span className="text-red-500 text-sm ml-2">Novo!</span>}
+                                {grupo.temNovidade && <span className="text-red-500 text-sm ml-2">Recente!</span>}
                             </li>
                         ))
                     ) : (
@@ -122,7 +118,6 @@ const Documentos = () => {
                 </ul>
             </div>
 
-            {/* Conteúdo - Documentos */}
             <div className="w-3/4">
                 <h2 className="text-xl font-semibold mb-4">
                     {selectedGroup ? selectedGroup.grupo : 'Nenhum grupo selecionado'}
@@ -134,7 +129,7 @@ const Documentos = () => {
                             <Card key={doc.id} className="p-4 hover:shadow-lg transition-shadow relative">
                                 {doc.temNovidade && (
                                     <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                                        Novo
+                                        Recente
                                     </span>
                                 )}
 
