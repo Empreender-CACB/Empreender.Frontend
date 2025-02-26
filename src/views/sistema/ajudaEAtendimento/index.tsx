@@ -26,13 +26,13 @@ const AjudaAtendimentoCards = () => {
         {
             label: 'Documentos',
             path: `/sistema/ajuda-atendimento/documentos`,
-            description: 'Painel com informações do programa Empreender.',
+            description: 'Seção de documentos do portal.',
             icon: <HiFolderOpen className="w-12 h-12 text-orange-500" />,
         },
         {
             label: 'FAQ',
             path: `${import.meta.env.VITE_PHP_URL}/sistema/faq/index`,
-            description: 'Perguntas frequentes e respostas detalhadas.',
+            description: 'Perguntas frequentes e suas respostas.',
             icon: <HiQuestionMarkCircle className="w-12 h-12 text-green-500" />,
         },
         {
@@ -46,26 +46,7 @@ const AjudaAtendimentoCards = () => {
             path: '#',
             description: 'Informações sobre nossa política de privacidade.',
             icon: <HiShieldCheck className="w-12 h-12 text-red-500" />,
-        },
-        {
-            label: 'Liberações',
-            path: `${import.meta.env.VITE_PHP_URL}/sistema/liberacoes/`,
-            description: 'Acompanhe liberações recentes do sistema.',
-            icon: <HiClipboardCheck className="w-12 h-12 text-indigo-500" />,
-        },
-        {
-            label: 'Painel Covid',
-            path: `${import.meta.env.VITE_PHP_URL}/sistema/faq/paineis-zoho/painel/covid`,
-            description: 'Dados e informações sobre o impacto da COVID-19.',
-            icon: <HiChartBar className="w-12 h-12 text-purple-500" />,
-        },
-        {
-            label: 'Painel Empreender',
-            path: `${import.meta.env.VITE_PHP_URL}/sistema/faq/paineis-zoho/painel/empreender`,
-            recurso: 'paineis_zoho',
-            description: 'Painel com informações do programa Empreender.',
-            icon: <HiUserGroup className="w-12 h-12 text-pink-500" />,
-        },
+        }
     ]
 
     const sortedOptions = [...ajudaOptions].sort((a, b) =>
@@ -81,7 +62,6 @@ const AjudaAtendimentoCards = () => {
             {/* Header */}
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold mb-2">Ajuda e Atendimento</h1>
-                <p className="text-gray-600">Encontre respostas rapidamente ou entre em contato com nosso suporte.</p>
             </div>
 
             {/* Cards */}
