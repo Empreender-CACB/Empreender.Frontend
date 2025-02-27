@@ -151,7 +151,7 @@ const ListaCogecom = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex items-center justify-between mb-4">
-                <h3>Lista Geral - COGECOM</h3>
+                <h3>Lista Geral - Poup Max</h3>
             </div>
 
             <CustomReactDataGrid
