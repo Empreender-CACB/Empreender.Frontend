@@ -147,7 +147,7 @@ const CogecomEntidade = () => {
                                     <div className="rounded-2xl overflow-hidden w-full">
                                         <img
                                             src="/img/cogecom.png"
-                                            alt="Banner do projeto COGECOM"
+                                            alt="Banner do projeto Poup Max"
                                             className="w-full max-h-[150px] object-contain rounded-2xl"
                                         />
                                     </div>
@@ -210,7 +210,7 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir anotações relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir anotações relacionadas ao Poup Max.</p>
                                 </div>
                             )}
                         </TabContent>
@@ -224,7 +224,7 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir documentos relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir documentos relacionadas ao Poup Max.</p>
                                 </div>
                             )}
 
@@ -242,7 +242,7 @@ const CogecomEntidade = () => {
                                 />
                             ) : (
                                 <div className="text-center text-gray-500">
-                                    <p>Nenhum dado encontrado para exibir pendencias relacionadas ao COGECOM.</p>
+                                    <p>Nenhum dado encontrado para exibir pendencias relacionadas ao Poup Max.</p>
                                 </div>
                             )}
 
