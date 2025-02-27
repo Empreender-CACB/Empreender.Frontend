@@ -26,7 +26,7 @@ const HistoricoCogecomModal: React.FC<HistoricoModalProps> = ({ isOpen, onClose,
                     });
                     setHistorico(response.data);
                 } catch (error) {
-                    console.error('Erro ao buscar histórico do COGECOM:', error);
+                    console.error('Erro ao buscar histórico do Poup Max:', error);
                 }
             };
 

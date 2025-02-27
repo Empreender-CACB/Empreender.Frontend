@@ -149,7 +149,7 @@ const CogecomEntidade = () => {
                                     <div className="rounded-2xl overflow-hidden w-full">
                                         <img
                                             src="/img/cogecom.png"
-                                            alt="Banner do projeto COGECOM"
+                                            alt="Banner do projeto Poup Max"
                                             className="w-full max-h-[150px] object-contain rounded-2xl"
                                         />
                                     </div>

@@ -36,7 +36,7 @@ const ListaCogecomActions = ({ data, onUpdate }: { data: any, onUpdate?: () => v
         actionItems.push({
             label: 'Adesão PoupMax',
             icon: <IoArrowForward />,
-            onClick: () => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processo de adesão ao COGECOM?')
+            onClick: () => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processo de adesão ao Poup Max?')
         });
     }
 
