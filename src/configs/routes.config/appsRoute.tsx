@@ -311,6 +311,11 @@ const appsRoute: Routes = [
         key: 'AjudaAtendimento.documentos',
         path: `${APP_PREFIX_PATH}/ajuda-atendimento/documentos`,
         component: lazy(() => import('@/views/sistema/ajudaEAtendimento/documentos')),
+    }, 
+    {
+        key: 'Prestcontas.tranformarArquivo',
+        path: `${APP_PREFIX_PATH}/prestcontas/transforma-arquivo`,
+        component: lazy(() => import('@/views/sistema/prestcontas/transforma-arquivo')),
     },   
 ]
 

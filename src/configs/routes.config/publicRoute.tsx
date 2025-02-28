@@ -32,15 +32,6 @@ const publicRoute: Routes = [
             footer: false,
         },
     },
-/*     {
-        key: 'sistema.showExcel',
-        path: `/show-excel`,
-        component: lazy(() => import('@/views/sistema/empresas/insert-excel2')),
-        meta: {
-            pageContainerType: 'gutterless',
-            footer: false,
-        },
-    }, */
     {
         key: 'cadastro_empresa',
         path: `/cadastro/empresa`,
