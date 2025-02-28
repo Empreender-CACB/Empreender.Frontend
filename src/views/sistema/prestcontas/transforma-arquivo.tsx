@@ -3,6 +3,7 @@ import { Button } from '@/components/ui'
 import { Container } from '@/components/shared'
 import { HiOutlineCloudUpload } from 'react-icons/hi'
 import { SiMicrosoftexcel } from 'react-icons/si'
+import ApiService from '@/services/ApiService'
 
 const TransformaArquivo = () => {
     const [file, setFile] = useState<File | null>(null)
@@ -20,24 +21,29 @@ const TransformaArquivo = () => {
             alert('Por favor, selecione um arquivo.')
             return
         }
-
+    
         setLoading(true)
         const formData = new FormData()
         formData.append('input_file', file)
     
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/prestcontas/process-excel`, {
+            const response = await ApiService.fetchData({
+                url: '/prestcontas/process-excel',
                 method: 'POST',
-                body: formData,
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                responseType: 'blob', 
             })
     
-            if (!response.ok) {
+            if (response.status !== 200) {
                 throw new Error('Erro ao processar o arquivo')
             }
     
-            const blob = await response.blob()
+            const blob = response.data
             const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '')
-            const fileName = `arquivo_transformado_${timestamp}.xlsx`    
+            const fileName = `arquivo_transformado_${timestamp}.xlsx`
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement('a')
             link.href = url
@@ -46,13 +52,27 @@ const TransformaArquivo = () => {
             link.click()
             document.body.removeChild(link)
             window.URL.revokeObjectURL(url)
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao processar o arquivo:', error)
-            alert('Erro ao processar o arquivo.')
+            
+            if (error.response && error.response.data) {
+                try {
+                    const reader = new FileReader()
+                    reader.onload = () => {
+                        const errorMsg = JSON.parse(reader.result as string).error || 'Erro desconhecido'
+                        alert(errorMsg)
+                    }
+                    reader.readAsText(error.response.data)
+                } catch (parseError) {
+                    alert('Erro ao processar o arquivo.')
+                }
+            } else {
+                alert('Erro ao processar o arquivo.')
+            }
         } finally {
             setLoading(false)
         }
-    }
+    }    
 
     return (
         <Container className="flex items-center justify-center my-8">
