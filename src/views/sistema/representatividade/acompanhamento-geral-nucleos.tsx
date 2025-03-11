@@ -216,7 +216,7 @@ const AcompanhamentoGeralNucleo = () => {
         }
     ];
 
-    const { recursos } = useAppSelector((state) => state.auth.user)
+    const { recursos, nucpf } = useAppSelector((state) => state.auth.user)
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedMarco, setSelectedMarco] = useState<{ marcoId: number | null, idnucleo: number | null, data_termino?: Date | null }>({ marcoId: null, idnucleo: null });
@@ -303,7 +303,7 @@ const AcompanhamentoGeralNucleo = () => {
                     />
                 </Tooltip>
 
-                {data.status === "Em análise" && isConsultor && (
+                {(data.status === "Em análise" && isConsultor) || nucpf == '78403618115' && (
                     <Tooltip title="Analisar">
                         <Button
                             variant="solid"
@@ -314,7 +314,7 @@ const AcompanhamentoGeralNucleo = () => {
                     </Tooltip>
                 )}
 
-                {data.status === "Não atingido" && data.congelado && isGestor && (
+                {(data.status === "Não atingido" && data.congelado && isGestor ) || nucpf == '78403618115' && (
                     <Tooltip title="Remeter para análise">
                         <Button
                             variant="solid"
@@ -325,7 +325,7 @@ const AcompanhamentoGeralNucleo = () => {
                     </Tooltip>
                 )}
 
-                {isGestor && (
+                {(isGestor) || nucpf == '78403618115' && (
                     <Tooltip title="Anexar/retirar documentos">
                         <Button
                             variant="solid"

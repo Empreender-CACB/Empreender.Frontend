@@ -39,12 +39,12 @@ const cogecomStatusTags = {
         label: 'Cancelada',
         class: 'bg-red-500 text-white dark:bg-red-600 dark:text-red-50',
     },
-    Vinculada: {
-        label: 'Vinculada',
+    Habilitada: {
+        label: 'Habilitada',
         class: 'bg-green-500 text-white dark:bg-green-600 dark:text-green-50',
     },
-    Desvinculada: {
-        label: 'Desvinculada',
+    'Não habilitada': {
+        label: 'Não habilitada',
         class: 'bg-gray-500 text-white dark:bg-gray-600 dark:text-gray-50',
     },
 };
@@ -149,7 +149,7 @@ const CogecomEntidade = () => {
                                     <div className="rounded-2xl overflow-hidden w-full">
                                         <img
                                             src="/img/cogecom.png"
-                                            alt="Banner do projeto COGECOM"
+                                            alt="Banner do projeto Poup Max"
                                             className="w-full max-h-[150px] object-contain rounded-2xl"
                                         />
                                     </div>

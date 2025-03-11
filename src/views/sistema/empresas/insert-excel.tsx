@@ -40,7 +40,7 @@ const ExcelUpload = () => {
             user_id: cpf
         }))
 
-        const requiredColumns = ['cnpj', 'contato', 'telefone', 'email', 'idassociacao']
+        const requiredColumns = ['cnpj']
         const missingColumns = requiredColumns.filter((column) => !Object.keys(modifiedData[0]).includes(column))
 
         if (missingColumns.length > 0) {
@@ -104,7 +104,7 @@ const ExcelUpload = () => {
             size="xs"
             icon={<FaQuestion />}
             onClick={() => {
-              window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTE2OTg=')
+              window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTQyNDkw')
             }}
           />
         </Tooltip>
@@ -112,21 +112,18 @@ const ExcelUpload = () => {
       <div className="flex justify-end items-center space-x-4 mb-4">
       <div className="flex-grow flex flex-col items-start">
         <p className="text-red-500 text-lg text-left">
-          1 - Por favor, assegure-se de que o arquivo Excel (Extensão .xlsx) contenha as seguintes colunas: cnpj, contato, telefone, email e idassociacao.
-        </p>
-        <p className="text-red-500 mt-2 text-lg text-left">
-          2 - Atenção, a inserção de um novo arquivo apaga informações de uma importação anterior. Caso precise dos dados, exporte a tabela previamente.
-        </p>
-        <p className="text-red-500 mt-2 text-lg text-left">
-          3 - Caso precise de um molde de arquivo ".xlsx",{' '}
+          1 - Assegure-se de que o arquivo Excel (Extensão .xlsx) contenha a coluna cnpj, para informações sobre a inserção de outros dados, consulte o arquivo{' '}        
           <a
             href="#"
             className="text-blue-500 underline"
-            onClick={() => window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTIwMzQ=')}
+            onClick={() => window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTQyNDQx')}
           >
-            clique aqui
+            modelo
           </a>
-          {' '}para baixar.
+          {' '}
+        </p>
+        <p className="text-red-500 mt-2 text-lg text-left">
+          2 - Atenção, a inserção de um novo arquivo apaga informações de uma importação anterior. Caso precise dos dados, exporte a tabela previamente.
         </p>
 
       </div>

@@ -30,8 +30,8 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
     return (
         <div className="flex-wrap inline-flex xl:flex items-center gap-2">
             {(status === 'Novo' || status === 'Desvinculada') && isGestor && (
-                <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processor de adesão ao COGECOM?')}>
-                    Adesão COGECOM
+                <Button type="button" size="sm" variant="solid" onClick={() => openStatusModal('Em avaliação', 'Confirmar Adesão', 'Deseja iniciar seu processor de adesão ao Poup Max?')}>
+                    Adesão PoupMax
                 </Button>
             )}
 
@@ -52,7 +52,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                         size="sm"
                         variant="solid"
                         color="green-600"
-                        onClick={() => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
+                        onClick={() => openStatusModal('Habilitada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
                     >
                         Aprovar Adesão
                     </Button>
@@ -80,7 +80,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                             size="sm"
                             variant="solid"
                             color="green-600"
-                            onClick={() => openStatusModal('Vinculada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
+                            onClick={() => openStatusModal('Habilitada', 'Aprovar Adesão', 'Deseja aprovar esta adesão?')}
                         >
                             Aprovar Adesão
                         </Button>
@@ -112,7 +112,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                 </>
             )}
 
-            {status === 'Vinculada' && (
+            {status === 'Habilitada' && (
                 <>
                     {(isGestor || isAnalista) && (
                         <Button
@@ -120,7 +120,7 @@ const CogecomActions: React.FC<CogecomActionsProps> = ({ status, isGestor, isAna
                             size="sm"
                             variant="solid"
                             color="red-600"
-                            onClick={() => openStatusModal('Desvinculada', 'Desvincular Entidade', 'Deseja desvincular esta entidade?')}
+                            onClick={() => openStatusModal('Não habilitada', 'Desabilitar Entidade', 'Deseja desabilitar esta entidade?')}
                         >
                             Desvincular
                         </Button>

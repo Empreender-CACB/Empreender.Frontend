@@ -18,8 +18,8 @@ const statusLabels: Record<string, string> = {
     'Em avaliação': 'Em Avaliação',
     'Pendente': 'Pendente',
     'Cancelada': 'Cancelada',
-    'Vinculada': 'Vinculada',
-    'Desvinculada': 'Desvinculada',
+    'Habilitada': 'Habilitada',
+    'Não habilitada': 'Não habilitada',
 };
 
 const AtualizarStatusModal: React.FC<AtualizarStatusProps> = ({ isOpen, idEntidade, novoStatus, title, message, onClose, onConfirm }) => {

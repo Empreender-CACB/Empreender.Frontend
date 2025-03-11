@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import DateFilter from '@inovua/reactdatagrid-community/DateFilter';
 import SelectFilter from '@inovua/reactdatagrid-community/SelectFilter';
-import { Button } from '@/components/ui';
+import { Button, Notification, toast } from '@/components/ui';
 import { useState } from 'react';
 import 'moment/locale/pt-br';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
@@ -13,6 +13,7 @@ import { AnexoCard } from '@/components/shared/TableCards/AnexoCard';
 import { AdaptableCard } from '@/components/shared';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import { HiPlusCircle } from 'react-icons/hi';
+import ApiService from '@/services/ApiService';
 
 moment.locale('pt-br');
 
@@ -24,6 +25,57 @@ const tipoValue = [
     { name: 'Recusado', value: 'rc', color: 'red-600' },
 ];
 
+const handleDownload = async (id: number, nomeArquivo: string) => {
+    try {
+        const response = await ApiService.fetchData({
+            url: `/anexo/${id}/download`,
+            method: 'GET',
+            responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const url = window.URL.createObjectURL(blob);
+
+        const visualizavelNoNavegador = response.headers['content-type'].includes('pdf') ||
+                                         response.headers['content-type'].includes('image') ||
+                                         response.headers['content-type'].includes('text');
+
+        if (visualizavelNoNavegador) {
+            const novaAba = window.open(url, '_blank');
+            if (!novaAba) {
+                alert('Por favor, habilite pop-ups para visualizar o arquivo.');
+                return;
+            }
+
+            setTimeout(() => {
+                novaAba.document.body.innerHTML = `
+                    <div style="position: fixed; top: 10px; right: 15px; padding: 10px; background: rgba(1, 1, 1, 0.9); border: 1px solid white;  border-radius: 5px;">
+                        <a href="${url}" download="${nomeArquivo}" style="color: white; font-weight: bold; text-decoration: none; border-radius: 5px;">
+                            ⬇ Baixar Arquivo
+                        </a>
+                    </div>
+                    <iframe src="${url}" style="width: 100%; height: 100vh; border: none;"></iframe>
+                `;
+            }, 1000);
+        } else {
+            // **Baixa diretamente**
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', nomeArquivo);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    } catch (error) {
+        toast.push(
+            <Notification title="Acesso negado" type="danger">
+                Você não tem permissão para baixar este arquivo.
+            </Notification>
+        );
+    }
+};
+
+
 const columns = [
     {
         name: 'nome',
@@ -34,7 +86,7 @@ const columns = [
         render: ({ value, data }: any) => (
             <Link
                 className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(data.id)}`}
+                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/detalhe/bid/${btoa(data['anexo.id'])}`}
                 target='_blank'
             >
                 {value}
@@ -49,13 +101,15 @@ const columns = [
         value: '',
         defaultFlex: 0.7,
         render: ({ value, data }: any) => (
-            <Link
-                className="menu-item-link max-w-md text-blue-500 underline"
-                to={`${import.meta.env.VITE_PHP_URL}/sistema/anexo/download-anexo/aid/${btoa(data.id)}`}
-                target='_blank'
-            >
-                {value}
-            </Link>
+            <div className="flex items-center gap-2">
+                {/* Nome do arquivo como um link para download */}
+                <button
+                    className="text-blue-600 underline cursor-pointer"
+                    onClick={() => handleDownload(data['anexo.id'], value)}
+                >
+                    {value}
+                </button>
+            </div>
         ),
     },
     {
@@ -106,6 +160,14 @@ const columns = [
         defaultFlex: 0.7,
     },
     {
+        name: 'acesso',
+        header: 'Acesso',
+        type: 'string',
+        operator: 'contains',
+        value: '',
+        defaultFlex: 0.7,
+    },
+    {
         name: 'tipo_vinculo',
         header: 'Vínculo',
         type: 'string',
@@ -113,15 +175,6 @@ const columns = [
         value: '',
         defaultFlex: 0.7,
     },
-    {
-        name: 'tipo_vinculo_aux',
-        header: 'Tipo Vínculo Auxiliar',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-        defaultFlex: 0.7,
-    },
-
     {
         name: 'vencimento',
         header: 'Vencimento',
