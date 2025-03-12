@@ -239,29 +239,29 @@ const NucleoDetalhes = () => {
                                                     associacao.cidade
                                                         .iduf
                                                 )}
-                                                            
-            <img
-              className="h-5 ml-2"
-              src={`/img/estados/rounded/png-200/${noEmpty(
-                associacao.cidade
-                    .iduf
-            )}.png`}
-              alt="CACB"
-            />
+
+                                            <img
+                                                className="h-5 ml-2"
+                                                src={`/img/estados/rounded/png-200/${noEmpty(
+                                                    associacao.cidade
+                                                        .iduf
+                                                )}.png`}
+                                                alt="CACB"
+                                            />
                                         </p>
                                     </div>
                                     <Detalhes data={associacao} />
                                 </TabContent>
                                 <TabContent value="banco">
-                                    
 
 
-<CustomReactDataGrid
-filename={`Contas Bancárias - ${associacao.nmrazao}`}
-columns={columns}
-url={`${import.meta.env.VITE_API_URL
-    }/entidades/accounts/${id}`}
-/>
+
+                                    <CustomReactDataGrid
+                                        filename={`Contas Bancárias - ${associacao.nmrazao}`}
+                                        columns={columns}
+                                        url={`${import.meta.env.VITE_API_URL
+                                            }/entidades/accounts/${id}`}
+                                    />
                                 </TabContent>
                                 <TabContent value="tab3"></TabContent>
                             </div>
