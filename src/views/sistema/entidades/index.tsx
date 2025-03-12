@@ -23,54 +23,60 @@ const activeValue = [
 ]
 
 const columns = [
-    { name: 'idassociacao', 
+    {
+        name: 'idassociacao',
         header: 'ID',
         type: 'number',
         defaultFlex: 0.3,
-        operator:'eq',
+        operator: 'eq',
         render: ({ data }: any) => {
             const text = data.idassociacao
-            
-            const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
-            
+
+            // const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
+            const linkTo = `/sistema/entidades/${data.idassociacao}`
+
             return (
                 <div>
-                <Link to={linkTo}>
-                    {text}
-                </Link>
-            </div>
-        )
-    }
-},
-{ name: 'nome', header: 'Tipo de Entidade', type: 'string', defaultFlex: 1 , operator:'contains'},
-{ name: 'nmpais', header: 'País', type: 'string', defaultFlex: 0.7 , operator: 'contains'},
-{
-    name: 'iduf', header: 'UF', type: 'select', operator:'equals' ,
-    filterEditor: SelectFilter,
-    filterEditorProps: {
-        dataSource: estadosBrasileiros.map(state => ({ id: state.sigla, label: state.sigla }))
+                    <Link to={linkTo}>
+                        {text}
+                    </Link>
+                </div>
+            )
+        }
+    },
+    { name: 'nome', header: 'Tipo de Entidade', type: 'string', defaultFlex: 1, operator: 'contains' },
+    { name: 'nmpais', header: 'País', type: 'string', defaultFlex: 0.7, operator: 'contains' },
+    {
+        name: 'iduf', header: 'UF', type: 'select', operator: 'equals',
+        filterEditor: SelectFilter,
+        filterEditorProps: {
+            dataSource: estadosBrasileiros.map(state => ({ id: state.sigla, label: state.sigla }))
         },
         defaultFlex: 0.4
     },
-    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1 , operator:'contains'},
-    { name: 'associacao.sigla',
-      header: 'Sigla',
-      type: 'string',
-      defaultFlex: 0.5,
-      operator:'contains',
-      render: ({ data }: any) => {
-        const text = data.sigla
-        const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
-        
-        return (
-            <div>
-            <Link to={linkTo}>
-                {text}
-            </Link>
-        </div>
-    )}
+    { name: 'nmcidade', header: 'Cidade', type: 'string', defaultFlex: 1, operator: 'contains' },
+    {
+        name: 'associacao.sigla',
+        header: 'Sigla',
+        type: 'string',
+        defaultFlex: 0.5,
+        operator: 'contains',
+        render: ({ data }: any) => {
+            const text = data.sigla
+            // const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
+            const linkTo = `/sistema/entidades/${data.idassociacao}`
+
+            return (
+                <div>
+                    <Link to={linkTo}>
+                        {text}
+                    </Link>
+                </div>
+            )
+        }
     },
-    { name: 'nmrazao',
+    {
+        name: 'nmrazao',
         header: 'Razão Social',
         type: 'string',
         defaultFlex: 1.5,
@@ -78,20 +84,20 @@ const columns = [
         render: ({ data }: any) => {
             const text = data.nmrazao
             const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
-            
+
             return (
                 <div>
-                <Link to={linkTo}>
-                    {text}
-                </Link>
-            </div>
-        )
-    }
+                    <Link to={linkTo}>
+                        {text}
+                    </Link>
+                </div>
+            )
+        }
     },
-    { name: 'dsemail', header: 'E-mail', type: 'string', defaultFlex: 1 , operator:'contains' },
+    { name: 'dsemail', header: 'E-mail', type: 'string', defaultFlex: 1, operator: 'contains' },
     {
-        name: 'flativo', 
-        header: 'Status', 
+        name: 'flativo',
+        header: 'Status',
         type: 'select',
         operator: 'equals',
         value: 'S',
@@ -113,7 +119,7 @@ const columns = [
 const Entidades = () => {
     const [checkedMostrarTudo, setMostrarTudo] = useState(false)
     const { user } = useAppSelector((state) => state.auth)
-    
+
     const radioGroup = (
         <div className='flex items-center'>
             <span className="font-black">Mostrar todos</span>
@@ -136,20 +142,20 @@ const Entidades = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-            <div className="flex items-center">
-                <h3 className="mb-4 lg:mb-0">Entidades</h3>
-                <Tooltip title="Para saber mais sobre o uso da Lista de Entidades clique aqui" placement="right-end">
-                <Button
-                    shape="circle"
-                    size="xs"
-                    icon={<FaQuestion />}
-                    className="ml-2"
-                    onClick={() => {
-                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MjA2Nw==')
-                    }}
-                />
-            </Tooltip>
-            </div>
+                <div className="flex items-center">
+                    <h3 className="mb-4 lg:mb-0">Entidades</h3>
+                    <Tooltip title="Para saber mais sobre o uso da Lista de Entidades clique aqui" placement="right-end">
+                        <Button
+                            shape="circle"
+                            size="xs"
+                            icon={<FaQuestion />}
+                            className="ml-2"
+                            onClick={() => {
+                                window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MjA2Nw==')
+                            }}
+                        />
+                    </Tooltip>
+                </div>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-4">
 
                     <Button size="sm" icon={<HiOutlineReply />}>
@@ -183,20 +189,20 @@ const Entidades = () => {
                         </>
                     )}
 
-            {user.recursos.includes('ace_adici') && (
-                    <Link
-                        className="block lg:inline-block md:mb-0 mb-4"
-                        to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/adicionar`}
-                    >
-                        <Button
-                            block
-                            variant="solid"
-                            size="sm"
-                            icon={<HiPlusCircle />}
+                    {user.recursos.includes('ace_adici') && (
+                        <Link
+                            className="block lg:inline-block md:mb-0 mb-4"
+                            to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/adicionar`}
                         >
-                            Adicionar Entidade
-                        </Button>
-                    </Link>
+                            <Button
+                                block
+                                variant="solid"
+                                size="sm"
+                                icon={<HiPlusCircle />}
+                            >
+                                Adicionar Entidade
+                            </Button>
+                        </Link>
                     )}
                 </div>
             </div>
