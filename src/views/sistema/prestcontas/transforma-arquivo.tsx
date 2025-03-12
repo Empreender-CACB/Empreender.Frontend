@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui'
 import { Container } from '@/components/shared'
 import { HiOutlineCloudUpload } from 'react-icons/hi'
-import { SiMicrosoftexcel } from 'react-icons/si'
+import { SiGooglesheets } from 'react-icons/si'
 import ApiService from '@/services/ApiService'
 
 const TransformaArquivo = () => {
@@ -43,7 +43,7 @@ const TransformaArquivo = () => {
     
             const blob = response.data
             const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '')
-            const fileName = `arquivo_transformado_${timestamp}.xlsx`
+            const fileName = `arquivo_transformado_${timestamp}.csv`
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement('a')
             link.href = url
@@ -83,15 +83,15 @@ const TransformaArquivo = () => {
 
                 <div className="my-12 text-center">
                     <label className="cursor-pointer">
-                        <input type="file" accept=".xlsx" className="hidden" onChange={handleFileChange} />
+                        <input type="file" accept=".csv" className="hidden" onChange={handleFileChange} />
                         <div className="text-6xl mb-4 flex justify-center">
-                            <SiMicrosoftexcel />
+                            <SiGooglesheets />
                         </div>
                         <p className="font-semibold">
                             <span className="text-gray-800 dark:text-white">
-                                Arraste o arquivo, ou{' '}
+                                Clique aqui para{' '}
                             </span>
-                            <span className="text-blue-500">busque</span>
+                            <span className="text-blue-500">buscar</span>
                         </p>
                     </label>
                     {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
