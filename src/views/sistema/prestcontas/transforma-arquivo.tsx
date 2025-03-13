@@ -31,9 +31,7 @@ const TransformaArquivo = () => {
                 url: '/prestcontas/process-excel',
                 method: 'POST',
                 data: formData,
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: {},
                 responseType: 'blob', 
             })
     
