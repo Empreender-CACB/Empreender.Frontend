@@ -83,7 +83,8 @@ const columns = [
         operator: 'contains',
         render: ({ data }: any) => {
             const text = data.nmrazao
-            const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
+            // const linkTo = `${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(data.idassociacao))}`
+            const linkTo = `/sistema/entidades/${data.idassociacao}`
 
             return (
                 <div>
