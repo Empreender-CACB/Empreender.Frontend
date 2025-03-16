@@ -61,7 +61,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
 interface MenuItem {
     value: string
     label: string | undefined
-    isActive: boolean
+    isActive?: boolean
     href: string
 }
 
