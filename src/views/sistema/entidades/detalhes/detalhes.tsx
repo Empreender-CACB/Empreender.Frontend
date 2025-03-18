@@ -3,6 +3,12 @@ import Tabs from '@/components/ui/Tabs';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
 import { noEmpty } from '@/utils/noEmpty';
 import dayjs from 'dayjs';
+import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
+import AnexosComponent from '../../anexos/AnexosComponent';
+import PendenciasComponent from '../../pendencias/PendenciasComponent';
+import { Button, Dialog, Tooltip } from '@/components/ui';
+import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { useEffect, useState } from 'react';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -12,10 +18,42 @@ type DataProps = {
 
 const columnsBanco = [
     { name: "apelido", header: "Apelido", type: "string", operator: "contains", defaultFlex: 1 },
-    { name: "idbanco", header: "Banco", type: "string", operator: "contains", defaultFlex: 1 },
+    { name: "dsbanco", header: "Banco", type: "string", operator: "contains", defaultFlex: 1 },
+    { name: "dsagencia", header: "Agência", type: "string", operator: "contains", defaultFlex: 1 },
+    { name: "dsconta", header: "Conta", type: "string", operator: "contains", defaultFlex: 1 },
     { name: "pix_tipo", header: "Tipo PIX", type: "string", operator: "contains", defaultFlex: 1 },
     { name: "pix_chave", header: "Chave PIX", type: "string", operator: "contains", defaultFlex: 1 },
 ];
+
+const DiretoriaActions = ({ data, onUpdate }: { data: any; onUpdate?: () => void }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleDelete = () => {
+        console.log(`Excluindo contato ID: ${data.idcontato}`);
+        setIsModalOpen(false);
+        onUpdate?.();
+    };
+
+    return (
+        <div className="flex space-x-2">
+            <Tooltip title="Editar">
+                <Button variant="solid" size="xs" icon={<HiOutlinePencil />} onClick={() => console.log('Editar', data)} />
+            </Tooltip>
+
+            <Tooltip title="Excluir">
+                <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => setIsModalOpen(true)} />
+            </Tooltip>
+
+            <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <p>Tem certeza que deseja excluir o contato <strong>{data.nmcontato}</strong>?</p>
+                <div className="flex justify-end space-x-2 mt-4">
+                    <Button variant="default" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                    <Button variant="solid" onClick={handleDelete}>Excluir</Button>
+                </div>
+            </Dialog>
+        </div>
+    );
+};
 
 const Detalhes = ({ data }: DataProps) => {
     const details = [
@@ -46,6 +84,30 @@ const Detalhes = ({ data }: DataProps) => {
         { label: 'Homepage', value: noEmpty(data.dshomepage) },
     ];
 
+    const columnsDiretoria = [
+        { name: "cargo", header: "Cargo", type: "string", operator: "contains", defaultFlex: 1 },
+        { name: "nmcontato", header: "Nome", type: "string", operator: "contains", defaultFlex: 1.5 },
+        { name: "dtiniciomandato", header: "Início Mandato", type: "date", operator: "contains", defaultFlex: 1 },
+        { name: "dtfimmandato", header: "Término Mandato", type: "date", operator: "contains", defaultFlex: 1 },
+        { name: "dsemail", header: "E-mail", type: "string", operator: "contains", defaultFlex: 1.5 },
+        { name: "nucel", header: "Celular", type: "string", operator: "contains", defaultFlex: 1 },
+        { name: "flativo", header: "Status", type: "string", operator: "contains", defaultFlex: 1 },
+        { name: "sexo", header: "Sexo", type: "string", operator: "contains", defaultFlex: 1 },
+        { name: "nascimento", header: "Nascimento", type: "date", operator: "contains", defaultFlex: 1 },
+        {
+            name: "actions",
+            header: "Ações",
+            defaultFlex: 1,
+            columnName: "actions",
+            render: ({ data }: any) => <DiretoriaActions data={data} onUpdate={() => setReload(prev => !prev)} />,
+        },
+    ];
+
+    const [reload, setReload] = useState(false);
+
+    useEffect(() => {
+    }, [reload]);
+
     return (
 
 
@@ -62,63 +124,55 @@ const Detalhes = ({ data }: DataProps) => {
             <div className="p-4">
 
                 <TabContent value="detalhes">
-                    <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-                        <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
-                            {details.map(({ label, value }, index) => (
-                                <div className="sm:col-span-1" key={index}>
-                                    <dt className="text-sm font-extrabold text-black dark:text-white">{label}</dt>
-                                    <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{value}</dd>
-                                </div>
-                            ))}
-                        </dl>
-                    </div>
+                    <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
+                        {details.map(({ label, value }, index) => (
+                            <div className="sm:col-span-1" key={index}>
+                                <dt className="text-sm font-extrabold text-black dark:text-white">{label}</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{value}</dd>
+                            </div>
+                        ))}
+                    </dl>
                 </TabContent>
 
                 <TabContent value="dadosBancarios">
                     <CustomReactDataGrid
                         filename={`Contas Bancárias - ${data.nmrazao}`}
                         columns={columnsBanco}
-                        url={`${import.meta.env.VITE_API_URL}/entidades/accounts/${data.idassociacao}`}
+                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios`}
                     />
                 </TabContent>
 
                 <TabContent value="anotacoes">
-                    <p>Aqui ficarão as anotações da entidade.</p>
-                </TabContent>
-
-                <TabContent value="pendencias">
-                    <p>Listagem de pendências relacionadas à entidade.</p>
+                    <AnotacoesComponent
+                        idVinculo={data.idassociacao}
+                        tipoVinculo="entidade"
+                        temAnexos={true}
+                    />
                 </TabContent>
 
                 <TabContent value="documentos">
-                    <p>Listagem de documentos associados à entidade.</p>
+                    <AnexosComponent
+                        url={`${import.meta.env.VITE_API_URL}/anexo-vinculado`}
+                        idVinculo={data.idassociacao}
+                        tipoVinculo="entidade"
+                    />
+                </TabContent>
+
+                <TabContent value="pendencias">
+                    <PendenciasComponent
+                        idVinculo={data.idassociacao}
+                        tipoVinculo="entidade"
+                        temBloqueio={true}
+                        temAnexos={true}
+                    />
                 </TabContent>
 
                 <TabContent value="diretoria">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr>
-                                <th className="border px-2 py-1">Nome</th>
-                                <th className="border px-2 py-1">E-mail</th>
-                                <th className="border px-2 py-1">Telefone</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* {data.gestores?.length ? (
-                                    data.gestores.map((gestor, index) => (
-                                        <tr key={index}>
-                                            <td className="border px-2 py-1">{gestor.nome}</td>
-                                            <td className="border px-2 py-1">{gestor.dsemail}</td>
-                                            <td className="border px-2 py-1">{gestor.nufone}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={3} className="border px-2 py-1 text-center">Nenhum contato cadastrado</td>
-                                    </tr>
-                                )} */}
-                        </tbody>
-                    </table>
+                    <CustomReactDataGrid
+                        filename="Diretoria e Contatos"
+                        columns={columnsDiretoria}
+                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/diretoria?reload=${reload}`}
+                    />
                 </TabContent>
             </div>
         </Tabs>
