@@ -67,7 +67,7 @@ function CadastraProposta2() {
     
         if (isValidCnpj) {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/?cnpj=${newCnpj}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/rfb/info-empresa/${newCnpj}`);
     
                 if (response.status === 200) {
                     const data = response.data;

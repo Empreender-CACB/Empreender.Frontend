@@ -23,7 +23,7 @@ const appsRoute: Routes = [
     },
     {
         key: 'Anexos.adicionar',
-        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?/:substitutoId?`,
+        path: `${APP_PREFIX_PATH}/anexos/adicionar/:tipoVinculo/:idVinculo?/:tipoVinculoSecundario?/:idVinculoSecundario?`,
         component: lazy(() => import('@/views/sistema/anexos/adicionar')),
     },    
     {
@@ -238,7 +238,7 @@ const appsRoute: Routes = [
         key: 'Anotacoes.adicionar',
         path: `${APP_PREFIX_PATH}/anotacoes/adicionar/:tipoVinculo/:idVinculo/:idAnotacao?`,
         component: lazy(() => import('@/views/sistema/anotacao/adicionar')),
-    },    
+    },     
     {
         key: 'Anotacoes.index',
         path: `${APP_PREFIX_PATH}/anotacoes/:tipoVinculo/:idVinculo`,
@@ -259,6 +259,59 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/projetos/vincular-empresas-nucleo`,
         component: lazy(() => import('@/views/sistema/projetos/vincularEmpresasNucleo')),
     },
+    {
+        key: 'Cogecom.lista',
+        path: `${APP_PREFIX_PATH}/cogecom/`,
+        component: lazy(() => import('@/views/sistema/cogecom')),
+        meta: {
+            pageContainerType: 'default',
+        },
+    },
+    {
+        key: 'Cogecom.detalhe',
+        path: `${APP_PREFIX_PATH}/cogecom/detalhes/:id/`,
+        component: lazy(() => import('@/views/sistema/cogecom/detalhes')),
+    },
+    {
+        key: 'Cogecom.cogecomEntidade',
+        path: `${APP_PREFIX_PATH}/cogecom/entidade/:id`,
+        component: lazy(() => import('@/views/sistema/cogecom/entidade')),
+    },
+    {
+        key: 'Cogecom.cogecomLista',
+        path: `${APP_PREFIX_PATH}/cogecom/entidade/lista-geral`,
+        component: lazy(() => import('@/views/sistema/cogecom/entidade/listaGeral')),
+    },
+    {
+        key: 'Pendencias.adicionarPendencia',
+        path: `${APP_PREFIX_PATH}/pendencias/adicionar/:temBloqueio/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?/:idPendencia?`,
+        component: lazy(() => import('@/views/sistema/pendencias/adicionar')),
+    },
+    {
+        key: 'Pendencias.listar',
+        path: `${APP_PREFIX_PATH}/pendencias/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/pendencias/index')),
+    },    
+    {
+        key: 'Anexos.listar',
+        path: `${APP_PREFIX_PATH}/anexos/:tipoVinculo/:idVinculo/:tipoVinculoAux?/:idVinculoAux?`,
+        component: lazy(() => import('@/views/sistema/anexos/listar')),
+    },    
+    {
+        key: 'Anexos.editar',
+        path: `${APP_PREFIX_PATH}/anexos/editar/:idAnexo`,
+        component: lazy(() => import('@/views/sistema/anexos/editar')),
+    },  
+    {
+        key: 'AjudaAtendimento.index',
+        path: `${APP_PREFIX_PATH}/ajuda-atendimento`,
+        component: lazy(() => import('@/views/sistema/ajudaEAtendimento/index')),
+    }, 
+    {
+        key: 'AjudaAtendimento.documentos',
+        path: `${APP_PREFIX_PATH}/ajuda-atendimento/documentos`,
+        component: lazy(() => import('@/views/sistema/ajudaEAtendimento/documentos')),
+    },   
 ]
 
 export default appsRoute

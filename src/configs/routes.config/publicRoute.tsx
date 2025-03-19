@@ -13,8 +13,8 @@ const publicRoute: Routes = [
         },
     },
     {
-        key: 'projeto-cogecon',
-        path: `/projeto-cogecon`,
+        key: 'poupmax',
+        path: `/poupmax`,
         component: lazy(() => import('@/views/Cogecon')),
         meta: {
             layout: 'blank',
@@ -110,6 +110,15 @@ const publicRoute: Routes = [
         component: lazy(() => import('@/views/ranking/diagnosticos')),
         meta: {
             layout: 'blank',
+        },
+    },
+    {
+        key: 'pesquisa-teste',
+        path: `/pesquisa-cef`,
+        component: lazy(() => import('@/views/pesquisa-teste')),
+        meta: {
+            layout: 'blank',
+            footer: false,
         },
     },
 ]
