@@ -100,7 +100,7 @@ const FormItem = forwardRef<HTMLDivElement, FormItemProps>((props, ref) => {
                 )}
                 {label}
                 {extra && <span>{extra}</span>}
-                {label && formItemLayout !== 'vertical' && ':'}
+                {label && formItemLayout !== 'vertical' && ''}
             </label>
             <div
                 className={

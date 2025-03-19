@@ -87,6 +87,34 @@ const Detalhes = ({ data }: DataProps) => {
         },
     ];
 
+    const details = [
+        { label: 'Nome', value: noEmpty(data.nmrazao) },
+        { label: 'Sigla', value: noEmpty(data.sigla) },
+        { label: 'ID tipo Entidade', value: noEmpty(data.id_tipo_entidade) },
+        { label: 'CNPJ', value: noEmpty(data.nucnpj) },
+        { label: 'Email', value: noEmpty(data.dsemail) },
+        { label: 'Fundação', value: noEmpty(dayjs(data.dtfundacao).format('DD/MM/YYYY')) },
+        { label: 'Endereço', value: noEmpty(data.dsendereco) },
+        { label: 'Número', value: noEmpty(data.nunumero) },
+        { label: 'Bairro', value: noEmpty(data.dsbairro) },
+        {
+            label: 'Cidade / UF',
+            value: `${noEmpty(data.cidade?.nmcidade)} - ${noEmpty(data.cidade?.iduf)}`
+        },
+        { label: 'CEP', value: noEmpty(data.nucep) },
+        { label: 'Telefone', value: noEmpty(data.nufone) },
+        { label: 'Gestor', value: noEmpty(data.gestor?.nmusuario) },
+        { label: 'Gestor - CPF', value: noEmpty(data.gestor?.nucpf) },
+        { label: 'Gestor - E-mail', value: noEmpty(data.gestor?.dsemail) },
+        { label: 'Situação RFB', value: noEmpty(data.situacao) },
+        {
+            label: 'Última Alteração',
+            value: noEmpty(dayjs(data.data_alteracao).format('DD/MM/YYYY')),
+        },
+        { label: 'Status', value: data.flativo === 'S' ? 'Ativo' : 'Inativo' },
+        { label: 'Homepage', value: noEmpty(data.dshomepage) },
+    ];
+
     return (
         <Tabs defaultValue="detalhes">
             <TabList>
@@ -99,6 +127,18 @@ const Detalhes = ({ data }: DataProps) => {
             </TabList>
 
             <div className="p-4">
+
+                <TabContent value="detalhes">
+                    <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
+                        {details.map(({ label, value }, index) => (
+                            <div className="sm:col-span-1" key={index}>
+                                <dt className="text-sm font-extrabold text-black dark:text-white">{label}</dt>
+                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{value}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                </TabContent>
+
                 <TabContent value="dadosBancarios">
                     <div className="flex justify-end mb-2">
                         <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setBancoModalOpen(true)}>
@@ -109,6 +149,7 @@ const Detalhes = ({ data }: DataProps) => {
                         filename={`Contas Bancárias - ${data.nmrazao}`}
                         columns={columnsBanco}
                         url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios`}
+                        CardLayout={AdicionarContato}
                     />
                 </TabContent>
 

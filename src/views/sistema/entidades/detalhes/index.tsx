@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import { useParams, Link, Route, Routes, useLocation } from "react-router-dom";
 import LayoutDetailSimple from "@/components/layouts/LayoutDetailSimple";
 import LayoutWithMenus from "@/components/layouts/LayoutWithMenus";
 import Loading from "@/components/shared/Loading";
