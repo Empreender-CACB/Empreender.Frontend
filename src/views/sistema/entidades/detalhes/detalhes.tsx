@@ -26,9 +26,10 @@ const Detalhes = ({ data }: DataProps) => {
     const [editBancoData, setEditBancoData] = useState(null);
     const [editDiretoriaData, setEditDiretoriaData] = useState(null);
 
-    useEffect(() => {}, [reload]);
+    useEffect(() => { }, [reload]);
 
     const handleEditBanco = (rowData: any) => {
+        console.log(rowData);
         setEditBancoData(rowData);
         setBancoModalOpen(true);
     };
@@ -69,7 +70,18 @@ const Detalhes = ({ data }: DataProps) => {
         { name: "dtfimmandato", header: "Término Mandato", type: "date", operator: "contains", defaultFlex: 1 },
         { name: "dsemail", header: "E-mail", type: "string", operator: "contains", defaultFlex: 1.5 },
         { name: "nucel", header: "Celular", type: "string", operator: "contains", defaultFlex: 1 },
-        { name: "flativo", header: "Status", type: "string", operator: "contains", defaultFlex: 1 },
+        {
+            name: "flativo",
+            header: "Status",
+            type: "string",
+            operator: "contains",
+            defaultFlex: 1,
+            render: ({ value }: { value: string }) => (
+                <span className={value === "S" ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
+                    {value === "S" ? "Ativo" : "Inativo"}
+                </span>
+            ),
+        },
         {
             name: "actions",
             header: "Ações",
@@ -148,7 +160,7 @@ const Detalhes = ({ data }: DataProps) => {
                     <CustomReactDataGrid
                         filename={`Contas Bancárias - ${data.nmrazao}`}
                         columns={columnsBanco}
-                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios`}
+                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios?reload=${reload}`}
                         CardLayout={AdicionarContato}
                     />
                 </TabContent>

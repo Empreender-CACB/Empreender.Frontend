@@ -1,6 +1,7 @@
 import { Button, Dialog, Input, Select, FormItem } from "@/components/ui";
 import ApiService from "@/services/ApiService";
 import { Formik, Form, Field } from "formik";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 type ModalProps = {
@@ -38,7 +39,8 @@ const tipoPixOptions = [
 ];
 
 const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, entidadeId }: ModalProps) => {
-    const initialValues = initialData || {
+    const [bancos, setBancos] = useState<{ value: string; label: string }[]>([]);
+    const [formValues, setFormValues] = useState({
         apelido: "",
         idbanco: "",
         conta_tipo: "",
@@ -46,7 +48,44 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
         dsconta: "",
         pix_tipo: "",
         pix_chave: "",
-    };
+    });
+
+    useEffect(() => {
+        const fetchBancos = async () => {
+            try {
+                const response = await ApiService.fetchData({
+                    url: "/bancos",
+                    method: "get",
+                });
+
+                if (response?.data) {
+                    const bancosOptions = response.data.map((banco: any) => ({
+                        value: banco.idbanco.toString(),
+                        label: `${banco.idbanco} - ${banco.dsbanco}`,
+                    }));
+                    setBancos(bancosOptions);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar bancos:", error);
+            }
+        };
+
+        fetchBancos();
+    }, []);
+
+    useEffect(() => {
+        if (isOpen) {
+            setFormValues({
+                apelido: initialData?.apelido || "",
+                idbanco: initialData?.idbanco ? String(initialData.idbanco) : "",
+                conta_tipo: initialData?.conta_tipo || "",
+                dsagencia: initialData?.dsagencia || "",
+                dsconta: initialData?.dsconta || "",
+                pix_tipo: initialData?.pix_tipo || "",
+                pix_chave: initialData?.pix_chave || "",
+            });
+        }
+    }, [initialData, isOpen]);
 
     const handleSubmit = async (values: any) => {
         try {
@@ -64,7 +103,7 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
                 });
             }
             onConfirm();
-            onClose();
+            // onClose();
         } catch (error) {
             console.error("Erro ao salvar dados bancários", error);
         }
@@ -72,8 +111,8 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
 
     return (
         <Dialog isOpen={isOpen} onClose={onClose} width={800}>
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                {({ errors, touched }) => (
+            <Formik initialValues={formValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
+                {({ errors, touched, setFieldValue }) => (
                     <Form className="space-y-4">
                         <h3>{initialData ? "Editar Conta Bancária" : "Adicionar Conta Bancária"}</h3>
 
@@ -89,10 +128,20 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
                         <FormItem
                             label="Banco"
                             asterisk
-                            invalid={(touched.idbanco && errors.idbanco) as boolean | ""}
+                            invalid={touched.idbanco && !!errors.idbanco}
                             errorMessage={(errors.idbanco as string) ?? ""}
                         >
-                            <Field name="idbanco" placeholder="Código do Banco" component={Input} />
+                            <Field name="idbanco">
+                                {({ field }: any) => (
+                                    <Select
+                                        {...field}
+                                        options={bancos}
+                                        placeholder="Selecione um banco"
+                                        value={bancos.find(option => option.value === field.value) || null}
+                                        onChange={(option: any) => setFieldValue("idbanco", option?.value)}
+                                    />
+                                )}
+                            </Field>
                         </FormItem>
 
                         <FormItem
