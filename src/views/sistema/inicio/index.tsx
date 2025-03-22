@@ -41,6 +41,10 @@ const greetingMessage = (gender: string) => {
     return greeting;
 }
 
+const getThumbnailUrl = (videoId: string) => {
+    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};
+
 const Arrow = (props: {
     disabled: boolean
     left?: boolean
@@ -69,7 +73,7 @@ const Inicio = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [currentSlide, setCurrentSlide] = React.useState(0)
     const [loaded, setLoaded] = useState(false)
-    const [selectedVideoId, setSelectedVideoId] = useState(null);
+    const [selectedVideoId, setSelectedVideoId] = useState<any>(null);
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
         initial: 0,
         slideChanged(slider) {
@@ -182,9 +186,8 @@ const Inicio = () => {
                             </a>
                         </div>
                         <div
-                            className={`grid grid-cols-1 ${
-                                noticiasBlog.length < 6 ? 'md:grid-cols-1' : 'md:grid-cols-3'
-                            } gap-4`}
+                            className={`grid grid-cols-1 ${noticiasBlog.length < 6 ? 'md:grid-cols-1' : 'md:grid-cols-3'
+                                } gap-4`}
                         >
                             {noticiasBlog.map((news, index) => (
                                 <Card key={index} className={`${noticiasBlog.length < 6 ? '' : 'h-48'} overflow-hidden`}>
@@ -206,86 +209,86 @@ const Inicio = () => {
                     </div>
 
                     {/* Bloco de boas-vindas */}
-                    
+
                 </div>
 
                 {/* Segunda Coluna: Carrossel de Imagens */}
                 <div className="lg:col-span-2 col-span-1 w-full">
-                {images && (
-                    <>
-                    <div className="navigation-wrapper">
-                        <div ref={sliderRef} className="keen-slider">
-                        {images.map((image: { link: string }, index: Key) => (   
-                                                            
-                
-                            <div key={index} className={`keen-slider__slide number-slide1`}>
-                            {image.link ? (
-                                <a
-                                    target="_blank"
-                                    href={image.link}
-                                    rel="noopener noreferrer"
-                                >
-                                    <img
-                                        style={{
-                                            border: '2px solid black',
-                                        }}
-                                        src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
-                                        alt={`Slide ${index}`}
-                                    />
-                                </a>
-                            ) : (
-                                <img
-                                    style={{ border: '2px solid black' }}
-                                    src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
-                                    alt={`Slide ${index}`}
-                                />
+                    {images && (
+                        <>
+                            <div className="navigation-wrapper">
+                                <div ref={sliderRef} className="keen-slider">
+                                    {images.map((image: { link: string }, index: Key) => (
+
+
+                                        <div key={index} className={`keen-slider__slide number-slide1`}>
+                                            {image.link ? (
+                                                <a
+                                                    target="_blank"
+                                                    href={image.link}
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <img
+                                                        style={{
+                                                            border: '2px solid black',
+                                                        }}
+                                                        src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
+                                                        alt={`Slide ${index}`}
+                                                    />
+                                                </a>
+                                            ) : (
+                                                <img
+                                                    style={{ border: '2px solid black' }}
+                                                    src={`https://back.cacbempreenderapp.org.br/anexo/${image.id_anexo}/download`}
+                                                    alt={`Slide ${index}`}
+                                                />
+                                            )}
+                                        </div>
+
+
+                                    ))}
+                                </div>
+                                {loaded && instanceRef.current && (
+                                    <>
+                                        <Arrow
+                                            left
+                                            onClick={(e: any) =>
+                                                e.stopPropagation() || instanceRef.current?.prev()
+                                            }
+                                            disabled={currentSlide === 0}
+                                        />
+
+                                        <Arrow
+                                            onClick={(e: any) =>
+                                                e.stopPropagation() || instanceRef.current?.next()
+                                            }
+                                            disabled={
+                                                currentSlide ===
+                                                instanceRef.current.track.details.slides.length - 1
+                                            }
+                                        />
+                                    </>
+                                )}
+                            </div>
+                            {loaded && instanceRef.current && (
+                                <div className="dots">
+                                    {[
+                                        ...Array(instanceRef.current.track.details.slides.length).keys(),
+                                    ].map((idx) => {
+                                        return (
+                                            <button
+                                                key={idx}
+                                                onClick={() => {
+                                                    instanceRef.current?.moveToIdx(idx)
+                                                }}
+                                                className={"dot" + (currentSlide === idx ? " active" : "")}
+                                            ></button>
+                                        )
+                                    })}
+                                </div>
                             )}
-                        </div>
-                            
-
-                    ))}
-                        </div>
-                        {loaded && instanceRef.current && (
-                            <>
-                                <Arrow
-                                    left
-                                    onClick={(e: any) =>
-                                        e.stopPropagation() || instanceRef.current?.prev()
-                                    }
-                                    disabled={currentSlide === 0}
-                                />
-
-                                <Arrow
-                                    onClick={(e: any) =>
-                                        e.stopPropagation() || instanceRef.current?.next()
-                                    }
-                                    disabled={
-                                        currentSlide ===
-                                        instanceRef.current.track.details.slides.length - 1
-                                    }
-                                />
-                            </>
-                        )}
-                    </div>
-                    {loaded && instanceRef.current && (
-                        <div className="dots">
-                            {[
-                                ...Array(instanceRef.current.track.details.slides.length).keys(),
-                            ].map((idx) => {
-                                return (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            instanceRef.current?.moveToIdx(idx)
-                                        }}
-                                        className={"dot" + (currentSlide === idx ? " active" : "")}
-                                    ></button>
-                                )
-                            })}
-                        </div>
+                        </>
                     )}
-                </>
-                )}
 
                 </div>
             </div>
@@ -293,49 +296,35 @@ const Inicio = () => {
             <AdaptableCard className='mt-5'>
                 <h4 className="mb-4">Galeria de vídeos</h4>
                 <Slider {...settingsVideos} className='mb-5'>
-                    {videos.map(
-                        (video: {
-                            link: string
-                            id: Key
-                            titulo_carousel: string
-                        }) => {
-                            const videoIdMatch = video.link.match(/v=([^&]+)/)
-                            const videoId =
-                                videoIdMatch && videoIdMatch[1]
-                                    ? videoIdMatch[1]
-                                    : ''
+                    {videos.map((video: { link: string; id: Key; titulo_carousel: string }) => {
+                        const videoIdMatch = video.link.match(/(?:v=|\/shorts\/)([^&?]+)/);
+                        const videoId = videoIdMatch ? videoIdMatch[1] : '';
 
-                            return (
-                                <div
-                                    key={video.id}
-                                    className="p-2 sm:w-1/4 w-full mb-4"
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        setSelectedVideoId(videoId);
-                                        setIsDialogOpen(true);
-                                    }}
-                                >
-                                    <a
-                                        href="#"
-                                        className="js-modal-btn block"
-                                        data-video-id={videoId}
-                                    >
-                                        <div
-                                            className="thumb bg-center bg-no-repeat bg-black"
-                                            style={{
-                                                backgroundImage: `url(https://img.youtube.com/vi/${videoId}/0.jpg)`,
-                                                width: 'auto',
-                                                height: '200px',
-                                            }}
-                                        ></div>
-                                        <h6 className="mt-2 text-center">
-                                            {video.titulo_carousel}
-                                        </h6>
-                                    </a>
+                        
+                        return (
+                            <div
+                                key={video.id}
+                                className="p-2 sm:w-1/4 w-full mb-4"
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    setSelectedVideoId(videoId);
+                                    setIsDialogOpen(true);
+                                }}
+                            >
+                                <a href="#" className="js-modal-btn block" data-video-id={videoId}>
+                                <div className="thumb bg-center bg-no-repeat bg-black" style={{ width: 'auto', height: '200px' }}>
+                                    <img
+                                        src={getThumbnailUrl(videoId)}
+                                        alt="Thumbnail do vídeo"
+                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    />
                                 </div>
-                            )
-                        }
-                    )}
+                                    <h6 className="mt-2 text-center">{video.titulo_carousel}</h6>
+                                </a>
+                            </div>
+                        );
+                    })}
+
                 </Slider>
                 <Dialog
                     width={800}
