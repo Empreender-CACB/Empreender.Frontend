@@ -62,7 +62,6 @@ function CadastraProposta() {
         formData.append('cpfContato', values.cpfContato || '');
         formData.append('emailContato', values.emailContato || '');
         formData.append('celularContato', values.celularContato || '');
-        formData.append('tipo_cadastro', values.tipoCadastro || '');
         formData.append('concessionaria_energia', values.concessionaria_energia || '');
         formData.append('login_concessionaria', values.usuario_concessionaria || '');
         formData.append('senha_concessionaria', values.senha_concessionaria || '');
