@@ -241,7 +241,7 @@ const columns = [
             step: 1,
             format: 'currency',
             allowFloat: true,
-            decimalDelimiter:'-',
+            decimalDelimiter:',',
             currencyPosition: 'start',
           },
         style: { textAlign: 'right' },

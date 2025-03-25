@@ -89,7 +89,7 @@ const columns = [
     },
     {
         name: 'nome',
-        header: 'Nome',
+        header: 'Nome do Anexo',
         type: 'string',
         operator: 'contains',
         defaultFlex: 1.5,
