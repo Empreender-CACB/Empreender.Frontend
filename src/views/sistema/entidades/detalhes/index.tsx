@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, Route, Routes, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import LayoutDetailSimple from "@/components/layouts/LayoutDetailSimple";
 import LayoutWithMenus from "@/components/layouts/LayoutWithMenus";
 import Loading from "@/components/shared/Loading";
@@ -10,13 +10,24 @@ import { APP_PREFIX_PATH } from "@/constants/route.constant";
 import ApiService from "@/services/ApiService";
 import { Associacao } from "@/@types/generalTypes";
 import Detalhes from "./detalhes";
+import EmpresasVinculadas from "./empresas-vinculadas";
+import EntidadesVinculadas from "./entidades-vinculadas";
+import NucleosVinculados from "./nucleos-vinculados";
+import ProjetosVinculados from "./projetos-vinculados";
 
 const EntidadeIndex = () => {
-    const { id } = useParams();
-    const location = useLocation();
+    const { id, aba } = useParams();
 
     const [associacao, setAssociacao] = useState<Associacao | null>(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("detalhes");
+
+    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados"];
+    const initialTab = allowedTabs.includes(aba || "") ? aba! : "detalhes";
+
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [aba]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,21 +45,91 @@ const EntidadeIndex = () => {
         fetchData();
     }, [id]);
 
+    const encodedId = btoa(String(id));
+
+    const handleInternalTabClick = (tab: string) => {
+        setActiveTab(tab);
+        window.history.replaceState(null, '', `${APP_PREFIX_PATH}/entidades/${id}/${tab}`);
+    };
+
     const optionsList = [
-        { value: "detalhes", label: "Detalhes", href: `${APP_PREFIX_PATH}/entidades/${id}`, isActive: location.pathname === `${APP_PREFIX_PATH}/entidades/${id}` },
-        { value: "al_invest", label: "AL Invest", href: `${APP_PREFIX_PATH}/entidades/${id}/al_invest`, isActive: location.pathname.includes("/al_invest") },
-        { value: "diagnosticos", label: "Diagnósticos", href: `${APP_PREFIX_PATH}/entidades/${id}/diagnosticos`, isActive: location.pathname.includes("/diagnosticos") },
-        { value: "empresas_vinculadas", label: "Empresas Vinculadas", href: `${APP_PREFIX_PATH}/entidades/${id}/empresas_vinculadas`, isActive: location.pathname.includes("/empresas_vinculadas") },
-        { value: "entidades_vinculadas", label: "Entidades Vinculadas", href: `${APP_PREFIX_PATH}/entidades/${id}/entidades_vinculadas`, isActive: location.pathname.includes("/entidades_vinculadas") },
-        { value: "nucleos_vinculados", label: "Núcleos Vinculados", href: `${APP_PREFIX_PATH}/entidades/${id}/nucleos_vinculados`, isActive: location.pathname.includes("/nucleos_vinculados") },
-        { value: "perfil", label: "Perfil", href: `${APP_PREFIX_PATH}/entidades/${id}/perfil`, isActive: location.pathname.includes("/perfil") },
-        { value: "projetos", label: "Projetos", href: `${APP_PREFIX_PATH}/entidades/${id}/projetos`, isActive: location.pathname.includes("/projetos") },
+        {
+            value: "detalhes",
+            label: "Detalhes",
+            href: "detalhes",
+            isActive: activeTab === "detalhes",
+            onClick: () => handleInternalTabClick("detalhes")
+        },
+        {
+            value: "al_invest",
+            label: "AL Invest",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-alinvest/eid/${encodedId}`,
+            target: "_blank",
+        },
+        {
+            value: "diagnosticos",
+            label: "Diagnósticos",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/diagnosticos/lista-diagnosticos/id/${encodedId}`,
+            target: "_blank",
+        },
+        {
+            value: "empresas_vinculadas",
+            label: "Empresas Vinculadas",
+            href: "empresas_vinculadas",
+            isActive: activeTab === "empresas_vinculadas",
+            onClick: () => handleInternalTabClick("empresas_vinculadas")
+        },
+        {
+            value: "entidades_vinculadas",
+            label: "Entidades Vinculadas",
+            href: `entidades_vinculadas`,
+            isActive: activeTab === "entidades_vinculadas",
+            onClick: () => handleInternalTabClick("entidades_vinculadas")
+        },
+        {
+            value: "nucleos_vinculados",
+            label: "Núcleos Vinculados",
+            href: `nucleos_vinculados`,
+            isActive: activeTab === "nucleos_vinculados",
+            onClick: () => handleInternalTabClick("nucleos_vinculados")
+        },
+        {
+            value: "perfil",
+            label: "Perfil",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/associacao/perfil/aid/${encodedId}`,
+            target: "_blank",
+        },
+        {
+            value: "projetos_vinculados",
+            label: "Projetos Vinculados",
+            href: `projetos_vinculados`,
+            isActive: activeTab === "projetos_vinculados",
+            onClick: () => handleInternalTabClick("projetos_vinculados")
+        }
     ];
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case "empresas_vinculadas":
+                return <EmpresasVinculadas />;
+            case "entidades_vinculadas":
+                return <EntidadesVinculadas />;
+            case "nucleos_vinculados":
+                return <NucleosVinculados />;
+            case "projetos_vinculados":
+                return <ProjetosVinculados />;
+            default:
+                return <Detalhes data={associacao!} />;
+        }
+    };
 
     return (
         <Loading loading={loading}>
             {associacao && (
-                <LayoutWithMenus title="Entidade" groupList={optionsList}>
+                <LayoutWithMenus
+                    title="Entidade"
+                    groupList={optionsList}
+                >
                     <LayoutDetailSimple
                         title={
                             <div className="flex items-center gap-4">
@@ -73,9 +154,13 @@ const EntidadeIndex = () => {
                         actions={
                             <div className="flex-wrap inline-flex xl:flex items-center gap-2">
                                 <Button size="xs" icon={<HiOutlineReply />}>
-                                    <Link className="menu-item-link" to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacao.idassociacao))}`}>
+                                    <a
+                                        className="menu-item-link"
+                                        target="_blank"
+                                        href={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${encodedId}`}
+                                    >
                                         Versão antiga
-                                    </Link>
+                                    </a>
                                 </Button>
                                 <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
                                     <Dropdown.Item eventKey="vincular">Vincular Entidades</Dropdown.Item>
@@ -84,16 +169,7 @@ const EntidadeIndex = () => {
                             </div>
                         }
                     >
-                        <Routes>
-                            <Route index element={<Detalhes data={associacao} />} />
-                            {/* <Route path="al_invest" element={<AlInvest />} />
-                            <Route path="diagnosticos" element={<Diagnosticos />} /> */}
-                            <Route path="empresas_vinculadas" element={<p>Conteúdo de Empresas Vinculadas</p>} />
-                            <Route path="entidades_vinculadas" element={<p>Conteúdo de Entidades Vinculadas</p>} />
-                            <Route path="nucleos_vinculados" element={<p>Conteúdo de Núcleos Vinculados</p>} />
-                            <Route path="perfil" element={<p>Conteúdo de Perfil</p>} />
-                            <Route path="projetos" element={<p>Conteúdo de Projetos</p>} />
-                        </Routes>
+                        {renderTabContent()}
                     </LayoutDetailSimple>
                 </LayoutWithMenus>
             )}

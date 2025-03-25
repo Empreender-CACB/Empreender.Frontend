@@ -5,7 +5,7 @@ import Menu from '@/components/ui/Menu'
 import ScrollBar from '@/components/ui/ScrollBar'
 import Drawer from '@/components/ui/Drawer'
 import useResponsive from '@/utils/hooks/useResponsive'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AdaptableCard from '@/components/shared/AdaptableCard'
 import Button from '@/components/ui/Button'
 import { HiMenu, HiMenuAlt2 } from 'react-icons/hi'
@@ -63,6 +63,8 @@ interface MenuItem {
     label: string | undefined
     isActive?: boolean
     href: string
+    target?: string
+    onClick?: () => void
 }
 
 interface SideBarContentProps {
@@ -70,17 +72,8 @@ interface SideBarContentProps {
     groupList: MenuItem[]
 }
 
-const SideBarContent: React.FC<SideBarContentProps> = ({
-    title,
-    groupList,
-}) => {
-    const navigate = useNavigate()
-
-    const direction = 'ltr'
-
-    const onMenuClick = (category: MenuItem): void => {
-        navigate(category.href, { replace: true })
-    }
+const SideBarContent: React.FC<SideBarContentProps> = ({ title, groupList }) => {
+    const direction = 'ltr';
 
     return (
         <ScrollBar direction={direction}>
@@ -94,22 +87,40 @@ const SideBarContent: React.FC<SideBarContentProps> = ({
                             <MenuItem
                                 key={menu.value}
                                 eventKey={menu.value}
-                                className={`mb-2 ${
-                                    menu.isActive
-                                        ? 'bg-gray-100 dark:bg-gray-700'
-                                        : ''
-                                }`}
-                                onSelect={() => onMenuClick(menu)}
+                                className={`mb-2 ${menu.isActive ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                             >
-                                <span>{menu.label}</span>
+                                {menu.target === "_blank" ? (
+                                    <a
+                                        href={menu.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block w-full h-full"
+                                    >
+                                        {menu.label}
+                                    </a>
+                                ) : menu.onClick ? (
+                                    <div
+                                        className="w-full h-full cursor-pointer"
+                                        onClick={menu.onClick}
+                                    >
+                                        {menu.label}
+                                    </div>
+                                ) : (
+                                    <Link to={menu.href} className="block w-full h-full">
+                                        {menu.label}
+                                    </Link>
+                                )}
                             </MenuItem>
                         ))}
+
+
                     </Menu>
                 </div>
             </div>
         </ScrollBar>
-    )
-}
+    );
+};
+
 
 interface LayoutPageProps {
     title: string
