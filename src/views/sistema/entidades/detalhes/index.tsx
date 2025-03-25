@@ -146,7 +146,7 @@ const EntidadeIndex = () => {
                             </div>
                         }
                         status={associacao.flativo}
-                        subtitle={`Cód. ${associacao.idassociacao} - CNPJ: ${associacao.nucnpj}`}
+                        subtitle={`Cód. ${associacao.idassociacao}${associacao.nucnpj ? ` - CNPJ: ${associacao.nucnpj}` : ''}`}
                         statusTags={{
                             S: { label: "Ativo", class: "bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100" },
                             N: { label: "Inativo", class: "bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100" },
