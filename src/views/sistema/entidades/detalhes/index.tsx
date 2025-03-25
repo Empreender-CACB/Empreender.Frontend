@@ -28,7 +28,7 @@ const EntidadeIndex = () => {
     useEffect(() => {
         setActiveTab(initialTab);
     }, [aba]);
-
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -82,14 +82,14 @@ const EntidadeIndex = () => {
         {
             value: "entidades_vinculadas",
             label: "Entidades Vinculadas",
-            href: `entidades_vinculadas`,
+            href: "entidades_vinculadas",
             isActive: activeTab === "entidades_vinculadas",
             onClick: () => handleInternalTabClick("entidades_vinculadas")
         },
         {
             value: "nucleos_vinculados",
             label: "Núcleos Vinculados",
-            href: `nucleos_vinculados`,
+            href: "nucleos_vinculados",
             isActive: activeTab === "nucleos_vinculados",
             onClick: () => handleInternalTabClick("nucleos_vinculados")
         },
@@ -102,11 +102,30 @@ const EntidadeIndex = () => {
         {
             value: "projetos_vinculados",
             label: "Projetos Vinculados",
-            href: `projetos_vinculados`,
+            href: "projetos_vinculados",
             isActive: activeTab === "projetos_vinculados",
             onClick: () => handleInternalTabClick("projetos_vinculados")
-        }
+        },
+        {
+            value: "acompanhamento",
+            label: "Acompanhamento",
+            href: `/sistema/representatividade/acompanhamento/${id}`,
+            target: "_blank",
+        },        
+        {
+            value: "e2022_enem",
+            label: "E2022 - ENEM",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-enem/eid/${encodedId}`,
+            target: "_blank",
+        },
+        {
+            value: "e2022_demandas",
+            label: "E2022 - Demandas",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-demandas/eid/${encodedId}`,
+            target: "_blank",
+        },
     ];
+    
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -163,7 +182,6 @@ const EntidadeIndex = () => {
                                     </a>
                                 </Button>
                                 <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
-                                    <Dropdown.Item eventKey="vincular">Vincular Entidades</Dropdown.Item>
                                     <Dropdown.Item eventKey="alterar">Alterar dados</Dropdown.Item>
                                 </Dropdown>
                             </div>

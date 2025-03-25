@@ -7,10 +7,12 @@ import dayjs from 'dayjs';
 import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import PendenciasComponent from '../../pendencias/PendenciasComponent';
-import { Button, Tooltip } from '@/components/ui';
+import { Button, Dialog, Tooltip } from '@/components/ui';
 import { HiOutlinePencil, HiOutlineTrash, HiPlusCircle } from 'react-icons/hi';
 import AdicionarDadosBancarios from './components/AdicionarDadosBancarios';
 import AdicionarContato from './components/AdicionarContato';
+import { useNavigate, useParams } from 'react-router-dom';
+import ApiService from '@/services/ApiService';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -39,6 +41,20 @@ const Detalhes = ({ data }: DataProps) => {
         setDiretoriaModalOpen(true);
     };
 
+    const { aba, id } = useParams();
+    const navigate = useNavigate();
+
+    const abasInternasValidas = ["detalhes", "dadosBancarios", "anotacoes", "pendencias", "documentos", "diretoria"];
+    const [abaInterna, setAbaInterna] = useState("detalhes");
+
+    useEffect(() => {
+        if (abasInternasValidas.includes(aba || "")) {
+            setAbaInterna(aba!);
+        } else {
+            setAbaInterna("detalhes");
+        }
+    }, [aba]);
+
     const columnsBanco = [
         { name: "apelido", header: "Apelido", type: "string", operator: "contains", defaultFlex: 1 },
         { name: "dsbanco", header: "Banco", type: "string", operator: "contains", defaultFlex: 1 },
@@ -56,7 +72,7 @@ const Detalhes = ({ data }: DataProps) => {
                         <Button variant="solid" size="xs" icon={<HiOutlinePencil />} onClick={() => handleEditBanco(data)} />
                     </Tooltip>
                     <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => console.log(`Excluir banco ID: ${data.id}`)} />
+                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDeleteContaBancaria(data)} />
                     </Tooltip>
                 </div>
             ),
@@ -92,7 +108,7 @@ const Detalhes = ({ data }: DataProps) => {
                         <Button variant="solid" size="xs" icon={<HiOutlinePencil />} onClick={() => handleEditDiretoria(data)} />
                     </Tooltip>
                     <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => console.log(`Excluir contato ID: ${data.idcontato}`)} />
+                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDeleteContato(data)} />
                     </Tooltip>
                 </div>
             ),
@@ -127,9 +143,55 @@ const Detalhes = ({ data }: DataProps) => {
         { label: 'Homepage', value: noEmpty(data.dshomepage) },
     ];
 
+
+    const [deleteContaModalOpen, setDeleteContaModalOpen] = useState(false);
+    const [contaBancariaSelecionada, setContaBancariaSelecionada] = useState<any>(null);
+
+    const handleDeleteContaBancaria = (conta: any) => {
+        setContaBancariaSelecionada(conta);
+        setDeleteContaModalOpen(true);
+    };
+
+    const confirmDeleteContaBancaria = async () => {
+        try {
+            await ApiService.fetchData({
+                url: `/entidades/${id}/dadosBancarios/${contaBancariaSelecionada.id}`,
+                method: "delete",
+            });
+            setDeleteContaModalOpen(false);
+            setContaBancariaSelecionada(null);
+            setReload(prev => !prev);
+        } catch (error) {
+            console.error("Erro ao excluir conta bancária:", error);
+        }
+    };
+
+    const [contatoSelecionado, setContatoSelecionado] = useState<any>(null);
+    const [deleteContatoConfirmOpen, setDeleteContatoConfirmOpen] = useState(false);
+
+
+    const handleDeleteContato = (contato: any) => {
+        setContatoSelecionado(contato);
+        setDeleteContatoConfirmOpen(true);
+    };
+
+    const confirmDeleteContato = async () => {
+        try {
+            await ApiService.fetchData({
+                url: `/entidades/${id}/diretoria/${contatoSelecionado.idcontato}`,
+                method: "delete",
+            });
+            setDeleteContatoConfirmOpen(false);
+            setContatoSelecionado(null);
+            setReload(prev => !prev);
+        } catch (error) {
+            console.error("Erro ao excluir contato:", error);
+        }
+    };
+
     return (
-        <Tabs defaultValue="detalhes">
-            <TabList>
+        <Tabs value={abaInterna} onChange={(tabValue) => navigate(`/sistema/entidades/${id}/${tabValue}`)}>
+            <TabList >
                 <TabNav value="detalhes">Detalhes</TabNav>
                 <TabNav value="dadosBancarios">Dados Bancários</TabNav>
                 <TabNav value="anotacoes">Anotações</TabNav>
@@ -206,6 +268,33 @@ const Detalhes = ({ data }: DataProps) => {
                 initialData={editDiretoriaData}
                 entidadeId={data.idassociacao}
             />
+
+            <Dialog isOpen={deleteContaModalOpen} onClose={() => setDeleteContaModalOpen(false)}>
+                <div>
+                    <h4>Remover Conta Bancária</h4>
+                    <p className="mt-4">
+                        Tem certeza que deseja remover a conta <strong>{contaBancariaSelecionada?.apelido}</strong>?
+                    </p>
+                    <div className="flex justify-end mt-4 space-x-2">
+                        <Button variant="default" onClick={() => setDeleteContaModalOpen(false)}>Cancelar</Button>
+                        <Button variant="solid" onClick={confirmDeleteContaBancaria}>Remover</Button>
+                    </div>
+                </div>
+            </Dialog>
+
+
+            <Dialog isOpen={deleteContatoConfirmOpen} onClose={() => setDeleteContatoConfirmOpen(false)}>
+                <div>
+                    <h4>Remover Contato</h4>
+                    <p className="mt-4">
+                        Tem certeza que deseja remover o contato <strong>{contatoSelecionado?.nmcontato}</strong>?
+                    </p>
+                    <div className="flex justify-end mt-4 space-x-2">
+                        <Button variant="default" onClick={() => setDeleteContatoConfirmOpen(false)}>Cancelar</Button>
+                        <Button variant="solid" onClick={confirmDeleteContato}>Remover</Button>
+                    </div>
+                </div>
+            </Dialog>
         </Tabs>
     );
 };
