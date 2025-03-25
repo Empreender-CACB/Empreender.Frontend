@@ -167,7 +167,7 @@ function CadastraProposta() {
                             <br />
                         </h2>
                         <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-indigo-200">
-                            ⚡️Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum totam maiores libero consequuntur aspernatur corporis nostrum officia obcaecati. Illum iusto provident officiis, inventore placeat repudiandae nam illo debitis deserunt sit.
+                           Mensagem a ser definida pelo pessoal do Cogecom.
                         </p>
 
                     </div>
@@ -354,7 +354,7 @@ function CadastraProposta() {
                                         )}
                                         {!success && (
                                             <ContactForm
-                                                tipoCadastro="empresa"       // ou "condominio", conforme sua lógica
+                                                tipoCadastro={tipoCadastro}       // ou "condominio", conforme sua lógica
                                                 empresaData={empresaData}    // dados da empresa para preencher os contatos
                                                 handleSave={handleSave}      // função que trata o submit do formulário
                                             />
