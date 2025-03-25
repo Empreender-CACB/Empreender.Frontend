@@ -5,35 +5,36 @@ import { HiPlusCircle, HiOutlineTrash } from "react-icons/hi";
 import CustomReactDataGrid from "@/components/shared/CustomReactDataGrid";
 import Tooltip from "@/components/ui/Tooltip";
 import Dialog from "@/components/ui/Dialog";
-import VincularEmpresaModal from "./components/VincularEmpresa";
 import ApiService from "@/services/ApiService";
 import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
+import VincularProjetoModal from "./components/VincularProjeto";
+import { getProjetoStatusInfo } from "@/utils/projetoStatus";
 
-const EmpresasVinculadas = () => {
+const ProjetosVinculados = () => {
     const { id } = useParams();
     const [reload, setReload] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-    const [empresaSelecionada, setEmpresaSelecionada] = useState<any>(null);
+    const [projetoSelecionado, setProjetoSelecionado] = useState<any>(null);
 
     const handleDelete = (data: any) => {
-        setEmpresaSelecionada(data);
+        setProjetoSelecionado(data);
         setDeleteConfirmOpen(true);
     };
 
     const confirmDelete = async () => {
         try {
             await ApiService.fetchData({
-                url: `/entidades/${id}/vinculos/${empresaSelecionada.idempresa}`,
+                url: `/entidades/${id}/vinculo-projeto/${projetoSelecionado.idprojeto}`,
                 method: 'delete',
-            })
-
-            setReload(prev => !prev)
-            setDeleteConfirmOpen(false)
-            setEmpresaSelecionada(null)
+            });
+            
+            setReload(prev => !prev);
+            setDeleteConfirmOpen(false);
+            setProjetoSelecionado(null);
         } catch (error) {
-            console.error("Erro na requisição de exclusão:", error);
+            console.error("Erro ao excluir vínculo:", error);
         }
     };
 
@@ -42,33 +43,61 @@ const EmpresasVinculadas = () => {
         setModalOpen(false);
     };
 
-    const columnsEmpresas = [
+    const columns = [
         {
-            name: "idempresa",
-            header: "ID",
+            name: "idprojeto",
+            header: "ID Projeto",
             type: "number",
             defaultFlex: 1,
         },
         {
+            name: "tipo_projeto",
+            header: "Tipo",
+            defaultFlex: 1,
+        },
+        {
             name: "nmfantasia",
-            header: "Nome",
-            type: "string",
+            header: "Nome Fantasia",
             defaultFlex: 2,
         },
         {
-            name: 'datavinculo',
+            name: "idprojeto_projeto_base",
+            header: "Projeto Base",
+            defaultFlex: 2,
+        },
+        {
+            name: "tipo",
+            header: "Vínculo",
+            defaultFlex: 1,
+        },
+        {
+            name: "flstatus",
+            header: "Status",
+            defaultFlex: 1,
+            render: ({ value }: any) => {
+                const statusInfo = getProjetoStatusInfo(value)
+                return (
+                    <span className={`px-2 py-1 rounded text-sm font-medium ${statusInfo.className}`}>
+                        {statusInfo.label}
+                    </span>
+                )
+            }
+        },
+        {
+            name: "data_inclusao",
             header: "Data Vínculo",
             dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
-            value: '',
             filterEditor: DateFilter,
-            filterEditorProps: ({ index }: any) => ({
+            filterEditorProps: () => ({
                 dateFormat: 'DD-MM-YYYY',
                 placeholder: 'DD-MM-AAAA',
             }),
-            render: ({ value, cellProps: { dateFormat } }: any) =>
-                moment(value).format(dateFormat) === 'Invalid date' ? '-' : moment(value).format(dateFormat),
+            render: ({ value }: any) =>
+                moment(value).format('DD-MM-YYYY') === 'Invalid date'
+                    ? '-'
+                    : moment(value).format('DD-MM-YYYY'),
         },
         {
             name: "actions",
@@ -77,7 +106,12 @@ const EmpresasVinculadas = () => {
             render: ({ data }: any) => (
                 <div className="flex space-x-2">
                     <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDelete(data)} />
+                        <Button
+                            variant="solid"
+                            size="xs"
+                            icon={<HiOutlineTrash />}
+                            onClick={() => handleDelete(data)}
+                        />
                     </Tooltip>
                 </div>
             ),
@@ -93,23 +127,22 @@ const EmpresasVinculadas = () => {
                     icon={<HiPlusCircle />}
                     onClick={() => setModalOpen(true)}
                 >
-                    Vincular Empresa
+                    Vincular Projeto
                 </Button>
             </div>
 
             <CustomReactDataGrid
-                filename="Empresas Vinculadas"
-                columns={columnsEmpresas}
-                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/empresas-vinculadas?reload=${reload}`}
+                filename="Projetos Vinculados"
+                columns={columns}
+                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/projetos-vinculados?reload=${reload}`}
             />
 
-            <Dialog
-                isOpen={deleteConfirmOpen}
-                onClose={() => setDeleteConfirmOpen(false)}
-            >
+            <Dialog isOpen={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
                 <div>
                     <h4>Remover vínculo</h4>
-                    <p className="mt-4">Tem certeza que deseja remover o vínculo com a empresa <strong>{empresaSelecionada?.nmfantasia}</strong>?</p>
+                    <p className="mt-4">
+                        Tem certeza que deseja remover o vínculo com o projeto <strong>{projetoSelecionado?.nmfantasia}</strong>?
+                    </p>
                     <div className="flex justify-end mt-4 space-x-2">
                         <Button variant="default" onClick={() => setDeleteConfirmOpen(false)}>Cancelar</Button>
                         <Button variant="solid" onClick={confirmDelete}>Remover</Button>
@@ -117,7 +150,7 @@ const EmpresasVinculadas = () => {
                 </div>
             </Dialog>
 
-            <VincularEmpresaModal
+            <VincularProjetoModal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
                 onConfirm={handleConfirmVinculo}
@@ -127,4 +160,4 @@ const EmpresasVinculadas = () => {
     );
 };
 
-export default EmpresasVinculadas;
+export default ProjetosVinculados;

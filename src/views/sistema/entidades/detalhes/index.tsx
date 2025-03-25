@@ -1,276 +1,180 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react'
-import Tabs from '@/components/ui/Tabs'
-import Loading from '@/components/shared/Loading'
-import Button from '@/components/ui/Button'
-import Dropdown from '@/components/ui/Dropdown'
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import LayoutDetailSimple from "@/components/layouts/LayoutDetailSimple";
+import LayoutWithMenus from "@/components/layouts/LayoutWithMenus";
+import Loading from "@/components/shared/Loading";
+import Button from "@/components/ui/Button";
+import Dropdown from "@/components/ui/Dropdown";
+import { HiOutlinePencil, HiOutlineReply } from "react-icons/hi";
+import { APP_PREFIX_PATH } from "@/constants/route.constant";
+import ApiService from "@/services/ApiService";
+import { Associacao } from "@/@types/generalTypes";
+import Detalhes from "./detalhes";
+import EmpresasVinculadas from "./empresas-vinculadas";
+import EntidadesVinculadas from "./entidades-vinculadas";
+import NucleosVinculados from "./nucleos-vinculados";
+import ProjetosVinculados from "./projetos-vinculados";
 
-import { Link, useParams } from 'react-router-dom'
-import LayoutDetailSimple from '@/components/layouts/LayoutDetailSimple'
+const EntidadeIndex = () => {
+    const { id, aba } = useParams();
 
-import isEmpty from 'lodash/isEmpty'
-import {
-    HiOutlinePencil,
-    HiOutlineReply,
-} from 'react-icons/hi'
-import LayoutWithMenus from '@/components/layouts/LayoutWithMenus'
-import { Associacao } from '@/@types/generalTypes'
-import { noEmpty } from '@/utils/noEmpty'
-import Detalhes from './detalhes'
-import { APP_PREFIX_PATH } from '@/constants/route.constant'
-import ApiService from '@/services/ApiService'
+    const [associacao, setAssociacao] = useState<Associacao | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("detalhes");
 
+    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados"];
+    const initialTab = allowedTabs.includes(aba || "") ? aba! : "detalhes";
 
-import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid'
-
-import moment from 'moment'
-
-moment.locale('pt-br')
-const columns = [
-
-    {
-        name: 'idbanco',
-        header: 'ID Banco',
-        type: 'string',
-        operator: 'contains',
-        defaultFlex: 1.5,
-    },
-    {
-        name: 'dsagencia',
-        header: 'Agência',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'pix_tipo',
-        header: 'Tipo PIX',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'pix_chave',
-        header: 'Chave PIX',
-        type: 'string',
-        operator: 'contains',
-        value: '',
-    },
-    {
-        name: 'apelido',
-        header: 'Apelido',
-        type: 'string',
-        operator: 'contains',
-        defaultFlex: 0.6,
-        value: '',
-    },
-]
-
-const { TabNav, TabList, TabContent } = Tabs
-
-const NucleoDetalhes = () => {
-    const { id } = useParams()
-
-    const [associacao, setAssociacao] = useState<Associacao | null>(null)
-    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [aba]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await ApiService.fetchData({
-                    url: `/entidades/${id}`,
-                    method: 'get',
-                });
-
+                const response = await ApiService.fetchData({ url: `/entidades/${id}`, method: "get" });
                 if (response) {
                     setAssociacao(response.data);
                     setLoading(false);
                 }
             } catch (error) {
-                console.error('Erro na requisição:', error);
+                console.error("Erro na requisição:", error);
             }
-        }
+        };
 
         fetchData();
     }, [id]);
 
+    const encodedId = btoa(String(id));
+
+    const handleInternalTabClick = (tab: string) => {
+        setActiveTab(tab);
+        window.history.replaceState(null, '', `${APP_PREFIX_PATH}/entidades/${id}/${tab}`);
+    };
+
     const optionsList = [
         {
-            value: 'detalhes',
-            label: 'Detalhes',
-            isActive: !['reunioes', 'acoes', 'documentos', 'anotacoes'].some(
-                (route) => location.pathname.includes(route)
-            ),
-            href: `${APP_PREFIX_PATH}/nucleos/${id}`,
+            value: "detalhes",
+            label: "Detalhes",
+            href: "detalhes",
+            isActive: activeTab === "detalhes",
+            onClick: () => handleInternalTabClick("detalhes")
         },
         {
-            value: 'al_invest',
-            label: 'AL Invest',
-            isActive: location.pathname.includes('reunioes'),
-            href: `${APP_PREFIX_PATH}/nucleos/reunioes/${id}`,
+            value: "al_invest",
+            label: "AL Invest",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-alinvest/eid/${encodedId}`,
+            target: "_blank",
         },
         {
-            value: 'diagnosticos',
-            label: 'Diagnósticos',
-            isActive: location.pathname.includes('diagnosticos'),
-            href: '#',
+            value: "diagnosticos",
+            label: "Diagnósticos",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/diagnosticos/lista-diagnosticos/id/${encodedId}`,
+            target: "_blank",
         },
         {
-            value: 'e_2022_al_invest',
-            label: 'E2022 & AL Invest',
-            isActive: location.pathname.includes('numsei'),
-            href: '#',
+            value: "empresas_vinculadas",
+            label: "Empresas Vinculadas",
+            href: "empresas_vinculadas",
+            isActive: activeTab === "empresas_vinculadas",
+            onClick: () => handleInternalTabClick("empresas_vinculadas")
         },
         {
-            value: 'empresas_vinculadas',
-            label: 'Empresas Vinculadas',
-            isActive: location.pathname.includes('empresas_vinculadas'),
-            href: '#',
+            value: "entidades_vinculadas",
+            label: "Entidades Vinculadas",
+            href: `entidades_vinculadas`,
+            isActive: activeTab === "entidades_vinculadas",
+            onClick: () => handleInternalTabClick("entidades_vinculadas")
         },
         {
-            value: 'entidades_vinculadas',
-            label: 'Entidades Vinculadas',
-            isActive: location.pathname.includes('entidades_vinculadas'),
-            href: '#',
+            value: "nucleos_vinculados",
+            label: "Núcleos Vinculados",
+            href: `nucleos_vinculados`,
+            isActive: activeTab === "nucleos_vinculados",
+            onClick: () => handleInternalTabClick("nucleos_vinculados")
         },
         {
-            value: 'nucleos_vinculados',
-            label: 'Núcleos Vinculados',
-            isActive: location.pathname.includes('nucleos_vinculados'),
-            href: '#',
+            value: "perfil",
+            label: "Perfil",
+            href: `${import.meta.env.VITE_PHP_URL}/sistema/associacao/perfil/aid/${encodedId}`,
+            target: "_blank",
         },
         {
-            value: 'perfil',
-            label: 'Perfil',
-            isActive: location.pathname.includes('perfil'),
-            href: '#',
-        },
-        {
-            value: 'projetos',
-            label: 'Projetos',
-            isActive: location.pathname.includes('projetos'),
-            href: '#',
-        },
-    ]
+            value: "projetos_vinculados",
+            label: "Projetos Vinculados",
+            href: `projetos_vinculados`,
+            isActive: activeTab === "projetos_vinculados",
+            onClick: () => handleInternalTabClick("projetos_vinculados")
+        }
+    ];
 
-    const OptionsButton = (
-        <Button size="xs" variant="solid" icon={<HiOutlinePencil />}>
-            Opções da Entidade
-        </Button>
-    )
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case "empresas_vinculadas":
+                return <EmpresasVinculadas />;
+            case "entidades_vinculadas":
+                return <EntidadesVinculadas />;
+            case "nucleos_vinculados":
+                return <NucleosVinculados />;
+            case "projetos_vinculados":
+                return <ProjetosVinculados />;
+            default:
+                return <Detalhes data={associacao!} />;
+        }
+    };
 
     return (
         <Loading loading={loading}>
-            {!isEmpty(associacao) && (
+            {associacao && (
                 <LayoutWithMenus
-                    title={'Categorias'}
+                    title="Entidade"
                     groupList={optionsList}
                 >
                     <LayoutDetailSimple
-                        title={associacao.nmrazao}
+                        title={
+                            <div className="flex items-center gap-4">
+                                {associacao.logoentidade && (
+                                    <div className="w-12 h-12 border rounded-lg overflow-hidden shadow-sm">
+                                        <img
+                                            src={`${import.meta.env.VITE_API_URL}/${associacao.logoentidade}`}
+                                            alt="Logo Entidade"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <h3>{associacao.nmrazao}</h3>
+                            </div>
+                        }
                         status={associacao.flativo}
-                        subtitle={`Cód. ${associacao.idassociacao}`}
+                        subtitle={`Cód. ${associacao.idassociacao} - CNPJ: ${associacao.nucnpj}`}
                         statusTags={{
-                            S: {
-                                label: 'Ativo',
-                                class: 'bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100',
-                            },
-                            N: {
-                                label: 'Inativo',
-                                class: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100',
-                            },
+                            S: { label: "Ativo", class: "bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-100" },
+                            N: { label: "Inativo", class: "bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100" },
                         }}
                         actions={
                             <div className="flex-wrap inline-flex xl:flex items-center gap-2">
                                 <Button size="xs" icon={<HiOutlineReply />}>
-                                    <Link
+                                    <a
                                         className="menu-item-link"
-                                        to={`${import.meta.env.VITE_PHP_URL}/sistema/nucleo/detalhe/nid/${btoa(String(associacao.id))}`}
+                                        target="_blank"
+                                        href={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${encodedId}`}
                                     >
                                         Versão antiga
-                                    </Link>
+                                    </a>
                                 </Button>
-                                <Dropdown renderTitle={OptionsButton}>
-                                    <Dropdown.Item eventKey="f">
-                                        Vincular Entidades
-                                    </Dropdown.Item>
-                                    <Dropdown.Item eventKey="a">
-                                        Alterar dados
-                                    </Dropdown.Item>
-
+                                <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
+                                    <Dropdown.Item eventKey="vincular">Vincular Entidades</Dropdown.Item>
+                                    <Dropdown.Item eventKey="alterar">Alterar dados</Dropdown.Item>
                                 </Dropdown>
-
                             </div>
                         }
                     >
-                        {/* Aqui o conteúdo específico de cada página, pode ser qualquer coisa */}
-                        <Tabs defaultValue="tab1">
-                            <TabList>
-                                <TabNav value="tab1">Detalhes</TabNav>
-                                <TabNav value="banco">
-                                    Dados Bancários
-                                </TabNav>
-                                <TabNav value="contatos">
-                                    Diretoria e Contatos
-                                </TabNav>
-                                <TabNav value="anotacoes">
-                                    Anotações
-                                </TabNav>
-                                <TabNav value="pendencia">
-                                    Pendências
-                                </TabNav>
-                                <TabNav value="documentos">
-                                    Documentos
-                                </TabNav>
-                            </TabList>
-                            <div className="p-4">
-                                <TabContent value="tab1">
-                                    <div className="px-4 py-5 sm:px-6">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900">
-                                            {associacao.nmnucleo}
-                                        </h3>
-                                        <p className="flex mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-200">
-                                            {noEmpty(
-                                                associacao.cidade
-                                                    .nmcidade
-                                            ) +
-                                                ' - ' +
-                                                noEmpty(
-                                                    associacao.cidade
-                                                        .iduf
-                                                )}
-
-                                            <img
-                                                className="h-5 ml-2"
-                                                src={`/img/estados/rounded/png-200/${noEmpty(
-                                                    associacao.cidade
-                                                        .iduf
-                                                )}.png`}
-                                                alt="CACB"
-                                            />
-                                        </p>
-                                    </div>
-                                    <Detalhes data={associacao} />
-                                </TabContent>
-                                <TabContent value="banco">
-
-
-
-                                    <CustomReactDataGrid
-                                        filename={`Contas Bancárias - ${associacao.nmrazao}`}
-                                        columns={columns}
-                                        url={`${import.meta.env.VITE_API_URL
-                                            }/entidades/accounts/${id}`}
-                                    />
-                                </TabContent>
-                                <TabContent value="tab3"></TabContent>
-                            </div>
-                        </Tabs>
+                        {renderTabContent()}
                     </LayoutDetailSimple>
                 </LayoutWithMenus>
             )}
         </Loading>
-    )
-}
+    );
+};
 
-export default NucleoDetalhes
+export default EntidadeIndex;

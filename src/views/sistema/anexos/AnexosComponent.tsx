@@ -198,7 +198,7 @@ interface AnexosProps {
     title?: string;
     minHeight?: number;
     tipoVinculo: string;
-    idVinculo: string | undefined;
+    idVinculo: number | string | undefined;
     tipoVinculoAux?: string;
     idVinculoAux?: string;
 }
@@ -304,7 +304,7 @@ const AnexosComponent: React.FC<AnexosProps> = ({
                         to={generateUrl(
                             `${APP_PREFIX_PATH}/anexos/adicionar`,
                             tipoVinculo,
-                            idVinculo || '',
+                            idVinculo?.toString() || '',
                             tipoVinculoAux,
                             idVinculoAux,
                             { redirectUrl: window.location.href }
@@ -328,7 +328,7 @@ const AnexosComponent: React.FC<AnexosProps> = ({
                 url={generateUrl(
                     url,
                     tipoVinculo,
-                    idVinculo || '',
+                    idVinculo?.toString() || '',
                     tipoVinculoAux || '',
                     idVinculoAux || '',
                     { filtroVencimento: filtroVencimento }

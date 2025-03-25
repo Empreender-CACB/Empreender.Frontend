@@ -23,7 +23,7 @@ const statusOptions = [
 ];
 
 interface PendenciasProps {
-    idVinculo: string | undefined;
+    idVinculo: number | string;
     tipoVinculo: string;
     idVinculoAux?: string;
     tipoVinculoAux?: string;

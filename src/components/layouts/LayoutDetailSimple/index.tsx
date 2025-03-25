@@ -1,21 +1,21 @@
-import classNames from 'classnames'
-import Tag from '@/components/ui/Tag'
-import { Card } from '@/components/ui'
-import useThemeClass from '@/utils/hooks/useThemeClass'
+import classNames from "classnames";
+import Tag from "@/components/ui/Tag";
+import { Card } from "@/components/ui";
+import useThemeClass from "@/utils/hooks/useThemeClass";
 
 interface StatusProperties {
-    label: string
-    class: string
+    label: string;
+    class: string;
 }
 
 interface LayoutDetailSimpleProps {
-    title: string
-    titleLink?: string
-    subtitle?: string
-    status: string
-    children: React.ReactNode
-    statusTags?: Record<string, StatusProperties>
-    actions?: React.ReactNode
+    title: React.ReactNode;
+    titleLink?: string;
+    subtitle?: string;
+    status: string;
+    children: React.ReactNode;
+    statusTags?: Record<string, StatusProperties>;
+    actions?: React.ReactNode;
 }
 
 const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
@@ -27,28 +27,26 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
     statusTags,
     actions,
 }) => {
-    const { borderTheme } = useThemeClass()
+    const { borderTheme } = useThemeClass();
 
     return (
         <Card className={`h-full border-t-2 ${borderTheme} shadow-lg backdrop-blur-lg`}>
             <div>
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-2">
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
-                        <h3>
-                            {titleLink ? (
-                                <a href={titleLink} target="_blank" rel="noopener noreferrer">
-                                    {title}
-                                </a>
-                            ) : (
-                                <span>{title}</span>
-                            )}
-                        </h3>
+                        {titleLink ? (
+                            <a href={titleLink} target="_blank" rel="noopener noreferrer">
+                                {title}
+                            </a>
+                        ) : (
+                            <>{title}</>
+                        )}
 
                         {statusTags && statusTags[status] && (
                             <Tag
                                 className={classNames(
-                                    'border-0 rounded-md ltr:ml-2 rtl:mr-2',
-                                    'px-4 py-2 text-sm',
+                                    "border-0 rounded-md ltr:ml-2 rtl:mr-2",
+                                    "px-4 py-2 text-sm",
                                     statusTags[status].class
                                 )}
                             >
@@ -56,21 +54,13 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                             </Tag>
                         )}
                     </div>
-                    
-                    {/* Ações */}
                     {actions}
                 </div>
-
-                {/* Subtítulo */}
                 {subtitle && <span className="flex items-center">{subtitle}</span>}
-
-                {/* Conteúdo Principal */}
-                <div className="mt-4">
-                    {children}
-                </div>
+                <div className="mt-4">{children}</div>
             </div>
         </Card>
-    )
-}
+    );
+};
 
-export default LayoutDetailSimple
+export default LayoutDetailSimple;

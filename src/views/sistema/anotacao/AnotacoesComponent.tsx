@@ -29,8 +29,21 @@ const leituraOptions = [
     { name: 'Não Lida', value: 'naoLida', color: 'bg-green-600' },
 ];
 
-const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoAux, temAnexos }: { tipoVinculo: string; idVinculo: string; tipoVinculoAux: string | undefined; idVinculoAux: string |undefined; temAnexos: boolean }) => {
+interface AnotacoesComponentProps {
+    tipoVinculo: string;
+    idVinculo: number | string;
+    tipoVinculoAux?: string;
+    idVinculoAux?: string;
+    temAnexos: boolean;
+}
 
+const AnotacoesComponent: React.FC<AnotacoesComponentProps> = ({
+    tipoVinculo,
+    idVinculo,
+    tipoVinculoAux,
+    idVinculoAux,
+    temAnexos,
+}) => {
     const { nucpf } = useAppSelector((state) => state.auth.user);
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -130,7 +143,7 @@ const AnotacoesComponent = ({ tipoVinculo, idVinculo, tipoVinculoAux, idVinculoA
         }
     ];
 
-    const generateUrl = (tipoVinculo: string, idVinculo: string, tipoVinculoAux?: string, idVinculoAux?: string) => {
+    const generateUrl = (tipoVinculo: string, idVinculo: number | string, tipoVinculoAux?: string, idVinculoAux?: string) => {
         let baseUrl = `${import.meta.env.VITE_API_URL}/anotacoes/lista/${tipoVinculo}/${idVinculo}`;
         if (tipoVinculoAux && idVinculoAux) {
             baseUrl += `/${tipoVinculoAux}/${idVinculoAux}`;

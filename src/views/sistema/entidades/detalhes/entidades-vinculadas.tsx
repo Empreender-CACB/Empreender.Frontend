@@ -5,35 +5,35 @@ import { HiPlusCircle, HiOutlineTrash } from "react-icons/hi";
 import CustomReactDataGrid from "@/components/shared/CustomReactDataGrid";
 import Tooltip from "@/components/ui/Tooltip";
 import Dialog from "@/components/ui/Dialog";
-import VincularEmpresaModal from "./components/VincularEmpresa";
 import ApiService from "@/services/ApiService";
 import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
+import VincularEntidadeModal from "./components/VincularEntidades";
 
-const EmpresasVinculadas = () => {
+const EntidadesVinculadas = () => {
     const { id } = useParams();
     const [reload, setReload] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-    const [empresaSelecionada, setEmpresaSelecionada] = useState<any>(null);
+    const [entidadeSelecionada, setEntidadeSelecionada] = useState<any>(null);
 
     const handleDelete = (data: any) => {
-        setEmpresaSelecionada(data);
+        setEntidadeSelecionada(data);
         setDeleteConfirmOpen(true);
     };
 
     const confirmDelete = async () => {
         try {
             await ApiService.fetchData({
-                url: `/entidades/${id}/vinculos/${empresaSelecionada.idempresa}`,
+                url: `/entidades/${id}/vinculos/${entidadeSelecionada.idassociacao}`,
                 method: 'delete',
-            })
+            });
 
-            setReload(prev => !prev)
-            setDeleteConfirmOpen(false)
-            setEmpresaSelecionada(null)
+            setReload(prev => !prev);
+            setDeleteConfirmOpen(false);
+            setEntidadeSelecionada(null);
         } catch (error) {
-            console.error("Erro na requisição de exclusão:", error);
+            console.error("Erro ao excluir vínculo:", error);
         }
     };
 
@@ -42,33 +42,53 @@ const EmpresasVinculadas = () => {
         setModalOpen(false);
     };
 
-    const columnsEmpresas = [
+    const columns = [
         {
-            name: "idempresa",
+            name: "idassociacao",
             header: "ID",
             type: "number",
             defaultFlex: 1,
         },
         {
-            name: "nmfantasia",
-            header: "Nome",
-            type: "string",
+            name: "nome", 
+            header: "Tipo",
+            defaultFlex: 1,
+        },
+        {
+            name: "iduf",
+            header: "UF",
+            defaultFlex: 1,
+        },
+        {
+            name: "nmcidade",
+            header: "Cidade",
+            defaultFlex: 1,
+        },
+        {
+            name: "sigla",
+            header: "Sigla",
+            defaultFlex: 1,
+        },
+        {
+            name: "nmrazao",
+            header: "Razão Social",
             defaultFlex: 2,
         },
         {
-            name: 'datavinculo',
+            name: "datavinculo",
             header: "Data Vínculo",
             dateFormat: 'DD-MM-YYYY',
             type: 'date',
             operator: 'after',
-            value: '',
             filterEditor: DateFilter,
-            filterEditorProps: ({ index }: any) => ({
+            filterEditorProps: () => ({
                 dateFormat: 'DD-MM-YYYY',
                 placeholder: 'DD-MM-AAAA',
             }),
-            render: ({ value, cellProps: { dateFormat } }: any) =>
-                moment(value).format(dateFormat) === 'Invalid date' ? '-' : moment(value).format(dateFormat),
+            render: ({ value }: any) =>
+                moment(value).format('DD-MM-YYYY') === 'Invalid date'
+                    ? '-'
+                    : moment(value).format('DD-MM-YYYY'),
         },
         {
             name: "actions",
@@ -77,7 +97,12 @@ const EmpresasVinculadas = () => {
             render: ({ data }: any) => (
                 <div className="flex space-x-2">
                     <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDelete(data)} />
+                        <Button
+                            variant="solid"
+                            size="xs"
+                            icon={<HiOutlineTrash />}
+                            onClick={() => handleDelete(data)}
+                        />
                     </Tooltip>
                 </div>
             ),
@@ -93,23 +118,20 @@ const EmpresasVinculadas = () => {
                     icon={<HiPlusCircle />}
                     onClick={() => setModalOpen(true)}
                 >
-                    Vincular Empresa
+                    Vincular Entidade
                 </Button>
             </div>
 
             <CustomReactDataGrid
-                filename="Empresas Vinculadas"
-                columns={columnsEmpresas}
-                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/empresas-vinculadas?reload=${reload}`}
+                filename="Entidades Vinculadas"
+                columns={columns}
+                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/entidades-vinculadas?reload=${reload}`}
             />
 
-            <Dialog
-                isOpen={deleteConfirmOpen}
-                onClose={() => setDeleteConfirmOpen(false)}
-            >
+            <Dialog isOpen={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
                 <div>
                     <h4>Remover vínculo</h4>
-                    <p className="mt-4">Tem certeza que deseja remover o vínculo com a empresa <strong>{empresaSelecionada?.nmfantasia}</strong>?</p>
+                    <p className="mt-4">Tem certeza que deseja remover o vínculo com a entidade <strong>{entidadeSelecionada?.nmrazao}</strong>?</p>
                     <div className="flex justify-end mt-4 space-x-2">
                         <Button variant="default" onClick={() => setDeleteConfirmOpen(false)}>Cancelar</Button>
                         <Button variant="solid" onClick={confirmDelete}>Remover</Button>
@@ -117,7 +139,7 @@ const EmpresasVinculadas = () => {
                 </div>
             </Dialog>
 
-            <VincularEmpresaModal
+            <VincularEntidadeModal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
                 onConfirm={handleConfirmVinculo}
@@ -127,4 +149,4 @@ const EmpresasVinculadas = () => {
     );
 };
 
-export default EmpresasVinculadas;
+export default EntidadesVinculadas;
