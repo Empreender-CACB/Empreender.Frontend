@@ -91,7 +91,7 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
         try {
             if (initialData) {
                 await ApiService.fetchData({
-                    url: `/entidades/${entidadeId}/dadosBancarios/${initialData.id}`,
+                    url: `/entidades/${entidadeId}/dadosBancarios/${initialData.id_conta_corrente}`,
                     method: 'put',
                     data: values
                 });
@@ -103,7 +103,7 @@ const AdicionarDadosBancarios = ({ isOpen, onClose, onConfirm, initialData, enti
                 });
             }
             onConfirm();
-            // onClose();
+            onClose();
         } catch (error) {
             console.error("Erro ao salvar dados bancários", error);
         }
