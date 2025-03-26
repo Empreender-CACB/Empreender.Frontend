@@ -28,7 +28,7 @@ const EntidadeIndex = () => {
     useEffect(() => {
         setActiveTab(initialTab);
     }, [aba]);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -111,7 +111,7 @@ const EntidadeIndex = () => {
             label: "Acompanhamento",
             href: `/sistema/representatividade/acompanhamento/${id}`,
             target: "_blank",
-        },        
+        },
         {
             value: "e2022_enem",
             label: "E2022 - ENEM",
@@ -125,7 +125,7 @@ const EntidadeIndex = () => {
             target: "_blank",
         },
     ];
-    
+
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -182,8 +182,18 @@ const EntidadeIndex = () => {
                                     </a>
                                 </Button>
                                 <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
-                                    <Dropdown.Item eventKey="alterar">Alterar dados</Dropdown.Item>
+                                    <Dropdown.Item eventKey="alterar">
+                                        <a
+                                            href={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/editar/aid/${encodedId}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block w-full h-full"
+                                        >
+                                            Alterar dados
+                                        </a>
+                                    </Dropdown.Item>
                                 </Dropdown>
+
                             </div>
                         }
                     >
