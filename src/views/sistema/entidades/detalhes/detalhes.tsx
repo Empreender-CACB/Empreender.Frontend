@@ -118,7 +118,6 @@ const Detalhes = ({ data }: DataProps) => {
     const details = [
         { label: 'Nome', value: noEmpty(data.nmrazao) },
         { label: 'Sigla', value: noEmpty(data.sigla) },
-        { label: 'ID tipo Entidade', value: noEmpty(data.id_tipo_entidade) },
         { label: 'CNPJ', value: noEmpty(data.nucnpj) },
         { label: 'Email', value: noEmpty(data.dsemail) },
         { label: 'Fundação', value: noEmpty(dayjs(data.dtfundacao).format('DD/MM/YYYY')) },
