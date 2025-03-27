@@ -11,7 +11,7 @@ export const EntidadeCard = ({ data }) => {
         >
             <div className="w-full flex justify-between">
                 <h5>{data.sigla + "-" + data.nmrazao} </h5>
-                <TagActiveInative value={data["associacao.flativo"]} activeText="S" />
+                <TagActiveInative value={data.flativo} activeText="S" />
             </div>
 
             <p className="mt-2">
