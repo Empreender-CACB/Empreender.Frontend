@@ -71,17 +71,23 @@
   </script>
 
 <script>
-  // window.onload = function() {
-  //   var banner = document.createElement('div');
-  //       banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
-  //       banner.textContent = 'O acesso a arquivos pode apresentar lentidão temporária. Estamos empenhados em resolver essa situação o mais rápido possível.';
-  //       document.body.prepend(banner);
+  window.onload = function () {
+    if (window.innerWidth <= 768) {
+      var banner = document.createElement('div');
+      banner.className = 'bg-blue-500 text-white text-center py-2 fixed top-0 w-full z-50';
+      banner.textContent = 'Estamos em obras! A operação por celular ainda é muito precária. Estamos trabalhando para melhorá-la paulatinamente.';
+      document.body.prepend(banner);
 
-  //       var spacer = document.createElement('div');
-  //       spacer.style.height = '2rem';
-  //       document.body.insertBefore(spacer, document.body.firstChild.nextSibling);
-  // }
+      var spacer = document.createElement('div');
+      spacer.style.height = '3.5rem'; 
+
+      var firstElement = document.body.children[1]; 
+      document.body.insertBefore(spacer, firstElement);
+    }
+  };
 </script>
+
+  
 
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
