@@ -2,20 +2,13 @@ import React, { useState } from 'react';
 
 const fileFields = {
   common: [
-    { name: 'faturaEnergia', label: 'Cópia da Fatura de Energia' },
     { name: 'documentoIdentidade', label: 'Documento de Identidade' },
   ],
-  empresa: [
-    { name: 'contratoSocial', label: 'Contrato Social' },
-    { name: 'cartaoCnpj', label: 'Cartão do CNPJ' },
-  ],
-  condominio: [
-    { name: 'ataAssembleia', label: 'Ata da Assembleia' },
-    { name: 'cartaoCnpj', label: 'Cartão do CNPJ' },
-  ],
+
 };
 
 const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
+  const tipo = tipoCadastro
   const [formData, setFormData] = useState({
     idContato: '00',
     nomeContato: '',
@@ -28,6 +21,7 @@ const ContactForm = ({ tipoCadastro, empresaData, handleSave }) => {
     isManualContact: true,
     maintenanceAgreement: false,
     upload: {},
+    tipo: tipo,
   });
 
   // Atualiza os inputs de texto e checkbox
