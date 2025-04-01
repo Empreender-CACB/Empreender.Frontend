@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'
 
 function PesquisaTeste() {
     const [cnpj, setCnpj] = useState('') // caso você queira preenchê-lo manualmente
@@ -15,6 +16,10 @@ function PesquisaTeste() {
     const [certificacao, setCertificacao] = useState('')
     const [faixaAumento, setFaixaAumento] = useState('')
     
+    const location = useLocation()
+    const queryParams = new URLSearchParams(location.search)
+    const token = queryParams.get('token')
+
     // Práticas sustentáveis (pergunta 3)
     const [praticas, setPraticas] = useState({
       residuos: false,
@@ -57,6 +62,7 @@ function PesquisaTeste() {
 
     // Effects
     useEffect(() => {
+
         const link = document.createElement("link");
         link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap";
         link.rel = "stylesheet";
@@ -81,6 +87,7 @@ function PesquisaTeste() {
         e.preventDefault()
       
         const payload = {
+          token,
           cnpj,
       
           pergunta1: resposta1 === 'sim',
@@ -164,7 +171,7 @@ function PesquisaTeste() {
                     <p className="text-gray-600 font-medium">Por favor, responda às seguintes questões:</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                     <label className="block text-lg font-semibold text-gray-900 mb-4">
                         Sua empresa participou da parceria CACB-CEF?
                     </label>
@@ -184,10 +191,10 @@ function PesquisaTeste() {
                             Não
                         </button>
                     </div>
-                </div>
+                </div> */}
 
                 {/* SE NÃO PARTICIPOU, MOSTRAR LINK */}
-                {participou === "nao" && (
+                {participou === "sim" && (
                     <div className="text-center">
                         <p className="text-gray-700">Saiba mais sobre a parceria clicando abaixo:</p>
                         <a href="https://www.google.com" target="_blank" rel="noopener noreferrer"
@@ -198,7 +205,7 @@ function PesquisaTeste() {
                 )}
 
                 {/* SE PARTICIPOU, MOSTRAR 8 PERGUNTAS */}
-                {participou === "sim" && (
+                {participou !== "abcate" && (
                     <form className="space-y-8" onSubmit={handleSubmit}>
                         {/* Pergunta 1 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
