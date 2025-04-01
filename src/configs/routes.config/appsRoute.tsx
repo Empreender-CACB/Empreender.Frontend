@@ -335,6 +335,11 @@ const appsRoute: Routes = [
         path: `${APP_PREFIX_PATH}/prestcontas/transforma-arquivo`,
         component: lazy(() => import('@/views/sistema/prestcontas/transforma-arquivo')),
     },   
+    {
+        key: 'PesquisaAL.filaManager',
+        path: `${APP_PREFIX_PATH}/pesquisa-al/fila`,
+        component: lazy(() => import('@/views/sistema/pesquisa-al/fila')),
+    },      
 ]
 
 export default appsRoute

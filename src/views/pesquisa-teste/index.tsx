@@ -1,28 +1,59 @@
 import { useState, useEffect } from 'react';
 
 function PesquisaTeste() {
-    const [participou, setParticipou] = useState(null);
+    const [cnpj, setCnpj] = useState('') // caso você queira preenchê-lo manualmente
 
-    // States to control answers
-    const [resposta1, setResposta1] = useState(null); // Pergunta 1
-    const [resposta2, setResposta2] = useState(null); // Pergunta 2
-    const [adotaSustentaveis, setAdotaSustentaveis] = useState(null); // Pergunta 3 (Sim/Não)
-    const [praticasSustentaveis, setPraticasSustentaveis] = useState([]); // Lista de checkboxes
-    const [resposta4, setResposta4] = useState(null); // Pergunta 4 (Sim/Não)
-    const [colaboradores4, setColaboradores4] = useState({ total: '', homens: '', mulheres: '' });
+    const [resposta1, setResposta1] = useState('')
+    const [resposta2, setResposta2] = useState('')
+    const [resposta3, setResposta3] = useState('')
+    const [resposta4, setResposta4] = useState('')
+    const [resposta5, setResposta5] = useState('')
+    const [resposta6, setResposta6] = useState('')
+    const [resposta7, setResposta7] = useState('')
+    const [resposta8, setResposta8] = useState('')
+    
+    const [certificacao, setCertificacao] = useState('')
+    const [faixaAumento, setFaixaAumento] = useState('')
+    
+    // Práticas sustentáveis (pergunta 3)
+    const [praticas, setPraticas] = useState({
+      residuos: false,
+      energia: false,
+      plastico: false,
+      digitalizacao: false,
+      insumos: false,
+      transporte: false,
+      outra: ''
+    })
+    
+    // Colaboradores em práticas sustentáveis (pergunta 4)
+    const [colabSustentaveis, setColabSustentaveis] = useState({
+      total: 0,
+      homens: 0,
+      mulheres: 0
+    })
+    
+    // Colaboradores em empregos digitais (pergunta 5)
+    const [colabDigitais, setColabDigitais] = useState({
+      total: 0,
+      homens: 0,
+      mulheres: 0
+    })
+    
+    // Redução de recursos (pergunta 6)
+    const [reducao, setReducao] = useState({
+      agua: false,
+      energia: false,
+      combustivel: false,
+      papel: false,
+      materia_prima: false,
+      otimizacao: false,
+      outra: ''
+    })
+    
+    // Participação (se aplicável)
+    const [participou, setParticipou] = useState(null)
 
-    const [resposta5, setResposta5] = useState(null); // Pergunta 5 (Sim/Não)
-    const [colaboradores5, setColaboradores5] = useState({ total: '', homens: '', mulheres: '' });
-
-    const [resposta6, setResposta6] = useState(null); // Pergunta 6 (Sim/Não)
-    const [economias, setEconomias] = useState([]); // Checkboxes
-    const [outraEconomia, setOutraEconomia] = useState('');
-
-    const [resposta7, setResposta7] = useState(null); // Pergunta 7 (Sim/Não)
-    const [porcentagem, setPorcentagem] = useState('');
-
-    const [resposta8, setResposta8] = useState(null); // Pergunta 8 (Sim / Não, mas interessa / Não)
-    const [nomeCertificacao, setNomeCertificacao] = useState('');
 
     // Effects
     useEffect(() => {
@@ -46,37 +77,84 @@ function PesquisaTeste() {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Aqui você pode enviar os dados para o servidor, usar fetch/axios, etc.
-        console.log({
-            pergunta1: resposta1,
-            pergunta2: resposta2,
-            pergunta3_adota: adotaSustentaveis,
-            pergunta3_praticas: praticasSustentaveis,
-            pergunta4: resposta4,
-            colaboradores4,
-            pergunta5: resposta5,
-            colaboradores5,
-            pergunta6: resposta6,
-            economias,
-            outraEconomia,
-            pergunta7: resposta7,
-            porcentagem,
-            pergunta8: resposta8,
-            nomeCertificacao
-        });
-        alert('Formulário enviado! Verifique o console para ver os dados.');
-    };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+      
+        const payload = {
+          cnpj,
+      
+          pergunta1: resposta1 === 'sim',
+          pergunta2: resposta2 === 'sim',
+      
+          adota_praticas: resposta3 === 'sim',
+          praticas: {
+            residuos: praticas.residuos,
+            energia: praticas.energia,
+            plastico: praticas.plastico,
+            digitalizacao: praticas.digitalizacao,
+            insumos: praticas.insumos,
+            transporte: praticas.transporte,
+            outra: praticas.outra
+          },
+      
+          colab_sustentabilidade: resposta4 === 'sim',
+          colab_sustent_total: colabSustentaveis.total,
+          colab_sustent_homens: colabSustentaveis.homens,
+          colab_sustent_mulheres: colabSustentaveis.mulheres,
+      
+          colab_digital: resposta5 === 'sim',
+          colab_digital_total: colabDigitais.total,
+          colab_digital_homens: colabDigitais.homens,
+          colab_digital_mulheres: colabDigitais.mulheres,
+      
+          reduziu_recursos: resposta6 === 'sim',
+          reducao: {
+            agua: reducao.agua,
+            energia: reducao.energia,
+            combustivel: reducao.combustivel,
+            papel: reducao.papel,
+            materia_prima: reducao.materia_prima,
+            otimizacao: reducao.otimizacao,
+            outra: reducao.outra
+          },
+      
+          aumento_faturamento: resposta7 === 'sim',
+          faixa_aumento: faixaAumento,
+      
+          possui_certificacao: resposta8,
+          nome_certificacao: certificacao
+        }
+      
+        try {
+          const response = await fetch('http://localhost:3333/pesquisa-al', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          })
+      
+          if (response.ok) {
+            alert('Formulário enviado com sucesso!')
+          } else {
+            alert('Erro ao enviar formulário. Verifique os dados e tente novamente.')
+          }
+        } catch (error) {
+          console.error('Erro na requisição:', error)
+          alert('Erro ao conectar com o servidor.')
+        }
+      }
+      
+
 
     return (
         <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }} className="h-auto bg-white py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto mb-16">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" alt="CACB"/>
-                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" alt="Empreender"/>
-                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" alt="Al Invest"/>
-                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/sebrae.svg" alt="Sebrae"/>
+                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-cacb.png" alt="CACB" />
+                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/logo-empreender.png" alt="Empreender" />
+                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/al_invest_logo.jpg" alt="Al Invest" />
+                    <img className="h-12 mx-auto object-contain" src="https://beta.cacbempreenderapp.org.br/img/logo/sebrae.svg" alt="Sebrae" />
                 </div>
             </div>
 
@@ -125,173 +203,91 @@ function PesquisaTeste() {
                         {/* Pergunta 1 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                1. Sua empresa teve acesso a orientações sobre fontes de financiamento com condições diferenciadas para negócios que adotam boas práticas de sustentabilidade?
+                                1. Sua empresa teve acesso a orientações sobre fontes de financiamento? [2.6]
                             </label>
                             <div className="flex gap-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta1"
-                                        value="sim"
-                                        checked={resposta1 === "sim"}
-                                        onChange={() => setResposta1("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta1"
-                                        value="nao"
-                                        checked={resposta1 === "nao"}
-                                        onChange={() => setResposta1("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta1"
+                                            value={valor}
+                                            checked={resposta1 === valor}
+                                            onChange={() => setResposta1(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
                         </div>
 
                         {/* Pergunta 2 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                2. Sua empresa conseguiu o financiamento junto à instituição financeira?
+                                2. Sua empresa conseguiu o financiamento junto à instituição financeira? [2.6]
                             </label>
                             <div className="flex gap-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta2"
-                                        value="sim"
-                                        checked={resposta2 === "sim"}
-                                        onChange={() => setResposta2("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta2"
-                                        value="nao"
-                                        checked={resposta2 === "nao"}
-                                        onChange={() => setResposta2("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta2"
+                                            value={valor}
+                                            checked={resposta2 === valor}
+                                            onChange={() => setResposta2(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
                         </div>
 
                         {/* Pergunta 3 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                3. Sua empresa adota práticas sustentáveis?
+                                3. Sua empresa adota práticas sustentáveis? [OE 1.1]
                             </label>
                             <div className="flex gap-4 mb-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta3"
-                                        value="sim"
-                                        checked={adotaSustentaveis === "sim"}
-                                        onChange={() => setAdotaSustentaveis("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta3"
-                                        value="nao"
-                                        checked={adotaSustentaveis === "nao"}
-                                        onChange={() => setAdotaSustentaveis("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta3"
+                                            value={valor}
+                                            checked={resposta3 === valor}
+                                            onChange={() => setResposta3(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
-
-                            {adotaSustentaveis === "sim" && (
-                                <div className="space-y-2">
-                                    <label className="text-gray-700 font-medium block">Selecione as práticas adotadas:</label>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Gestão de resíduos e reciclagem")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Gestão de resíduos e reciclagem")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Gestão de resíduos e reciclagem</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Uso eficiente de energia e água")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Uso eficiente de energia e água")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Uso eficiente de energia e água</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Redução do uso de plástico e papel")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Redução do uso de plástico e papel")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução do uso de plástico e papel</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Digitalização de processos para reduzir desperdícios")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Digitalização de processos para reduzir desperdícios")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Digitalização de processos para reduzir desperdícios</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Uso de insumos ecológicos ou reaproveitamento de materiais")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Uso de insumos ecológicos ou reaproveitamento de materiais")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Uso de insumos ecológicos ou reaproveitamento de materiais</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Incentivo ao trabalho remoto ou transporte sustentável")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Incentivo ao trabalho remoto ou transporte sustentável")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Incentivo ao trabalho remoto ou transporte sustentável</span>
-                                        </label>
-                                    </div>
-                                    {/* Espaço para "Outra" prática */}
-                                    <div className="mt-2">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={praticasSustentaveis.includes("Outra")}
-                                                onChange={() => handleCheckBoxChange(setPraticasSustentaveis, "Outra")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Outra (especifique)</span>
-                                        </label>
-                                        {praticasSustentaveis.includes("Outra") && (
-                                            <input
-                                                type="text"
-                                                placeholder="Descreva outra prática"
-                                                className="mt-1 p-2 border rounded-md w-full"
-                                            />
-                                        )}
-                                    </div>
+                            {resposta3 === 'sim' && (
+                                <div className="space-y-2 ml-2">
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.residuos} onChange={(e) => setPraticas({ ...praticas, residuos: e.target.checked })} className="mr-2" /> Gestão de resíduos e reciclagem
+                                    </label>
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.energia} onChange={(e) => setPraticas({ ...praticas, energia: e.target.checked })} className="mr-2" /> Uso eficiente de energia e água
+                                    </label>
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.plastico} onChange={(e) => setPraticas({ ...praticas, plastico: e.target.checked })} className="mr-2" /> Redução do uso de plástico e papel
+                                    </label>
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.digitalizacao} onChange={(e) => setPraticas({ ...praticas, digitalizacao: e.target.checked })} className="mr-2" /> Digitalização de processos para reduzir desperdícios
+                                    </label>
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.insumos} onChange={(e) => setPraticas({ ...praticas, insumos: e.target.checked })} className="mr-2" /> Uso de insumos ecológicos ou reaproveitamento de materiais
+                                    </label>
+                                    <label className="block">
+                                        <input type="checkbox" checked={praticas.transporte} onChange={(e) => setPraticas({ ...praticas, transporte: e.target.checked })} className="mr-2" /> Incentivo ao trabalho remoto ou transporte sustentável
+                                    </label>
+                                    <label className="block">
+                                        Outra:
+                                        <input type="text" value={praticas.outra} onChange={(e) => setPraticas({ ...praticas, outra: e.target.value })} placeholder="Outra prática (especifique)" className="border mt-2 rounded px-2 py-1 w-full" />
+                                    </label>
                                 </div>
                             )}
                         </div>
@@ -299,59 +295,31 @@ function PesquisaTeste() {
                         {/* Pergunta 4 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                4. Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis?
+                                4. Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis? [OE 1.2]
                             </label>
                             <div className="flex gap-4 mb-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta4"
-                                        value="sim"
-                                        checked={resposta4 === "sim"}
-                                        onChange={() => setResposta4("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta4"
-                                        value="nao"
-                                        checked={resposta4 === "nao"}
-                                        onChange={() => setResposta4("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta4"
+                                            value={valor}
+                                            checked={resposta4 === valor}
+                                            onChange={() => setResposta4(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
-
-                            {resposta4 === "sim" && (
-                                <div className="space-y-2">
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos no total?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores4.total}
-                                        onChange={(e) => setColaboradores4({ ...colaboradores4, total: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade total"
-                                    />
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos são homens?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores4.homens}
-                                        onChange={(e) => setColaboradores4({ ...colaboradores4, homens: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade homens"
-                                    />
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos são mulheres?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores4.mulheres}
-                                        onChange={(e) => setColaboradores4({ ...colaboradores4, mulheres: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade mulheres"
-                                    />
+                            {resposta4 === 'sim' && (
+                                <div className="space-y-2 ml-2">
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
+                                    <input type="number" value={colabSustentaveis.total} onChange={(e) => setColabSustentaveis({ ...colabSustentaveis, total: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Total" />
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são homens?</span>
+                                    <input type="number" value={colabSustentaveis.homens} onChange={(e) => setColabSustentaveis({ ...colabSustentaveis, homens: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Homens" />
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são mulheres??</span>
+                                    <input type="number" value={colabSustentaveis.mulheres} onChange={(e) => setColabSustentaveis({ ...colabSustentaveis, mulheres: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Mulheres" />
                                 </div>
                             )}
                         </div>
@@ -359,59 +327,31 @@ function PesquisaTeste() {
                         {/* Pergunta 5 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais?
+                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais? [OE 1.2]
                             </label>
                             <div className="flex gap-4 mb-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta5"
-                                        value="sim"
-                                        checked={resposta5 === "sim"}
-                                        onChange={() => setResposta5("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta5"
-                                        value="nao"
-                                        checked={resposta5 === "nao"}
-                                        onChange={() => setResposta5("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta5"
+                                            value={valor}
+                                            checked={resposta5 === valor}
+                                            onChange={() => setResposta5(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
-
-                            {resposta5 === "sim" && (
-                                <div className="space-y-2">
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos no total?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores5.total}
-                                        onChange={(e) => setColaboradores5({ ...colaboradores5, total: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade total"
-                                    />
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos são homens?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores5.homens}
-                                        onChange={(e) => setColaboradores5({ ...colaboradores5, homens: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade homens"
-                                    />
-                                    <label className="text-sm text-gray-700 font-medium block">Quantos são mulheres?</label>
-                                    <input
-                                        type="number"
-                                        value={colaboradores5.mulheres}
-                                        onChange={(e) => setColaboradores5({ ...colaboradores5, mulheres: e.target.value })}
-                                        className="p-2 border rounded-md w-full mb-2"
-                                        placeholder="Quantidade mulheres"
-                                    />
+                            {resposta5 === 'sim' && (
+                                <div className="space-y-2 ml-2">
+                                     <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
+                                    <input type="number" value={colabDigitais.total} onChange={(e) => setColabDigitais({ ...colabDigitais, total: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Total" />
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são homens?</span>
+                                    <input type="number" value={colabDigitais.homens} onChange={(e) => setColabDigitais({ ...colabDigitais, homens: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Homens" />
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são mulheres??</span>
+                                    <input type="number" value={colabDigitais.mulheres} onChange={(e) => setColabDigitais({ ...colabDigitais, mulheres: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Mulheres" />
                                 </div>
                             )}
                         </div>
@@ -419,113 +359,34 @@ function PesquisaTeste() {
                         {/* Pergunta 6 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                6. Sua empresa conseguiu reduzir o consumo de recursos nos últimos meses após sua participação?
+                                6. Sua empresa conseguiu reduzir o consumo de recursos no período de 2022 e 2025? [1.4]
                             </label>
                             <div className="flex gap-4 mb-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta6"
-                                        value="sim"
-                                        checked={resposta6 === "sim"}
-                                        onChange={() => setResposta6("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta6"
-                                        value="nao"
-                                        checked={resposta6 === "nao"}
-                                        onChange={() => setResposta6("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta6"
+                                            value={valor}
+                                            checked={resposta6 === valor}
+                                            onChange={() => setResposta6(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
-
-                            {resposta6 === "sim" && (
-                                <div className="space-y-2">
-                                    <label className="text-sm text-gray-700 font-medium block">Quais tipos de economia foram alcançados?</label>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Redução no uso de água")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Redução no uso de água")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução no uso de água</span>
+                            {resposta6 === 'sim' && (
+                                <div className="space-y-2 ml-2">
+                                    {Object.entries(reducao).slice(0, 6).map(([key, checked]) => (
+                                        <label key={key} className="block">
+                                            <input type="checkbox" checked={checked as boolean} onChange={(e) => setReducao({ ...reducao, [key]: e.target.checked })} className="mr-2" /> {key.replace(/_/g, ' ')}
                                         </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Redução de energia elétrica")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Redução de energia elétrica")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução de energia elétrica</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Redução de uso de combustível")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Redução de uso de combustível")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução de uso de combustível</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Redução no uso de papel")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Redução no uso de papel")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução no uso de papel</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Redução no uso de matéria-prima")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Redução no uso de matéria-prima")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Redução no uso de matéria-prima</span>
-                                        </label>
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Otimização de processos para evitar desperdícios")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Otimização de processos para evitar desperdícios")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Otimização de processos para evitar desperdícios</span>
-                                        </label>
-                                    </div>
-
-                                    <div className="mt-2">
-                                        <label className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={economias.includes("Outro")}
-                                                onChange={() => handleCheckBoxChange(setEconomias, "Outro")}
-                                                className="h-4 w-4 text-blue-600 border-gray-300"
-                                            />
-                                            <span className="ml-2">Outro (qual?)</span>
-                                        </label>
-                                        {economias.includes("Outro") && (
-                                            <input
-                                                type="text"
-                                                value={outraEconomia}
-                                                onChange={(e) => setOutraEconomia(e.target.value)}
-                                                placeholder="Descreva"
-                                                className="mt-1 p-2 border rounded-md w-full"
-                                            />
-                                        )}
-                                    </div>
+                                    ))}
+                                    <label className="block">
+                                        Outro:
+                                        <input type="text" value={reducao.outra} onChange={(e) => setReducao({ ...reducao, outra: e.target.value })} placeholder="Outra economia (especifique)" className="border mt-2 rounded px-2 py-1 w-full" />
+                                    </label>
                                 </div>
                             )}
                         </div>
@@ -533,44 +394,30 @@ function PesquisaTeste() {
                         {/* Pergunta 7 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                7. Houve aumento no faturamento no último ano?
+                                7. Houve aumento no volume de negócios e/ou no faturamento no período de 2022 a 2025? [1.3]
                             </label>
                             <div className="flex gap-4 mb-4">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta7"
-                                        value="sim"
-                                        checked={resposta7 === "sim"}
-                                        onChange={() => setResposta7("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta7"
-                                        value="nao"
-                                        checked={resposta7 === "nao"}
-                                        onChange={() => setResposta7("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="pergunta7"
+                                            value={valor}
+                                            checked={resposta7 === valor}
+                                            onChange={() => setResposta7(valor)}
+                                            className="h-4 w-4 text-blue-600 border-gray-300"
+                                        />
+                                        <span className="ml-2 text-gray-700 font-medium">{valor === 'sim' ? 'Sim' : 'Não'}</span>
+                                    </label>
+                                ))}
                             </div>
-
-                            {resposta7 === "sim" && (
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Mencione a porcentagem:</label>
-                                    <input
-                                        type="number"
-                                        step="any"
-                                        value={porcentagem}
-                                        onChange={(e) => setPorcentagem(e.target.value)}
-                                        placeholder="Exemplo: 10"
-                                        className="p-2 border rounded-md w-full"
-                                    />
+                            {resposta7 === 'sim' && (
+                                <div className="space-y-2 ml-2">
+                                    {['1% a 20%', '21% a 40%', '41% a 60%', '60% a 80%', '80% a 100%'].map((faixa) => (
+                                        <label key={faixa} className="block">
+                                            <input type="radio" name="faixaAumento" value={faixa} checked={faixaAumento === faixa} onChange={() => setFaixaAumento(faixa)} className="mr-2" /> {faixa}
+                                        </label>
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -578,64 +425,29 @@ function PesquisaTeste() {
                         {/* Pergunta 8 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                8. Sua empresa possui alguma norma, selo, padrão e/ou certificação em sustentabilidade no período de 2022 a 2025?
+                                8. Sua empresa possui alguma norma, selo, padrão e/ou certificação em sustentabilidade no período de 2022 a 2025? [1.2]
                             </label>
                             <div className="space-y-2">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta8"
-                                        value="sim"
-                                        checked={resposta8 === "sim"}
-                                        onChange={() => setResposta8("sim")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Sim</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta8"
-                                        value="interesse"
-                                        checked={resposta8 === "interesse"}
-                                        onChange={() => setResposta8("interesse")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não, mas tenho interesse em obter</span>
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="pergunta8"
-                                        value="nao"
-                                        checked={resposta8 === "nao"}
-                                        onChange={() => setResposta8("nao")}
-                                        className="h-4 w-4 text-blue-600 border-gray-300"
-                                    />
-                                    <span className="ml-2 text-gray-700 font-medium">Não</span>
-                                </label>
+                                {['sim', 'interesse', 'nao'].map((valor) => (
+                                    <label key={valor} className="flex items-center">
+                                        <input type="radio" name="pergunta8" value={valor} checked={resposta8 === valor} onChange={() => setResposta8(valor)} className="h-4 w-4 text-blue-600 border-gray-300" />
+                                        <span className="ml-2 text-gray-700 font-medium">
+                                            {valor === 'sim' ? 'Sim' : valor === 'interesse' ? 'Não, mas tenho interesse' : 'Não'}
+                                        </span>
+                                    </label>
+                                ))}
+                                {resposta8 === 'sim' && (
+                                    <input type="text" name="nome_certificacao" value={certificacao} onChange={(e) => setCertificacao(e.target.value)} className="mt-2 border rounded px-2 py-1 w-full" placeholder="Nome da norma ou certificação" />
+                                )}
                             </div>
-
-                            {resposta8 === "sim" && (
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Por favor informe o nome do regulamento, norma ou certificação implementada:</label>
-                                    <input
-                                        type="text"
-                                        value={nomeCertificacao}
-                                        onChange={(e) => setNomeCertificacao(e.target.value)}
-                                        placeholder="Digite aqui"
-                                        className="p-2 border rounded-md w-full"
-                                    />
-                                </div>
-                            )}
                         </div>
 
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-blue-700 transition-colors"
-                        >
-                            Enviar Respostas
-                        </button>
+                        {/* Botão de envio */}
+                        <div className="text-end">
+                            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-xl transition">
+                                Enviar formulário
+                            </button>
+                        </div>
                     </form>
                 )}
             </div>
