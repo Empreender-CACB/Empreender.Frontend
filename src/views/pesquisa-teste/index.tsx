@@ -126,7 +126,7 @@ function PesquisaTeste() {
         }
       
         try {
-          const response = await fetch('http://localhost:3333/pesquisa-al', {
+          const response = await fetch('https://back.cacbempreenderapp.org.br/pesquisa-al', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
