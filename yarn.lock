@@ -4435,6 +4435,11 @@
   dependencies:
     "p-finally" "^1.0.0"
 
+"papaparse@^5.5.2":
+  "integrity" "sha512-PZXg8UuAc4PcVwLosEEDYjPyfWnTEhOrUfdv+3Bx+NuAb+5NhDmXzg5fHWmdCh1mP5p7JAZfFr3IMQfcntNAdA=="
+  "resolved" "https://registry.npmjs.org/papaparse/-/papaparse-5.5.2.tgz"
+  "version" "5.5.2"
+
 "parchment@^1.1.2", "parchment@^1.1.4":
   "integrity" "sha512-J5FBQt/pM2inLzg4hEWmzQx/8h8D0CiDxaG3vyp9rKrQRSDgBlhjdP5jQGgosEajXPSQouXGHOmVdgo7QmJuOg=="
   "resolved" "https://registry.npmjs.org/parchment/-/parchment-1.1.4.tgz"

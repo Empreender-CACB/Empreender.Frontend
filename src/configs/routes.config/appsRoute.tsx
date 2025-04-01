@@ -311,7 +311,12 @@ const appsRoute: Routes = [
         key: 'AjudaAtendimento.documentos',
         path: `${APP_PREFIX_PATH}/ajuda-atendimento/documentos`,
         component: lazy(() => import('@/views/sistema/ajudaEAtendimento/documentos')),
-    },   
+    },
+    {
+        key: 'PesquisaAL.filaManager',
+        path: `${APP_PREFIX_PATH}/pesquisa-al/fila`,
+        component: lazy(() => import('@/views/sistema/pesquisa-al/fila')),
+    },      
 ]
 
 export default appsRoute
