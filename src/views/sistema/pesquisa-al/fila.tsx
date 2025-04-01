@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input'
 import { AdaptableCard } from '@/components/shared'
 import { HiPlusCircle, HiUpload, HiOutlineClipboardList, HiOutlineDocumentReport } from 'react-icons/hi'
 import Papa from 'papaparse'
+import ApiService from '@/services/ApiService'
 
 export default function ImportarCSVPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -52,43 +53,40 @@ export default function ImportarCSVPage() {
           .map((row: any) => row[selectedHeader]?.trim())
           .filter((cnpj: string) => !!cnpj)
 
-        try {
-          const res = await fetch('http://localhost:3333/pesquisa-al/import-cnpj', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ cnpjs }),
-          })
+          try {
+            const res = await ApiService.fetchData({
+              url: 'pesquisa-al/import-cnpj',
+              method: 'POST',
+              data: { cnpjs }, // sem JSON.stringify
+            });
+          
+              const { inseridos } = res.data; // res.data e não await res.json()
+              setFeedback(`${inseridos} empresas adicionadas à fila com sucesso.`);
+              fetchStats();
 
-          if (res.ok) {
-            const { inseridos } = await res.json()
-            setFeedback(`${inseridos} empresas adicionadas à fila com sucesso.`)
-            fetchStats()
-          } else {
-            setFeedback('Erro ao processar o arquivo.')
-          }
-        } catch (err) {
-          console.error(err)
-          setFeedback('Erro na conexão com o servidor.')
+          } catch (err) {
+            console.error(err);
+            setFeedback('Erro ao processar o arquivo.');
         } finally {
-          setLoading(false)
-        }
+            setLoading(false);
+          }
+          
       },
     })
   }
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:3333/pesquisa-al/stats')
-      if (res.ok) {
-        const data = await res.json()
-        setStats(data)
-      }
+      const res = await ApiService.fetchData({
+        url: '/pesquisa-al/stats',
+        method: 'get',
+      });
+  
+      setStats(res.data);
     } catch (error) {
-      console.error('Erro ao buscar estatísticas')
+      console.error('Erro ao buscar estatísticas', error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchStats()
