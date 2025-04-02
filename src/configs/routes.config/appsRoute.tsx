@@ -56,6 +56,16 @@ const appsRoute: Routes = [
         },
     },
     {
+        key: 'Entidades.editar',
+        path: `${APP_PREFIX_PATH}/entidades/editar/:id`,
+        component: lazy(() => import('@/views/sistema/entidades/detalhes/editar')),
+    },
+    {
+        key: 'Entidades.adicionarPerfil',
+        path: `${APP_PREFIX_PATH}/perfil-entidade/adicionar/:id`,
+        component: lazy(() => import('@/views/sistema/entidades/detalhes/adicionar-perfil')),
+    },
+    {
         key: 'sistemaPreferencias.index',
         path: `${APP_PREFIX_PATH}/preferencias`,
         component: lazy(() => import('@/views/sistema/preferencias')),

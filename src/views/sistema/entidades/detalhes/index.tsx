@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import LayoutDetailSimple from "@/components/layouts/LayoutDetailSimple";
 import LayoutWithMenus from "@/components/layouts/LayoutWithMenus";
 import Loading from "@/components/shared/Loading";
@@ -14,6 +14,7 @@ import EmpresasVinculadas from "./empresas-vinculadas";
 import EntidadesVinculadas from "./entidades-vinculadas";
 import NucleosVinculados from "./nucleos-vinculados";
 import ProjetosVinculados from "./projetos-vinculados";
+import PerfilEntidade from "./perfil";
 
 const EntidadeIndex = () => {
     const { id, aba } = useParams();
@@ -22,7 +23,7 @@ const EntidadeIndex = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("detalhes");
 
-    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados"];
+    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados", "perfil"];
     const initialTab = allowedTabs.includes(aba || "") ? aba! : "detalhes";
 
     useEffect(() => {
@@ -96,8 +97,9 @@ const EntidadeIndex = () => {
         {
             value: "perfil",
             label: "Perfil",
-            href: `${import.meta.env.VITE_PHP_URL}/sistema/associacao/perfil/aid/${encodedId}`,
-            target: "_blank",
+            href: "perfil",
+            isActive: activeTab === "perfil",
+            onClick: () => handleInternalTabClick("perfil")
         },
         {
             value: "projetos_vinculados",
@@ -137,6 +139,8 @@ const EntidadeIndex = () => {
                 return <NucleosVinculados />;
             case "projetos_vinculados":
                 return <ProjetosVinculados />;
+            case "perfil":
+                return <PerfilEntidade />;
             default:
                 return <Detalhes data={associacao!} />;
         }
@@ -183,14 +187,14 @@ const EntidadeIndex = () => {
                                 </Button>
                                 <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
                                     <Dropdown.Item eventKey="alterar">
-                                        <a
-                                            href={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/editar/aid/${encodedId}`}
+                                        <Link
+                                            to={`/sistema/entidades/editar/${id}`}
+                                            className="block w-full h-full"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="block w-full h-full"
                                         >
                                             Alterar dados
-                                        </a>
+                                        </Link>
                                     </Dropdown.Item>
                                 </Dropdown>
 
