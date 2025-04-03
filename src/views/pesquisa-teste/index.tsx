@@ -302,7 +302,7 @@ function PesquisaTeste() {
                         {/* Pergunta 4 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                4. Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis? [OE 1.2]
+                                4.Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis, como redução de desperdício, eficiência energética, reciclagem, economia de água ou outras iniciativas ambientais? [OE 1.2] 
                             </label>
                             <div className="flex gap-4 mb-4">
                                 {['sim', 'nao'].map((valor) => (
@@ -334,7 +334,7 @@ function PesquisaTeste() {
                         {/* Pergunta 5 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais? [OE 1.2]
+                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais, como marketing online, automação de processos, análise de dados, desenvolvimento de software, monitoramento/trabalho remoto, comércio eletrônico ou outras atividades que otimizam recursos e reduzem impactos ambientais? [OE 1.2]
                             </label>
                             <div className="flex gap-4 mb-4">
                                 {['sim', 'nao'].map((valor) => (
