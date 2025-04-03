@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'
 
 function PesquisaTeste() {
     const [cnpj, setCnpj] = useState('') // caso você queira preenchê-lo manualmente
@@ -11,52 +12,65 @@ function PesquisaTeste() {
     const [resposta6, setResposta6] = useState('')
     const [resposta7, setResposta7] = useState('')
     const [resposta8, setResposta8] = useState('')
-    
+
     const [certificacao, setCertificacao] = useState('')
     const [faixaAumento, setFaixaAumento] = useState('')
-    
+
+    const location = useLocation()
+    const queryParams = new URLSearchParams(location.search)
+    const token = queryParams.get('token')
+
     // Práticas sustentáveis (pergunta 3)
     const [praticas, setPraticas] = useState({
-      residuos: false,
-      energia: false,
-      plastico: false,
-      digitalizacao: false,
-      insumos: false,
-      transporte: false,
-      outra: ''
+        residuos: false,
+        energia: false,
+        plastico: false,
+        digitalizacao: false,
+        insumos: false,
+        transporte: false,
+        outra: ''
     })
-    
+
     // Colaboradores em práticas sustentáveis (pergunta 4)
     const [colabSustentaveis, setColabSustentaveis] = useState({
-      total: 0,
-      homens: 0,
-      mulheres: 0
+        total: 0,
+        homens: 0,
+        mulheres: 0
     })
-    
+
     // Colaboradores em empregos digitais (pergunta 5)
     const [colabDigitais, setColabDigitais] = useState({
-      total: 0,
-      homens: 0,
-      mulheres: 0
+        total: 0,
+        homens: 0,
+        mulheres: 0
     })
-    
-    // Redução de recursos (pergunta 6)
+
     const [reducao, setReducao] = useState({
-      agua: false,
-      energia: false,
-      combustivel: false,
-      papel: false,
-      materia_prima: false,
-      otimizacao: false,
-      outra: ''
+        agua: false,
+        energia: false,
+        combustivel: false,
+        papel: false,
+        materia_prima: false,
+        otimizacao: false,
+        outra: ''
     })
-    
+
+    const opcoesReducao = [
+        { key: 'agua', label: 'Redução no uso de água' },
+        { key: 'energia', label: 'Redução de energia elétrica' },
+        { key: 'combustivel', label: 'Redução de uso de combustível' },
+        { key: 'papel', label: 'Redução no uso de papel' },
+        { key: 'materia_prima', label: 'Redução no uso de matéria-prima' },
+        { key: 'otimizacao', label: 'Otimização de processos para evitar desperdícios' },
+    ]
+
     // Participação (se aplicável)
     const [participou, setParticipou] = useState(null)
 
 
     // Effects
     useEffect(() => {
+
         const link = document.createElement("link");
         link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap";
         link.rel = "stylesheet";
@@ -79,72 +93,73 @@ function PesquisaTeste() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-      
+
         const payload = {
-          cnpj,
-      
-          pergunta1: resposta1 === 'sim',
-          pergunta2: resposta2 === 'sim',
-      
-          adota_praticas: resposta3 === 'sim',
-          praticas: {
-            residuos: praticas.residuos,
-            energia: praticas.energia,
-            plastico: praticas.plastico,
-            digitalizacao: praticas.digitalizacao,
-            insumos: praticas.insumos,
-            transporte: praticas.transporte,
-            outra: praticas.outra
-          },
-      
-          colab_sustentabilidade: resposta4 === 'sim',
-          colab_sustent_total: colabSustentaveis.total,
-          colab_sustent_homens: colabSustentaveis.homens,
-          colab_sustent_mulheres: colabSustentaveis.mulheres,
-      
-          colab_digital: resposta5 === 'sim',
-          colab_digital_total: colabDigitais.total,
-          colab_digital_homens: colabDigitais.homens,
-          colab_digital_mulheres: colabDigitais.mulheres,
-      
-          reduziu_recursos: resposta6 === 'sim',
-          reducao: {
-            agua: reducao.agua,
-            energia: reducao.energia,
-            combustivel: reducao.combustivel,
-            papel: reducao.papel,
-            materia_prima: reducao.materia_prima,
-            otimizacao: reducao.otimizacao,
-            outra: reducao.outra
-          },
-      
-          aumento_faturamento: resposta7 === 'sim',
-          faixa_aumento: faixaAumento,
-      
-          possui_certificacao: resposta8,
-          nome_certificacao: certificacao
-        }
-      
-        try {
-          const response = await fetch('http://localhost:3333/pesquisa-al', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
+            token,
+            cnpj,
+
+            pergunta1: resposta1 === 'sim',
+            pergunta2: resposta2 === 'sim',
+
+            adota_praticas: resposta3 === 'sim',
+            praticas: {
+                residuos: praticas.residuos,
+                energia: praticas.energia,
+                plastico: praticas.plastico,
+                digitalizacao: praticas.digitalizacao,
+                insumos: praticas.insumos,
+                transporte: praticas.transporte,
+                outra: praticas.outra
             },
-            body: JSON.stringify(payload)
-          })
-      
-          if (response.ok) {
-            alert('Formulário enviado com sucesso!')
-          } else {
-            alert('Erro ao enviar formulário. Verifique os dados e tente novamente.')
-          }
-        } catch (error) {
-          console.error('Erro na requisição:', error)
-          alert('Erro ao conectar com o servidor.')
+
+            colab_sustentabilidade: resposta4 === 'sim',
+            colab_sustent_total: colabSustentaveis.total,
+            colab_sustent_homens: colabSustentaveis.homens,
+            colab_sustent_mulheres: colabSustentaveis.mulheres,
+
+            colab_digital: resposta5 === 'sim',
+            colab_digital_total: colabDigitais.total,
+            colab_digital_homens: colabDigitais.homens,
+            colab_digital_mulheres: colabDigitais.mulheres,
+
+            reduziu_recursos: resposta6 === 'sim',
+            reducao: {
+                agua: reducao.agua,
+                energia: reducao.energia,
+                combustivel: reducao.combustivel,
+                papel: reducao.papel,
+                materia_prima: reducao.materia_prima,
+                otimizacao: reducao.otimizacao,
+                outra: reducao.outra
+            },
+
+            aumento_faturamento: resposta7 === 'sim',
+            faixa_aumento: faixaAumento,
+
+            possui_certificacao: resposta8,
+            nome_certificacao: certificacao
         }
-      }
-      
+
+        try {
+            const response = await fetch('https://back.cacbempreenderapp.org.br/pesquisa-al', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+
+            if (response.ok) {
+                alert('Formulário enviado com sucesso!')
+            } else {
+                alert('Erro ao enviar formulário. Verifique os dados e tente novamente.')
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error)
+            alert('Erro ao conectar com o servidor.')
+        }
+    }
+
 
 
     return (
@@ -164,7 +179,7 @@ function PesquisaTeste() {
                     <p className="text-gray-600 font-medium">Por favor, responda às seguintes questões:</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                     <label className="block text-lg font-semibold text-gray-900 mb-4">
                         Sua empresa participou da parceria CACB-CEF?
                     </label>
@@ -184,10 +199,10 @@ function PesquisaTeste() {
                             Não
                         </button>
                     </div>
-                </div>
+                </div> */}
 
                 {/* SE NÃO PARTICIPOU, MOSTRAR LINK */}
-                {participou === "nao" && (
+                {participou === "sim" && (
                     <div className="text-center">
                         <p className="text-gray-700">Saiba mais sobre a parceria clicando abaixo:</p>
                         <a href="https://www.google.com" target="_blank" rel="noopener noreferrer"
@@ -198,7 +213,7 @@ function PesquisaTeste() {
                 )}
 
                 {/* SE PARTICIPOU, MOSTRAR 8 PERGUNTAS */}
-                {participou === "sim" && (
+                {participou !== "abcate" && (
                     <form className="space-y-8" onSubmit={handleSubmit}>
                         {/* Pergunta 1 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -295,7 +310,7 @@ function PesquisaTeste() {
                         {/* Pergunta 4 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                4. Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis? [OE 1.2]
+                                4.Sua empresa conta com colaboradores que atuam diretamente em práticas sustentáveis, como redução de desperdício, eficiência energética, reciclagem, economia de água ou outras iniciativas ambientais? [OE 1.2]
                             </label>
                             <div className="flex gap-4 mb-4">
                                 {['sim', 'nao'].map((valor) => (
@@ -327,7 +342,7 @@ function PesquisaTeste() {
                         {/* Pergunta 5 */}
                         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <label className="block text-sm font-semibold text-gray-900 mb-4">
-                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais? [OE 1.2]
+                                5. Sua empresa conta com colaboradores que atuam diretamente em empregos digitais, como marketing online, automação de processos, análise de dados, desenvolvimento de software, monitoramento/trabalho remoto, comércio eletrônico ou outras atividades que otimizam recursos e reduzem impactos ambientais? [OE 1.2]
                             </label>
                             <div className="flex gap-4 mb-4">
                                 {['sim', 'nao'].map((valor) => (
@@ -346,7 +361,7 @@ function PesquisaTeste() {
                             </div>
                             {resposta5 === 'sim' && (
                                 <div className="space-y-2 ml-2">
-                                     <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
+                                    <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
                                     <input type="number" value={colabDigitais.total} onChange={(e) => setColabDigitais({ ...colabDigitais, total: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Total" />
                                     <span className="ml-2 text-gray-700 font-medium">Quantos são homens?</span>
                                     <input type="number" value={colabDigitais.homens} onChange={(e) => setColabDigitais({ ...colabDigitais, homens: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Homens" />
@@ -378,16 +393,29 @@ function PesquisaTeste() {
                             </div>
                             {resposta6 === 'sim' && (
                                 <div className="space-y-2 ml-2">
-                                    {Object.entries(reducao).slice(0, 6).map(([key, checked]) => (
+                                    {opcoesReducao.map(({ key, label }) => (
                                         <label key={key} className="block">
-                                            <input type="checkbox" checked={checked as boolean} onChange={(e) => setReducao({ ...reducao, [key]: e.target.checked })} className="mr-2" /> {key.replace(/_/g, ' ')}
+                                            <input
+                                                type="checkbox"
+                                                checked={reducao[key as keyof typeof reducao] as boolean}
+                                                onChange={(e) => setReducao({ ...reducao, [key]: e.target.checked })}
+                                                className="mr-2"
+                                            />
+                                            {label}
                                         </label>
                                     ))}
                                     <label className="block">
-                                        Outro:
-                                        <input type="text" value={reducao.outra} onChange={(e) => setReducao({ ...reducao, outra: e.target.value })} placeholder="Outra economia (especifique)" className="border mt-2 rounded px-2 py-1 w-full" />
+                                        Outro (especifique):
+                                        <input
+                                            type="text"
+                                            value={reducao.outra}
+                                            onChange={(e) => setReducao({ ...reducao, outra: e.target.value })}
+                                            placeholder="Outra economia (especifique)"
+                                            className="border mt-2 rounded px-2 py-1 w-full"
+                                        />
                                     </label>
                                 </div>
+
                             )}
                         </div>
 
