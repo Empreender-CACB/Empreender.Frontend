@@ -195,6 +195,12 @@ const E2022Consultores = () => {
         setOrigem([selectedOptions.value]);
     };
 
+    const labels: Record<number, string> = {
+        1: "ENEM - Brasil Sustentável - 1ª chamada",
+        2: "ENEM - Brasil Sustentável - 2ª chamada",
+        3: "ENEM - Brasil Sustentável - 3ª chamada",
+    };
+
     useEffect(() => {
         const getOrigens = async () => {
             try {
@@ -202,12 +208,13 @@ const E2022Consultores = () => {
                     url: 'selecoes/get-origens-candidaturas',
                     method: 'get',
                 }).then((response: any) => {
-                    const mappedOptions = response.data.map((origemItem: any) => {
-                        return ({
-                            value: origemItem.tipo,
-                            label: origemItem.tipo == 1 ? "ENEM - Brasil Sustentável - 1ª chamada" : "ENEM - Brasil Sustentável - 2ª chamada",
-                        });
-                    });
+                    const mappedOptions = response.data
+                        .filter((item: any) => labels[item.tipo])
+                        .sort((a: any, b: any) => a.tipo - b.tipo)
+                        .map((item: any) => ({
+                            value: item.tipo,
+                            label: labels[item.tipo],
+                        }));
                     setOrigemOptions(mappedOptions);
                 });
             } catch (error) {
