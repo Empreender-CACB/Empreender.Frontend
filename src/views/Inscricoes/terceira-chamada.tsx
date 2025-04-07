@@ -42,7 +42,7 @@ function CadastraProposta() {
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}])
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
+    const [isRegistrationClosed, setIsRegistrationClosed] = useState(false) // Estado para deixar o form inativo
 
     const handleAddInput = () => {
         setInputs([...inputs, {}]);
@@ -152,7 +152,7 @@ function CadastraProposta() {
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
-        {false && (
+        {isRegistrationClosed && (
             <div className="flex justify-center items-center tracking-tight sm:w-90 min-h-screen bg-gray-100">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 sm:w-full lg:w-9/12">
                     <div className="flex items-center space-x-4">
@@ -196,7 +196,7 @@ function CadastraProposta() {
                 </div>
 
         )}
-        {true && (
+        {!isRegistrationClosed && (
             <form className=' bg-white sm:w-full lg:w-9/12' id="login" onSubmit={handleSubmit}>
                 <div className="flex items-center space-x-4">
                     <div className="mt-10 mx-auto center max-w-7xl pb-5 px-6">
