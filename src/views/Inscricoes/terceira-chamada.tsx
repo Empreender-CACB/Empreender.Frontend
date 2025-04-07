@@ -99,14 +99,12 @@ function CadastraProposta() {
 
         const fields = ['nome', 'email', 'sexo', 'cpf', 'uf', 'cidade', 'telefone']
 
-        const formData = new FormData()
+        let formData = new FormData()
         for (const field of fields) {
             if (event.target[field] === undefined) continue;
             formData.append(field, event.target[field].value);
-            console.log(event.target[field].value)
         }
 
-        // Adiciona os arquivos
         const fileInputs = event.target.querySelectorAll('[name="files"]');
 
         fileInputs.forEach((fileInput) => {
@@ -115,6 +113,8 @@ function CadastraProposta() {
                 formData.append('files', files[i]);
             }
         });
+
+        formData.append('tipo', '3');
 
         const selectElements = event.target.querySelectorAll('[name="type_document"]');
 
@@ -146,7 +146,6 @@ function CadastraProposta() {
         }
 
         setIsSubmitting(false);
-
     };
 
 
