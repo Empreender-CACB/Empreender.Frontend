@@ -13,6 +13,8 @@ export default function ImportarCSVPage() {
   const [feedback, setFeedback] = useState<string>('')
   const [headers, setHeaders] = useState<string[]>([])
   const [selectedHeader, setSelectedHeader] = useState<string>('')
+  const [selectedEmailHeader, setSelectedEmailHeader] = useState<string>('')
+
   const [previewRows, setPreviewRows] = useState<any[]>([])
 
   const [stats, setStats] = useState({
@@ -41,39 +43,33 @@ export default function ImportarCSVPage() {
   }
 
   const handleUpload = async () => {
-    if (!file || !selectedHeader) return alert('Selecione um arquivo CSV e uma coluna.')
-    setLoading(true)
-    setFeedback('')
+    if (!file || !selectedHeader) return alert('Selecione um arquivo CSV e uma coluna.');
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results: any) => {
-        const cnpjs: string[] = results.data
-          .map((row: any) => row[selectedHeader]?.trim())
-          .filter((cnpj: string) => !!cnpj)
+    const formData = new FormData();
+    formData.append('csv', file);
+    formData.append('colunaCnpj', selectedHeader);
+    formData.append('colunaEmail', selectedEmailHeader);
 
-          try {
-            const res = await ApiService.fetchData({
-              url: 'pesquisa-al/import-cnpj',
-              method: 'POST',
-              data: { cnpjs }, // sem JSON.stringify
-            });
-          
-              const { inseridos } = res.data; // res.data e não await res.json()
-              setFeedback(`${inseridos} empresas adicionadas à fila com sucesso.`);
-              fetchStats();
+    setLoading(true);
+    setFeedback('');
 
-          } catch (err) {
-            console.error(err);
-            setFeedback('Erro ao processar o arquivo.');
-        } finally {
-            setLoading(false);
-          }
-          
-      },
-    })
-  }
+    try {
+      const res = await fetch('/api/pesquisa-al/import-csv', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      setFeedback(`${data.inseridos} empresas adicionadas à fila com sucesso.`);
+      fetchStats();
+    } catch (err) {
+      console.error(err);
+      setFeedback('Erro ao processar o arquivo.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const fetchStats = async () => {
     try {
@@ -81,7 +77,7 @@ export default function ImportarCSVPage() {
         url: '/pesquisa-al/stats',
         method: 'get',
       });
-  
+
       setStats(res.data);
     } catch (error) {
       console.error('Erro ao buscar estatísticas', error);
@@ -94,10 +90,10 @@ export default function ImportarCSVPage() {
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
-                    <div className="lg:flex items-center justify-between mb-4">
-                        <h3 className="mb-4 lg:mb-0">Pesquisa AL - Fila</h3>
-              
-                    </div>
+      <div className="lg:flex items-center justify-between mb-4">
+        <h3 className="mb-4 lg:mb-0">Pesquisa AL - Fila</h3>
+
+      </div>
       <div className="max-w-5xl mx-auto mt-10 space-y-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card><div className="p-4"><p className="text-sm text-gray-500 flex items-center gap-2"><HiOutlineClipboardList /> Na fila</p><p className="text-2xl font-semibold">{stats.fila}</p></div></Card>
@@ -125,6 +121,17 @@ export default function ImportarCSVPage() {
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                     value={selectedHeader}
                     onChange={(e) => setSelectedHeader(e.target.value)}
+                  >
+                    {headers.map((header) => (
+                      <option key={header} value={header}>{header}</option>
+                    ))}
+                  </select>
+
+                  <label className="font-medium text-gray-800">Selecione a coluna com E-mails</label>
+                  <select
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={selectedEmailHeader}
+                    onChange={(e) => setSelectedEmailHeader(e.target.value)}
                   >
                     {headers.map((header) => (
                       <option key={header} value={header}>{header}</option>
