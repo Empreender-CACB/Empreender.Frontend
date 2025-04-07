@@ -151,12 +151,16 @@ export default function ImportarCSVPage() {
                         {headers.map((header) => (
                           <th
                             key={header}
-                            className={`text-left px-2 py-1 border-b border-gray-300 ${header === selectedHeader ? 'bg-blue-100 text-blue-800' : ''}`}
+                            className={`text-left px-2 py-1 border-b border-gray-300 
+        ${header === selectedHeader ? 'bg-blue-100 text-blue-800' : ''}
+        ${header === selectedEmailHeader ? 'bg-green-100 text-green-800' : ''}
+      `}
                           >
                             {header}
                           </th>
                         ))}
                       </tr>
+
                     </thead>
                     <tbody>
                       {previewRows.map((row, index) => (
