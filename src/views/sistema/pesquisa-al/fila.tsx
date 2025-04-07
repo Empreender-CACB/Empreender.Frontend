@@ -54,13 +54,17 @@ export default function ImportarCSVPage() {
     setFeedback('');
 
     try {
-      const res = await fetch('/api/pesquisa-al/import-csv', {
+      const res = await ApiService.fetchData({
+        url: 'pesquisa-al/import-cnpj',
         method: 'POST',
-        body: formData,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const data = await res.json();
-      setFeedback(`${data.inseridos} empresas adicionadas à fila com sucesso.`);
+      const { inseridos } = res.data;
+      setFeedback(`${inseridos} empresas adicionadas à fila com sucesso.`);
       fetchStats();
     } catch (err) {
       console.error(err);
