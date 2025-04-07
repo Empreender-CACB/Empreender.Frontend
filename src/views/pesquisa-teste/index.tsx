@@ -113,12 +113,12 @@ function PesquisaTeste() {
             },
 
             colab_sustentabilidade: resposta4 === 'sim',
-            colab_sustent_total: colabSustentaveis.total,
+            colab_sustent_total: colabSustentaveis.homens + colabSustentaveis.mulheres,
             colab_sustent_homens: colabSustentaveis.homens,
             colab_sustent_mulheres: colabSustentaveis.mulheres,
 
             colab_digital: resposta5 === 'sim',
-            colab_digital_total: colabDigitais.total,
+            colab_digital_total: colabDigitais.homens + colabDigitais.mulheres,
             colab_digital_homens: colabDigitais.homens,
             colab_digital_mulheres: colabDigitais.mulheres,
 
@@ -329,8 +329,6 @@ function PesquisaTeste() {
                             </div>
                             {resposta4 === 'sim' && (
                                 <div className="space-y-2 ml-2">
-                                    <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
-                                    <input type="number" value={colabSustentaveis.total} onChange={(e) => setColabSustentaveis({ ...colabSustentaveis, total: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Total" />
                                     <span className="ml-2 text-gray-700 font-medium">Quantos são homens?</span>
                                     <input type="number" value={colabSustentaveis.homens} onChange={(e) => setColabSustentaveis({ ...colabSustentaveis, homens: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Homens" />
                                     <span className="ml-2 text-gray-700 font-medium">Quantos são mulheres??</span>
@@ -361,8 +359,6 @@ function PesquisaTeste() {
                             </div>
                             {resposta5 === 'sim' && (
                                 <div className="space-y-2 ml-2">
-                                    <span className="ml-2 text-gray-700 font-medium">Quantos são no total?</span>
-                                    <input type="number" value={colabDigitais.total} onChange={(e) => setColabDigitais({ ...colabDigitais, total: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Total" />
                                     <span className="ml-2 text-gray-700 font-medium">Quantos são homens?</span>
                                     <input type="number" value={colabDigitais.homens} onChange={(e) => setColabDigitais({ ...colabDigitais, homens: Number(e.target.value) })} className="border rounded px-2 py-1 w-full" placeholder="Homens" />
                                     <span className="ml-2 text-gray-700 font-medium">Quantos são mulheres??</span>

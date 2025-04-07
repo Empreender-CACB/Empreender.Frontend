@@ -13,6 +13,16 @@ const publicRoute: Routes = [
         },
     },
     {
+        key: 'inscricoes.terceiraChamada',
+        path: `/inscricoes/terceira-chamada`,
+        component: lazy(() => import('@/views/Inscricoes/terceira-chamada')),
+        meta: {
+            layout: 'blank',
+            pageContainerType: 'gutterless',
+            footer: false,
+        },
+    },
+    {
         key: 'poupmax',
         path: `/poupmax`,
         component: lazy(() => import('@/views/Cogecon')),
