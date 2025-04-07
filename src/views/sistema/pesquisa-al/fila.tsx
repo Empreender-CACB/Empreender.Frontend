@@ -168,7 +168,10 @@ export default function ImportarCSVPage() {
                           {headers.map((header) => (
                             <td
                               key={header}
-                              className={`px-2 py-1 ${header === selectedHeader ? 'bg-blue-50 font-semibold text-blue-900' : ''}`}
+                              className={`px-2 py-1
+         ${header === selectedHeader ? 'bg-blue-50 font-semibold text-blue-900' : ''}
+         ${header === selectedEmailHeader ? 'bg-green-50 font-semibold text-green-900' : ''}
+       `}
                             >
                               {row[header]}
                             </td>
