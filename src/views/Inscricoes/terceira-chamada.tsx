@@ -9,7 +9,7 @@ import { CgClose as CloseIcon } from 'react-icons/cg'
 import estadosBrasileiros from '@/components/shared/Helpers/EstadosBrasileiros';
 import { IMaskInput } from 'react-imask';
 import { BsFilePdf, BsFileWord } from 'react-icons/bs';
-import { getAnexoPorReferencia } from '@/utils/getAnexoPorReferencia';
+import { AnexoReferencia, getAnexoPorReferencia } from '@/utils/getAnexoPorReferencia';
 
 const ErrorComponent = ({ errors }: any) => {
     if (!errors || errors.length === 0) {
@@ -40,30 +40,28 @@ const ErrorComponent = ({ errors }: any) => {
 
 function CadastraProposta() {
     const [errors, setErrors] = useState(null)
-    const [links, setLinks] = useState<any>(null)
+    const [links, setLinks] = useState<AnexoReferencia[]>([])
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}])
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(false) // Estado para deixar o form inativo
 
     useEffect(() => {
-        const fetchLinks = async () => {
-            const referencias = [
-                { nome: 'Termo de Referência', referencia: 'selecao_consultor_termo_3' },
-                { nome: 'Modelo de Currículo', referencia: 'Seleção de consultores' },
-            ]
-    
+        const referencias = [
+            { nome: 'Termo de Referência', referencia: 'selecao_consultor_termo_3' },
+            { nome: 'Modelo de Currículo', referencia: 'Seleção de consultores' },
+        ]
+
+        const fetchAnexos = async () => {
             const results = await Promise.all(
-                referencias.map(async (item) => {
-                    const idAnexo = await getAnexoPorReferencia(item.referencia)
-                    return { nome: item.nome, idAnexo }
-                })
+                referencias.map(async (ref) => await getAnexoPorReferencia(ref.referencia))
             )
-    
-            setLinks(results)
+
+            const filtrados = results.filter((item): item is AnexoReferencia => item !== null)
+            setLinks(filtrados)
         }
-    
-        fetchLinks()
+
+        fetchAnexos()
     }, [])
 
     const handleAddInput = () => {
@@ -252,20 +250,24 @@ function CadastraProposta() {
                                     </div>
 
                                     <div className="flex flex-wrap">
-                                        {links.map((link: any, index: number) =>
-                                            link.idAnexo ? (
+                                        {links.map((link: any, index: number) => {
+                                            return link ? (
                                                 <a
                                                     key={index}
                                                     target="_blank"
-                                                    href={`${import.meta.env.VITE_API_URL}/uploads/anexos/${link.idAnexo}`}
+                                                    href={`${import.meta.env.VITE_API_URL}/anexo/${link.anexo.id}/download`}
                                                     className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black mr-5"
                                                     rel="noreferrer"
                                                 >
-                                                    {link.nome.includes('Currículo') ? <BsFileWord className="blue" /> : <BsFilePdf />}
-                                                    &nbsp;{link.nome}
+                                                    {link.anexo.nome_arquivo?.toLowerCase().endsWith('.pdf') ? <BsFilePdf /> : <BsFileWord />}
+                                                    &nbsp;{link.anexo.nome}
                                                 </a>
-                                            ) : null
-                                        )}
+                                            ) : null;
+                                        })}
+
+                                        <a target="_blank" href="https://www.empreender.org.br/sistema/anexo/download-anexo/aid/NTYzMg==" className="flex items-center text-base pt-2 font-semibold leading-7 mt-10 text-black" rel="noreferrer">
+                                            <BsFileWord className="blue" /> Modelo de Currículo
+                                        </a>
                                     </div>
 
 
