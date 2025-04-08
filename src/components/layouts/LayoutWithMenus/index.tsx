@@ -5,12 +5,10 @@ import Menu from '@/components/ui/Menu'
 import ScrollBar from '@/components/ui/ScrollBar'
 import Drawer from '@/components/ui/Drawer'
 import useResponsive from '@/utils/hooks/useResponsive'
-import { Link, useNavigate } from 'react-router-dom'
 import AdaptableCard from '@/components/shared/AdaptableCard'
 import Button from '@/components/ui/Button'
 import { HiMenu, HiMenuAlt2 } from 'react-icons/hi'
-
-const { MenuItem } = Menu
+import RecursiveMenu from './recursiveMenu'
 
 interface ToggleButtonProps {
     sideBarExpand: boolean
@@ -58,74 +56,43 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     )
 }
 
-interface MenuItem {
-    value: string
-    label: string | undefined
-    isActive?: boolean
-    href: string
-    target?: string
-    onClick?: () => void
-}
-
 interface SideBarContentProps {
     title: string
-    groupList: MenuItem[]
+    groupList: any[]
 }
 
 const SideBarContent: React.FC<SideBarContentProps> = ({ title, groupList }) => {
-    const direction = 'ltr';
+    const [expandedItems, setExpandedItems] = useState<string[]>([])
+
+    const toggleExpand = (value: string) => {
+        setExpandedItems((prev) =>
+            prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+        )
+    }
 
     return (
-        <ScrollBar direction={direction}>
+        <ScrollBar direction="ltr">
             <div className="flex flex-col justify-between h-full">
                 <div>
-                    <div className="my-8 mx-6">
+                    <div className="my-6 mx-6">
                         <h3>{title}</h3>
                     </div>
                     <Menu variant="transparent" className="mx-2 mb-10">
-                        {groupList.map((menu) => (
-                            <MenuItem
-                                key={menu.value}
-                                eventKey={menu.value}
-                                className={`mb-2 ${menu.isActive ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
-                            >
-                                {menu.target === "_blank" ? (
-                                    <a
-                                        href={menu.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block w-full h-full"
-                                    >
-                                        {menu.label}
-                                    </a>
-                                ) : menu.onClick ? (
-                                    <div
-                                        className="w-full h-full cursor-pointer"
-                                        onClick={menu.onClick}
-                                    >
-                                        {menu.label}
-                                    </div>
-                                ) : (
-                                    <Link to={menu.href} className="block w-full h-full">
-                                        {menu.label}
-                                    </Link>
-                                )}
-                            </MenuItem>
-                        ))}
-
-
+                        <RecursiveMenu
+                            options={groupList}
+                            expandedItems={expandedItems}
+                            toggleExpand={toggleExpand}
+                        />
                     </Menu>
                 </div>
             </div>
         </ScrollBar>
-    );
-};
-
-
+    )
+}
 interface LayoutPageProps {
     title: string
     children: ReactNode
-    groupList: MenuItem[]
+    groupList: any[]
 }
 
 export const LayoutWithMenus = ({

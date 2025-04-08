@@ -11,8 +11,9 @@ import { Button, Dialog, Tooltip } from '@/components/ui';
 import { HiOutlinePencil, HiOutlineTrash, HiPlusCircle } from 'react-icons/hi';
 import AdicionarDadosBancarios from './components/AdicionarDadosBancarios';
 import AdicionarContato from './components/AdicionarContato';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ApiService from '@/services/ApiService';
+import { AdaptableCard } from '@/components/shared';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -190,7 +191,7 @@ const Detalhes = ({ data }: DataProps) => {
 
     return (
         <Tabs value={abaInterna} onChange={(tabValue) => navigate(`/sistema/entidades/${id}/${tabValue}`)}>
-            <TabList >
+            <TabList>
                 <TabNav value="detalhes">Detalhes</TabNav>
                 <TabNav value="dadosBancarios">Dados Bancários</TabNav>
                 <TabNav value="anotacoes">Anotações</TabNav>
@@ -202,6 +203,18 @@ const Detalhes = ({ data }: DataProps) => {
             <div className="p-4">
 
                 <TabContent value="detalhes">
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', margin: "10px 0" }}>
+                        <Link
+                            to={`/sistema/entidades/editar/${id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-4 text-sm font-medium text-primary-600 hover:underline"
+                        >
+                            <Button variant='solid' size='sm'>
+                                Alterar dados
+                            </Button>
+                        </Link>
+                    </div>
                     <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
                         {details.map(({ label, value }, index) => (
                             <div className="sm:col-span-1" key={index}>
@@ -213,30 +226,37 @@ const Detalhes = ({ data }: DataProps) => {
                 </TabContent>
 
                 <TabContent value="dadosBancarios">
-                    <div className="flex justify-end mb-2">
-                        <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setBancoModalOpen(true)}>
-                            Adicionar Conta Bancária
-                        </Button>
-                    </div>
-                    <CustomReactDataGrid
-                        filename={`Contas Bancárias - ${data.nmrazao}`}
-                        columns={columnsBanco}
-                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios?reload=${reload}`}
-                        CardLayout={AdicionarContato}
-                    />
+
+                    <AdaptableCard className="h-full" bodyClass="h-full">
+                        <div className="flex items-center justify-between my-2">
+                            <h3 className="mb-4 lg:mb-0">Dados Bancários</h3>
+                            <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setBancoModalOpen(true)}>
+                                Adicionar Conta Bancária
+                            </Button>
+                        </div>
+                        <CustomReactDataGrid
+                            filename={`Contas Bancárias - ${data.nmrazao}`}
+                            columns={columnsBanco}
+                            url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/dadosBancarios?reload=${reload}`}
+                            CardLayout={AdicionarContato}
+                        />
+                    </AdaptableCard>
                 </TabContent>
 
                 <TabContent value="diretoria">
-                    <div className="flex justify-end mb-2">
-                        <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setDiretoriaModalOpen(true)}>
-                            Adicionar Contato
-                        </Button>
-                    </div>
-                    <CustomReactDataGrid
-                        filename="Diretoria e Contatos"
-                        columns={columnsDiretoria}
-                        url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/diretoria?reload=${reload}`}
-                    />
+                    <AdaptableCard className="h-full" bodyClass="h-full">
+                        <div className="flex items-center justify-between my-2">
+                            <h3 className="mb-4 lg:mb-0">Diretoria e Contatos</h3>
+                            <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setDiretoriaModalOpen(true)}>
+                                Adicionar Contato
+                            </Button>
+                        </div>
+                        <CustomReactDataGrid
+                            filename="Diretoria e Contatos"
+                            columns={columnsDiretoria}
+                            url={`${import.meta.env.VITE_API_URL}/entidades/${data.idassociacao}/diretoria?reload=${reload}`}
+                        />
+                    </AdaptableCard>
                 </TabContent>
 
                 <TabContent value="anotacoes">

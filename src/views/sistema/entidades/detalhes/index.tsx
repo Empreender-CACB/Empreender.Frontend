@@ -15,6 +15,7 @@ import EntidadesVinculadas from "./entidades-vinculadas";
 import NucleosVinculados from "./nucleos-vinculados";
 import ProjetosVinculados from "./projetos-vinculados";
 import PerfilEntidade from "./perfil";
+import AcompanhamentoMarcosCriticos from "../../representatividade/acompanhamento";
 
 const EntidadeIndex = () => {
     const { id, aba } = useParams();
@@ -23,7 +24,7 @@ const EntidadeIndex = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("detalhes");
 
-    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados", "perfil"];
+    const allowedTabs = ["detalhes", "empresas_vinculadas", "entidades_vinculadas", "nucleos_vinculados", "projetos_vinculados", "perfil", "acompanhamento"];
     const initialTab = allowedTabs.includes(aba || "") ? aba! : "detalhes";
 
     useEffect(() => {
@@ -67,12 +68,7 @@ const EntidadeIndex = () => {
             href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-alinvest/eid/${encodedId}`,
             target: "_blank",
         },
-        {
-            value: "diagnosticos",
-            label: "Diagnósticos",
-            href: `${import.meta.env.VITE_PHP_URL}/sistema/diagnosticos/lista-diagnosticos/id/${encodedId}`,
-            target: "_blank",
-        },
+
         {
             value: "empresas_vinculadas",
             label: "Empresas Vinculadas",
@@ -108,12 +104,7 @@ const EntidadeIndex = () => {
             isActive: activeTab === "projetos_vinculados",
             onClick: () => handleInternalTabClick("projetos_vinculados")
         },
-        {
-            value: "acompanhamento",
-            label: "Acompanhamento",
-            href: `/sistema/representatividade/acompanhamento/${id}`,
-            target: "_blank",
-        },
+
         {
             value: "e2022_enem",
             label: "E2022 - ENEM",
@@ -126,6 +117,28 @@ const EntidadeIndex = () => {
             href: `${import.meta.env.VITE_PHP_URL}/sistema/concurso/e2022-demandas/eid/${encodedId}`,
             target: "_blank",
         },
+        {
+            value: "representatividade",
+            label: "Representatividade",
+            isActive: activeTab === "representatividade",
+            onClick: () => handleInternalTabClick("representatividade"),
+            children: [
+                {
+                    value: "acompanhamento",
+                    label: "Acompanhamento",
+                    isActive: activeTab === "acompanhamento",
+                    onClick: () => handleInternalTabClick("acompanhamento"),
+                    href: "acompanhamento",
+                },
+                {
+                    value: "diagnosticos",
+                    label: "Diagnósticos",
+                    href: `${import.meta.env.VITE_PHP_URL}/sistema/diagnosticos/lista-diagnosticos/id/${encodedId}`,
+                    target: "_blank",
+                },
+            ]
+        }
+
     ];
 
 
@@ -141,6 +154,8 @@ const EntidadeIndex = () => {
                 return <ProjetosVinculados />;
             case "perfil":
                 return <PerfilEntidade />;
+            case "acompanhamento":
+                return <AcompanhamentoMarcosCriticos isComponente />;
             default:
                 return <Detalhes data={associacao!} />;
         }
@@ -176,6 +191,13 @@ const EntidadeIndex = () => {
                         }}
                         actions={
                             <div className="flex-wrap inline-flex xl:flex items-center gap-2">
+                                <Link target="_blank" to={`/sistema/cogecom/entidade/${id}`} className="rounded-md border">
+                                    <img
+                                        src="/img/botaoCogecom.png"
+                                        alt="Poup Max"
+                                        className="max-h-[70px] object-contain rounded-2xl"
+                                    />
+                                </Link>
                                 <Button size="xs" icon={<HiOutlineReply />}>
                                     <a
                                         className="menu-item-link"
@@ -185,7 +207,7 @@ const EntidadeIndex = () => {
                                         Versão antiga
                                     </a>
                                 </Button>
-                                <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
+                                {/* <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
                                     <Dropdown.Item eventKey="alterar">
                                         <Link
                                             to={`/sistema/entidades/editar/${id}`}
@@ -196,8 +218,7 @@ const EntidadeIndex = () => {
                                             Alterar dados
                                         </Link>
                                     </Dropdown.Item>
-                                </Dropdown>
-
+                                </Dropdown> */}
                             </div>
                         }
                     >

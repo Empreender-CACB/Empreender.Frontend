@@ -9,6 +9,7 @@ import ApiService from "@/services/ApiService";
 import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
 import VincularNucleoModal from "./components/VincularNucleos";
+import { AdaptableCard } from "@/components/shared";
 
 const NucleosVinculados = () => {
     const { id } = useParams();
@@ -47,17 +48,22 @@ const NucleosVinculados = () => {
             name: "idnucleo",
             header: "ID",
             type: "number",
+            operator: 'contains',
             defaultFlex: 1,
         },
         {
             name: "nmnucleo",
             header: "Núcleo Setorial",
             defaultFlex: 2,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "dssegmento",
             header: "Segmento",
             defaultFlex: 2,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "datavinculo",
@@ -95,8 +101,10 @@ const NucleosVinculados = () => {
     ];
 
     return (
-        <div>
-            <div className="flex justify-end mb-2">
+
+        <AdaptableCard className="h-full" bodyClass="h-full">
+            <div className="flex items-center justify-between my-2">
+                <h3 className="mb-4 lg:mb-0">Núcleos Vínculados</h3>
                 <Button
                     variant="solid"
                     size="sm"
@@ -106,7 +114,6 @@ const NucleosVinculados = () => {
                     Vincular Núcleo
                 </Button>
             </div>
-
             <CustomReactDataGrid
                 filename="Núcleos Vinculados"
                 columns={columns}
@@ -132,7 +139,7 @@ const NucleosVinculados = () => {
                 onConfirm={handleConfirmVinculo}
                 entidadeId={id!}
             />
-        </div>
+        </AdaptableCard>
     );
 };
 
