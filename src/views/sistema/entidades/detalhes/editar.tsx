@@ -387,6 +387,12 @@ const EditarEntidade = () => {
                                                     defaultOptions
                                                     placeholder="Digite o nome ou CPF"
                                                     loadOptions={loadGestores}
+                                                    noOptionsMessage={({ inputValue }) =>
+                                                        inputValue.length < 3
+                                                            ? "Digite 3 caracteres ou mais para iniciar a busca"
+                                                            : "Nenhum resultado encontrado"
+                                                    } 
+                                                    loadingMessage={()=>"Carregando..."}
                                                     value={(field.value || []).map((nucpf: string) => ({
                                                         value: nucpf,
                                                         label: form.values.gestores_labels?.[nucpf] || nucpf,

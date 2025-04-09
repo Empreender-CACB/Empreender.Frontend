@@ -134,14 +134,14 @@ const ProjetosVinculados = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex items-center justify-between my-2">
                 <h3 className="mb-4 lg:mb-0">Projetos Vínculados</h3>
-                <Button
+                {/* <Button
                     variant="solid"
                     size="sm"
                     icon={<HiPlusCircle />}
                     onClick={() => setModalOpen(true)}
                 >
                     Vincular Projeto
-                </Button>
+                </Button> */}
             </div>
 
             <CustomReactDataGrid

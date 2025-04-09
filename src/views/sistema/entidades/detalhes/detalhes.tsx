@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { Associacao } from '@/@types/generalTypes';
 import Tabs from '@/components/ui/Tabs';
 import CustomReactDataGrid from '@/components/shared/CustomReactDataGrid';
@@ -8,12 +8,13 @@ import AnotacoesComponent from '../../anotacao/AnotacoesComponent';
 import AnexosComponent from '../../anexos/AnexosComponent';
 import PendenciasComponent from '../../pendencias/PendenciasComponent';
 import { Button, Dialog, Tooltip } from '@/components/ui';
-import { HiOutlinePencil, HiOutlineTrash, HiPlusCircle } from 'react-icons/hi';
+import { HiCalendar, HiClipboardCheck, HiGlobe, HiIdentification, HiMail, HiOfficeBuilding, HiOutlinePencil, HiOutlineTrash, HiPhone, HiPlusCircle, HiUser } from 'react-icons/hi';
 import AdicionarDadosBancarios from './components/AdicionarDadosBancarios';
 import AdicionarContato from './components/AdicionarContato';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ApiService from '@/services/ApiService';
 import { AdaptableCard } from '@/components/shared';
+import { usePermission } from '@/utils/hooks/usePermission';
 
 const { TabNav, TabList, TabContent } = Tabs;
 
@@ -21,7 +22,30 @@ type DataProps = {
     data: Associacao;
 };
 
+interface InfoBoxProps {
+    icon: ReactNode
+    label: string
+    value: any
+    color?: string
+}
+
+const InfoBox = ({ icon, label, value, color = "gray" }: InfoBoxProps) => {
+    return (
+        <div className="flex items-start space-x-3">
+            <div className={`rounded-full p-2 text-white bg-${color}-500 mt-1`}>
+                {icon}
+            </div>
+            <div>
+                <div className="text-sm font-semibold text-gray-700">{label}</div>
+                <div className="text-sm text-gray-900">{value || "-"}</div>
+            </div>
+        </div>
+    )
+}
+
 const Detalhes = ({ data }: DataProps) => {
+    const { aba, id } = useParams();
+
     const [reload, setReload] = useState(false);
 
     const [isBancoModalOpen, setBancoModalOpen] = useState(false);
@@ -31,8 +55,20 @@ const Detalhes = ({ data }: DataProps) => {
 
     useEffect(() => { }, [reload]);
 
+    const hasPermission = usePermission();
+
+    const permissaoGestaoEntidade =
+        hasPermission({
+            recurso: "ace_edita",
+            vinculo: { tipo: "associacao", id: Number(id) }
+        }) ||
+        hasPermission({
+            recurso: "entidade_docanopen",
+            ignorarVinculo: true,
+        });
+
+
     const handleEditBanco = (rowData: any) => {
-        console.log(rowData);
         setEditBancoData(rowData);
         setBancoModalOpen(true);
     };
@@ -42,7 +78,6 @@ const Detalhes = ({ data }: DataProps) => {
         setDiretoriaModalOpen(true);
     };
 
-    const { aba, id } = useParams();
     const navigate = useNavigate();
 
     const abasInternasValidas = ["detalhes", "dadosBancarios", "anotacoes", "pendencias", "documentos", "diretoria"];
@@ -63,22 +98,37 @@ const Detalhes = ({ data }: DataProps) => {
         { name: "dsconta", header: "Conta", type: "string", operator: "contains", defaultFlex: 1 },
         { name: "pix_tipo", header: "Tipo PIX", type: "string", operator: "contains", defaultFlex: 1 },
         { name: "pix_chave", header: "Chave PIX", type: "string", operator: "contains", defaultFlex: 1 },
-        {
-            name: "actions",
-            header: "Ações",
-            defaultFlex: 1,
-            render: ({ data }: any) => (
-                <div className="flex space-x-2">
-                    <Tooltip title="Editar">
-                        <Button variant="solid" size="xs" icon={<HiOutlinePencil />} onClick={() => handleEditBanco(data)} />
-                    </Tooltip>
-                    <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDeleteContaBancaria(data)} />
-                    </Tooltip>
-                </div>
-            ),
-        },
+        ...(permissaoGestaoEntidade
+            ? [
+                {
+                    name: "actions",
+                    header: "Ações",
+                    defaultFlex: 1,
+                    render: ({ data }: any) => (
+                        <div className="flex space-x-2">
+                            <Tooltip title="Editar">
+                                <Button
+                                    variant="solid"
+                                    size="xs"
+                                    icon={<HiOutlinePencil />}
+                                    onClick={() => handleEditBanco(data)}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Excluir">
+                                <Button
+                                    variant="solid"
+                                    size="xs"
+                                    icon={<HiOutlineTrash />}
+                                    onClick={() => handleDeleteContaBancaria(data)}
+                                />
+                            </Tooltip>
+                        </div>
+                    ),
+                },
+            ]
+            : []),
     ];
+
 
     const columnsDiretoria = [
         { name: "cargo", header: "Cargo", type: "string", operator: "contains", defaultFlex: 1 },
@@ -99,48 +149,35 @@ const Detalhes = ({ data }: DataProps) => {
                 </span>
             ),
         },
-        {
-            name: "actions",
-            header: "Ações",
-            defaultFlex: 1,
-            render: ({ data }: any) => (
-                <div className="flex space-x-2">
-                    <Tooltip title="Editar">
-                        <Button variant="solid" size="xs" icon={<HiOutlinePencil />} onClick={() => handleEditDiretoria(data)} />
-                    </Tooltip>
-                    <Tooltip title="Excluir">
-                        <Button variant="solid" size="xs" icon={<HiOutlineTrash />} onClick={() => handleDeleteContato(data)} />
-                    </Tooltip>
-                </div>
-            ),
-        },
-    ];
-
-    const details = [
-        { label: 'Nome', value: noEmpty(data.nmrazao) },
-        { label: 'Sigla', value: noEmpty(data.sigla) },
-        { label: 'CNPJ', value: noEmpty(data.nucnpj) },
-        { label: 'Email', value: noEmpty(data.dsemail) },
-        { label: 'Fundação', value: noEmpty(dayjs(data.dtfundacao).format('DD/MM/YYYY')) },
-        { label: 'Endereço', value: noEmpty(data.dsendereco) },
-        { label: 'Número', value: noEmpty(data.nunumero) },
-        { label: 'Bairro', value: noEmpty(data.dsbairro) },
-        {
-            label: 'Cidade / UF',
-            value: `${noEmpty(data.cidade?.nmcidade)} - ${noEmpty(data.cidade?.iduf)}`
-        },
-        { label: 'CEP', value: noEmpty(data.nucep) },
-        { label: 'Telefone', value: noEmpty(data.nufone) },
-        { label: 'Gestor', value: noEmpty(data.gestor?.nmusuario) },
-        { label: 'Gestor - CPF', value: noEmpty(data.gestor?.nucpf) },
-        { label: 'Gestor - E-mail', value: noEmpty(data.gestor?.dsemail) },
-        { label: 'Situação RFB', value: noEmpty(data.situacao) },
-        {
-            label: 'Última Alteração',
-            value: noEmpty(dayjs(data.data_alteracao).format('DD/MM/YYYY')),
-        },
-        { label: 'Status', value: data.flativo === 'S' ? 'Ativo' : 'Inativo' },
-        { label: 'Homepage', value: noEmpty(data.dshomepage) },
+        ...(permissaoGestaoEntidade
+            ? [
+                {
+                    name: "actions",
+                    header: "Ações",
+                    defaultFlex: 1,
+                    render: ({ data }: any) => (
+                        <div className="flex space-x-2">
+                            <Tooltip title="Editar">
+                                <Button
+                                    variant="solid"
+                                    size="xs"
+                                    icon={<HiOutlinePencil />}
+                                    onClick={() => handleEditDiretoria(data)}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Excluir">
+                                <Button
+                                    variant="solid"
+                                    size="xs"
+                                    icon={<HiOutlineTrash />}
+                                    onClick={() => handleDeleteContato(data)}
+                                />
+                            </Tooltip>
+                        </div>
+                    ),
+                },
+            ]
+            : []),
     ];
 
 
@@ -203,36 +240,100 @@ const Detalhes = ({ data }: DataProps) => {
             <div className="p-4">
 
                 <TabContent value="detalhes">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', margin: "10px 0" }}>
-                        <Link
-                            to={`/sistema/entidades/editar/${id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-4 text-sm font-medium text-primary-600 hover:underline"
-                        >
-                            <Button variant='solid' size='sm'>
-                                Alterar dados
-                            </Button>
-                        </Link>
+                    {/* DADOS GERAIS */}
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700 mb-4">Dados Gerais</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <InfoBox icon={<HiUser />} label="Nome" value={data.nmrazao} color="orange" />
+                            <InfoBox icon={<HiIdentification />} label="Sigla" value={data.sigla} color="amber" />
+                            <InfoBox
+                                icon={<HiClipboardCheck />}
+                                label="CNPJ"
+                                value={data.nucnpj ? data.nucnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5") : "-"}
+                                color="blue"
+                            />
+                            <InfoBox
+                                icon={<HiCalendar />}
+                                label="Fundação"
+                                value={data.dtfundacao ? dayjs(data.dtfundacao).format("DD/MM/YYYY") : "-"}
+                                color="green"
+                            />
+                            <InfoBox
+                                icon={<HiGlobe />}
+                                label="Homepage"
+                                value={
+                                    data.dshomepage ? (
+                                        <a href={data.dshomepage} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                                            {data.dshomepage}
+                                        </a>
+                                    ) : "-"
+                                }
+                                color="indigo"
+                            />
+                            <InfoBox icon={<HiClipboardCheck />} label="Situação RFB" value={data.situacao || "-"} color="red" />
+                        </div>
                     </div>
-                    <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
-                        {details.map(({ label, value }, index) => (
-                            <div className="sm:col-span-1" key={index}>
-                                <dt className="text-sm font-extrabold text-black dark:text-white">{label}</dt>
-                                <dd className="mt-1 text-sm text-gray-900 dark:text-gray-200">{value}</dd>
-                            </div>
-                        ))}
-                    </dl>
+
+                    <hr className="my-4 border-gray-300" />
+
+                    {/* CONTATO */}
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700 mb-4">Contato</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <InfoBox icon={<HiMail />} label="Email" value={data.dsemail} color="blue" />
+                            <InfoBox
+                                icon={<HiPhone />}
+                                label="Telefone"
+                                value={data.nufone ? data.nufone.replace(/^(\d{2})(\d{4,5})(\d{4})$/, "($1) $2-$3") : "-"}
+                                color="red"
+                            />
+                            <InfoBox
+                                icon={<HiOfficeBuilding />}
+                                label="CEP"
+                                value={data.nucep ? String(data.nucep).replace(/^(\d{5})(\d{3})$/, "$1-$2") : "-"}
+                                color="blue"
+                            />
+                            <InfoBox icon={<HiOfficeBuilding />} label="Endereço" value={data.dsendereco} color="gray" />
+                            <InfoBox icon={<HiOfficeBuilding />} label="Número" value={data.nunumero} color="gray" />
+                            <InfoBox icon={<HiOfficeBuilding />} label="Bairro" value={data.dsbairro} color="gray" />
+                            <InfoBox
+                                icon={<HiOfficeBuilding />}
+                                label="Cidade / UF"
+                                value={`${data.cidade?.nmcidade || "-"} - ${data.cidade?.iduf || ""}`}
+                                color="gray"
+                            />
+                        </div>
+                    </div>
+
+                    <hr className="my-4 border-gray-300" />
+
+                    {/* GESTORES */}
+                    <div className="mb-8">
+                        <h3 className="text-lg font-medium text-gray-700 mb-4">Gestores</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <InfoBox icon={<HiUser />} label="Gestor" value={data.gestor?.nmusuario} color="red" />
+                            <InfoBox
+                                icon={<HiIdentification />}
+                                label="CPF Gestor"
+                                value={data.gestor?.nucpf ? data.gestor.nucpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4") : "-"}
+                                color="gray"
+                            />
+                            <InfoBox icon={<HiMail />} label="Email Gestor" value={data.gestor?.dsemail} color="blue" />
+                        </div>
+                    </div>
                 </TabContent>
+
 
                 <TabContent value="dadosBancarios">
 
                     <AdaptableCard className="h-full" bodyClass="h-full">
                         <div className="flex items-center justify-between my-2">
                             <h3 className="mb-4 lg:mb-0">Dados Bancários</h3>
-                            <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setBancoModalOpen(true)}>
-                                Adicionar Conta Bancária
-                            </Button>
+                            {permissaoGestaoEntidade &&
+                                <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setBancoModalOpen(true)}>
+                                    Adicionar Conta Bancária
+                                </Button>
+                            }
                         </div>
                         <CustomReactDataGrid
                             filename={`Contas Bancárias - ${data.nmrazao}`}
@@ -247,9 +348,11 @@ const Detalhes = ({ data }: DataProps) => {
                     <AdaptableCard className="h-full" bodyClass="h-full">
                         <div className="flex items-center justify-between my-2">
                             <h3 className="mb-4 lg:mb-0">Diretoria e Contatos</h3>
-                            <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setDiretoriaModalOpen(true)}>
-                                Adicionar Contato
-                            </Button>
+                            {permissaoGestaoEntidade &&
+                                <Button variant="solid" size="sm" icon={<HiPlusCircle />} onClick={() => setDiretoriaModalOpen(true)}>
+                                    Adicionar Contato
+                                </Button>
+                            }
                         </div>
                         <CustomReactDataGrid
                             filename="Diretoria e Contatos"

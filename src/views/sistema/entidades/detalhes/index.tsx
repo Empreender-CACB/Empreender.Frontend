@@ -4,7 +4,6 @@ import LayoutDetailSimple from "@/components/layouts/LayoutDetailSimple";
 import LayoutWithMenus from "@/components/layouts/LayoutWithMenus";
 import Loading from "@/components/shared/Loading";
 import Button from "@/components/ui/Button";
-import Dropdown from "@/components/ui/Dropdown";
 import { HiOutlinePencil, HiOutlineReply } from "react-icons/hi";
 import { APP_PREFIX_PATH } from "@/constants/route.constant";
 import ApiService from "@/services/ApiService";
@@ -207,18 +206,18 @@ const EntidadeIndex = () => {
                                         Versão antiga
                                     </a>
                                 </Button>
-                                {/* <Dropdown renderTitle={<Button size="xs" variant="solid" icon={<HiOutlinePencil />}>Opções</Button>}>
-                                    <Dropdown.Item eventKey="alterar">
-                                        <Link
-                                            to={`/sistema/entidades/editar/${id}`}
-                                            className="block w-full h-full"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
+                                {activeTab === 'detalhes' &&
+                                    <Link
+                                        to={`/sistema/entidades/editar/${id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm font-medium text-primary-600 hover:underline"
+                                    >
+                                        <Button variant='solid' size='xs'>
                                             Alterar dados
-                                        </Link>
-                                    </Dropdown.Item>
-                                </Dropdown> */}
+                                        </Button>
+                                    </Link>
+                                }
                             </div>
                         }
                     >

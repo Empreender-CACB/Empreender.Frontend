@@ -72,6 +72,12 @@ const VincularNucleoModal = ({ isOpen, onClose, onConfirm, entidadeId }: ModalPr
                                 cacheOptions
                                 defaultOptions
                                 loadOptions={loadNucleos}
+                                noOptionsMessage={({ inputValue }) =>
+                                    inputValue.length < 3
+                                        ? "Digite 3 caracteres ou mais para iniciar a busca"
+                                        : "Nenhum resultado encontrado"
+                                } 
+                                loadingMessage={()=>"Carregando..."}
                                 placeholder="Digite o nome do núcleo"
                                 onChange={(option: any) => setFieldValue("idVinculado", option?.value)}
                             />
