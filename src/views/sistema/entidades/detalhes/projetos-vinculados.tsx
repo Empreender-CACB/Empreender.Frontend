@@ -10,6 +10,7 @@ import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
 import VincularProjetoModal from "./components/VincularProjeto";
 import { getProjetoStatusInfo } from "@/utils/projetoStatus";
+import { AdaptableCard } from "@/components/shared";
 
 const ProjetosVinculados = () => {
     const { id } = useParams();
@@ -48,31 +49,42 @@ const ProjetosVinculados = () => {
             name: "idprojeto",
             header: "ID Projeto",
             type: "number",
+            operator: 'contains',
             defaultFlex: 1,
         },
         {
             name: "tipo_projeto",
             header: "Tipo",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 1,
         },
         {
             name: "nmfantasia",
             header: "Nome Fantasia",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 2,
         },
         {
             name: "idprojeto_projeto_base",
             header: "Projeto Base",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 2,
         },
         {
             name: "tipo",
             header: "Vínculo",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 1,
         },
         {
             name: "flstatus",
             header: "Status",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 1,
             render: ({ value }: any) => {
                 const statusInfo = getProjetoStatusInfo(value)
@@ -119,16 +131,17 @@ const ProjetosVinculados = () => {
     ];
 
     return (
-        <div>
-            <div className="flex justify-end mb-2">
-                <Button
+        <AdaptableCard className="h-full" bodyClass="h-full">
+            <div className="flex items-center justify-between my-2">
+                <h3 className="mb-4 lg:mb-0">Projetos Vínculados</h3>
+                {/* <Button
                     variant="solid"
                     size="sm"
                     icon={<HiPlusCircle />}
                     onClick={() => setModalOpen(true)}
                 >
                     Vincular Projeto
-                </Button>
+                </Button> */}
             </div>
 
             <CustomReactDataGrid
@@ -156,7 +169,7 @@ const ProjetosVinculados = () => {
                 onConfirm={handleConfirmVinculo}
                 entidadeId={id!}
             />
-        </div>
+        </AdaptableCard>
     );
 };
 

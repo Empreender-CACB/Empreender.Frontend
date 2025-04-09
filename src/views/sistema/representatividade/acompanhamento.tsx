@@ -49,8 +49,11 @@ const tarefaStatusValue = [
     { name: 'Não Atingido', value: 'Não atingido' },
 ];
 
+interface AcompanhamentoMarcosCriticosProps {
+    isComponente?: boolean
+}
 
-const AcompanhamentoMarcosCriticos = () => {
+const AcompanhamentoMarcosCriticos = ({ isComponente = false }: AcompanhamentoMarcosCriticosProps) => {
 
     const columns = [
         {
@@ -212,7 +215,7 @@ const AcompanhamentoMarcosCriticos = () => {
 
     const handleOpenAnalysisModal = (marcoId: any) => {
         setSelectedMarcoId(marcoId);
-        fetchMarcoDetails(marcoId);  
+        fetchMarcoDetails(marcoId);
         setIsAnalysisModalOpen(true);
     };
 
@@ -365,29 +368,32 @@ const AcompanhamentoMarcosCriticos = () => {
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-4">
-                <div>
-                    <div className="flex items-center">
-                        <h3 className="mb-4 lg:mb-0">Acompanhamento de Entidade - Marcos Críticos</h3>
-                        <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
-                            <Button
-                                shape="circle"
-                                size="xs"
-                                icon={<FaQuestion />}
-                                className="ml-2"
-                                onClick={() => {
-                                    window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
-                                }}
-                            />
-                        </Tooltip>
+                {!isComponente &&
+                    <div>
+                        <div className="flex items-center">
+                            <h3 className="mb-4 lg:mb-0">Acompanhamento de Entidade - Marcos Críticos</h3>
+                            <Tooltip title="Clique aqui para saber mais sobre os acompanhamentos de marcos críticos" placement="right-end">
+                                <Button
+                                    shape="circle"
+                                    size="xs"
+                                    icon={<FaQuestion />}
+                                    className="ml-2"
+                                    onClick={() => {
+                                        window.open('https://www.empreender.org.br/sistema/anexo/download-anexo/aid/MTMzMDM0')
+                                    }}
+                                />
+                            </Tooltip>
+                        </div>
+                        <h5>
+                            <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
+                                {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao} - {associacaoDetails?.sigla}
+                            </Link>
+                        </h5>
                     </div>
-                    <h5>
-                        <Link target='_blank' to={`${import.meta.env.VITE_PHP_URL}/sistema/associacao/detalhe/aid/${btoa(String(associacaoDetails?.idassociacao))}`}>
-                            {associacaoDetails?.idassociacao} - {associacaoDetails?.nmrazao} - {associacaoDetails?.sigla}
-                        </Link>
-                    </h5>
-                </div>
+                }
+
                 <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                    {(isGestor || isConsultor)  &&
+                    {(isGestor || isConsultor) &&
                         <>
                             <Button
                                 block

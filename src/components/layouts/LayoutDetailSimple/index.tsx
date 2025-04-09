@@ -36,10 +36,10 @@ const LayoutDetailSimple: React.FC<LayoutDetailSimpleProps> = ({
                     <div className="flex items-center mb-2 lg:mb-0 lg:mr-4">
                         {titleLink ? (
                             <a href={titleLink} target="_blank" rel="noopener noreferrer">
-                                {title}
+                                <h3>{title}</h3>
                             </a>
                         ) : (
-                            <>{title}</>
+                            <h3>{title}</h3>
                         )}
 
                         {statusTags && statusTags[status] && (

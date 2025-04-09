@@ -75,6 +75,12 @@ const VincularEntidadeModal = ({ isOpen, onClose, onConfirm, entidadeId }: Modal
                                 cacheOptions
                                 defaultOptions
                                 loadOptions={loadEntidades}
+                                noOptionsMessage={({ inputValue }) =>
+                                    inputValue.length < 3
+                                        ? "Digite 3 caracteres ou mais para iniciar a busca"
+                                        : "Nenhum resultado encontrado"
+                                } 
+                                loadingMessage={()=>"Carregando..."}
                                 placeholder="Digite o nome da entidade"
                                 onChange={(option: any) => setFieldValue("idVinculado", option?.value)}
                             />

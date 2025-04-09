@@ -72,6 +72,12 @@ const VincularProjetoModal = ({ isOpen, onClose, onConfirm, entidadeId }: ModalP
                                 cacheOptions
                                 defaultOptions
                                 loadOptions={loadProjetos}
+                                noOptionsMessage={({ inputValue }) =>
+                                    inputValue.length < 3
+                                        ? "Digite 3 caracteres ou mais para iniciar a busca"
+                                        : "Nenhum resultado encontrado"
+                                } 
+                                loadingMessage={()=>"Carregando..."}
                                 placeholder="Digite o nome do projeto"
                                 onChange={(option: any) => setFieldValue("idVinculado", option?.value)}
                             />

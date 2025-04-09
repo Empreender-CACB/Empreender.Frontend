@@ -58,8 +58,8 @@ const columns = [
     {
         name: 'associacao.sigla',
         header: 'Sigla',
-        type: 'string',
         defaultFlex: 0.5,
+        type: 'string',
         operator: 'contains',
         render: ({ data }: any) => {
             const text = data.sigla

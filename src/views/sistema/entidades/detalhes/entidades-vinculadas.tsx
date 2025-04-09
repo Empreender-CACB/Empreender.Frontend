@@ -9,6 +9,7 @@ import ApiService from "@/services/ApiService";
 import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
 import VincularEntidadeModal from "./components/VincularEntidades";
+import { AdaptableCard } from "@/components/shared";
 
 const EntidadesVinculadas = () => {
     const { id } = useParams();
@@ -48,31 +49,42 @@ const EntidadesVinculadas = () => {
             header: "ID",
             type: "number",
             defaultFlex: 1,
+            operator: 'contains',
         },
         {
-            name: "nome", 
+            name: "nome",
             header: "Tipo",
             defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "iduf",
             header: "UF",
             defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "nmcidade",
             header: "Cidade",
             defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "sigla",
             header: "Sigla",
             defaultFlex: 1,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "nmrazao",
             header: "Razão Social",
             defaultFlex: 2,
+            type: 'string',
+            operator: 'contains',
         },
         {
             name: "datavinculo",
@@ -110,8 +122,9 @@ const EntidadesVinculadas = () => {
     ];
 
     return (
-        <div>
-            <div className="flex justify-end mb-2">
+        <AdaptableCard className="h-full" bodyClass="h-full">
+            <div className="flex items-center justify-between my-2">
+                <h3 className="mb-4 lg:mb-0">Entidades Vínculadas</h3>
                 <Button
                     variant="solid"
                     size="sm"
@@ -121,7 +134,6 @@ const EntidadesVinculadas = () => {
                     Vincular Entidade
                 </Button>
             </div>
-
             <CustomReactDataGrid
                 filename="Entidades Vinculadas"
                 columns={columns}
@@ -145,7 +157,7 @@ const EntidadesVinculadas = () => {
                 onConfirm={handleConfirmVinculo}
                 entidadeId={id!}
             />
-        </div>
+        </AdaptableCard>
     );
 };
 

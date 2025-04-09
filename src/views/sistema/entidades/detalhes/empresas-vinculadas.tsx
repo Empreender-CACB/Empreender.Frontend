@@ -9,6 +9,7 @@ import VincularEmpresaModal from "./components/VincularEmpresa";
 import ApiService from "@/services/ApiService";
 import DateFilter from "@inovua/reactdatagrid-community/DateFilter";
 import moment from "moment";
+import { AdaptableCard } from "@/components/shared";
 
 const EmpresasVinculadas = () => {
     const { id } = useParams();
@@ -48,15 +49,17 @@ const EmpresasVinculadas = () => {
             header: "ID",
             type: "number",
             defaultFlex: 1,
+            operator: 'contains',
         },
         {
-            name: "nmfantasia",
+            name: "empresa.nmfantasia",
             header: "Nome",
-            type: "string",
+            type: 'string',
+            operator: 'contains',
             defaultFlex: 2,
         },
         {
-            name: 'datavinculo',
+            name: 'entidades_vinculos.data_inclusao',
             header: "Data Vínculo",
             dateFormat: 'DD-MM-YYYY',
             type: 'date',
@@ -85,7 +88,25 @@ const EmpresasVinculadas = () => {
     ];
 
     return (
-        <div>
+
+        <AdaptableCard className="h-full" bodyClass="h-full">
+            <div className="flex items-center justify-between my-2">
+                <h3 className="mb-4 lg:mb-0">Empresas Vínculadas</h3>
+                <Button
+                    variant="solid"
+                    size="sm"
+                    icon={<HiPlusCircle />}
+                    onClick={() => setModalOpen(true)}
+                >
+                    Vincular Empresa
+                </Button>
+            </div>
+            <CustomReactDataGrid
+                filename="Empresas Vinculadas"
+                columns={columnsEmpresas}
+                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/empresas-vinculadas?reload=${reload}`}
+            />
+
             <div className="flex justify-end mb-2">
                 <Button
                     variant="solid"
@@ -96,12 +117,6 @@ const EmpresasVinculadas = () => {
                     Vincular Empresa
                 </Button>
             </div>
-
-            <CustomReactDataGrid
-                filename="Empresas Vinculadas"
-                columns={columnsEmpresas}
-                url={`${import.meta.env.VITE_API_URL}/entidades/${id}/empresas-vinculadas?reload=${reload}`}
-            />
 
             <Dialog
                 isOpen={deleteConfirmOpen}
@@ -123,7 +138,7 @@ const EmpresasVinculadas = () => {
                 onConfirm={handleConfirmVinculo}
                 entidadeId={id!}
             />
-        </div>
+        </AdaptableCard>
     );
 };
 
