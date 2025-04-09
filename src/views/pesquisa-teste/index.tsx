@@ -71,6 +71,14 @@ function PesquisaTeste() {
     // Effects
     useEffect(() => {
 
+        fetch('https://back.cacbempreenderapp.org.br/pesquisa-al/access', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({token})
+        })
+
         const link = document.createElement("link");
         link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap";
         link.rel = "stylesheet";
@@ -79,7 +87,7 @@ function PesquisaTeste() {
         return () => {
             document.head.removeChild(link);
         };
-    }, []);
+    }, [token]);
 
     const handleCheckBoxChange = (setter, value) => {
         setter(prev => {
