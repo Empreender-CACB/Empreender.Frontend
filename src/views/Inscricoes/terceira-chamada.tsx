@@ -49,6 +49,7 @@ function CadastraProposta() {
     const [cpf, setCpf] = useState('')
     const [camposVisiveis, setCamposVisiveis] = useState(false)
     const [mensagem, setMensagem] = useState('')
+    const [telefone, setTelefone] = useState('')
 
     const nomeRef = useRef<HTMLInputElement>(null)
     const emailRef = useRef<HTMLInputElement>(null)
@@ -56,8 +57,8 @@ function CadastraProposta() {
     const ufRef = useRef<HTMLSelectElement>(null)
     const cidadeRef = useRef<HTMLInputElement>(null)
     const telefoneRef = useRef<HTMLInputElement>(null)
+    const [candidato, setCandidato] = useState<any | null>(null)
 
-    // Verifica CPF quando ele for digitado completamente
     const handleVerificar = async () => {
         const cpfLimpo = cpf.trim()
 
@@ -68,19 +69,12 @@ function CadastraProposta() {
         }
 
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${cpfLimpo}`)
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify-candidatura/${cpfLimpo}/3`)
 
             if (response.status === 200) {
-                const data = response.data.candidato
-
-                if (nomeRef.current) nomeRef.current.value = data.nome || ''
-                if (emailRef.current) emailRef.current.value = data.email || ''
-                if (sexoRef.current) sexoRef.current.value = data.sexo ?? '' // null ou undefined tratado
-                if (ufRef.current) ufRef.current.value = data.uf || ''
-                if (cidadeRef.current) cidadeRef.current.value = data.cidade || ''
-                if (telefoneRef.current) telefoneRef.current.value = data.telefone || ''
-
+                setCandidato(response.data.candidato)
                 setMensagem('Dados encontrados. Você pode revisar e alterar se necessário.')
+
                 setCamposVisiveis(true)
             }
         } catch (error: any) {
@@ -95,6 +89,23 @@ function CadastraProposta() {
         }
     }
 
+    useEffect(() => {
+        if (camposVisiveis && candidato) {
+            if (nomeRef.current) nomeRef.current.value = candidato.nome || ''
+            if (emailRef.current) emailRef.current.value = candidato.email || ''
+            if (sexoRef.current) sexoRef.current.value = candidato.sexo ?? ''
+            if (ufRef.current) ufRef.current.value = candidato.uf || ''
+            if (cidadeRef.current) cidadeRef.current.value = candidato.cidade || ''
+
+            setTelefone(candidato.telefone || '')
+
+        }
+
+        if (camposVisiveis && !candidato) {
+            limparCampos()
+            setTelefone('')
+        }
+    }, [camposVisiveis, candidato])
 
     const limparCampos = () => {
         if (nomeRef.current) nomeRef.current.value = ''
@@ -206,13 +217,17 @@ function CadastraProposta() {
         });
 
         try {
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`)
+              }
+              
             await axios.post(`${import.meta.env.VITE_API_URL}/candidaturas`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             setErrors(null);
-            setSuccess(true);
+            // setSuccess(true);
             toast.push(toastNotificationSucess)
 
         } catch (error: any) {
@@ -411,9 +426,10 @@ function CadastraProposta() {
                                                     <label className="text-sm font-bold text-gray-700">Telefone</label>
                                                     <IMaskInput
                                                         className="mt-1 w-full border border-gray-300 rounded px-3 py-2 text-sm"
-                                                        mask="(00)00000-0000"
+                                                        mask="(00) 00000-0000"
+                                                        value={telefone}
                                                         name="telefone"
-                                                        placeholder="(00)00000-0000"
+                                                        placeholder="(00) 00000-0000"
                                                         ref={telefoneRef}
                                                     />
                                                 </div>

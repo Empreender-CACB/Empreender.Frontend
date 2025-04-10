@@ -43,7 +43,7 @@ function CadastraProposta() {
     const [success, setSuccess] = useState(false)
     const [inputs, setInputs] = useState([{}])
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isRegistrationClosed, setIsRegistrationClosed] = useState(true) // Estado para deixar o form inativo
+    const [isRegistrationClosed, setIsRegistrationClosed] = useState(false) // Estado para deixar o form inativo
     const [parametro, setParametro] = useState('')
     const [cpf, setCpf] = useState('');
     const [apto, setApto] = useState(false);
@@ -128,6 +128,8 @@ function CadastraProposta() {
                 formData.append('files', files[i]);
             }
         });
+
+        formData.append("tipo", "2");
 
         const selectElements = event.target.querySelectorAll('[name="type_document"]');
 
@@ -230,7 +232,7 @@ function CadastraProposta() {
         setCpf(value);
         if (value.length === 14) {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify/${value}/2`);
 
                 if (response.status === 200) {
                     console.log('CPF está na base e apto.');
@@ -267,7 +269,7 @@ function CadastraProposta() {
 
     return (
         <div className='flex justify-center items-center tracking-tight sm:w-90'>
-            {isRegistrationClosed && (
+            {true && (
                 <div className="flex justify-center items-center tracking-tight sm:w-90 min-h-screen bg-gray-100">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-10 sm:w-full lg:w-9/12">
                         <div className="flex items-center space-x-4">
@@ -310,14 +312,14 @@ function CadastraProposta() {
 
                         <>
                             <div className='center text-center pb-5'>
-                                {/* <h3 className='mb-2'>Complementar dados</h3> */}
-                                {/* <IMaskInput
+                                <h3 className='mb-2'>Complementar dados</h3>
+                                <IMaskInput
                                     className='input input-md h-11 focus:ring-sky-900 focus-within:ring-sky-900 focus-within:border-sky-900 focus:border-sky-900 mb-2'
                                     mask={'000.000.000-00'}
                                     name='cpf'
                                     placeholder='Informe o seu CPF'
                                     onAccept={verifyCPF}
-                                /> */}
+                                />
 
                                 {inapto === true && (
                                     <Alert showIcon className="mb-4">
