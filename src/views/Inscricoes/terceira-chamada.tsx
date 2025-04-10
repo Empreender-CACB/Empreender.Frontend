@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
@@ -13,7 +13,7 @@ import { AnexoReferencia, getAnexoPorReferencia } from '@/utils/getAnexoPorRefer
 
 const ErrorComponent = ({ errors }: any) => {
     if (!errors || errors.length === 0) {
-        return null; // Não há erros, não renderiza nada
+        return null;
     }
 
     return (
@@ -27,7 +27,7 @@ const ErrorComponent = ({ errors }: any) => {
                         } ${errors.length} erro${errors.length === 1 ? '' : 's'} com o seu envio`}</h3>
                     <div className="mt-2 text-sm text-red-700">
                         <ul role="list" className="list-disc space-y-1 pl-5">
-                            {errors.map((error, index) => (
+                            {errors.map((error: any, index: any) => (
                                 <li key={index}>{error.message}</li>
                             ))}
                         </ul>
@@ -45,6 +45,76 @@ function CadastraProposta() {
     const [inputs, setInputs] = useState([{}])
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isRegistrationClosed, setIsRegistrationClosed] = useState(false) // Estado para deixar o form inativo
+
+    const [cpf, setCpf] = useState('')
+    const [camposVisiveis, setCamposVisiveis] = useState(false)
+    const [mensagem, setMensagem] = useState('')
+    const [telefone, setTelefone] = useState('')
+
+    const nomeRef = useRef<HTMLInputElement>(null)
+    const emailRef = useRef<HTMLInputElement>(null)
+    const sexoRef = useRef<HTMLSelectElement>(null)
+    const ufRef = useRef<HTMLSelectElement>(null)
+    const cidadeRef = useRef<HTMLInputElement>(null)
+    const telefoneRef = useRef<HTMLInputElement>(null)
+    const [candidato, setCandidato] = useState<any | null>(null)
+
+    const handleVerificar = async () => {
+        const cpfLimpo = cpf.trim()
+
+        if (cpfLimpo.length !== 14) {
+            setMensagem('CPF inválido.')
+            setCamposVisiveis(false)
+            return
+        }
+
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/candidaturas/verify-candidatura/${cpfLimpo}/3`)
+
+            if (response.status === 200) {
+                setCandidato(response.data.candidato)
+                setMensagem('Dados encontrados. Você pode revisar e alterar se necessário.')
+
+                setCamposVisiveis(true)
+            }
+        } catch (error: any) {
+            if (axios.isAxiosError(error) && error.response?.status === 404) {
+                setMensagem('CPF não encontrado. Preencha os dados para nova inscrição.')
+                limparCampos()
+                setCamposVisiveis(true)
+            } else {
+                setMensagem('Erro ao verificar CPF.')
+                setCamposVisiveis(false)
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (camposVisiveis && candidato) {
+            if (nomeRef.current) nomeRef.current.value = candidato.nome || ''
+            if (emailRef.current) emailRef.current.value = candidato.email || ''
+            if (sexoRef.current) sexoRef.current.value = candidato.sexo ?? ''
+            if (ufRef.current) ufRef.current.value = candidato.uf || ''
+            if (cidadeRef.current) cidadeRef.current.value = candidato.cidade || ''
+
+            setTelefone(candidato.telefone || '')
+
+        }
+
+        if (camposVisiveis && !candidato) {
+            limparCampos()
+            setTelefone('')
+        }
+    }, [camposVisiveis, candidato])
+
+    const limparCampos = () => {
+        if (nomeRef.current) nomeRef.current.value = ''
+        if (emailRef.current) emailRef.current.value = ''
+        if (sexoRef.current) sexoRef.current.value = ''
+        if (ufRef.current) ufRef.current.value = ''
+        if (cidadeRef.current) cidadeRef.current.value = ''
+        if (telefoneRef.current) telefoneRef.current.value = ''
+    }
 
     useEffect(() => {
         const referencias = [
@@ -127,7 +197,7 @@ function CadastraProposta() {
 
         const fileInputs = event.target.querySelectorAll('[name="files"]');
 
-        fileInputs.forEach((fileInput) => {
+        fileInputs.forEach((fileInput: any) => {
             const files = fileInput.files;
             for (let i = 0; i < files.length; i++) {
                 formData.append('files', files[i]);
@@ -138,7 +208,7 @@ function CadastraProposta() {
 
         const selectElements = event.target.querySelectorAll('[name="type_document"]');
 
-        selectElements.forEach((selectElement) => {
+        selectElements.forEach((selectElement: any) => {
             for (let i = 0; i < selectElement.options.length; i++) {
                 if (selectElement.options[i].selected) {
                     formData.append('selectValues', selectElement.options[i].value);
@@ -147,22 +217,23 @@ function CadastraProposta() {
         });
 
         try {
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`)
+              }
+              
             await axios.post(`${import.meta.env.VITE_API_URL}/candidaturas`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             setErrors(null);
-            setSuccess(true);
+            // setSuccess(true);
             toast.push(toastNotificationSucess)
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error submitting form:', error);
             setErrors(error.response.data.errors);
             toast.push(toastNotification)
-            document.getElementById('errors').scrollIntoView({
-                behavior: 'smooth'
-            });
         }
 
         setIsSubmitting(false);
@@ -277,139 +348,179 @@ function CadastraProposta() {
 
 
                                 <div className="mx-auto">
-                                    <div className="grid grid-cols-2 gap-8 mt-9">
-                                        {/* <div className="xl:w-9/12 w-11/12 mx-auto xl:mx-0"> */}
 
-                                        <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="nome" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                Nome Completo
-                                            </label>
-                                            <input required type="text" id="nome" name="nome" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu nome completo" />
-                                        </div>
-                                        <div className="flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="email" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                Email
-                                            </label>
-                                            <input required type="email" id="email" name="email" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe seu melhor email" />
-                                        </div>
-                                        <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="cpf" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                CPF
-                                            </label>
+                                    {/* CPF */}
+                                    <div className='my-4 gap-2'>
+                                        <div className='w-full'>
+                                            <label htmlFor="cpf" className="block text-sm font-bold text-gray-700">CPF</label>
                                             <IMaskInput
-                                                className='border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400'
-                                                mask={'000.000.000-00'}
-                                                name='cpf'
-                                                placeholder='Informe os números do seu CPF'
+                                                className="mt-1 w-full border border-gray-300 rounded px-3 py-2 shadow-sm text-sm"
+                                                mask="000.000.000-00"
+                                                name="cpf"
+                                                placeholder="Informe o CPF"
+                                                value={cpf}
+                                                disabled={camposVisiveis}
+                                                onAccept={(value: any) => setCpf(value)}
                                             />
                                         </div>
-                                        <div className="flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="sexo" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                Sexo
-                                            </label>
-                                            <select required id="sexo" name="sexo" className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent text-gray-500 dark:text-gray-400">
-                                                {/* <option selected disabled>Escolha uma das opções</option> */}
-                                                <option value="M">Masculino</option>
-                                                <option value="F">Feminino</option>
-                                            </select>
-                                        </div>
-                                        <div className="flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="cidade" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                Estado e cidade
-                                            </label>
-                                            <div className="flex space-x-4">
-                                                <select
-                                                    required
-                                                    id="uf"
-                                                    name="uf"
-                                                    className="w-5/12 border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent text-gray-500 dark:text-gray-400"
+
+                                        {!camposVisiveis &&
+                                            <div className='mt-4'>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleVerificar}
+                                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
                                                 >
-                                                    <option value="" disabled>
-                                                        Selecione um estado
-                                                    </option>
-                                                    {estadosBrasileiros.map((estado) => (
-                                                        <option key={estado.sigla} value={estado.sigla}>
-                                                            {estado.sigla}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <input required type="text" id="cidade" name="cidade" className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400" placeholder="Informe o nome da cidade" />
-
+                                                    Verificar
+                                                </button>
+                                                {mensagem && <p className="text-sm mt-2 text-gray-700">{mensagem}</p>}
                                             </div>
+                                        }
 
-                                        </div>
+                                    </div>
 
-                                        <div className=" flex flex-col w-full col-span-2 sm:col-span-1">
-                                            <label htmlFor="telefone" className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                                                Telefone
-                                            </label>
-                                            <IMaskInput
-                                                className='border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-500 dark:text-gray-400'
-                                                mask={'(00)00000-00000'}
-                                                placeholder='Informe seu número de telefone com DDD'
-                                                name='telefone'
-                                            />                                    </div>
+                                    {/* Campos visíveis após verificação */}
+                                    {camposVisiveis && (
+                                        <>
+                                            {/* Nome + Email */}
+                                            <div className="col-span-2 grid grid-cols-2 gap-8 mb-4">
+                                                <div>
+                                                    <label className="text-sm font-bold text-gray-700">Nome Completo</label>
+                                                    <input
+                                                        type="text"
+                                                        name="nome"
+                                                        ref={nomeRef}
+                                                        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                                        placeholder="Informe seu nome completo"
+                                                    />
+                                                </div>
 
-
-                                        <div className="sm:col-span-2 sm:border-t sm:border-gray-200 pt-5">
-                                            <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
-                                                Documentos
-                                            </label>
-                                            <div className="mt-2">
-                                                <div className="container">
-                                                    {inputs.map((item, index) => (
-                                                        <div className="input_container" key={index}>
-                                                            <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
-                                                                {/* Input de Upload */}
-                                                                <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
-                                                                    <input type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
-                                                                </label>
-
-                                                                {/* Select */}
-                                                                <div className='flex items-center space-x-2'>
-                                                                    <select name="type_document" className="border p-2 rounded-md">
-                                                                        <option value="Currículo profissional">Currículo Profissional</option>
-                                                                        <option value="Formação acadêmica">Formação acadêmica</option>
-                                                                        <option value="Experiência profissional">Experiência profissional</option>
-                                                                        <option value="Cursos realizados">Cursos realizados</option>
-                                                                    </select>
-                                                                    {inputs.length > 1 && (
-
-                                                                        <span onClick={() => handleDeleteInput(index)}>
-                                                                            <CloseIcon />
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-
-
-
-                                                            </div>
-                                                            {index === inputs.length - 1 && (
-                                                                <Button onClick={() => handleAddInput()} variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />}>
-                                                                    <span>Adicionar mais arquivos</span>
-                                                                </Button>)}
-                                                        </div>
-                                                    ))}
-
+                                                <div>
+                                                    <label className="text-sm font-bold text-gray-700">Email</label>
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        ref={emailRef}
+                                                        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                                        placeholder="Informe seu email"
+                                                    />
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className="container mx-auto w-11/12 xl:w-full pt-10">
-                                <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-start">
-                                    <button
-                                        disabled={isSubmitting}
-                                        className={`bg-blue-800 focus:outline-none transition duration-150 ease-in-out rounded text-white px-8 py-2 text-sm ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
-                                        type="submit"
-                                        title={isSubmitting ? "Enviando informações..." : ""}
-                                    >
-                                        Enviar
-                                    </button>
+                                            {/* Sexo + Telefone */}
+                                            <div className="col-span-2 grid grid-cols-2 gap-8 mb-4">
+                                                <div>
+                                                    <label className="text-sm font-bold text-gray-700">Sexo</label>
+                                                    <select
+                                                        name="sexo"
+                                                        ref={sexoRef}
+                                                        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                                    >
+                                                        <option value="">Selecione</option>
+                                                        <option value="M">Masculino</option>
+                                                        <option value="F">Feminino</option>
+                                                    </select>
+                                                </div>
 
-                                    <span className='ml-2 flex items-center'>Ao enviar, você concorda com a manutenção dos seus dados na Plataforma do Empreender.</span>
+                                                <div>
+                                                    <label className="text-sm font-bold text-gray-700">Telefone</label>
+                                                    <IMaskInput
+                                                        className="mt-1 w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                                        mask="(00) 00000-0000"
+                                                        value={telefone}
+                                                        name="telefone"
+                                                        placeholder="(00) 00000-0000"
+                                                        ref={telefoneRef}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Estado + Cidade */}
+                                            <div className="col-span-2 gap-8 mb-4">
+                                                <label className="text-sm font-bold text-gray-700">Estado e Cidade</label>
+                                                <div className="flex space-x-4 mt-1">
+                                                    <select
+                                                        name="uf"
+                                                        ref={ufRef}
+                                                        className="w-5/12 border border-gray-300 rounded px-3 py-2 text-sm"
+                                                    >
+                                                        <option value="">UF</option>
+                                                        {estadosBrasileiros.map((estado) => (
+                                                            <option key={estado.sigla} value={estado.sigla}>
+                                                                {estado.sigla}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <input
+                                                        type="text"
+                                                        name="cidade"
+                                                        ref={cidadeRef}
+                                                        className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                                        placeholder="Cidade"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="sm:col-span-2">
+                                                <label className="text-sm font-bold text-gray-700">Documentos</label>
+
+                                                <div className="mt-2">
+                                                    <div className="container">
+                                                        {inputs.map((item, index) => (
+                                                            <div className="input_container" key={index}>
+                                                                <div className="flex items-center space-x-4 mb-2 flex-wrap space-y-1">
+                                                                    {/* Input de Upload */}
+                                                                    <label className=" bg-gray-200 py-2 px-4 rounded-md cursor-pointer">
+                                                                        <input type="file" name="files" className="w-50" accept=".pdf, .doc, .docx, .xlsx, .xls, .jpg, .jpeg, .png" />
+                                                                    </label>
+
+                                                                    {/* Select */}
+                                                                    <div className='flex items-center space-x-2'>
+                                                                        <select name="type_document" className="border p-2 rounded-md">
+                                                                            <option value="Currículo profissional">Currículo Profissional</option>
+                                                                            <option value="Formação acadêmica">Formação acadêmica</option>
+                                                                            <option value="Experiência profissional">Experiência profissional</option>
+                                                                            <option value="Cursos realizados">Cursos realizados</option>
+                                                                        </select>
+                                                                        {inputs.length > 1 && (
+
+                                                                            <span onClick={() => handleDeleteInput(index)}>
+                                                                                <CloseIcon />
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                                {index === inputs.length - 1 && (
+                                                                    <Button onClick={() => handleAddInput()} variant="twoTone" size="sm" className="mr-2" icon={<HiOutlinePlus />}>
+                                                                        <span>Adicionar mais arquivos</span>
+                                                                    </Button>)}
+                                                            </div>
+                                                        ))}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-start gap-4">
+                                                <button
+                                                    disabled={isSubmitting}
+                                                    className={`bg-blue-800 focus:outline-none transition duration-150 ease-in-out rounded text-white px-8 py-2 text-sm ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                                                    type="submit"
+                                                    title={isSubmitting ? "Enviando informações..." : ""}
+                                                >
+                                                    Enviar
+                                                </button>
+
+                                                <span className='text-sm text-gray-600'>
+                                                    Ao enviar, você concorda com a manutenção dos seus dados na Plataforma do Empreender.
+                                                </span>
+                                            </div>
+                                        </>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
