@@ -227,7 +227,7 @@ function CadastraProposta() {
                 },
             });
             setErrors(null);
-            // setSuccess(true);
+            setSuccess(true);
             toast.push(toastNotificationSucess)
 
         } catch (error: any) {
